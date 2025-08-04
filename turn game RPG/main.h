@@ -1,6 +1,6 @@
 ﻿//main.h
 #pragma once
-#include <random> // random 사용을 위한 include
+#include <random> // random 
 
 class player {
 private:
@@ -18,7 +18,9 @@ public:
 	int basic_attack_cal();//레벨 기능 추가시 공격력 계산
 };
 
-
+class magician {};
+class warrior {};
+class Assassin {};
 
 class enemy {
 private:
