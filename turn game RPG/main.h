@@ -18,7 +18,9 @@ public:
 	int basic_attack_cal();//레벨 기능 추가시 공격력 계산
 };
 
-class magician {};
+//charactor class to override player
+//if player level == 2, give to class
+class magician {}; 
 class warrior {};
 class Assassin {};
 
@@ -49,7 +51,7 @@ private:
 
 public:
 	battle();               // 멤버 초기화
-	void startBattle();     // 전체 전투 루프 돌리기
+	void startBattle();     // 전체 전투 루프 돌리기 , 리턴 해줄게 없어서 void 이하 동문
 	void battleStatus();    // 스탯 출력
 	void playerTurn();      // 사용자 입력 처리
 	void enemyTurn();       // 랜덤 AI 행동
