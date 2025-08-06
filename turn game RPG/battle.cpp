@@ -24,6 +24,9 @@ void battle::startBattle() { //배틀 시작
 	while (php > 0 && ehp > 0) { //체력이 0 이하가 되는 순간 종료
 		battleStatus(); //유저와 적의 상황(체력 공격력 등)
 		playerTurn(); //유저 턴
+		if (ehp <= 0) { //무승부 방지
+			break;
+		}
 		enemyTurn(); //enemy 턴
 	}
 	battleEnd(); // 전투 종료
@@ -47,19 +50,22 @@ void battle::battleStatus() {
 void battle::playerTurn() {//player 턴으로 실행 시켜줘야함.
 	cout << "select player Action" << endl;
 	cout << "(1)attack (damage 5)  " << "(2)defense (defense 5) " << endl;//select
-	cin >> battleselect;
-	if (battleselect == 1) {//attack
-		cout << "attack enemy!" << endl;
-		ehp = e.enemyTakeDamage(ehp, pattack); //enemy 남은 체력 계산
-
-	}
-	else if (battleselect == 2) {//defense
-		cout << "defense body" << endl;
-		cout << "hp : " << php << "/(defensed)+" << pdefense << endl; // 더하는게 아닌 임시 체력
-	}
-	else {// !!Error caution 1 or 2 를 입력하지 않고 다른걸 입력했을 때 턴이지나가게끔 해놓은것인데 아무런 입력이 없고 턴이 넘어가지 않게 방지 해놓을 것
-		cout << "Invalid input. Skipping turn." << endl; 
-		battleselect = 0;
+	
+	while (true) {
+		cin >> battleselect;
+		if (battleselect == 1) {//attack
+			cout << "attack enemy!" << endl;
+			ehp = e.enemyTakeDamage(ehp, pattack); //enemy 남은 체력 계산
+			break;
+		}
+		else if (battleselect == 2) {//defense
+			cout << "defense body" << endl;
+			cout << "hp : " << php << "/(defensed)+" << pdefense << endl; // 더하는게 아닌 임시 체력
+			break;
+		}
+		else {
+			cout << "Invalid input. Try again." << endl;
+		}
 	}
 };
 
