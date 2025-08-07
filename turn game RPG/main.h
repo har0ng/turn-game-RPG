@@ -1,6 +1,7 @@
 ﻿//main.h
 #pragma once
 #include <random> // random 
+#include <memory> //smart pointer
 
 class player {
 private:
@@ -78,8 +79,8 @@ public:
 
 class battle {
 private:
-	player* p; //player status
-	enemy* e; //enemy status
+	std::unique_ptr<player>  p;  //player status, smart pointer
+	std::unique_ptr<enemy> e; //enemy status, smart pointer
 	int php;       // player health
 	int ehp;       // enemy health
 	int pattack;   //player attack
@@ -92,7 +93,7 @@ private:
 
 
 public:
-	battle(player *p, enemy *e);  // 멤버 초기화
+	battle(std::unique_ptr<player> p, std::unique_ptr<enemy> e);  // 멤버 초기화
 	void startBattle();     // 전체 전투 루프 돌리기 , 리턴 해줄게 없어서 void 이하 동문
 	void battleStatus();    // 스탯 출력
 	void playerTurn();      // 사용자 입력 처리

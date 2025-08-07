@@ -4,13 +4,15 @@
 #include "main.h"
 #include <random>
 #include <algorithm> // std::max
+#include <memory> // smart pointer
 
 using std::cout;
 using std::endl;
 using std::cin;
+using std::unique_ptr;
 
-
-battle::battle(player* _p , enemy* _e): p(_p), e(_e), gen(rd()) { //정보 받아옴.
+battle::battle(unique_ptr<player> _p , unique_ptr<enemy> _e)
+	: p(std::move(_p)), e(std::move(_e)), gen(rd()) { //정보 받아옴.
 	php = p->getPlayer_health(); // user 체력 get으로 받아오기
 	ehp = e->getEnemy_health(); //enemy 체력 get으로 받아오기
 	pattack = p->getBasic_attack(); // user 공격력 get으로 받아오기
