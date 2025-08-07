@@ -19,7 +19,9 @@ int main() {
         exit(0); // if start == 0 return 0;
     }
 
-    battle b;
+    player* myPlayer = new player(); // 혹은 player, magician, assassin 등
+    enemy* myEnemy = new enemy();
+    battle b(myPlayer, myEnemy);
     b.startBattle();  // 전투 시작 및 종료까지 내부에서 처리(battle.cpp)
     return 0;
 }

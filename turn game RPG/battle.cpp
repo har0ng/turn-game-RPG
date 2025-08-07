@@ -10,11 +10,11 @@ using std::endl;
 using std::cin;
 
 
-battle::battle(): gen(rd()) { //정보 받아옴.
-	php = p.getPlayer_health(); // user 체력 get으로 받아오기
-	ehp = e.getEnemy_health(); //enemy 체력 get으로 받아오기
-	pattack = p.getBasic_attack(); // user 공격력 get으로 받아오기
-	pdefense = p.getPlayer_defense(); // user 방어력 get으로 받아오기
+battle::battle(player* _p , enemy* _e): p(_p), e(_e), gen(rd()) { //정보 받아옴.
+	php = p->getPlayer_health(); // user 체력 get으로 받아오기
+	ehp = e->getEnemy_health(); //enemy 체력 get으로 받아오기
+	pattack = p->getBasic_attack(); // user 공격력 get으로 받아오기
+	pdefense = p->getPlayer_defense(); // user 방어력 get으로 받아오기
 	eattack = 0; //enemy 공격력은 private 이니 0으로 미리 초기화
 	battleselect = 0; // battle menu select 값 또한 실행하면서 값을 받아와야하니, private이기도 하고 0 으로 미리 초기화
 	turn = 0; // 몇번째 턴인지 알려주기위함.
@@ -55,7 +55,7 @@ void battle::playerTurn() {//player 턴으로 실행 시켜줘야함.
 		cin >> battleselect;
 		if (battleselect == 1) {//attack
 			cout << "attack enemy!" << endl;
-			ehp = e.enemyTakeDamage(ehp, pattack); //enemy 남은 체력 계산
+			ehp = e->enemyTakeDamage(ehp, pattack); //enemy 남은 체력 계산
 			break;
 		}
 		else if (battleselect == 2) {//defense
