@@ -1,8 +1,7 @@
 ﻿//player.cpp
 
-
+#include "player.h"
 #include <iostream>
-#include "main.h"
 #include <string>
 
 using std::cout;

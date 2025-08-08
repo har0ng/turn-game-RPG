@@ -1,7 +1,9 @@
 ﻿//main.cpp
 
+#include "battle.h"
+
 #include <iostream>
-#include "main.h"
+
 
 
 using std::cout;
@@ -19,9 +21,10 @@ int main() {
         exit(0); // if start == 0 return 0;
     }
 
-    player* myPlayer = new player(); // 혹은 player, magician, assassin 등
-    enemy* myEnemy = new enemy();
-    battle b(myPlayer, myEnemy);
+    std::unique_ptr<player> myPlayer = std::make_unique<player>();
+    std::unique_ptr<enemy> myEnemy = std::make_unique<enemy>();
+    
+    battle b(std::move(myPlayer), std::move(myEnemy)); //unique다 보니 옮겾무
     b.startBattle();  // 전투 시작 및 종료까지 내부에서 처리(battle.cpp)
     return 0;
 }

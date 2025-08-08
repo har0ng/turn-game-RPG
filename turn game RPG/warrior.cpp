@@ -1,7 +1,7 @@
 //warrior.cpp
 
 #include <iostream>
-#include "main.h"
+#include "player.h"
 
 using std::cout;
 using std::cin;

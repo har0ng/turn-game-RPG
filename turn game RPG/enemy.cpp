@@ -1,8 +1,8 @@
 ﻿//enemy.cpp
 
+#include "enemy.h"
 
 #include <iostream>
-#include "main.h"
 #include <random>
 
 using std::cout;

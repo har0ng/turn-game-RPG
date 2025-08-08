@@ -141,6 +141,7 @@
   <ItemGroup>
     <ClCompile Include="assassin.cpp" />
     <ClCompile Include="battle.cpp" />
+    <ClCompile Include="consoleUI.cpp" />
     <ClCompile Include="enemy.cpp" />
     <ClCompile Include="magician.cpp" />
     <ClCompile Include="main.cpp" />
@@ -148,7 +149,10 @@
     <ClCompile Include="warrior.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="main.h" />
+    <ClInclude Include="battle.h" />
+    <ClInclude Include="consoleUI.h" />
+    <ClInclude Include="enemy.h" />
+    <ClInclude Include="player.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
