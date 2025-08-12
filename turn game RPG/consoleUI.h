@@ -11,8 +11,9 @@ UI 출력 책임만 갖게 하기 위해(SRP)
 
 class consoleUI {
 public:
-    void battleStatus(int turn, int php, int pattack, int ehp, int eattack);
-    int playerTurn();
-    void enemyTurn(int enemyAction, int php, int pdefense, int eattack, int battleselect);
-    void battleEnd(int php);
+    void battleStatus(int turn, int php, int cphp, int pattack, int ehp, int eattack, int level);
+    void playerTurnUI();
+    void playerTurn(int cphp, int pdefense,int battleselect,int pattack);
+    void enemyTurn(int enemyAction, int pdefense, int eattack, int battleselect);
+    void battleEnd(int cphp);
 };
