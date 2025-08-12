@@ -17,15 +17,23 @@ using std::unique_ptr;
 
 battle::battle(unique_ptr<player> _p , unique_ptr<enemy> _e)
 	: p(std::move(_p)), e(std::move(_e)), gen(rd()) { //정보 받아옴.
+	
+	//player
 	php = p->getPlayer_health(); // user 체력 get으로 받아오기
 	cphp = p->getPlayer_current_health(); //user 현재 체력 가져오기
-	ehp = e->getEnemy_health(); //enemy 체력 get으로 받아오기
 	pattack = p->getBasic_attack(); // user 공격력 get으로 받아오기
 	pdefense = p->getPlayer_defense(); // user 방어력 get으로 받아오기
-	eattack = 0; //enemy 공격력은 private 이니 0으로 미리 초기화
-	battleselect = 0; // battle menu select 값 또한 실행하면서 값을 받아와야하니, private이기도 하고 0 으로 미리 초기화
-	turn = 0; // 몇번째 턴인지 알려주기위함.
 	level = p->getLevel(); // 플레이어 레벨
+	battleselect = 0; // battle menu select 값 또한 실행하면서 값을 받아와야하니, private이기도 하고 0 으로 미리 초기화
+
+	//enemy
+	ehp = e->getEnemy_health(); //enemy 체력 get으로 받아오기
+	eattack = 0; //enemy 공격력은 private 이니 0으로 미리 초기화
+	
+	
+	//battletime
+	turn = 0; // 몇번째 턴인지 알려주기위함.
+	//gameover(Y/N)
 	play = true;
 };
 

@@ -11,16 +11,19 @@ private:
 	std::unique_ptr<enemy> e; //enemy status, smart pointer
 	int php;       // player health
 	int cphp;	   // player current health
-	int ehp;       // enemy health
 	int pattack;   //player attack
 	int pdefense;  //player defense
-	int eattack; //enemy attack
-	int battleselect; //player action select
-	int turn;
 	int level; //player level
+	int battleselect; //player action select
+	int ehp;       // enemy health
+	int eattack; //enemy attack
+
+	int turn;
+	bool play; //player의 hp의 상태에 따라 게임 지속 가능한지 확인
+
 	std::mt19937 gen; //seed random
 	std::random_device rd; //seed create
-	bool play; //player의 hp의 상태에 따라 게임 지속 가능한ㅈ; 확인
+
 
 public:
 	battle(std::unique_ptr<player> p, std::unique_ptr<enemy> e);  // 멤버 초기화
