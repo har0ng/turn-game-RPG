@@ -63,7 +63,6 @@ public:
 	*/
 
 };
-
 class magician :public player {
 public:
 	magician();

@@ -26,6 +26,8 @@ battle::battle(unique_ptr<player> _p , unique_ptr<enemy> _e)
 	level = p->getLevel(); // 플레이어 레벨
 	level_exp = p->getLevel_exp();//총 경험치
 	now_exp = p->getNow_exp(); //현재 경험치
+	mana = p->getMana();
+	current_mana = p->getCurrent_mana();
 
 	battleselect = 0; // battle menu select 값 또한 실행하면서 값을 받아와야하니, private이기도 하고 0 으로 미리 초기화
 
@@ -60,7 +62,7 @@ void battle::battleStatus() {
 	eattack = enemyDamage(gen); //적의 공격력을 범위 내 초기화된 수로 랜덤화
 	turn++; //몇턴 째인지 셈
 	
-	ui.battleStatus(turn, php, cphp, pattack, ehp, eattack, level, level_exp, now_exp); //log를 불러오기위해 log에서 필요로 하는 값 다 넘겨주기
+	ui.battleStatus(turn, php, cphp, pattack, pdefense, ehp, eattack, level, level_exp, now_exp, mana, current_mana); //log를 불러오기위해 log에서 필요로 하는 값 다 넘겨주기
 }	
 
 void battle::playerTurn() {

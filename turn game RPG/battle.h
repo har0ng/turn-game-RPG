@@ -17,13 +17,14 @@ private:
 	int battleselect; //player action select
 	int level_exp; //총 경험치
 	int now_exp; //현재 경험치
+	int mana;
+	int current_mana;
 
 	int ehp;       // enemy health
 	int eattack; //enemy attack
 
 	int turn;
 	bool play; //player의 hp의 상태에 따라 게임 지속 가능한지 확인
-	bool classChangeYN;
 
 	std::mt19937 gen; //seed random
 	std::random_device rd; //seed create
