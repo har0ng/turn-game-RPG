@@ -6,11 +6,14 @@ using std::cout;
 using std::endl;
 using std::cin;
 
-void consoleUI::battleStatus(int turn, int php, int cphp, int pattack, int ehp, int eattack, int level) {
+void consoleUI::battleStatus(int turn, int php, int cphp, int pattack
+                            , int ehp, int eattack, int level
+                            , int level_exp, int now_exp) {
     cout << "========== Battle Status ==========" << endl;
     cout << endl;
     cout << turn << " turn" << endl;
-    cout << "*player\n Lv: " << level << "\n hp: " << cphp <<"\n power: " << pattack << endl;
+    cout << "*player\n Lv: " << level <<" ,exp: " << now_exp << "/" << level_exp 
+         << "\n hp: " << cphp <<"/" << php << "\n power: " << pattack << endl;
     cout << endl;
     cout << "*enemy\n hp: " << ehp << "\n power: " << eattack << endl;
     cout << endl;
@@ -20,7 +23,7 @@ void consoleUI::battleStatus(int turn, int php, int cphp, int pattack, int ehp, 
 }
 
 void consoleUI::playerTurnUI() {
-    cout << "========== playerTurn Start ==========" << endl;
+    cout << "========== playerTurn Start ==========\n" << endl;
     cout << "select player Action" << endl;
     cout << "(1)attack (damage 5)  " << "(2)defense (defense 5) " << endl;
 }
@@ -34,14 +37,14 @@ void consoleUI::playerTurn(int cphp, int pdefense, int battleselect, int pattack
         cout << "defense body" << endl;
         cout << "hp : " << cphp << "/(defensed)+" << pdefense << endl;
     }
-    cout << "========== playerTurn End ==========" << endl;
+    cout << "\n========== playerTurn End ==========" << endl;
     cout << endl;
     cout << endl;
 
 }
 
 void consoleUI::enemyTurn(int enemyAction, int pdefense, int eattack, int battleselect) {
-    cout << "========== enemyTurn Start ==========" << endl;
+    cout << "========== enemyTurn Start ==========\n" << endl;
     if (enemyAction == 0) {
         cout << "enemy action : assess the situation" << endl;
     }
@@ -55,7 +58,7 @@ void consoleUI::enemyTurn(int enemyAction, int pdefense, int eattack, int battle
             cout << "Player takes " << eattack << " damage." << endl;
         }
     }
-    cout << "========== enemyTurn End ==========" << endl;
+    cout << "\n========== enemyTurn End ==========" << endl;
     cout << endl;
     cout << endl;
 
@@ -69,12 +72,37 @@ void consoleUI::battleEnd(int cphp) {
 	if (cphp <= 0) { // user hp == 0
 		cout << "lose player" << endl;
 	}
-	else { //enemy hp == 0
-		cout << "wins player!" << endl;
+    else { //enemy hp == 0
+        cout << "wins player!" << endl;
         cout << endl;
         cout << endl;
         cout << "Press Enter to continue..." << endl; //사용자 임의대로 화면 넘기기
         cin.ignore();//ignore과 get으로 enter을 쳤을 때 넘어갈 수 있게 조절.
         cin.get();
 	}
+}
+
+void consoleUI::levelup_selectClassUI() { // 2레벨 직업 정하기
+        cout << endl;
+        cout << "========== class change =============" << endl;
+        cout << "congratulations　level 2!" << endl;
+        cout << "select your class!" << "\n (1)warrior (2)magician (3)assassin" << endl;
+        
+}
+
+void consoleUI::levelup_selectClass(int level, int selectClass) {
+    if (selectClass == 1) {
+        cout << "your class is warrior! " << endl;
+    } 
+    else if (selectClass == 2) {
+        cout << "your class is magician! " << endl;
+    }
+    else if (selectClass == 3) {
+        cout << "your class is assassin! " << endl;
+    }
+    cout << "========== class change =============" << endl;
+    cout << endl;
+    cout << "Press Enter to continue..." << endl; //사용자 임의대로 화면 넘기기
+    cin.ignore();//ignore과 get으로 enter을 쳤을 때 넘어갈 수 있게 조절.
+    cin.get();
 }
