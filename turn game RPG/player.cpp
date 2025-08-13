@@ -11,8 +11,8 @@ player::player() :player_health(30)
 				 ,player_current_health(30)
 				 ,basic_attack(5)
 				 ,basic_defense(5)
-				 ,mana(0)
-				 ,current_mana(0)
+				 ,mana(8)
+				 ,current_mana(8)
 			 	 ,level(1)
 				 ,level_exp(10)
 				 ,now_exp(0) {} //initializing
@@ -84,6 +84,7 @@ void player::levelup() { //레벨 업.
 	level++;
 	level_exp *= 2; //필요 경험치 2배씩 증가
 	player_current_health = player_health; //체력 회복
+	current_mana = mana; //마나 회복
 }
 int player::playerTakeExp(int take_exp) { //take exp
 	if (now_exp + take_exp< getLevel_exp()) { //not level up

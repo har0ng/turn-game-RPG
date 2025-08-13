@@ -6,7 +6,7 @@ using std::cout;
 using std::endl;
 using std::cin;
 
-void consoleUI::battleStatus(int turn, int php, int cphp, int pattack, int defense
+void consoleUI::battleStatus(int turn, int php, int cphp, int pattack, int pdefense
                             ,int ehp, int eattack, int level, int level_exp
                             ,int now_exp, int mana, int current_mana) {
     cout << "========== Battle Status ==========" << endl;
@@ -14,7 +14,7 @@ void consoleUI::battleStatus(int turn, int php, int cphp, int pattack, int defen
     cout << turn << " turn" << endl;
     cout << "*player\n Lv: " << level <<" ,exp: " << now_exp << "/" << level_exp 
          << "\n hp: " << cphp <<"/" << php << "\n mp: " << current_mana << "/" << mana
-         << "\n power: " << pattack << "\n defense: "<< defense <<endl;
+         << "\n power: " << pattack << "\n defense: "<< pdefense <<endl;
     cout << endl;
     cout << "*enemy\n hp: " << ehp << "\n power: " << eattack << endl;
     cout << endl;
