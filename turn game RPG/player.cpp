@@ -16,7 +16,9 @@ player::player() :player_health(30)
 			 	 ,level(1)
 				 ,level_exp(10)
 				 ,now_exp(0) 
-{
+				 ,agility(0)
+				 ,critical(99)
+{				 
 	setBeforePlayer();
 	setAfterPlayer();
 } //initializing
@@ -48,6 +50,12 @@ int player::getMana() const {
 }
 int player::getCurrent_mana() const {
 	return current_mana;
+}
+int player::getAgility() const {
+	return agility;
+}
+int player::getCritical() const {
+	return critical;
 }
 playerStatusSnapShot player::getBeforePlayer() const {
 	return beforePlayer;
@@ -84,6 +92,12 @@ void player::setLevel_exp(int lev) {
 void player::setNow_exp(int lev){
 	now_exp = lev;
 }
+void player::setAgility(int agi) {
+	agility = agi;
+}
+void player::setCritical(int cri) {
+	critical = cri;
+}
 void player::setBeforePlayer() {
 	beforePlayer.health = player_health;
 	beforePlayer.current_health = player_current_health;
@@ -106,6 +120,8 @@ void player::setAfterPlayer() {
 	afterPlayer.mana = mana;
 	afterPlayer.current_mana = current_mana;
 }
+
+
 //other
 int player::playerTakeDamage(int dmg) { //현재 체력 - 받은 데미지 계산
 	player_current_health = std::max(0, player_current_health - dmg); // 0이하로 떨어져서 오버플로우 안일어나게 막기

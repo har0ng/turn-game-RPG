@@ -19,6 +19,8 @@ private:
 	int now_exp; //현재 경험치
 	int mana;
 	int current_mana;
+	int agility; //AGI, 회피율
+	int critical; //CRI, 크리티컬(데미지 2배)
 
 	int ehp;       // enemy health
 	int eattack; //enemy attack

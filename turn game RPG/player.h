@@ -22,6 +22,8 @@ private:
 	int now_exp; //현재 경험치
 	int mana;//총 마나 0 (전직 전)
 	int current_mana;//현재 마나
+	int agility; //AGI, 회피율
+	int critical; //CRI, 크리티컬
 	playerStatusSnapShot beforePlayer; // 특정 시기 이전 플레이어 정보(저장, 레벨업 등)
 	playerStatusSnapShot afterPlayer; // 특정 시기 이후 플레이어 정보(저장, 레벨업 등)
 
@@ -37,6 +39,8 @@ public:
 	int getNow_exp() const; //현재 경험치
 	int getMana() const; //총 마나
 	int getCurrent_mana() const; //현재 마나
+	int getAgility() const;
+	int getCritical() const;
 	playerStatusSnapShot getBeforePlayer() const;
 	playerStatusSnapShot getAfterPlayer() const;
 
@@ -50,6 +54,8 @@ public:
 	void setLevel(int lev);
 	void setLevel_exp(int lev);
 	void setNow_exp(int lev);
+	void setAgility(int agi);
+	void setCritical(int cri);
 	void setBeforePlayer();
 	void setAfterPlayer();
 

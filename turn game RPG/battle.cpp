@@ -30,6 +30,8 @@ battle::battle(unique_ptr<player> _p , unique_ptr<enemy> _e)
 	now_exp = p->getNow_exp(); //현재 경험치
 	mana = p->getMana();
 	current_mana = p->getCurrent_mana();
+	agility = p->getAgility();
+	critical = p->getCritical();
 
 	battleselect = 0; // battle menu select 값 또한 실행하면서 값을 받아와야하니, private이기도 하고 0 으로 미리 초기화
 
@@ -82,14 +84,21 @@ void battle::playerTurn() {
 	cin >> battleselect;
 
 	if (battleselect == 1) { // 1. 공격 2. 방어
-		ehp = e->enemyTakeDamage(ehp, pattack);
+		std::uniform_int_distribution<unsigned int> dist(1, 100); //크리티컬 계산
+		int criticalLine = dist(gen);
+		if (criticalLine + p->getCritical() > 100) {
+			ehp = e->enemyTakeDamage(ehp, pattack*2);
+		}
+		else {
+			ehp = e->enemyTakeDamage(ehp, pattack);
+		}
 	}
 
 	ui.playerTurn(cphp, pdefense, battleselect, pattack);//log를 불러오기위해 log에서 필요로 하는 값 다 넘겨주기
 }
 
 void battle::enemyTurn() {
-	std::uniform_int_distribution<unsigned int> dist(0, 2); // 0. 상황 살피기, 1. 공격, 2. 공격
+	std::uniform_int_distribution<unsigned int> dist(0, 2); //0. 상황 살피기, 1. 공격, 2. 공격
 	int enemy_action = dist(gen);
 
 	// 전투 로직 (데미지 계산 등)
