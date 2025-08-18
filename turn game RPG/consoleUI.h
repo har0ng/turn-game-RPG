@@ -24,4 +24,5 @@ public:
                              ,int level, int level_exp, int now_exp
                              ,int mana, int current_mana);
     void enterToContinue();
+    void showStatusChange(playerStatusSnapShot beforePlayer, playerStatusSnapShot afterPlayer);
 };  

@@ -121,3 +121,20 @@ void consoleUI::enterToContinue() { //enter을 누를시 다음 화면으로 넘
     cin.ignore();//ignore과 get으로 enter을 쳤을 때 넘어갈 수 있게 조절.
     cin.get();
 }
+
+void consoleUI::showStatusChange(playerStatusSnapShot beforePlayer, playerStatusSnapShot afterPlayer) {
+    cout << "========== current player status ==========" << endl;
+    cout << "*player" << endl;
+    cout << " Lv: " << beforePlayer.level << " ,exp: " << beforePlayer.now_exp << "/" << beforePlayer.level_exp
+         << "  ->  " << "Lv: " << afterPlayer.level << " ,exp: " << afterPlayer.now_exp << "/" << afterPlayer.level_exp << endl;
+    cout << " hp: " << beforePlayer.current_health << "/" << beforePlayer.health
+         << "         -> " << " hp: " << afterPlayer.current_health << "/" << afterPlayer.health << endl;
+    cout << " mp: " << beforePlayer.current_mana << "/" << beforePlayer.mana
+         << "           -> " << " mp: " << afterPlayer.current_mana << "/" << afterPlayer.mana << endl;
+    cout << " power: " << beforePlayer.attack << "          -> " << " power: " << afterPlayer.attack << endl;
+    cout << " defense: " << beforePlayer.defense << "        -> " <<" defense: " << afterPlayer.defense << endl;
+
+    cout << "========== current player status ==========" << endl;
+    cout << endl;
+    cout << endl;
+}

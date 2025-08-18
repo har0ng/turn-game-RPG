@@ -7,7 +7,7 @@ using std::cout;
 using std::cin;
 
 assassin::assassin(){}
-assassin::assassin(const player& p) { //assassin status set
+assassin::assassin(const player& p) :player(p){ //assassin status set
     setPlayer_health(p.getPlayer_health() + 4);
     setPlayer_current_health(p.getPlayer_current_health() + 4);
     setBasic_attack(p.getBasic_attack() + 4);

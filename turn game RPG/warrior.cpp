@@ -7,7 +7,7 @@ using std::cout;
 using std::cin;
 
 warrior::warrior() {}
-warrior::warrior(const player& p) { //warrior status set
+warrior::warrior(const player& p):player(p) { //warrior status set
 	setPlayer_health(p.getPlayer_health() + 10);
     setPlayer_current_health(p.getPlayer_current_health() + 10);
     setBasic_attack(p.getBasic_attack() + 3);

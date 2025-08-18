@@ -7,7 +7,7 @@ using std::cout;
 using std::cin;
 
 magician::magician() {}
-magician::magician(const player& p) { //magician status set
+magician::magician(const player& p) :player(p){ //magician status set
     setPlayer_health(p.getPlayer_health() + 5);
     setPlayer_current_health(p.getPlayer_current_health() + 5);
     setBasic_attack(p.getBasic_attack() + 1);

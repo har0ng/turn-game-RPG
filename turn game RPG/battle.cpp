@@ -15,6 +15,8 @@ using std::endl;
 using std::cin;
 using std::unique_ptr;
 
+
+
 battle::battle(unique_ptr<player> _p , unique_ptr<enemy> _e)
 	: p(std::move(_p)), e(std::move(_e)), gen(rd()) { //정보 받아옴.
 	
@@ -45,6 +47,7 @@ battle::battle(unique_ptr<player> _p , unique_ptr<enemy> _e)
 void battle::startBattle() { //배틀 시작
 	while (cphp > 0 && ehp > 0) { //체력이 0 이하가 되는 순간 종료
 		p->setBeforePlayer(); //전투 전 플레이어 정보 저장
+
 		battleStatus(); //유저와 적의 상황(체력 공격력 등)
 		playerTurn(); //유저 턴
 		if (ehp <= 0) { //무승부 방지
@@ -53,14 +56,17 @@ void battle::startBattle() { //배틀 시작
 		enemyTurn(); //enemy 턴
 	}
 	battleEnd(); // 전투 종료
-	if (p->getLevel() == 2 && p -> classChangeYN()){ // 2레벨 전직, 만약 전직했으면 안뜸
-		levelup_selectClass();
-	}
-	p->setAfterPlayer(); //전투 후 플레이어 정보 저장
-	if (p->getBeforePlayer().level != p->getAfterPlayer().level) { //레벨 업을 했다면
 
+	if (p->getLevel() == 2 && p -> classChangeYN()){ // 2레벨 전직, 만약 전직했으면 안뜸
+		levelup_selectClass(); //전직
 	}
-	ui.enterToContinue();
+
+	p->setAfterPlayer(); //전투 후 플레이어 정보 저장
+
+	if (p->getBeforePlayer().level != p->getAfterPlayer().level) { //레벨 업을 했다면
+		ui.showStatusChange(p->getBeforePlayer(), p->getAfterPlayer()); // 능력치 변화 보여주기
+		ui.enterToContinue(); //엔터 누르면 넘어가는 기능
+	}
 }
 
 void battle::battleStatus() {

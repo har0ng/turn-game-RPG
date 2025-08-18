@@ -15,7 +15,11 @@ player::player() :player_health(30)
 				 ,current_mana(8)
 			 	 ,level(1)
 				 ,level_exp(10)
-				 ,now_exp(0) {} //initializing
+				 ,now_exp(0) 
+{
+	setBeforePlayer();
+	setAfterPlayer();
+} //initializing
 
 //get
 int player::getPlayer_health() const { // private에 숨긴 값 get set으로 들고오기
@@ -81,14 +85,27 @@ void player::setNow_exp(int lev){
 	now_exp = lev;
 }
 void player::setBeforePlayer() {
-	beforePlayer = { player_health, player_current_health, basic_attack, basic_defense,
-					 level, level_exp, now_exp, mana, current_mana};
+	beforePlayer.health = player_health;
+	beforePlayer.current_health = player_current_health;
+	beforePlayer.attack = basic_attack;
+	beforePlayer.defense = basic_defense;
+	beforePlayer.level = level;
+	beforePlayer.level_exp = level_exp;
+	beforePlayer.now_exp = now_exp;
+	beforePlayer.mana = mana;
+	beforePlayer.current_mana = current_mana;
 }
 void player::setAfterPlayer() {
-	afterPlayer = { player_health, player_current_health, basic_attack, basic_defense,
-					 level, level_exp, now_exp, mana, current_mana };
+	afterPlayer.health = player_health;
+	afterPlayer.current_health = player_current_health;
+	afterPlayer.attack = basic_attack;
+	afterPlayer.defense = basic_defense;
+	afterPlayer.level = level;
+	afterPlayer.level_exp = level_exp;
+	afterPlayer.now_exp = now_exp;
+	afterPlayer.mana = mana;
+	afterPlayer.current_mana = current_mana;
 }
-
 //other
 int player::playerTakeDamage(int dmg) { //현재 체력 - 받은 데미지 계산
 	player_current_health = std::max(0, player_current_health - dmg); // 0이하로 떨어져서 오버플로우 안일어나게 막기
