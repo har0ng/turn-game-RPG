@@ -1,5 +1,16 @@
 ﻿#pragma once
 
+struct playerStatusSnapShot { //before ,after 저장
+	int health;
+	int current_health;
+	int attack;
+	int defense;
+	int level;
+	int level_exp;
+	int now_exp;
+	int mana;
+	int current_mana;
+};
 class player {
 private:
 	int player_health; //player 체력 기본 30/ 최대 150
@@ -11,6 +22,8 @@ private:
 	int now_exp; //현재 경험치
 	int mana;//총 마나 0 (전직 전)
 	int current_mana;//현재 마나
+	playerStatusSnapShot beforePlayer; // 특정 시기 이전 플레이어 정보(저장, 레벨업 등)
+	playerStatusSnapShot afterPlayer; // 특정 시기 이후 플레이어 정보(저장, 레벨업 등)
 
 public:
 	player();//player 체력 값 초기화
@@ -24,6 +37,9 @@ public:
 	int getNow_exp() const; //현재 경험치
 	int getMana() const; //총 마나
 	int getCurrent_mana() const; //현재 마나
+	playerStatusSnapShot getBeforePlayer() const;
+	playerStatusSnapShot getAfterPlayer() const;
+
 	//set
 	void setPlayer_health(int hp); //전직 시 새롭게 정의
 	void setPlayer_current_health(int hp);
@@ -34,6 +50,8 @@ public:
 	void setLevel(int lev);
 	void setLevel_exp(int lev);
 	void setNow_exp(int lev);
+	void setBeforePlayer();
+	void setAfterPlayer();
 
 
 	int playerTakeDamage(int dmg);//데미지를 입었을 때
@@ -91,3 +109,4 @@ public:
 	int assassin_mana; // 2 level : +15 , +1 level up : +2
 	*/
 };
+

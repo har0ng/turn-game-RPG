@@ -103,6 +103,20 @@ void consoleUI::levelup_selectClass(int level, int selectClass) {
     }
     cout << "========== class change =============" << endl;
     cout << endl;
+}
+
+void consoleUI::levelup_playerStatus(int php, int cphp, int pattack, int pdefense
+                                    ,int level, int level_exp, int now_exp
+                                    ,int mana, int current_mana) {
+    cout << "========== current player status ==========" << endl;
+    cout << "*player\n Lv: " << level << " ,exp: " << now_exp << "/" << level_exp
+        << "\n hp: " << cphp << "/" << php << "\n mp: " << current_mana << "/" << mana
+        << "\n power: " << pattack << "\n defense: " << pdefense << endl;
+    cout << endl;
+    cout << "========== current player status ==========" << endl;
+}
+
+void consoleUI::enterToContinue() { //enter을 누를시 다음 화면으로 넘어가게끔 조정
     cout << "Press Enter to continue..." << endl; //사용자 임의대로 화면 넘기기
     cin.ignore();//ignore과 get으로 enter을 쳤을 때 넘어갈 수 있게 조절.
     cin.get();

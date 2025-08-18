@@ -44,6 +44,7 @@ battle::battle(unique_ptr<player> _p , unique_ptr<enemy> _e)
 
 void battle::startBattle() { //배틀 시작
 	while (cphp > 0 && ehp > 0) { //체력이 0 이하가 되는 순간 종료
+		p->setBeforePlayer(); //전투 전 플레이어 정보 저장
 		battleStatus(); //유저와 적의 상황(체력 공격력 등)
 		playerTurn(); //유저 턴
 		if (ehp <= 0) { //무승부 방지
@@ -55,7 +56,12 @@ void battle::startBattle() { //배틀 시작
 	if (p->getLevel() == 2 && p -> classChangeYN()){ // 2레벨 전직, 만약 전직했으면 안뜸
 		levelup_selectClass();
 	}
-};
+	p->setAfterPlayer(); //전투 후 플레이어 정보 저장
+	if (p->getBeforePlayer().level != p->getAfterPlayer().level) { //레벨 업을 했다면
+
+	}
+	ui.enterToContinue();
+}
 
 void battle::battleStatus() {
 	std::uniform_int_distribution<unsigned int> enemyDamage(4, 7); //랜덤 범위 조정
@@ -106,13 +112,12 @@ void battle::battleEnd() {
 		exit(0);
 	}	
 	else {
-		int instance_exp = 5;  // 몬스터의 종류, 레벨에따라 차등 적용해야하는데 임의로 10이라고 쓰고 테스트
+		int instance_exp = 5;  // 몬스터의 종류, 레벨에따라 차등 적용해야하는데 임의로 경험치를 설정하고 테스트
 		p->playerTakeExp(instance_exp); //player안의 nowexp 값 갱신
 		now_exp = p->getNow_exp(); // 갱신된 값으로 초기화
 		level_exp = p->getLevel_exp(); //레벨업 시 총 경험치 갱신된 값으로 초기화
 	}
 }
-
 
 void battle::levelup_selectClass() { // class change , 전직
 	ui.levelup_selectClassUI();

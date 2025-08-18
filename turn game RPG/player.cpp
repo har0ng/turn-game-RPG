@@ -45,6 +45,12 @@ int player::getMana() const {
 int player::getCurrent_mana() const {
 	return current_mana;
 }
+playerStatusSnapShot player::getBeforePlayer() const {
+	return beforePlayer;
+}
+playerStatusSnapShot player::getAfterPlayer() const {
+	return afterPlayer;
+}
 
 //set
 void player::setPlayer_health(int hp) {
@@ -73,6 +79,14 @@ void player::setLevel_exp(int lev) {
 }
 void player::setNow_exp(int lev){
 	now_exp = lev;
+}
+void player::setBeforePlayer() {
+	beforePlayer = { player_health, player_current_health, basic_attack, basic_defense,
+					 level, level_exp, now_exp, mana, current_mana};
+}
+void player::setAfterPlayer() {
+	afterPlayer = { player_health, player_current_health, basic_attack, basic_defense,
+					 level, level_exp, now_exp, mana, current_mana };
 }
 
 //other
