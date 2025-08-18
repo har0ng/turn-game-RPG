@@ -81,18 +81,25 @@ void battle::battleStatus() {
 
 void battle::playerTurn() {
 	ui.playerTurnUI();
-	cin >> battleselect;
-
-	if (battleselect == 1) { // 1. 공격 2. 방어
-		std::uniform_int_distribution<unsigned int> dist(1, 100); //크리티컬 계산
-		int criticalLine = dist(gen);
-		if (criticalLine + p->getCritical() > 100) {
-			ehp = e->enemyTakeDamage(ehp, pattack*2);
+	
+	 do{
+		 cin >> battleselect;
+		if (battleselect == 1) { // 1. 공격 2. 방어
+			std::uniform_int_distribution<unsigned int> dist(1, 100); //크리티컬 계산
+			int criticalLine = dist(gen);
+			if (criticalLine <= p->getCritical()) {
+				ehp = e->enemyTakeDamage(ehp, pattack * 2);
+			}
+			else  {
+				ehp = e->enemyTakeDamage(ehp, pattack);
+			}
 		}
-		else {
-			ehp = e->enemyTakeDamage(ehp, pattack);
+		if(cin.fail()) {        // 숫자가 아닌 입력 감지
+			cin.clear();        // fail 상태 초기화
+			cin.ignore(1000, '\n'); // 입력 버퍼 비우기
+			battleselect = 0;   // 유효하지 않은 값으로 초기화
 		}
-	}
+	 } while (battleselect != 1 && battleselect != 2);
 
 	ui.playerTurn(cphp, pdefense, battleselect, pattack);//log를 불러오기위해 log에서 필요로 하는 값 다 넘겨주기
 }

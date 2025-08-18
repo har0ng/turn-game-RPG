@@ -17,7 +17,7 @@ int main() {
     cout << "(1)start  " << "(2)end" << endl; // menu
     int start = 0;
     cin >> start;
-    if (start > 1) { //menu start select
+    if (start != 1) { //menu start select
         exit(0); // if start == 0 return 0;
     }
     std::unique_ptr<player> myPlayer = std::make_unique<player>(); // 객체 만들어짐 ,한번만
