@@ -16,7 +16,7 @@ player::player() :player_health(30)
 			 	 ,level(1)
 				 ,level_exp(10)
 				 ,now_exp(0) 
-				 ,agility(0)
+				 ,agility(1)
 				 ,critical(1) //크리가 뜨는지 임시 값.
 {				 
 	setBeforePlayer();

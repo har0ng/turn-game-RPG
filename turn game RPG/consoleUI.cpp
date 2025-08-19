@@ -32,7 +32,7 @@ void consoleUI::playerTurnUI() {
 void consoleUI::playerTurn(int cphp, int pdefense, int battleselect, int pattack, bool criticalYN) {
     if (battleselect == 1 && criticalYN == false) {
         cout << "attack enemy!" << endl;
-        cout << "enemy takes " << pattack << "damage." << endl;
+        cout << "enemy takes " << pattack << " damage." << endl;
     }
     else if(battleselect == 1 && criticalYN == true){
         cout << "attack enemy!" << endl;
@@ -92,7 +92,22 @@ void consoleUI::levelup_selectClassUI() { // 2레벨 직업 정하기
         cout << "========== class change =============" << endl;
         cout << "congratulations　level 2!" << endl;
         cout << "select your class!" << "\n (1)warrior (2)magician (3)assassin" << endl;
-        
+        cout << "\n(1)warrior" << endl;
+        cout << "max hp + 10 / +1 level : max hp +5" << endl;
+        cout << "max mp + 10 / +1 level : max mp +2" << endl;
+        cout << "attack + 3  / +2 level : attack + 1" << endl;
+        cout << "defense + 3 / +2 level : defense + 1" << endl;
+        cout << "\n(2)magician" << endl;
+        cout << "max hp + 5  / +1 level : max hp +2" << endl;
+        cout << "max mp + 25 / +1 level : max mp +5" << endl;
+        cout << "attack + 1  / +3 level : attack + 1" << endl;
+        cout << "defense + 1" << endl;
+        cout << "\n(3)assassin" << endl;
+        cout << "max hp + 4  / +1 level : max hp +2" << endl;
+        cout << "max mp + 15 / +1 level : max mp +2" << endl;
+        cout << "attack + 4  / +2 level : attack + 1" << endl;
+        cout << "defense + 3 / +3 level : defense + 1" << endl;
+        cout << "agility + 4" << endl;
 }
 
 void consoleUI::levelup_selectClass(int level, int selectClass) {

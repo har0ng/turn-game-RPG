@@ -24,8 +24,8 @@ private:
 	int now_exp; //현재 경험치
 	int mana;//총 마나 0 (전직 전)
 	int current_mana;//현재 마나
-	int agility; //AGI, 회피율
-	int critical; //CRI, 크리티컬
+	int agility; //AGI, 회피율 , 안보여줄꺼임 
+	int critical; //CRI, 크리티컬 , 안보여줄꺼임
 	playerStatusSnapShot beforePlayer; // 특정 시기 이전 플레이어 정보(저장, 레벨업 등)
 	playerStatusSnapShot afterPlayer; // 특정 시기 이후 플레이어 정보(저장, 레벨업 등)
 
@@ -115,6 +115,7 @@ public:
 	int assassin_attack;  // 2 level : +4 , +2 levelup : +1
 	int assassin_defense;  // 2 level : +1, +3 levelup : +1
 	int assassin_mana; // 2 level : +15 , +1 level up : +2
+	int agility; // 2 level : +3
 	*/
 };
 
