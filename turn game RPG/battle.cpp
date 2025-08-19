@@ -82,17 +82,25 @@ void battle::battleStatus() {
 void battle::playerTurn() {
 	ui.playerTurnUI();
 	bool criticalYN = false; //크리티컬인지 아닌지 확인
+	int attack = 0;
+	int criattack = 0;
 	 do{
 		 cin >> battleselect;
 		if (battleselect == 1) { // 1. 공격 2. 방어
-			std::uniform_int_distribution<unsigned int> dist(1, 100); //크리티컬 계산
-			int criticalLine = dist(gen);
-			if (criticalLine <= p->getCritical()) {
+			std::uniform_int_distribution<unsigned int> dmg(pattack-2, pattack +1);//데미지
+			std::uniform_real_distribution<float> randomDmg(0.05, 0.15);//데미지에 더해줄 난수
+			std::uniform_int_distribution<unsigned int> cri(1, 100); //크리티컬 계산
+			int criticalLine = cri(gen);
+			int damage = dmg(gen);
+			float randomDamage = randomDmg(gen);
+			attack = damage + (damage * randomDamage); // 난수화 데미지
+			criattack = attack * 1.3;
+			if (criticalLine <= p->getCritical()) { // 크리티컬 시 1.3배 데미지
 				criticalYN = true;
-				ehp = e->enemyTakeDamage(ehp, pattack * 1.3); // 소수점 이하 버림
+				ehp = e->enemyTakeDamage(ehp, criattack); // 소수점 이하 버림
 			}
 			else  {
-				ehp = e->enemyTakeDamage(ehp, pattack);
+				ehp = e->enemyTakeDamage(ehp, attack);
 			}
 		}
 		if(cin.fail()) {        // 숫자가 아닌 입력 감지
@@ -103,7 +111,7 @@ void battle::playerTurn() {
 		}
 	 } while (battleselect != 1 && battleselect != 2);
 
-	ui.playerTurn(cphp, pdefense, battleselect, pattack, criticalYN);//log를 불러오기위해 log에서 필요로 하는 값 다 넘겨주기
+	ui.playerTurn(cphp, pdefense, battleselect, attack, criattack,criticalYN);//log를 불러오기위해 log에서 필요로 하는 값 다 넘겨주기
 }
 
 void battle::enemyTurn() {

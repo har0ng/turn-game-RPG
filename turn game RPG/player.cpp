@@ -2,6 +2,7 @@
 
 #include "player.h"
 #include <iostream>
+#include <vector>
 
 using std::cout;
 using std::endl;
@@ -17,7 +18,7 @@ player::player() :player_health(30)
 				 ,level_exp(10)
 				 ,now_exp(0) 
 				 ,agility(1)
-				 ,critical(1) //크리가 뜨는지 임시 값.
+				 ,critical(1)
 {				 
 	setBeforePlayer();
 	setAfterPlayer();
@@ -56,6 +57,9 @@ int player::getAgility() const {
 }
 int player::getCritical() const {
 	return critical;
+}
+const std::vector<skill>& player::getSkills() const {
+	return skills;
 }
 playerStatusSnapShot player::getBeforePlayer() const {
 	return beforePlayer;
@@ -151,3 +155,4 @@ int player::playerTakeExp(int take_exp) { //take exp
 bool player::classChangeYN() const { //전직하면 false로 바꾸게 해주면 됨,
 	return true;
 }
+void player::setSkills() {}

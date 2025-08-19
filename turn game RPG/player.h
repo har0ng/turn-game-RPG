@@ -1,4 +1,6 @@
 ﻿#pragma once
+#include <vector>
+#include <string>
 
 struct playerStatusSnapShot { //before ,after 저장 (저장, 스테이터스 상태변화 등등 많이 쓰임)
 	int health;
@@ -17,37 +19,84 @@ struct skill {
 	std::string name; // skill name
 	int power; // skill power
 	int cost; // mp , hp , turn
-	int levelReq; // 필요 레벨
+	int levelReq; // level required
 };
 enum class commonSkill {
-	powerStrike, //attack * 1.8
+	powerStrike, //damage * 1.2
 	heal // maxhp *0.2
 };
 
 enum class warriorSkill {
-	strength = 2 // attack * 1.75
+	//lv2
+	strength = 2, // attack * 1.6 , 3turn
+	doubleAttack,
+	//lv3
+	defenseUp,
+	
+	//lv4
+	disarrayAttack,
+	counter,
+	//lv5
+	//lv6
+
+	//lv7
+	berserker,
+	//lv8
+
+	//lv9
+	
+	//lv10
 };
 
 enum class magicianSkill {
+	//lv2
 	magicArrow = 2,
 	magicGard,
-
+	//lv3
+	fireball,
+	wave,
+	//lv4
+	lightning,
+	stoneEdge,
+	freeze,
+	//lv5
+	//lv6
+	//lv7
+	//lv8
+	overrode, // on/off
+	//lv9
+	
+	//lv10
+	meteor,
+	RedSpiderLily,
+	absoluteZero
 };
 enum class assassinSkill {
+	//lv2
 	poison = 2,
-	speedUp
+	speedUp,
+	//lv3
+	//lv4
+	//lv5
+	hiding,
+	//lv6
+	//lv7
+	//lv8
+	marionette,
+	//lv9
+	//lv10
 };
 
 class player {
 private:
-	int player_health; //player 체력 기본 30/ 최대 150
+	int player_health; //player 체력 기본 30
 	int player_current_health; //player 현재 체력
-	int basic_attack; //player 일반 공격 5
+	int basic_attack; //player 일반 공격력 5
 	int basic_defense; //일반 방어	
 	int level; // 현재 레벨
 	int level_exp; //총 경험치
 	int now_exp; //현재 경험치
-	int mana;//총 마나 0 (전직 전)
+	int mana;//총 마나 8 (전직 전)
 	int current_mana;//현재 마나
 	int agility; //AGI, 회피율 , 안보여줄꺼임 
 	int critical; //CRI, 크리티컬 , 안보여줄꺼임
@@ -69,7 +118,7 @@ public:
 	int getCurrent_mana() const; //현재 마나
 	int getAgility() const; // 회피율
 	int getCritical() const; // 크리티컬율
-	skill getSkills() const; // 스킬 목록
+	const std::vector<skill>& getSkills() const; // 스킬 목록
 	playerStatusSnapShot getBeforePlayer() const;
 	playerStatusSnapShot getAfterPlayer() const;
 
@@ -92,7 +141,6 @@ public:
 
 	int playerTakeDamage(int dmg);//데미지를 입었을 때
 	int playerTakeExp(int take_exp); //현재 경험치 + 받은 경험치	
-	int basic_attack_cal();//레벨 기능 추가시 공격력 계산 , 미구현
 
 	virtual void levelup();//레벨 업 할 때.
 	virtual bool classChangeYN() const; //전직 했는지 안했는지 확인
