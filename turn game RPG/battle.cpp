@@ -81,13 +81,14 @@ void battle::battleStatus() {
 
 void battle::playerTurn() {
 	ui.playerTurnUI();
-	
+	bool criticalYN = false; //크리티컬인지 아닌지 확인
 	 do{
 		 cin >> battleselect;
 		if (battleselect == 1) { // 1. 공격 2. 방어
 			std::uniform_int_distribution<unsigned int> dist(1, 100); //크리티컬 계산
 			int criticalLine = dist(gen);
 			if (criticalLine <= p->getCritical()) {
+				criticalYN = true;
 				ehp = e->enemyTakeDamage(ehp, pattack * 2);
 			}
 			else  {
@@ -96,12 +97,13 @@ void battle::playerTurn() {
 		}
 		if(cin.fail()) {        // 숫자가 아닌 입력 감지
 			cin.clear();        // fail 상태 초기화
-			cin.ignore(1000, '\n'); // 입력 버퍼 비우기
+			// 입력 버퍼 비우기 , cin.ignore(무시할수 있는 최대 문자수,	무시를 멈출 기준이 되는 문자)
+			cin.ignore(1000, '\n');
 			battleselect = 0;   // 유효하지 않은 값으로 초기화
 		}
 	 } while (battleselect != 1 && battleselect != 2);
 
-	ui.playerTurn(cphp, pdefense, battleselect, pattack);//log를 불러오기위해 log에서 필요로 하는 값 다 넘겨주기
+	ui.playerTurn(cphp, pdefense, battleselect, pattack, criticalYN);//log를 불러오기위해 log에서 필요로 하는 값 다 넘겨주기
 }
 
 void battle::enemyTurn() {

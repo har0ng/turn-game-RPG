@@ -16,10 +16,18 @@ using std::cin;
 int main() {
     cout << "(1)start  " << "(2)end" << endl; // menu
     int start = 0;
-    cin >> start;
-    if (start != 1) { //menu start select
-        exit(0); // if start == 0 return 0;
-    }
+    do {
+        cin >> start;
+        if (start == 2) { //menu start select
+            exit(0); // if start == 0 return 0;
+        }
+        if (cin.fail()) {        // 숫자가 아닌 입력 감지
+            cin.clear();        // fail 상태 초기화
+            // 입력 버퍼 비우기 , cin.ignore(무시할수 있는 최대 문자수,	무시를 멈출 기준이 되는 문자)
+            cin.ignore(1000, '\n');
+            start = 0;   // 유효하지 않은 값으로 초기화
+        }
+    } while (start != 1 && start != 2);
     std::unique_ptr<player> myPlayer = std::make_unique<player>(); // 객체 만들어짐 ,한번만
     while (true) {
 

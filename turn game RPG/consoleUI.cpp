@@ -29,10 +29,14 @@ void consoleUI::playerTurnUI() {
     cout << "(1)attack  " << "  (2)defense" << endl;
 }
 
-void consoleUI::playerTurn(int cphp, int pdefense, int battleselect, int pattack) { 
-    if (battleselect == 1) {
+void consoleUI::playerTurn(int cphp, int pdefense, int battleselect, int pattack, bool criticalYN) {
+    if (battleselect == 1 && criticalYN == false) {
         cout << "attack enemy!" << endl;
-        cout << "enemy takes " << pattack << " damage." << endl;
+        cout << "enemy takes " << pattack << "damage." << endl;
+    }
+    else if(battleselect == 1 && criticalYN == true){
+        cout << "attack enemy!" << endl;
+        cout << "critical!!" << "\n enemy takes " << 2 * pattack << " damage." << endl;
     }
     else if (battleselect == 2) {
         cout << "defense body" << endl;

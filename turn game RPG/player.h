@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-struct playerStatusSnapShot { //before ,after 저장
+struct playerStatusSnapShot { //before ,after 저장 (저장, 스테이터스 상태변화 등등 많이 쓰임)
 	int health;
 	int current_health;
 	int attack;
@@ -10,6 +10,8 @@ struct playerStatusSnapShot { //before ,after 저장
 	int now_exp;
 	int mana;
 	int current_mana;
+	int agility;
+	int critical;
 };
 class player {
 private:

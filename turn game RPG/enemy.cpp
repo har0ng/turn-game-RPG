@@ -13,7 +13,7 @@ using std::endl;
 enemy::enemy() {
 	static std::random_device rd; //시드 생성
 	static std::mt19937 gen(rd()); //시드 초기화
-	std::uniform_int_distribution<unsigned int> dist(1,5);//초기화된 시드의 범위 구성
+	std::uniform_int_distribution<unsigned int> dist(10,11);//초기화된 시드의 범위 구성
 	enemy_health = dist(gen); // 범위 내 초기화 후 섞어 체력값 할당(랜덤)
 	
 }

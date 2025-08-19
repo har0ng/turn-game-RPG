@@ -15,7 +15,7 @@ public:
                      ,int eattack, int level, int level_exp, int now_exp
                      ,int mana, int current_mana);
     void playerTurnUI();
-    void playerTurn(int cphp, int pdefense,int battleselect,int pattack);
+    void playerTurn(int cphp, int pdefense,int battleselect,int pattack, bool criticalYN);
     void enemyTurn(int enemyAction, int pdefense, int eattack, int battleselect);
     void battleEnd(int cphp);
     void levelup_selectClassUI();

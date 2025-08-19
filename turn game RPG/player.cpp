@@ -17,7 +17,7 @@ player::player() :player_health(30)
 				 ,level_exp(10)
 				 ,now_exp(0) 
 				 ,agility(0)
-				 ,critical(99)
+				 ,critical(1) //크리가 뜨는지 임시 값.
 {				 
 	setBeforePlayer();
 	setAfterPlayer();
@@ -108,6 +108,8 @@ void player::setBeforePlayer() {
 	beforePlayer.now_exp = now_exp;
 	beforePlayer.mana = mana;
 	beforePlayer.current_mana = current_mana;
+	beforePlayer.agility = agility;
+	beforePlayer.critical = critical;
 }
 void player::setAfterPlayer() {
 	afterPlayer.health = player_health;
@@ -119,6 +121,8 @@ void player::setAfterPlayer() {
 	afterPlayer.now_exp = now_exp;
 	afterPlayer.mana = mana;
 	afterPlayer.current_mana = current_mana;
+	afterPlayer.agility = agility;
+	afterPlayer.critical = critical;
 }
 
 
