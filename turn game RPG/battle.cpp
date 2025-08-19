@@ -89,7 +89,7 @@ void battle::playerTurn() {
 			int criticalLine = dist(gen);
 			if (criticalLine <= p->getCritical()) {
 				criticalYN = true;
-				ehp = e->enemyTakeDamage(ehp, pattack * 2);
+				ehp = e->enemyTakeDamage(ehp, pattack * 1.3); // 소수점 이하 버림
 			}
 			else  {
 				ehp = e->enemyTakeDamage(ehp, pattack);

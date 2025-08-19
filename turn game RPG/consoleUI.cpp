@@ -36,7 +36,7 @@ void consoleUI::playerTurn(int cphp, int pdefense, int battleselect, int pattack
     }
     else if(battleselect == 1 && criticalYN == true){
         cout << "attack enemy!" << endl;
-        cout << "critical!!" << "\n enemy takes " << 2 * pattack << " damage." << endl;
+        cout << "critical!!" << "\n enemy takes " << 1.7 * pattack << " damage." << endl;
     }
     else if (battleselect == 2) {
         cout << "defense body" << endl;

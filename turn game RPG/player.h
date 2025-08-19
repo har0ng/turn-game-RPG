@@ -13,6 +13,31 @@ struct playerStatusSnapShot { //before ,after 저장 (저장, 스테이터스 �
 	int agility;
 	int critical;
 };
+struct skill {
+	std::string name; // skill name
+	int power; // skill power
+	int cost; // mp , hp , turn
+	int levelReq; // 필요 레벨
+};
+enum class commonSkill {
+	powerStrike, //attack * 1.8
+	heal // maxhp *0.2
+};
+
+enum class warriorSkill {
+	strength = 2 // attack * 1.75
+};
+
+enum class magicianSkill {
+	magicArrow = 2,
+	magicGard,
+
+};
+enum class assassinSkill {
+	poison = 2,
+	speedUp
+};
+
 class player {
 private:
 	int player_health; //player 체력 기본 30/ 최대 150
@@ -26,6 +51,7 @@ private:
 	int current_mana;//현재 마나
 	int agility; //AGI, 회피율 , 안보여줄꺼임 
 	int critical; //CRI, 크리티컬 , 안보여줄꺼임
+	std::vector<skill> skills; //스킬 목록
 	playerStatusSnapShot beforePlayer; // 특정 시기 이전 플레이어 정보(저장, 레벨업 등)
 	playerStatusSnapShot afterPlayer; // 특정 시기 이후 플레이어 정보(저장, 레벨업 등)
 
@@ -41,8 +67,9 @@ public:
 	int getNow_exp() const; //현재 경험치
 	int getMana() const; //총 마나
 	int getCurrent_mana() const; //현재 마나
-	int getAgility() const;
-	int getCritical() const;
+	int getAgility() const; // 회피율
+	int getCritical() const; // 크리티컬율
+	skill getSkills() const; // 스킬 목록
 	playerStatusSnapShot getBeforePlayer() const;
 	playerStatusSnapShot getAfterPlayer() const;
 
@@ -60,6 +87,7 @@ public:
 	void setCritical(int cri);
 	void setBeforePlayer();
 	void setAfterPlayer();
+	
 
 
 	int playerTakeDamage(int dmg);//데미지를 입었을 때
@@ -68,7 +96,7 @@ public:
 
 	virtual void levelup();//레벨 업 할 때.
 	virtual bool classChangeYN() const; //전직 했는지 안했는지 확인
-
+	virtual void setSkills(); //전직 후 스킬 분류를 위해 오버라이딩
 	
 };
 
@@ -80,6 +108,7 @@ public:
 	warrior(const player& p);
 	void levelup() override;
 	bool classChangeYN() const override;
+	void setSkills() override;
 
 	/*
 		int warrior_health; // 2 level : +10 , +1 levelup : +5
@@ -95,6 +124,8 @@ public:
 	magician(const player& p);
 	void levelup() override;
 	bool classChangeYN() const override;
+	void setSkills() override;
+
 	/*
 	int magician_health; // 2 level : +5 , +1 levelup : +2
 	int magician_attack; // 2 level : +1 , +3 levelup : +1
@@ -109,6 +140,7 @@ public:
 	assassin(const player& p);
 	void levelup() override;
 	bool classChangeYN() const override;
+	void setSkills() override;
 
 	/*
 	int assassin_health;  // 2 level : +4 , +1 levelup : +2
