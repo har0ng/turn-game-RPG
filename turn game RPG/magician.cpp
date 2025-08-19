@@ -35,6 +35,6 @@ bool magician::classChangeYN() const { //전직 후 flase로 함으로써 전직
     return false;
 }
 
-void magician::setSkills() {
+void magician::initSkills() {
 
 }

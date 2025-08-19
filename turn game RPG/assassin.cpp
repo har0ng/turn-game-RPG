@@ -38,6 +38,6 @@ bool assassin::classChangeYN() const { //전직 후 flase로 함으로써 전직
     return false;
 }
 				   
-void assassin::setSkills() {
+void assassin::initSkills() {
     
 }

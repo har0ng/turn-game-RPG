@@ -25,14 +25,13 @@ enum class commonSkill {
 	powerStrike, //damage * 1.2
 	heal // maxhp *0.2
 };
-
 enum class warriorSkill {
 	//lv2
 	strength = 2, // attack * 1.6 , 3turn
 	doubleAttack,
 	//lv3
 	defenseUp,
-	
+
 	//lv4
 	disarrayAttack,
 	counter,
@@ -44,10 +43,10 @@ enum class warriorSkill {
 	//lv8
 
 	//lv9
-	
-	//lv10
-};
 
+	//lv10
+	leviathan
+};
 enum class magicianSkill {
 	//lv2
 	magicArrow = 2,
@@ -144,7 +143,7 @@ public:
 
 	virtual void levelup();//레벨 업 할 때.
 	virtual bool classChangeYN() const; //전직 했는지 안했는지 확인
-	virtual void setSkills(); //전직 후 스킬 분류를 위해 오버라이딩
+	virtual void initSkills(); //전직 후 스킬 분류를 위해 오버라이딩
 	
 };
 
@@ -156,7 +155,7 @@ public:
 	warrior(const player& p);
 	void levelup() override;
 	bool classChangeYN() const override;
-	void setSkills() override;
+	void initSkills() override;
 
 	/*
 		int warrior_health; // 2 level : +10 , +1 levelup : +5
@@ -172,7 +171,7 @@ public:
 	magician(const player& p);
 	void levelup() override;
 	bool classChangeYN() const override;
-	void setSkills() override;
+	void initSkills() override;
 
 	/*
 	int magician_health; // 2 level : +5 , +1 levelup : +2
@@ -188,7 +187,7 @@ public:
 	assassin(const player& p);
 	void levelup() override;
 	bool classChangeYN() const override;
-	void setSkills() override;
+	void initSkills() override;
 
 	/*
 	int assassin_health;  // 2 level : +4 , +1 levelup : +2

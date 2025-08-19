@@ -9,19 +9,20 @@ using std::endl;
 
 
 player::player() :player_health(30)
-				 ,player_current_health(30)
-				 ,basic_attack(5)
-				 ,basic_defense(5)
-				 ,mana(8)
-				 ,current_mana(8)
-			 	 ,level(1)
-				 ,level_exp(10)
-				 ,now_exp(0) 
-				 ,agility(1)
-				 ,critical(1)
-{				 
+, player_current_health(30)
+, basic_attack(5)
+, basic_defense(5)
+, mana(8)
+, current_mana(8)
+, level(1)
+, level_exp(10)
+, now_exp(0)
+, agility(1)
+, critical(1)
+{
 	setBeforePlayer();
 	setAfterPlayer();
+	//skills.push_back({"powerStrike",})
 } //initializing
 
 //get
@@ -155,4 +156,6 @@ int player::playerTakeExp(int take_exp) { //take exp
 bool player::classChangeYN() const { //전직하면 false로 바꾸게 해주면 됨,
 	return true;
 }
-void player::setSkills() {}
+void player::initSkills() {
+
+}

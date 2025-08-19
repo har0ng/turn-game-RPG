@@ -36,6 +36,6 @@ bool warrior::classChangeYN() const { //전직 후 flase로 함으로써 전직�
     return false;
 }
 
-void warrior::setSkills() {
+void warrior::initSkills() {
 
 }
