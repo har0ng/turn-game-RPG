@@ -153,6 +153,7 @@
   <ItemGroup>
     <ClInclude Include="battle.h" />
     <ClInclude Include="consoleUI.h" />
+    <ClInclude Include="debuffEnum.h" />
     <ClInclude Include="enemy.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="skillEnum.h" />

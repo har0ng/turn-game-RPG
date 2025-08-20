@@ -2,7 +2,7 @@
 
 #pragma once
 #include <string>
-
+#include "debuffEnum.h"
 
 struct skill {
 	std::string charactorClass; // class
@@ -16,7 +16,11 @@ struct skill {
 	int turn; // CT: turn
 	int levelReq; // level required
 	int enemyCnt; // attack anemy number count (enemy 1, 2, 3)
+	debuffStatus debuff; //debuff
 };
+
+
+
 enum class commonSkill {
 	powerStrike, //totaldamage * 1.2
 	heal // maxhp *0.2
@@ -30,7 +34,7 @@ enum class warriorSkill {
 	reflection, // defense * 0.7
 	//lv4
 	disarrayAttack, // totalDamage * 0.8 , enemy turn delete
-	
+	scarring // 
 	//lv5
 	
 	//lv6
@@ -57,7 +61,7 @@ enum class magicianSkill {
 	//lv4
 	lightning,
 	stoneEdge,
-	freeze,
+	freeze
 	//lv5
 	//lv6
 	
@@ -75,12 +79,12 @@ enum class magicianA {
 };
 enum class magicianB {
 	//lv8
-	overrode, // on/off
+	overrode // on/off
 };
 enum class assassinSkill {
 	//lv2
 	poison = 2,
-	speedUp,
+	speedUp
 	//lv3
 	//lv4
 	//lv5
@@ -92,7 +96,7 @@ enum class assassinA {
 };
 enum class assassinB {
 	//lv7
-	hiding,
+	hiding
 	//lv8
 	//lv9
 	//lv10

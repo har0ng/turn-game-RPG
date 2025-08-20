@@ -62,6 +62,9 @@
     <ClInclude Include="skillEnum.h">
       <Filter>ソース ファイル\include</Filter>
     </ClInclude>
+    <ClInclude Include="debuffEnum.h">
+      <Filter>ソース ファイル\include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="skill.json">
