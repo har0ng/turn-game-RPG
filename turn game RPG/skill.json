@@ -29,6 +29,21 @@
 }
 
 {
+ "charactorClass": "common",
+ "name": "antiDebuff",
+ "targetObject": "player",
+ "power": 0, 
+ "multiplier": 0,
+ "hpCost": 0,
+ "mpCost": 3, 
+ "activeTime": 1,
+ "turn": 5,
+ "levelReq": 1,
+ "enemyCnt" : 0,
+ "debuff": "none"
+}
+
+{
  "charactorClass": "warrior",
  "name": "strength",
  "targetObject": "player",
@@ -100,6 +115,6 @@
  "turn": 3,
  "levelReq": 4,
  "enemyCnt" : 1,
- "debuff": "faint"
+ "debuff": "disarray"
 }
 
