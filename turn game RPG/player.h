@@ -54,7 +54,7 @@ public:
 	const std::vector<skill>& getSkills() const; // 스킬 목록
 	playerStatusSnapShot getBeforePlayer() const;
 	playerStatusSnapShot getAfterPlayer() const;
-	debuffStatus getDebuff() const;
+	debuffStatus getDebuff() const; //디버프 목록
 
 	//set
 	void setPlayer_health(int hp); //전직 시 새롭게 정의

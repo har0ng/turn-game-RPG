@@ -57,14 +57,17 @@ enum class magicianSkill {
 	magicGard,
 	//lv3
 	fireball,
-	wave,
+	waterball,
 	//lv4
 	lightning,
 	stoneEdge,
-	freeze
+	freeze,
 	//lv5
+	blaze,
+	wave,
 	//lv6
-	
+	lightingStorm,
+	freezeBreak
 };
 
 enum class magicianA {
