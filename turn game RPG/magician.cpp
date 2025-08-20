@@ -20,6 +20,7 @@ magician::magician(const player& p) :player(p){ //magician status set
     setNow_exp(p.getNow_exp());
     setAgility(p.getAgility());
     setCritical(p.getCritical());
+    setDebuff(static_cast<int>(p.getDebuff()));
 }
 
 void magician::levelup() { // if level > 2 (+status) 

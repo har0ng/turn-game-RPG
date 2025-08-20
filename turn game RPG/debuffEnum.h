@@ -13,6 +13,6 @@ enum class debuffStatus {
 	agiDown,
 	criDown,
 	defDown,
-	atkDown,
+	atkDown
 
 };

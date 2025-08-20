@@ -9,7 +9,8 @@
  "activeTime": 1,
  "turn": 1,
  "levelReq": 1,
- "enemyCnt" : 1
+ "enemyCnt" : 1,
+ "debuff": "none"
 }
 
 {
@@ -23,7 +24,8 @@
  "activeTime": 1,
  "turn": 1,
  "levelReq": 1,
- "enemyCnt" : 0
+ "enemyCnt" : 0,
+ "debuff": "none"
 }
 
 {
@@ -37,7 +39,8 @@
  "activeTime": 3,
  "turn": 3,
  "levelReq": 2,
- "enemyCnt" : 0
+ "enemyCnt" : 0,
+ "debuff": "none"
 }
 
 {
@@ -51,7 +54,8 @@
  "activeTime": 1,
  "turn": 2,
  "levelReq": 2,
- "enemyCnt" : 1
+ "enemyCnt" : 1,
+ "debuff": "none"
 }
 
 {
@@ -65,7 +69,8 @@
  "activeTime": 3,
  "turn": 3,
  "levelReq": 3,
- "enemyCnt" : 0
+ "enemyCnt" : 0,
+ "debuff": "none"
 }
 
 {
@@ -79,7 +84,8 @@
  "activeTime": 2,
  "turn": 3,
  "levelReq": 3,
- "enemyCnt" : 0
+ "enemyCnt" : 0,
+ "debuff": "none"
 }
 
 {
@@ -93,6 +99,7 @@
  "activeTime": 1,
  "turn": 3,
  "levelReq": 4,
- "enemyCnt" : 1
+ "enemyCnt" : 1,
+ "debuff": "faint"
 }
 

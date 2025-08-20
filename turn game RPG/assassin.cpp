@@ -20,6 +20,7 @@ assassin::assassin(const player& p) :player(p){ //assassin status set
     setNow_exp(p.getNow_exp());
     setAgility(p.getAgility()+4);
     setCritical(p.getCritical());
+    setDebuff(static_cast<int>(p.getDebuff()));
 }
 
 void assassin::levelup() { // if level > 2 (+status) 

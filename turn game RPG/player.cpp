@@ -21,12 +21,10 @@ player::player() :player_health(30)
 , now_exp(0)
 , agility(1)
 , critical(1)
+, debuff(debuffStatus::none)
 {
 	setBeforePlayer();
 	setAfterPlayer();
-	// skills.push_back({
-	// "powerStrike",
-	// });
 } //initializing
 
 //get
@@ -71,6 +69,9 @@ playerStatusSnapShot player::getBeforePlayer() const {
 }
 playerStatusSnapShot player::getAfterPlayer() const {
 	return afterPlayer;
+}
+debuffStatus player::getDebuff() const {
+	return debuff;
 }
 
 //set
@@ -133,7 +134,9 @@ void player::setAfterPlayer() {
 	afterPlayer.agility = agility;
 	afterPlayer.critical = critical;
 }
-
+void player::setDebuff(int debuffnum) {
+	debuff = static_cast<debuffStatus>(debuffnum);
+}
 
 //other
 int player::playerTakeDamage(int dmg) { //현재 체력 - 받은 데미지 계산
@@ -145,6 +148,7 @@ void player::levelup() { //레벨 업.
 	level_exp *= 2; //필요 경험치 2배씩 증가
 	player_current_health = player_health; //체력 회복
 	current_mana = mana; //마나 회복
+	debuff = debuffStatus::none;
 }
 int player::playerTakeExp(int take_exp) { //take exp
 	if (now_exp + take_exp< getLevel_exp()) { //not level up

@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include "skillEnum.h"
+#include "debuffEnum.h"
 
 struct playerStatusSnapShot { //before ,after 저장 (저장, 스테이터스 상태변화 등등 많이 쓰임)
 	int health;
@@ -35,7 +36,7 @@ private:
 	std::vector<skill> skills; //스킬 목록
 	playerStatusSnapShot beforePlayer; // 특정 시기 이전 플레이어 정보(저장, 레벨업 등)
 	playerStatusSnapShot afterPlayer; // 특정 시기 이후 플레이어 정보(저장, 레벨업 등)
-
+	debuffStatus debuff; //디버프 값 설정
 public:
 	player();//player 체력 값 초기화
 	//get
@@ -53,6 +54,7 @@ public:
 	const std::vector<skill>& getSkills() const; // 스킬 목록
 	playerStatusSnapShot getBeforePlayer() const;
 	playerStatusSnapShot getAfterPlayer() const;
+	debuffStatus getDebuff() const;
 
 	//set
 	void setPlayer_health(int hp); //전직 시 새롭게 정의
@@ -68,6 +70,7 @@ public:
 	void setCritical(int cri);
 	void setBeforePlayer();
 	void setAfterPlayer();
+	void setDebuff(int deffnum);
 	
 
 

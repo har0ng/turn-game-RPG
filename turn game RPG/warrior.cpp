@@ -20,6 +20,7 @@ warrior::warrior(const player& p):player(p) { //warrior status set
     setNow_exp(p.getNow_exp());
     setAgility(p.getAgility());
     setCritical(p.getCritical());
+    setDebuff(static_cast<int>(p.getDebuff()));
 }
 
 void warrior::levelup() { // if level > 2 (+status) 
