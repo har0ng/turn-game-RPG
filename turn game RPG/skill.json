@@ -1,95 +1,98 @@
 {
  "charactorClass": "common",
  "name": "powerStrike",
+ "targetObject": "enemy",
  "power": 0,
  "multiplier": 1.2,
  "hpCost": 0,
  "mpCost": 3, 
  "activeTime": 1,
  "turn": 1,
- "levelReq": 1
+ "levelReq": 1,
+ "enemyCnt" : 1
 }
 
 {
  "charactorClass": "common",
  "name": "heal",
+ "targetObject": "player",
  "power": 0, 
  "multiplier": 0.2,
  "hpCost": 0,
  "mpCost": 2, 
  "activeTime": 1,
  "turn": 1,
- "levelReq": 1
+ "levelReq": 1,
+ "enemyCnt" : 0
 }
 
 {
  "charactorClass": "warrior",
  "name": "strength",
+ "targetObject": "player",
  "power": 0,   
- "multiplier": 1.6,
+ "multiplier": 1.3,
  "hpCost": 0,
  "mpCost": 4, 
  "activeTime": 3,
  "turn": 3,
- "levelReq": 2
+ "levelReq": 2,
+ "enemyCnt" : 0
 }
 
 {
  "charactorClass": "warrior",
  "name": "doubleAttack",
+ "targetObject": "enemy",
  "power": 0,   
  "multiplier": 0.8,
  "hpCost": 2,
  "mpCost": 3, 
  "activeTime": 1,
  "turn": 2,
- "levelReq": 2
+ "levelReq": 2,
+ "enemyCnt" : 1
 }
 
 {
  "charactorClass": "warrior",
  "name": "defenseUp",
+ "targetObject": "player",
  "power": 0,   
  "multiplier": 1.2,
  "hpCost": 0,
  "mpCost": 4, 
  "activeTime": 3,
  "turn": 3,
- "levelReq": 3
+ "levelReq": 3,
+ "enemyCnt" : 0
 }
 
 {
  "charactorClass": "warrior",
  "name": "reflection",
+ "targetObject": "enemy",
  "power": 0,   
  "multiplier": 0.7,
- "hpCost": 3,
+ "hpCost": 0,
  "mpCost": 3, 
  "activeTime": 2,
  "turn": 3,
- "levelReq": 3
+ "levelReq": 3,
+ "enemyCnt" : 0
 }
 
 {
  "charactorClass": "warrior",
  "name": "disarrayAttack",
+ "targetObject": "enemy",
  "power": 0,   
  "multiplier": 0.8,
- "hpCost": 3,
+ "hpCost": 2,
  "mpCost": 3, 
  "activeTime": 1,
  "turn": 3,
- "levelReq": 4
+ "levelReq": 4,
+ "enemyCnt" : 1
 }
 
-{
- "charactorClass": "warrior",
- "name": "berserker",
- "power": 0,   
- "multiplier": 2.0,
- "hpCost": 5,
- "mpCost": 0, 
- "activeTime": 5,
- "turn": 1,
- "levelReq": 7
-}

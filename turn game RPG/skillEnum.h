@@ -3,16 +3,19 @@
 #pragma once
 #include <string>
 
+
 struct skill {
 	std::string charactorClass; // class
 	std::string name; // skill name
+	std::string targetObject; //skill target (player,enemy)
 	int power; // totalDamage = totalDamage + power 
 	float multiplier; // totalDamage * , power *
-	int HpCost; //berserker
+	int hpCost; //berserker
 	int mpCost;
 	int activeTime; // active passive skill time(turn)
 	int turn; // CT: turn
 	int levelReq; // level required
+	int enemyCnt; // attack anemy number count (enemy 1, 2, 3)
 };
 enum class commonSkill {
 	powerStrike, //totaldamage * 1.2
@@ -20,7 +23,7 @@ enum class commonSkill {
 };
 enum class warriorSkill {
 	//lv2
-	strength = 2, // attack * 1.6 , 3turn
+	strength = 2, // attack * 1.3 , 3turn
 	doubleAttack, // totalDamage = 2*(dmgcalculator(attack = attack * 0.8)) 
 	//lv3 
 	defenseUp, // defense += defense * 1.2
@@ -29,20 +32,24 @@ enum class warriorSkill {
 	disarrayAttack, // totalDamage * 0.8 , enemy turn delete
 	
 	//lv5
+	
 	//lv6
 
-	//lv7
-	berserker, /* warrior attack skill mpCost instead hpCost(mpCost/2), attack * 2.0, on/off */
-	//lv8
+};
 
-	//lv9
+enum class warriorA {
 
-	//lv10
-	leviathan
+};
+enum class warriorB{
+		//lv7
+		berserker, /* warrior attack skill mpCost instead hpCost(mpCost/2, 0.4/down, 0.5/up)
+					,attack * 1.8, on/off */
+		//lv10
+		leviathan //totalDamage * 1.1 + 50
 };
 enum class magicianSkill {
 	//lv2
-	magicArrow = 2,
+	magicArrow = 2, // totalDamage = attack 
 	magicGard,
 	//lv3
 	fireball,
@@ -53,7 +60,10 @@ enum class magicianSkill {
 	freeze,
 	//lv5
 	//lv6
-	//lv7
+	
+};
+
+enum class magicianA {
 	//lv8
 	overrode, // on/off
 	//lv9
@@ -63,6 +73,10 @@ enum class magicianSkill {
 	RedSpiderLily,
 	absoluteZero
 };
+enum class magicianB {
+	//lv8
+	overrode, // on/off
+};
 enum class assassinSkill {
 	//lv2
 	poison = 2,
@@ -70,11 +84,16 @@ enum class assassinSkill {
 	//lv3
 	//lv4
 	//lv5
-	hiding,
 	//lv6
+
+};
+enum class assassinA {
+
+};
+enum class assassinB {
 	//lv7
+	hiding,
 	//lv8
-	marionette,
 	//lv9
 	//lv10
 };

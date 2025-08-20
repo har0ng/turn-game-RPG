@@ -13,48 +13,54 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="ソース ファイル\src">
+      <UniqueIdentifier>{602847d0-61e6-4521-852f-edf7b4a7c7eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\include">
+      <UniqueIdentifier>{df891a69-014b-4e32-8c66-5048c4892934}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="player.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="enemy.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="assassin.cpp">
+      <Filter>ソース ファイル\src</Filter>
     </ClCompile>
     <ClCompile Include="battle.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="warrior.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="magician.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="assassin.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\src</Filter>
     </ClCompile>
     <ClCompile Include="consoleUI.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\src</Filter>
+    </ClCompile>
+    <ClCompile Include="enemy.cpp">
+      <Filter>ソース ファイル\src</Filter>
+    </ClCompile>
+    <ClCompile Include="magician.cpp">
+      <Filter>ソース ファイル\src</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>ソース ファイル\src</Filter>
+    </ClCompile>
+    <ClCompile Include="player.cpp">
+      <Filter>ソース ファイル\src</Filter>
+    </ClCompile>
+    <ClCompile Include="warrior.cpp">
+      <Filter>ソース ファイル\src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="player.h">
-      <Filter>ソース ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="enemy.h">
-      <Filter>ソース ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="battle.h">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\include</Filter>
     </ClInclude>
     <ClInclude Include="consoleUI.h">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\include</Filter>
+    </ClInclude>
+    <ClInclude Include="enemy.h">
+      <Filter>ソース ファイル\include</Filter>
+    </ClInclude>
+    <ClInclude Include="player.h">
+      <Filter>ソース ファイル\include</Filter>
     </ClInclude>
     <ClInclude Include="skillEnum.h">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\include</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
