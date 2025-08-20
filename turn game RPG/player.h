@@ -1,6 +1,9 @@
-﻿#pragma once
+﻿//player.h
+
+#pragma once
 #include <vector>
 #include <string>
+#include "skillEnum.h"
 
 struct playerStatusSnapShot { //before ,after 저장 (저장, 스테이터스 상태변화 등등 많이 쓰임)
 	int health;
@@ -14,76 +17,6 @@ struct playerStatusSnapShot { //before ,after 저장 (저장, 스테이터스 �
 	int current_mana;
 	int agility;
 	int critical;
-};
-struct skill {
-	std::string name; // skill name
-	int power; // skill power
-	int cost; // mp , hp , turn
-	int levelReq; // level required
-};
-enum class commonSkill {
-	powerStrike, //damage * 1.2
-	heal // maxhp *0.2
-};
-enum class warriorSkill {
-	//lv2
-	strength = 2, // attack * 1.6 , 3turn
-	doubleAttack,
-	//lv3
-	defenseUp,
-
-	//lv4
-	disarrayAttack,
-	counter,
-	//lv5
-	//lv6
-
-	//lv7
-	berserker,
-	//lv8
-
-	//lv9
-
-	//lv10
-	leviathan
-};
-enum class magicianSkill {
-	//lv2
-	magicArrow = 2,
-	magicGard,
-	//lv3
-	fireball,
-	wave,
-	//lv4
-	lightning,
-	stoneEdge,
-	freeze,
-	//lv5
-	//lv6
-	//lv7
-	//lv8
-	overrode, // on/off
-	//lv9
-	
-	//lv10
-	meteor,
-	RedSpiderLily,
-	absoluteZero
-};
-enum class assassinSkill {
-	//lv2
-	poison = 2,
-	speedUp,
-	//lv3
-	//lv4
-	//lv5
-	hiding,
-	//lv6
-	//lv7
-	//lv8
-	marionette,
-	//lv9
-	//lv10
 };
 
 class player {

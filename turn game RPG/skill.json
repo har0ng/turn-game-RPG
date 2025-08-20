@@ -1,0 +1,95 @@
+{
+ "charactorClass": "common",
+ "name": "powerStrike",
+ "power": 0,
+ "multiplier": 1.2,
+ "hpCost": 0,
+ "mpCost": 3, 
+ "activeTime": 1,
+ "turn": 1,
+ "levelReq": 1
+}
+
+{
+ "charactorClass": "common",
+ "name": "heal",
+ "power": 0, 
+ "multiplier": 0.2,
+ "hpCost": 0,
+ "mpCost": 2, 
+ "activeTime": 1,
+ "turn": 1,
+ "levelReq": 1
+}
+
+{
+ "charactorClass": "warrior",
+ "name": "strength",
+ "power": 0,   
+ "multiplier": 1.6,
+ "hpCost": 0,
+ "mpCost": 4, 
+ "activeTime": 3,
+ "turn": 3,
+ "levelReq": 2
+}
+
+{
+ "charactorClass": "warrior",
+ "name": "doubleAttack",
+ "power": 0,   
+ "multiplier": 0.8,
+ "hpCost": 2,
+ "mpCost": 3, 
+ "activeTime": 1,
+ "turn": 2,
+ "levelReq": 2
+}
+
+{
+ "charactorClass": "warrior",
+ "name": "defenseUp",
+ "power": 0,   
+ "multiplier": 1.2,
+ "hpCost": 0,
+ "mpCost": 4, 
+ "activeTime": 3,
+ "turn": 3,
+ "levelReq": 3
+}
+
+{
+ "charactorClass": "warrior",
+ "name": "reflection",
+ "power": 0,   
+ "multiplier": 0.7,
+ "hpCost": 3,
+ "mpCost": 3, 
+ "activeTime": 2,
+ "turn": 3,
+ "levelReq": 3
+}
+
+{
+ "charactorClass": "warrior",
+ "name": "disarrayAttack",
+ "power": 0,   
+ "multiplier": 0.8,
+ "hpCost": 3,
+ "mpCost": 3, 
+ "activeTime": 1,
+ "turn": 3,
+ "levelReq": 4
+}
+
+{
+ "charactorClass": "warrior",
+ "name": "berserker",
+ "power": 0,   
+ "multiplier": 2.0,
+ "hpCost": 5,
+ "mpCost": 0, 
+ "activeTime": 5,
+ "turn": 1,
+ "levelReq": 7
+}

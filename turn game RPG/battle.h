@@ -1,4 +1,6 @@
-﻿#pragma once
+﻿//battle.h
+
+#pragma once
 #include <memory> //smart pointer
 #include "enemy.h"
 #include "player.h"

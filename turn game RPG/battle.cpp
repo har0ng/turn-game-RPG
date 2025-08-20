@@ -88,12 +88,12 @@ void battle::playerTurn() {
 		 cin >> battleselect;
 		if (battleselect == 1) { // 1. 공격 2. 방어
 			std::uniform_int_distribution<unsigned int> dmg(pattack-2, pattack +1);//데미지
-			std::uniform_real_distribution<float> randomDmg(0.05, 0.15);//데미지에 더해줄 난수
+			std::uniform_real_distribution<float> randomDmg(0.05, 0.1);//데미지에 더해줄 %난수
 			std::uniform_int_distribution<unsigned int> cri(1, 100); //크리티컬 계산
 			int criticalLine = cri(gen);
 			int damage = dmg(gen);
 			float randomDamage = randomDmg(gen);
-			attack = damage + (damage * randomDamage); // 난수화 데미지
+			attack = damage + (damage * (damage * randomDamage)); // 난수화 데미지
 			criattack = attack * 1.3;
 			if (criticalLine <= p->getCritical()) { // 크리티컬 시 1.3배 데미지
 				criticalYN = true;

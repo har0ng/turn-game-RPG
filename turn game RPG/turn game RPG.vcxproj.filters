@@ -53,5 +53,13 @@
     <ClInclude Include="consoleUI.h">
       <Filter>ソース ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="skillEnum.h">
+      <Filter>ソース ファイル</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="skill.json">
+      <Filter>ソース ファイル</Filter>
+    </None>
   </ItemGroup>
 </Project>

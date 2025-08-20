@@ -3,10 +3,12 @@
 #include "player.h"
 #include <iostream>
 #include <vector>
+#include <fstream>
+#include <nlohmann/json.hpp>
 
 using std::cout;
 using std::endl;
-
+nlohmann::json j; //json 객체 선언
 
 player::player() :player_health(30)
 , player_current_health(30)
@@ -22,7 +24,9 @@ player::player() :player_health(30)
 {
 	setBeforePlayer();
 	setAfterPlayer();
-	//skills.push_back({"powerStrike",})
+	// skills.push_back({
+	// "powerStrike",
+	// });
 } //initializing
 
 //get
