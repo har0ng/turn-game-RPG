@@ -66,7 +66,10 @@ int player::getAgility() const {
 int player::getCritical() const {
 	return critical;
 }
-const std::vector<skill>& player::getSkills() const {
+std::vector<skill> player::getSkills() const {
+	if (skills.empty()) {
+		return {};
+	}
 	return skills;
 }
 playerStatusSnapShot player::getBeforePlayer() const {
@@ -170,18 +173,40 @@ bool player::classChangeYN() const { //전직하면 false로 바꾸게 해주면
 	return true;
 }
 void player::initSkills() {
-	skills.clear(); //이후 사용 할때 중복 되면 메모리 아까움
-
+	skillClear(); //다른 cpp에도 쓰기 위해 함수화
+	 //skillData는 skill.json임
 	if (skillData.empty()) { // 스킬데이터에 스킬이 없는데 무언가 넣을려하면 에러(기저 조건)
 		return;
 	}
-	else {
-		for (const auto& s :skillData) { //skillData의 데이터를 s 객체로 자동 데이터 타입으로 맞춰서 참조해서 들고온다는 이야기
-			std::string charClass = s.value("charactorClass"," "); //json 에서 key, vlaue 값을 들고오는걸로 charactorClass가 key값
-			if(charClass != "common" && charClass != this->getClassName()) continue;
+	for (const auto& s : skillData) { //skillData의 데이터를 s 객체로 자동 데이터 타입으로 맞춰서 참조해서 들고온다는 이야기
+		std::string charClass = s.value("charactorClass", " "); //json 에서 key, vlaue 값을 들고오는걸로 charactorClass가 key값
+		// 조건에 맞지 않으면 스킬 추가하지 않고 다음 반복으로 (기저 조건)
+		if (charClass != "common" && charClass != this->getClassName()) { //charClass != this->getClassName()의 의미: 들고온 json 의 charactorClass key 값과 같지 않으면
+			continue;  // 바로 다음 JSON 스킬항목으로 넘어감
 		}
-	}
+		skill sk; //skill 구조체에 json에서의 파일을 각 key값에 맞게 대입함
+		// !!만약 key 에 맞는 value 값이 존재하지 않을 시 default 값을 아래와 같이 하여 에러 방지 !!
+		sk.name = s.value("name", "unknown");
+		sk.targetObject = s.value("targetObject", "player");
+		sk.power = s.value("power", 0); 
+		sk.multiplier = s.value("multiplier", 1.0);
+		sk.hpCost = s.value("hpCost", 0);
+		sk.mpCost = s.value("mpCost", 0);
+		sk.activeTime = s.value("activeTime", 1);
+		sk.turn = s.value("turn", 1);
+		sk.levelReq = s.value("levelReq", 1);
+		sk.enemyCnt = s.value("enemyCnt", 1);
+		sk.debuff = stringToDebuff(s.value("debuff", "none")); 
 
+		// 안전하게 벡터에 이동 추가
+		skills.push_back(std::move(sk));
+	}
+}
+std::string player::getClassName() {//자신의 직업에 대한 클래스 함수가 무엇인지 알기 위함, player.cpp 니깐 클래스 함수는 player
+	return "player";
+}
+void player::skillClear(){
+	skills.clear();
 }
 void player::roadSkillsToJson() { //직업에 필요한 스킬들을 json에서 빼오기 위해 필요
 	std::ifstream file("skill.json");
@@ -189,7 +214,48 @@ void player::roadSkillsToJson() { //직업에 필요한 스킬들을 json에서 
 		file >> skillData; // JSON 파일 전체 읽어서 skillData에 저장
 	}
 }
-
-std::string player::getClassName() {//자신의 직업에 대한 클래스 함수가 무엇인지 알기 위함, player.cpp 니깐 클래스 함수는 player
-	return "player";
+debuffStatus player::stringToDebuff(const std::string& str){ //string → enum 변환용
+	if (str == "none") { return debuffStatus::none; }
+	if (str == "disarray") { return debuffStatus::disarray; }
+	if (str == "weekness") { return debuffStatus::weekness; }
+	if (str == "bleed") { return debuffStatus::bleed; }
+	if (str == "burn") { return debuffStatus::burn; }
+	if (str == "wet") { return debuffStatus::wet; }
+	if (str == "freeze") { return debuffStatus::freeze; }
+	if (str == "electricShock") { return debuffStatus::electricShock; }
+	if (str == "agiDown") { return debuffStatus::agiDown; }
+	if (str == "criDown") { return debuffStatus::criDown; }
+	if (str == "defDown") { return debuffStatus::defDown; }
+	if (str == "atkDown") { return debuffStatus::atkDown; }
+	return debuffStatus::none; // default
+}
+std::string player::debuffToString(debuffStatus debuff){ //enum -> string 변환용
+	switch (debuff){
+	case debuffStatus::none:
+		return "none";
+	case debuffStatus::disarray:
+		return "disarray";
+	case debuffStatus::weekness:
+		return "weekness";
+	case debuffStatus::bleed:
+		return "bleed";
+	case debuffStatus::burn:
+		return "burn";
+	case debuffStatus::wet:
+		return "wet";
+	case debuffStatus::freeze:
+		return "freeze";
+	case debuffStatus::electricShock:
+		return "electricShock";
+	case debuffStatus::agiDown:
+		return "agiDown";
+	case debuffStatus::criDown:
+		return "criDown";
+	case debuffStatus::defDown:
+		return "defDown";
+	case debuffStatus::atkDown:
+		return "atkDown";
+	default:
+		return "none";
+	}
 }

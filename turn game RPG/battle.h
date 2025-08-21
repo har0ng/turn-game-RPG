@@ -8,7 +8,7 @@
 
 class battle {
 private:
-	consoleUI ui;// consoleUI.h (cpp)를 여기에다 저장 해두고 씀
+	consoleUI ui;// consoleUI.h 
 	std::unique_ptr<player>  p;  //player status, smart pointer
 	std::unique_ptr<enemy> e; //enemy status, smart pointer
 	int php;       // player health
@@ -23,6 +23,7 @@ private:
 	int current_mana;
 	int agility; //AGI, 회피율
 	int critical; //CRI, 크리티컬(데미지 2배)
+	debuffStatus debuff; // debuff
 
 	int ehp;       // enemy health
 	int eattack; //enemy attack

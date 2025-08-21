@@ -3,6 +3,8 @@
 #include <iostream>
 #include "player.h"
 #include <vector>
+#include <fstream>
+#include <nlohmann/json.hpp>
 
 using std::cout;
 using std::cin;
@@ -26,7 +28,7 @@ warrior::warrior(const player& p):player(p) { //warrior status set
 void warrior::levelup() { // if level > 2 (+status) 
     setPlayer_health(getPlayer_health() + 5);
     setMana(getMana() + 2);
-    if (getLevel() > 3 && getLevel() % 2 == 0) {
+    if (getLevel() % 2 == 0) {
         setBasic_attack(getBasic_attack() + 1);
         setPlayer_defense(getPlayer_defense() + 1);
     }
@@ -38,7 +40,7 @@ bool warrior::classChangeYN() const { //전직 후 flase로 함으로써 전직�
 }
 
 void warrior::initSkills() {
-
+	
 }
 std::string warrior::getClassName() {//자신의 직업에 대한 클래스 함수가 무엇인지 알기 위함  warrior.cpp 니깐 클래스 함수는 warrior
     return "warrior"; 

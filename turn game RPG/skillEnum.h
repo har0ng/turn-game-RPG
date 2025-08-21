@@ -5,17 +5,17 @@
 #include "debuffEnum.h"
 
 struct skill {
-	std::string charactorClass; // class
-	std::string name; // skill name
-	std::string targetObject; //skill target (player,enemy)
-	int power; // totalDamage = totalDamage + power 
-	float multiplier; // totalDamage * , power *
-	int hpCost; //berserker
-	int mpCost;
-	int activeTime; // active passive skill time(turn)
-	int turn; // CT: turn
-	int levelReq; // level required
-	int enemyCnt; // attack anemy number count (enemy 1, 2, 3)
+	std::string charactorClass{""};  // class
+	std::string name{"unknown"}; // skill name
+	std::string targetObject{"player"}; //skill target (player,enemy)
+	int power{0}; // totalDamage = totalDamage + power 
+	float multiplier{1.0}; // totalDamage * , power *
+	int hpCost{0}; //berserker
+	int mpCost{0};
+	int activeTime{1}; // active passive skill time(turn)
+	int turn{1}; // CT: turn
+	int levelReq{1}; // level required
+	int enemyCnt{1}; // attack anemy number count (enemy 1, 2, 3)
 	debuffStatus debuff; //debuff
 };
 

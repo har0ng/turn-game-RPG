@@ -8,13 +8,14 @@ using std::cin;
 
 void consoleUI::battleStatus(int turn, int php, int cphp, int pattack, int pdefense
                             ,int ehp, int eattack, int level, int level_exp
-                            ,int now_exp, int mana, int current_mana) {
+                            ,int now_exp, int mana, int current_mana, std::string debuff) {
     cout << "========== Battle Status ==========" << endl;
     cout << endl;
     cout << turn << " turn" << endl;
-    cout << "*player\n Lv: " << level <<" ,exp: " << now_exp << "/" << level_exp 
-         << "\n hp: " << cphp <<"/" << php << "\n mp: " << current_mana << "/" << mana
-         << "\n power: " << pattack << "\n defense: "<< pdefense <<endl;
+    cout << "*player\n Lv: " << level << " ,exp: " << now_exp << "/" << level_exp
+        << "\n hp: " << cphp << "/" << php << "\n mp: " << current_mana << "/" << mana
+        << "\n power: " << pattack << "\n defense: " << pdefense
+        << "\n debuff: " << debuff << endl;
     cout << endl;
     cout << "*enemy\n hp: " << ehp << "\n power: " << eattack << endl;
     cout << endl;
@@ -26,7 +27,7 @@ void consoleUI::battleStatus(int turn, int php, int cphp, int pattack, int pdefe
 void consoleUI::playerTurnUI() {
     cout << "========== playerTurn Start ==========\n" << endl;
     cout << "select player Action" << endl;
-    cout << "(1)attack  " << "  (2)defense" << endl;
+    cout << "(1)attack  " << "  (2)defense" << "  (3)skill" << endl;
 }
 
 void consoleUI::playerTurn(int cphp, int pdefense, int battleselect, int attack, int criattack, bool criticalYN) {
@@ -157,3 +158,4 @@ void consoleUI::showStatusChange(playerStatusSnapShot beforePlayer, playerStatus
     cout << endl;
     cout << endl;
 }
+

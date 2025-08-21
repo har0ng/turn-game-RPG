@@ -7,17 +7,17 @@
 #include "debuffEnum.h"
 
 struct playerStatusSnapShot { //before ,after 저장 (저장, 스테이터스 상태변화 등등 많이 쓰임)
-	int health;
-	int current_health;
-	int attack;
-	int defense;
-	int level;
-	int level_exp;
-	int now_exp;
-	int mana;
-	int current_mana;
-	int agility;
-	int critical;
+	int health{0};
+	int current_health{0};
+	int attack{0};
+	int defense{0};
+	int level{0};
+	int level_exp{0};
+	int now_exp{0};
+	int mana{0};
+	int current_mana{0};
+	int agility{0};
+	int critical{0};
 };
 
 class player {
@@ -52,9 +52,9 @@ public:
 	int getCurrent_mana() const; //현재 마나
 	int getAgility() const; // 회피율
 	int getCritical() const; // 크리티컬율
-	const std::vector<skill>& getSkills() const; // 스킬 목록
-	playerStatusSnapShot getBeforePlayer() const;
-	playerStatusSnapShot getAfterPlayer() const;
+	std::vector<skill> getSkills() const; // 스킬 목록
+	playerStatusSnapShot getBeforePlayer() const; //저장 전 혹은 싸움 전 플레이어 데이터
+	playerStatusSnapShot getAfterPlayer() const; //저장 후 혹은 싸움 후 플레이어 데이터
 	debuffStatus getDebuff() const; //디버프 목록
 
 	//set
@@ -81,8 +81,13 @@ public:
 	virtual void levelup();//레벨 업 할 때.
 	virtual bool classChangeYN() const; //전직 했는지 안했는지 확인
 	virtual void initSkills(); //직업에 따른 스킬을 따로 vector에 저장하기 위해 override
-	virtual void roadSkillsToJson(); //직업에 필요한 스킬들을 json에서 빼오기 위해 필요
-	virtual std::string getClassName(); //자신의 직업에 대한 클래스 함수가 무엇인지 알기 위함.
+	virtual std::string getClassName(); //자신의 직업에 대한 클래스 함수가 무엇인지 알기위함.
+
+	//json
+	void skillClear(); //스킬 초기화
+	void roadSkillsToJson(); //직업에 필요한 스킬들을 json에서 빼오기 위해 필요
+	debuffStatus stringToDebuff(const std::string& str); // //string → enum 변환용
+	std::string debuffToString(debuffStatus debuff); //enum -> string 변환용
 };
 
 //전직은 get, set을 이용해 자식클래스에서 새로운 변수 안만들고 부모 활용.
@@ -94,7 +99,6 @@ public:
 	void levelup() override;
 	bool classChangeYN() const override;
 	void initSkills() override;
-	void roadSkillsToJson() override;
 	std::string getClassName() override;
 	/*
 		int warrior_health; // 2 level : +10 , +1 levelup : +5
@@ -111,7 +115,6 @@ public:
 	void levelup() override;
 	bool classChangeYN() const override;
 	void initSkills() override;
-	void roadSkillsToJson() override;
 	std::string getClassName() override;
 
 	/*
@@ -129,7 +132,6 @@ public:
 	void levelup() override;
 	bool classChangeYN() const override;
 	void initSkills() override;
-	void roadSkillsToJson() override;
 	std::string getClassName() override;
 
 	/*

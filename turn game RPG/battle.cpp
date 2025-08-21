@@ -32,6 +32,7 @@ battle::battle(unique_ptr<player> _p , unique_ptr<enemy> _e)
 	current_mana = p->getCurrent_mana();
 	agility = p->getAgility();
 	critical = p->getCritical();
+	debuff = p->getDebuff();
 
 	battleselect = 0; // battle menu select 값 또한 실행하면서 값을 받아와야하니, private이기도 하고 0 으로 미리 초기화
 
@@ -76,7 +77,7 @@ void battle::battleStatus() {
 	eattack = enemyDamage(gen); //적의 공격력을 범위 내 초기화된 수로 랜덤화
 	turn++; //몇턴 째인지 셈
 	
-	ui.battleStatus(turn, php, cphp, pattack, pdefense, ehp, eattack, level, level_exp, now_exp, mana, current_mana); //log를 불러오기위해 log에서 필요로 하는 값 다 넘겨주기
+	ui.battleStatus(turn, php, cphp, pattack, pdefense, ehp, eattack, level, level_exp, now_exp, mana, current_mana, p->debuffToString(debuff)); //log를 불러오기위해 log에서 필요로 하는 값 다 넘겨주기
 }	
 
 void battle::playerTurn() {
@@ -86,7 +87,7 @@ void battle::playerTurn() {
 	int criattack = 0;
 	 do{
 		 cin >> battleselect;
-		if (battleselect == 1) { // 1. 공격 2. 방어
+		if (battleselect == 1) { // 1. 공격 2. 방어 3.스킬
 			std::uniform_int_distribution<unsigned int> dmg(pattack-2, pattack +1);//데미지
 			std::uniform_real_distribution<float> randomDmg(0.05, 0.1);//데미지에 더해줄 %난수
 			std::uniform_int_distribution<unsigned int> cri(1, 100); //크리티컬 계산
@@ -103,13 +104,19 @@ void battle::playerTurn() {
 				ehp = e->enemyTakeDamage(ehp, attack);
 			}
 		}
+
+		if (battleselect == 3) { //스킬창
+			
+		}
+
+
 		if(cin.fail()) {        // 숫자가 아닌 입력 감지
 			cin.clear();        // fail 상태 초기화
 			// 입력 버퍼 비우기 , cin.ignore(무시할수 있는 최대 문자수,	무시를 멈출 기준이 되는 문자)
 			cin.ignore(1000, '\n');
 			battleselect = 0;   // 유효하지 않은 값으로 초기화
 		}
-	 } while (battleselect != 1 && battleselect != 2);
+	 } while (battleselect != 1 && battleselect != 2 && battleselect != 3);
 
 	ui.playerTurn(cphp, pdefense, battleselect, attack, criattack,criticalYN);//log를 불러오기위해 log에서 필요로 하는 값 다 넘겨주기
 }
