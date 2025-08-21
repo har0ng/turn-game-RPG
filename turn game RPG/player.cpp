@@ -1,13 +1,14 @@
 ﻿//player.cpp
 
 #include "player.h"
+#include "debuffEnum.h"
+#include "skillEnum.h"
 #include <iostream>
 #include <vector>
 #include <fstream>
 #include <nlohmann/json.hpp>
-#include <skillEnum.h>
 #include <string>
-#include "debuffEnum.h"
+
 
 using std::cout;
 using std::endl;
@@ -30,6 +31,7 @@ player::player() :player_health(30)
 	setBeforePlayer(); /*구조체의 내용을 들고올려면 스코프 안에서 set을 통해 복사해오는게 편함. 
 					   const 변수 같은게 없기에 이니셜라이저 안해도 됌*/
 	setAfterPlayer();
+	initSkills();       // 스킬 벡터 채우기
 } //initializing
 
 //get
@@ -173,6 +175,7 @@ bool player::classChangeYN() const { //전직하면 false로 바꾸게 해주면
 	return true;
 }
 void player::initSkills() {
+	roadSkillsToJson();
 	skillClear(); //다른 cpp에도 쓰기 위해 함수화
 	 //skillData는 skill.json임
 	if (skillData.empty()) { // 스킬데이터에 스킬이 없는데 무언가 넣을려하면 에러(기저 조건)
@@ -212,6 +215,7 @@ void player::roadSkillsToJson() { //직업에 필요한 스킬들을 json에서 
 	std::ifstream file("skill.json");
 	if (file.is_open()) {
 		file >> skillData; // JSON 파일 전체 읽어서 skillData에 저장
+		
 	}
 }
 debuffStatus player::stringToDebuff(const std::string& str){ //string → enum 변환용

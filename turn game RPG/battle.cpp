@@ -106,7 +106,10 @@ void battle::playerTurn() {
 		}
 
 		if (battleselect == 3) { //스킬창
-			
+			const auto& skill = p->getSkills();
+			for (const auto& sk : skill) {   // range-for 쓰면 더 편함
+				cout << sk.name << endl;
+			}
 		}
 
 
