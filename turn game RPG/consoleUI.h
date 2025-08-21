@@ -19,6 +19,7 @@ public:
                      ,int mana, int current_mana, std::string debuff);
     void playerTurnUI();
     void playerTurn(int cphp, int pdefense,int battleselect,int attack, int criattack, bool criticalYN);
+   /* void showSkill(int skillSize, std::string name); 분리 필요한거 같은데 사이즈랑 이름이랑*/
     void enemyTurn(int enemyAction, int pdefense, int eattack, int battleselect);
     void battleEnd(int cphp);
     void levelup_selectClassUI();
@@ -28,5 +29,5 @@ public:
                              ,int mana, int current_mana);
     void enterToContinue();
     void showStatusChange(playerStatusSnapShot beforePlayer, playerStatusSnapShot afterPlayer);
- 
+   
 };  

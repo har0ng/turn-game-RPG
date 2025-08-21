@@ -83,7 +83,7 @@ void battle::battleStatus() {
 void battle::playerTurn() {
 	ui.playerTurnUI();
 	bool criticalYN = false; //크리티컬인지 아닌지 확인
-	int attack = 0;
+	int attack = 0; //스킬 데미지도 여기로 값을 줘야해서 do 밖에 빼서 씀
 	int criattack = 0;
 	 do{
 		 cin >> battleselect;
@@ -106,9 +106,9 @@ void battle::playerTurn() {
 		}
 
 		if (battleselect == 3) { //스킬창
-			const auto& skill = p->getSkills();
-			for (const auto& sk : skill) {   // range-for 쓰면 더 편함
-				cout << sk.name << endl;
+			const auto& skill = p->getSkills(); //heal , powerStrike , antiDebuff가 나옴
+			for (const auto& sk : skill) {  
+				
 			}
 		}
 
