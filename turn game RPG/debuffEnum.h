@@ -1,4 +1,5 @@
-﻿#pragma once
+﻿//debuffEnum.h
+#pragma once
 
 enum class debuffStatus {
 	none,

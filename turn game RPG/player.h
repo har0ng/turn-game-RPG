@@ -39,6 +39,7 @@ private:
 	debuffStatus debuff; //디버프 값 설정
 public:
 	player();//player 체력 값 초기화
+	virtual ~player() = default; //스마트 포인터가 있더라도 가상 쪽을 지워주지 않으면 override 한 것들이 안지워짐
 	//get
 	int getPlayer_health() const;//private 플레이어 체력값 get
 	int getPlayer_current_health() const;//현재 체력
@@ -73,14 +74,15 @@ public:
 	void setDebuff(int deffnum);
 	
 
-
 	int playerTakeDamage(int dmg);//데미지를 입었을 때
 	int playerTakeExp(int take_exp); //현재 경험치 + 받은 경험치	
 
+	//virtual
 	virtual void levelup();//레벨 업 할 때.
 	virtual bool classChangeYN() const; //전직 했는지 안했는지 확인
-	virtual void initSkills(); //전직 후 스킬 분류를 위해 오버라이딩
-	
+	virtual void initSkills(); //직업에 따른 스킬을 따로 vector에 저장하기 위해 override
+	virtual void roadSkillsToJson(); //직업에 필요한 스킬들을 json에서 빼오기 위해 필요
+	virtual std::string getClassName(); //자신의 직업에 대한 클래스 함수가 무엇인지 알기 위함.
 };
 
 //전직은 get, set을 이용해 자식클래스에서 새로운 변수 안만들고 부모 활용.
@@ -92,7 +94,8 @@ public:
 	void levelup() override;
 	bool classChangeYN() const override;
 	void initSkills() override;
-
+	void roadSkillsToJson() override;
+	std::string getClassName() override;
 	/*
 		int warrior_health; // 2 level : +10 , +1 levelup : +5
 		int warrior_attack; // 2 level : +3 , +2 levelup : +1
@@ -108,6 +111,8 @@ public:
 	void levelup() override;
 	bool classChangeYN() const override;
 	void initSkills() override;
+	void roadSkillsToJson() override;
+	std::string getClassName() override;
 
 	/*
 	int magician_health; // 2 level : +5 , +1 levelup : +2
@@ -124,6 +129,8 @@ public:
 	void levelup() override;
 	bool classChangeYN() const override;
 	void initSkills() override;
+	void roadSkillsToJson() override;
+	std::string getClassName() override;
 
 	/*
 	int assassin_health;  // 2 level : +4 , +1 levelup : +2

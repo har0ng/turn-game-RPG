@@ -5,10 +5,14 @@
 #include <vector>
 #include <fstream>
 #include <nlohmann/json.hpp>
+#include <skillEnum.h>
+#include <string>
+#include "debuffEnum.h"
 
 using std::cout;
 using std::endl;
-nlohmann::json j; //json 객체 선언
+nlohmann::json skillData; //json 객체 선언
+
 
 player::player() :player_health(30)
 , player_current_health(30)
@@ -23,7 +27,8 @@ player::player() :player_health(30)
 , critical(1)
 , debuff(debuffStatus::none)
 {
-	setBeforePlayer();
+	setBeforePlayer(); /*구조체의 내용을 들고올려면 스코프 안에서 set을 통해 복사해오는게 편함. 
+					   const 변수 같은게 없기에 이니셜라이저 안해도 됌*/
 	setAfterPlayer();
 } //initializing
 
@@ -165,5 +170,26 @@ bool player::classChangeYN() const { //전직하면 false로 바꾸게 해주면
 	return true;
 }
 void player::initSkills() {
+	skills.clear(); //이후 사용 할때 중복 되면 메모리 아까움
 
+	if (skillData.empty()) { // 스킬데이터에 스킬이 없는데 무언가 넣을려하면 에러(기저 조건)
+		return;
+	}
+	else {
+		for (const auto& s :skillData) { //skillData의 데이터를 s 객체로 자동 데이터 타입으로 맞춰서 참조해서 들고온다는 이야기
+			std::string charClass = s.value("charactorClass"," "); //json 에서 key, vlaue 값을 들고오는걸로 charactorClass가 key값
+			if(charClass != "common" && charClass != this->getClassName()) continue;
+		}
+	}
+
+}
+void player::roadSkillsToJson() { //직업에 필요한 스킬들을 json에서 빼오기 위해 필요
+	std::ifstream file("skill.json");
+	if (file.is_open()) {
+		file >> skillData; // JSON 파일 전체 읽어서 skillData에 저장
+	}
+}
+
+std::string player::getClassName() {//자신의 직업에 대한 클래스 함수가 무엇인지 알기 위함, player.cpp 니깐 클래스 함수는 player
+	return "player";
 }
