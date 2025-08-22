@@ -4,7 +4,7 @@
 #pragma once
 #include "enemy.h"
 #include "player.h"
-#include <string>
+
 
 /*ConsoleUI의 각 함수에 인자를 넘기는 이유
 * 
@@ -19,7 +19,8 @@ public:
                      ,int mana, int current_mana, std::string debuff);
     void playerTurnUI();
     void playerTurn(int cphp, int pdefense,int battleselect,int attack, int criattack, bool criticalYN);
-   /* void showSkill(int skillSize, std::string name); 분리 필요한거 같은데 사이즈랑 이름이랑*/
+
+    void showSkill(int skillSize, std::string name);
     void enemyTurn(int enemyAction, int pdefense, int eattack, int battleselect);
     void battleEnd(int cphp);
     void levelup_selectClassUI();

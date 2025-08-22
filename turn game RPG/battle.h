@@ -23,6 +23,7 @@ private:
 	int current_mana;
 	int agility; //AGI, 회피율
 	int critical; //CRI, 크리티컬(데미지 2배)
+	int skillSelect; // battleSelect == 3 
 	debuffStatus debuff; // debuff
 
 	int ehp;       // enemy health

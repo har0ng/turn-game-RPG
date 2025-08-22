@@ -21,6 +21,7 @@ assassin::assassin(const player& p) :player(p){ //assassin status set
     setAgility(p.getAgility()+4);
     setCritical(p.getCritical());
     setDebuff(static_cast<int>(p.getDebuff()));
+    initSkills();
 }
 
 void assassin::levelup() { // if level > 2 (+status) 
@@ -34,13 +35,11 @@ void assassin::levelup() { // if level > 2 (+status)
     }
     player::levelup();
 }
-
 bool assassin::classChangeYN() const { //전직 후 flase로 함으로써 전직창 이제 안뜸
     return false;
-}
-				   
+}				   
 void assassin::initSkills() {
-    
+    player::initSkills();
 }
 std::string assassin::getClassName() { //자신의 직업에 대한 클래스 함수가 무엇인지 알기 위함, assassin.cpp 니깐 클래스 함수는 assassin
     return "assassin";

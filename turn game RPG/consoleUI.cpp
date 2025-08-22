@@ -2,8 +2,8 @@
 
 #include "consoleUI.h"
 #include <iostream>
-using std::cout;
 using std::endl;
+using std::cout;
 using std::cin;
 
 void consoleUI::battleStatus(int turn, int php, int cphp, int pattack, int pdefense
@@ -47,6 +47,13 @@ void consoleUI::playerTurn(int cphp, int pdefense, int battleselect, int attack,
     cout << endl;
     cout << endl;
 
+}
+
+
+void consoleUI::showSkill(int skillSize, std::string name) {
+    //start
+    cout << skillSize << ": " << name << endl;
+    
 }
 
 void consoleUI::enemyTurn(int enemyAction, int pdefense, int eattack, int battleselect) {

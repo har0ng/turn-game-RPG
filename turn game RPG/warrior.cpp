@@ -9,6 +9,7 @@
 using std::cout;
 using std::cin;
 
+
 warrior::warrior() {}
 warrior::warrior(const player& p):player(p) { //warrior status set
 	setPlayer_health(p.getPlayer_health() + 10);
@@ -23,6 +24,7 @@ warrior::warrior(const player& p):player(p) { //warrior status set
     setAgility(p.getAgility());
     setCritical(p.getCritical());
     setDebuff(static_cast<int>(p.getDebuff()));
+    initSkills();
 }
 
 void warrior::levelup() { // if level > 2 (+status) 
@@ -40,8 +42,8 @@ bool warrior::classChangeYN() const { //전직 후 flase로 함으로써 전직�
 }
 
 void warrior::initSkills() {
-	
+    player::initSkills();
 }
 std::string warrior::getClassName() {//자신의 직업에 대한 클래스 함수가 무엇인지 알기 위함  warrior.cpp 니깐 클래스 함수는 warrior
-    return "warrior"; 
+    return "warrior";
 }

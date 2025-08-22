@@ -35,6 +35,7 @@ battle::battle(unique_ptr<player> _p , unique_ptr<enemy> _e)
 	debuff = p->getDebuff();
 
 	battleselect = 0; // battle menu select 값 또한 실행하면서 값을 받아와야하니, private이기도 하고 0 으로 미리 초기화
+	skillSelect = 0;
 
 	//enemy
 	ehp = e->getEnemy_health(); //enemy 체력 get으로 받아오기
@@ -94,8 +95,8 @@ void battle::playerTurn() {
 			int criticalLine = cri(gen);
 			int damage = dmg(gen);
 			float randomDamage = randomDmg(gen);
-			attack = damage + (damage * (damage * randomDamage)); // 난수화 데미지
-			criattack = attack * 1.3;
+			attack = static_cast<int>(damage + (damage * (damage * randomDamage))); // 난수화 데미지
+			criattack = static_cast<int>(attack * 1.3);
 			if (criticalLine <= p->getCritical()) { // 크리티컬 시 1.3배 데미지
 				criticalYN = true;
 				ehp = e->enemyTakeDamage(ehp, criattack); // 소수점 이하 버림
@@ -106,10 +107,16 @@ void battle::playerTurn() {
 		}
 
 		if (battleselect == 3) { //스킬창
-			const auto& skill = p->getSkills(); //heal , powerStrike , antiDebuff가 나옴
+			const auto& skill = p->getSkills(); //heal, powerStrike, antiDebuff가 나옴
+			int skSize = 0;
 			for (const auto& sk : skill) {  
-				
+				skSize++;
+				if (level >= (int)sk.levelReq) {
+					ui.showSkill(skSize, sk.name);
+				}
 			}
+			cin >> skillSelect;
+			
 		}
 
 

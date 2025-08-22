@@ -182,25 +182,26 @@ void player::initSkills() {
 		return;
 	}
 	for (const auto& s : skillData) { //skillData의 데이터를 s 객체로 자동 데이터 타입으로 맞춰서 참조해서 들고온다는 이야기
-		std::string charClass = s.value("charactorClass", " "); //json 에서 key, vlaue 값을 들고오는걸로 charactorClass가 key값
-		// 조건에 맞지 않으면 스킬 추가하지 않고 다음 반복으로 (기저 조건)
-		if (charClass != "common" && charClass != this->getClassName()) { //charClass != this->getClassName()의 의미: 들고온 json 의 charactorClass key 값과 같지 않으면
+		std::string charClass = s.value("charactorClass", ""); //json 에서 key, vlaue 값을 들고오는걸로 charactorClass가 key값
+		skill sk; //skill 구조체에 json에서의 파일을 각 key값에 맞게 대입함													   // 조건에 맞지 않으면 스킬 추가하지 않고 다음 반복으로 (기저 조건)
+		// !!만약 key 에 맞는 value 값이 존재하지 않을 시 default 값을 아래와 같이 하여 에러 방지 !!
+
+		if (charClass == "common" || charClass == this->getClassName()) {
+			sk.name = s.value("name", "unknown");
+			sk.targetObject = s.value("targetObject", "player");
+			sk.power = s.value("power", 0);
+			sk.multiplier = s.value("multiplier", 1.0);
+			sk.hpCost = s.value("hpCost", 0);
+			sk.mpCost = s.value("mpCost", 0);
+			sk.activeTime = s.value("activeTime", 1);
+			sk.turn = s.value("turn", 1);
+			sk.levelReq = s.value("levelReq", 1);
+			sk.enemyCnt = s.value("enemyCnt", 1);
+			sk.debuff = stringToDebuff(s.value("debuff", "none"));
+		}
+		else {
 			continue;  // 바로 다음 JSON 스킬항목으로 넘어감
 		}
-		skill sk; //skill 구조체에 json에서의 파일을 각 key값에 맞게 대입함
-		// !!만약 key 에 맞는 value 값이 존재하지 않을 시 default 값을 아래와 같이 하여 에러 방지 !!
-		sk.name = s.value("name", "unknown");
-		sk.targetObject = s.value("targetObject", "player");
-		sk.power = s.value("power", 0); 
-		sk.multiplier = s.value("multiplier", 1.0);
-		sk.hpCost = s.value("hpCost", 0);
-		sk.mpCost = s.value("mpCost", 0);
-		sk.activeTime = s.value("activeTime", 1);
-		sk.turn = s.value("turn", 1);
-		sk.levelReq = s.value("levelReq", 1);
-		sk.enemyCnt = s.value("enemyCnt", 1);
-		sk.debuff = stringToDebuff(s.value("debuff", "none")); 
-
 		// 안전하게 벡터에 이동 추가
 		skills.push_back(std::move(sk));
 	}
