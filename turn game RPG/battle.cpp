@@ -87,7 +87,7 @@ void battle::playerTurn() {
 	int attack = 0; //스킬 데미지도 여기로 값을 줘야해서 do 밖에 빼서 씀
 	int criattack = 0;
 	 do{
-		 cin >> battleselect;
+		 battleselect = inputCheck(1,3);
 		if (battleselect == 1) { // 1. 공격 2. 방어 3.스킬
 			std::uniform_int_distribution<unsigned int> dmg(pattack-2, pattack +1);//데미지
 			std::uniform_real_distribution<float> randomDmg(0.05, 0.1);//데미지에 더해줄 %난수
@@ -110,21 +110,13 @@ void battle::playerTurn() {
 			const auto& skill = p->getSkills(); //heal, powerStrike, antiDebuff가 나옴
 			int skSize = 0;
 			for (const auto& sk : skill) {  
-				skSize++;
 				if (level >= (int)sk.levelReq) {
+					skSize++;
 					ui.showSkill(skSize, sk.name);
 				}
 			}
-			cin >> skillSelect;
-			
-		}
-
-
-		if(cin.fail()) {        // 숫자가 아닌 입력 감지
-			cin.clear();        // fail 상태 초기화
-			// 입력 버퍼 비우기 , cin.ignore(무시할수 있는 최대 문자수,	무시를 멈출 기준이 되는 문자)
-			cin.ignore(1000, '\n');
-			battleselect = 0;   // 유효하지 않은 값으로 초기화
+			skillSelect = inputCheck(1, skSize);
+			cout << skillSelect;
 		}
 	 } while (battleselect != 1 && battleselect != 2 && battleselect != 3);
 
@@ -191,3 +183,20 @@ bool battle::getPlay() const { //게임이 지속 가능한지 플레이어의 �
 std::unique_ptr<player> battle::getPlayerPtr() { // 유니크 포인터를 넘겨야하니깐 이렇게 됨.
 	return std::move(p);
 }
+
+int battle::inputCheck(int min, int max) { //battleselect, skillselect 구분 문구
+	int input;
+	while (true) {
+		cin >> input;
+		if (cin.fail()) {// 숫자가 아닌 입력 감지
+			cin.clear(); // fail 상태 초기화
+			cin.ignore(1000, '\n'); // 입력 버퍼 비우기 , cin.ignore(무시할수 있는 최대 문자수,	무시를 멈출 기준이 되는 문자)
+			cout << "please input number." << endl;
+			continue; // 유효하지 않은 값으로 초기화
+		}
+		if (input >= min && input <= max) {
+			return input;
+		}
+		cout << "do not imoport. retry please" << endl;
+	}
+} 

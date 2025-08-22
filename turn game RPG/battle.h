@@ -46,4 +46,5 @@ public:
 	void levelup_selectClass(); // 전직 결정
 	bool getPlay() const;   // 플레이어의 체력이 남아있어 지속 가능한지 확인
 	std::unique_ptr<player> getPlayerPtr(); // 플레이어 정보 계속 들고 가야해서 들고 갈 바구니 만든 것
+	int inputCheck(int min, int max);
 };
