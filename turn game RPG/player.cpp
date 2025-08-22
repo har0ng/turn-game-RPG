@@ -187,6 +187,7 @@ void player::initSkills() {
 		// !!만약 key 에 맞는 value 값이 존재하지 않을 시 default 값을 아래와 같이 하여 에러 방지 !!
 
 		if (charClass == "common" || charClass == this->getClassName()) {
+			sk.charactorClass = s.value("charactorClass", "");
 			sk.name = s.value("name", "unknown");
 			sk.targetObject = s.value("targetObject", "player");
 			sk.power = s.value("power", 0);

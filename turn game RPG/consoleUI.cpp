@@ -2,6 +2,7 @@
 
 #include "consoleUI.h"
 #include <iostream>
+#include <iomanip> // setw, left, right 줄 맞추기
 using std::endl;
 using std::cout;
 using std::cin;
@@ -50,10 +51,13 @@ void consoleUI::playerTurn(int cphp, int pdefense, int battleselect, int attack,
 }
 
 
-void consoleUI::showSkill(int skillSize, std::string name) {
-    //start
-    cout << skillSize << ": " << name << endl;
-    
+void consoleUI::showSkill(int skillSize, std::string charactorClass, std::string name, int hpCost, 
+                          int mpCost, int activeTime, int turn, int enemyCnt) {
+    if (charactorClass != "warriorB") {
+        cout << skillSize << ". "
+            << std::left << std::setw(20) << name
+            << " MP: " << mpCost << endl;
+    }
 }
 
 void consoleUI::enemyTurn(int enemyAction, int pdefense, int eattack, int battleselect) {
@@ -150,16 +154,54 @@ void consoleUI::enterToContinue() { //enter을 누를시 다음 화면으로 넘
 }
 
 void consoleUI::showStatusChange(playerStatusSnapShot beforePlayer, playerStatusSnapShot afterPlayer) {
-    cout << "========== current player status ==========" << endl;
-    cout << "*player" << endl;
-    cout << " Lv: " << beforePlayer.level << " ,exp: " << beforePlayer.now_exp << "/" << beforePlayer.level_exp
-         << "  ->  " << "Lv: " << afterPlayer.level << " ,exp: " << afterPlayer.now_exp << "/" << afterPlayer.level_exp << endl;
-    cout << " hp: " << beforePlayer.current_health << "/" << beforePlayer.health
-         << "         -> " << " hp: " << afterPlayer.current_health << "/" << afterPlayer.health << endl;
-    cout << " mp: " << beforePlayer.current_mana << "/" << beforePlayer.mana
-         << "           -> " << " mp: " << afterPlayer.current_mana << "/" << afterPlayer.mana << endl;
-    cout << " power: " << beforePlayer.attack << "          -> " << " power: " << afterPlayer.attack << endl;
-    cout << " defense: " << beforePlayer.defense << "        -> " <<" defense: " << afterPlayer.defense << endl;
+    cout << "========== Current Player Status ==========" << endl;
+    cout << "* Player" << endl;
+
+    // 헤더
+    cout << std::left << std::setw(12) << "Status"
+        << std::setw(20) << "Before"
+        << "-> "
+        << std::setw(20) << "After"
+        << endl;
+
+    cout << std::string(60, '-') << endl; // 구분선
+
+    // 레벨 / 경험치
+    cout << std::left << std::setw(12) << "Level"
+        << std::setw(20) << ("Lv: " + std::to_string(beforePlayer.level) +
+            " exp: " + std::to_string(beforePlayer.now_exp) + "/" + std::to_string(beforePlayer.level_exp))
+        << "-> "
+        << std::setw(20) << ("Lv: " + std::to_string(afterPlayer.level) +
+            " exp: " + std::to_string(afterPlayer.now_exp) + "/" + std::to_string(afterPlayer.level_exp))
+        << endl;
+
+    // HP
+    cout << std::left << std::setw(12) << "HP"
+        << std::setw(20) << (std::to_string(beforePlayer.current_health) + "/" + std::to_string(beforePlayer.health))
+        << "-> "
+        << std::setw(20) << (std::to_string(afterPlayer.current_health) + "/" + std::to_string(afterPlayer.health))
+        << endl;
+
+    // MP
+    cout << std::left << std::setw(12) << "MP"
+        << std::setw(20) << (std::to_string(beforePlayer.current_mana) + "/" + std::to_string(beforePlayer.mana))
+        << "-> "
+        << std::setw(20) << (std::to_string(afterPlayer.current_mana) + "/" + std::to_string(afterPlayer.mana))
+        << endl;
+
+    // Power
+    cout << std::left << std::setw(12) << "Power"
+        << std::setw(20) << std::to_string(beforePlayer.attack)
+        << "-> "
+        << std::setw(20) << std::to_string(afterPlayer.attack)
+        << endl;
+
+    // Defense
+    cout << std::left << std::setw(12) << "Defense"
+        << std::setw(20) << std::to_string(beforePlayer.defense)
+        << "-> "
+        << std::setw(20) << std::to_string(afterPlayer.defense)
+        << endl;
 
     cout << "========== current player status ==========" << endl;
     cout << endl;
