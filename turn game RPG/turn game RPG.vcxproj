@@ -18,6 +18,29 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="src\assassin.cpp" />
+    <ClCompile Include="src\battle.cpp" />
+    <ClCompile Include="src\consoleUI.cpp" />
+    <ClCompile Include="src\enemy.cpp" />
+    <ClCompile Include="src\magician.cpp" />
+    <ClCompile Include="src\player.cpp" />
+    <ClCompile Include="src\warrior.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="assets\json.hpp" />
+    <ClInclude Include="assets\json_fwd.hpp" />
+    <ClInclude Include="include\battle.h" />
+    <ClInclude Include="include\consoleUI.h" />
+    <ClInclude Include="include\debuffEnum.h" />
+    <ClInclude Include="include\enemy.h" />
+    <ClInclude Include="include\player.h" />
+    <ClInclude Include="include\skillEnum.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="assets\skill.json" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
@@ -116,7 +139,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\3031435\Desktop\IT研修\wbs\C++\turn game RPG\turn game RPG;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\3031435\Desktop\IT研修\wbs\C++\turn game RPG\turn game RPG\assets;$(ProjectDir)src;$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -131,7 +154,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\3031435\Desktop\IT研修\wbs\C++\turn game RPG\turn game RPG;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\3031435\Desktop\IT研修\wbs\C++\turn game RPG\turn game RPG\assets;$(ProjectDir)src;$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -140,27 +163,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="assassin.cpp" />
-    <ClCompile Include="battle.cpp" />
-    <ClCompile Include="consoleUI.cpp" />
-    <ClCompile Include="enemy.cpp" />
-    <ClCompile Include="magician.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="player.cpp" />
-    <ClCompile Include="warrior.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="battle.h" />
-    <ClInclude Include="consoleUI.h" />
-    <ClInclude Include="debuffEnum.h" />
-    <ClInclude Include="enemy.h" />
-    <ClInclude Include="player.h" />
-    <ClInclude Include="skillEnum.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="skill.json" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

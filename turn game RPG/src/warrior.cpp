@@ -4,7 +4,7 @@
 #include "player.h"
 #include <vector>
 #include <fstream>
-#include <nlohmann/json.hpp>
+#include <json.hpp>
 
 using std::cout;
 using std::cin;

@@ -116,7 +116,7 @@ void battle::playerTurn() {
 								 sk.mpCost, sk.activeTime, sk.turn, sk.enemyCnt);
 				}
 			}
-			//cout << skill[0].name;
+			cout << skill[0].name;
 			skillSelect = inputCheck(1, skSize);
 			/*
 			08/22 1636 -> 08/25

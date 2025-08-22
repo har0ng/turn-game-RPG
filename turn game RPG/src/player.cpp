@@ -6,7 +6,7 @@
 #include <iostream>
 #include <vector>
 #include <fstream>
-#include <nlohmann/json.hpp>
+#include <json.hpp>
 #include <string>
 
 
@@ -214,7 +214,7 @@ void player::skillClear(){
 	skills.clear();
 }
 void player::roadSkillsToJson() { //직업에 필요한 스킬들을 json에서 빼오기 위해 필요
-	std::ifstream file("skill.json");
+	std::ifstream file("assets/skill.json");
 	if (file.is_open()) {
 		file >> skillData; // JSON 파일 전체 읽어서 skillData에 저장
 		
