@@ -116,8 +116,9 @@ void battle::playerTurn() {
 								 sk.mpCost, sk.activeTime, sk.turn, sk.enemyCnt);
 				}
 			}
-			cout << skill[0].name;
-			skillSelect = inputCheck(1, skSize);
+			skillSelect = inputCheck(1, skSize) -1;
+			
+			
 			/*
 			08/22 1636 -> 08/25
 			skillSelect가 옳바른 값이 되면 그 스킬이 활성화되서 스킬이 이뤄지게끔 하기

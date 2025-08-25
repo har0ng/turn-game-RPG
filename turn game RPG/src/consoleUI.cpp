@@ -60,6 +60,7 @@ void consoleUI::showSkill(int skillSize, std::string charactorClass, std::string
     }
 }
 
+
 void consoleUI::enemyTurn(int enemyAction, int pdefense, int eattack, int battleselect) {
     cout << "========== enemyTurn Start ==========\n" << endl;
     if (enemyAction == 0) {
