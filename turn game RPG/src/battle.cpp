@@ -84,19 +84,11 @@ void battle::battleStatus() {
 
 void battle::playerTurn() {
 	ui.playerTurnUI();
-	bool criticalYN = false; //크리티컬인지 아닌지 확인
-	std::uniform_int_distribution<unsigned int> dmg(pattack - 2, pattack + 1);//데미지
-	std::uniform_real_distribution<float> randomDmg(0.05, 0.1);//데미지에 더해줄 %난수
-	std::uniform_int_distribution<unsigned int> cri(1, 100); //크리티컬 계산
-	int criticalLine = cri(gen);
-	int damage = dmg(gen);
-	float randomDamage = randomDmg(gen);
-	int attack = static_cast<int>(damage + (damage * (damage * randomDamage))); // 난수화 데미지
-	int criattack = static_cast<int>(attack * 1.3);
+	attackInfo res = atkInfo();
 	 do{
 		 battleselect = inputCheck(1,3);
 		if (battleselect == 1) { // 1. 공격 2. 방어 3.스킬
-			attackEnemy(criticalYN,criticalLine ,criattack, attack);
+			attackEnemy(res.criticalYN, res.criticalLine , res.criattack, res.attack);
 		}
 
 		if (battleselect == 3) { //스킬창
@@ -110,7 +102,7 @@ void battle::playerTurn() {
 				}
 			}
 			skillSelect = inputCheck(1, skSize) -1;
-			getSkillSelect(skillSelect, skill);
+			getSkillSelect(skillSelect, skill ,res);
 			
 			
 			/*
@@ -122,7 +114,7 @@ void battle::playerTurn() {
 		}
 	 } while (battleselect != 1 && battleselect != 2 && battleselect != 3);
 
-	ui.playerTurn(cphp, pdefense, battleselect, attack, criattack,criticalYN);//log를 불러오기위해 log에서 필요로 하는 값 다 넘겨주기
+	ui.playerTurn(cphp, pdefense, battleselect, res.attack, res.criattack, res.criticalYN);//log를 불러오기위해 log에서 필요로 하는 값 다 넘겨주기
 }
 
 void battle::enemyTurn() {
@@ -203,17 +195,17 @@ int battle::inputCheck(int min, int max) { //battleselect, skillselect 구분 �
 	}
 } 
 
-void battle::getSkillSelect(int skillSelect, std::vector<skill> const& skill) {
+void battle::getSkillSelect(int skillSelect, std::vector<skill> const& skill, attackInfo res) {
 	if (skill[skillSelect].passiveActive == false) {
-		passiveSkill(skillSelect, skill);
+		passiveSkill(skillSelect, skill, res);
 	}
 	else {
-		activeSkill(skillSelect, skill);
+		activeSkill(skillSelect, skill, res);
 	}
 	
 }
 
-void battle::passiveSkill(int skillSelect, std::vector<skill> const& skill) { //false
+void battle::passiveSkill(int skillSelect, std::vector<skill> const& skill, attackInfo res) { //false
 	if (skill[skillSelect].referenceStatus == "attack") {
 	
 	}
@@ -223,8 +215,11 @@ void battle::passiveSkill(int skillSelect, std::vector<skill> const& skill) { //
 
 }
 
-void battle::activeSkill(int skillSelect, std::vector<skill> const& skill) { //true
+void battle::activeSkill(int skillSelect, std::vector<skill> const& skill, attackInfo res) { //true
 	if (skill[skillSelect].referenceStatus == "totalDamage") {
+		attackEnemy(res.criticalYN, res.criticalLine,
+					static_cast<int>(res.criattack * skill[skillSelect].TDMultiplier),
+					static_cast<int>(res.attack * skill[skillSelect].TDMultiplier));
 		
 	}
 	else if (skill[skillSelect].referenceStatus == "maxHp") {
@@ -249,4 +244,19 @@ void battle::attackEnemy(bool criticalYN,int criticalLine ,int criattack, int at
 	else {
 		ehp = e->enemyTakeDamage(ehp, attack);
 	}
+}
+
+attackInfo battle::atkInfo() {
+	attackData.criticalYN = false;
+	std::uniform_int_distribution<unsigned int> dmg(pattack - 2, pattack + 1);
+	std::uniform_real_distribution<float> randomDmg(0.05, 0.1);
+	std::uniform_int_distribution<unsigned int> cri(1, 100);
+
+	attackData.criticalLine = cri(gen);
+	int damage = dmg(gen);
+	float randomDamage = randomDmg(gen);
+	attackData.attack = static_cast<int>(damage + (damage * (damage * randomDamage)));
+	attackData.criattack = static_cast<int>(attackData.attack * 1.3);
+
+	return attackData; // 구조체 통째로 반환
 }

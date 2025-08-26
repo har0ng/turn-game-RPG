@@ -25,7 +25,7 @@ struct skill {
 
 
 enum class commonSkill {
-	powerStrike, //totaldamage * 1.2
+	powerStrike, //totaldamage * 1.3
 	heal, // maxhp *0.2
 	antiDebuff //debuff remove
 };

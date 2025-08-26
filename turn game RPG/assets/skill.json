@@ -4,7 +4,7 @@
 	 "name": "powerStrike",
 	 "targetObject": "enemy",
 	 "power": 0,
-	 "TDmultiplier": 1.2,
+	 "TDmultiplier": 1.3,
 	 "playerMultiplier":0.0,
 	 "referenceStatus":"totalDamage",
 	 "hpCost": 0,

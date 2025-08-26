@@ -5,6 +5,7 @@
 #include "enemy.h"
 #include "player.h"
 #include "consoleUI.h"
+#include "attackInfo.h"
 
 class battle {
 private:
@@ -25,6 +26,7 @@ private:
 	int critical; //CRI, 크리티컬(데미지 2배)
 	int skillSelect; // battleSelect == 3 
 	debuffStatus debuff; // debuff
+	attackInfo attackData; //player 공격 계수 정보
 
 	int ehp;       // enemy health
 	int eattack; //enemy attack
@@ -48,9 +50,9 @@ public:
 	std::unique_ptr<player> getPlayerPtr(); // 플레이어 정보 계속 들고 가야해서 들고 갈 바구니 만든 것
 	int inputCheck(int min, int max);
 
-	void getSkillSelect(int skillSelect, std::vector<skill> const& skill); //스킬 뭐쓰는지 입력 받아오기
-	void passiveSkill(int skillSelect, std::vector<skill> const& skill); //passive 스킬 처리
-	void activeSkill(int skillSelect, std::vector<skill> const& skill); //acrive 스킬 처리
+	void getSkillSelect(int skillSelect, std::vector<skill> const& skill, attackInfo attackData); //스킬 뭐쓰는지 입력 받아오기
+	void passiveSkill(int skillSelect, std::vector<skill> const& skill, attackInfo attackData); //passive 스킬 처리
+	void activeSkill(int skillSelect, std::vector<skill> const& skill, attackInfo attackData); //acrive 스킬 처리
 	void attackEnemy(bool criticalYN,int criticalLine ,int criattack, int attack); //플레이어가 에너미 공격
-	
+	attackInfo atkInfo();
 };

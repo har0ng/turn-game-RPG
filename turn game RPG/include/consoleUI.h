@@ -30,5 +30,5 @@ public:
                              ,int mana, int current_mana);
     void enterToContinue();
     void showStatusChange(playerStatusSnapShot beforePlayer, playerStatusSnapShot afterPlayer);
-   
+    void activeSkillOfReference();
 };  
