@@ -21,6 +21,7 @@ public:
     void playerTurn(int cphp, int pdefense,int battleselect,int attack, int criattack, bool criticalYN);
     void showSkill(int skillSize, std::string charactorClass, std::string name, int hpCost, 
                    int mpCost, int activeTime, int turn, int enemyCnt);
+    void exitSkill(int back);
     void enemyTurn(int enemyAction, int pdefense, int eattack, int battleselect);
     void battleEnd(int cphp);
     void levelup_selectClassUI();

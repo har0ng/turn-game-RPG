@@ -55,4 +55,5 @@ public:
 	void activeSkill(int skillSelect, std::vector<skill> const& skill, attackInfo attackData); //acrive 스킬 처리
 	void attackEnemy(bool criticalYN,int criticalLine ,int criattack, int attack); //플레이어가 에너미 공격
 	attackInfo atkInfo();
+	void skAtkEffect(int hpCost, int mpCost, int activeTime, int turn);
 };

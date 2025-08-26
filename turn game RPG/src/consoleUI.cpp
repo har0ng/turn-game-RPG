@@ -60,6 +60,12 @@ void consoleUI::showSkill(int skillSize, std::string charactorClass, std::string
     }
 }
 
+void consoleUI::exitSkill(int back) {
+    cout << endl;
+    cout << endl;
+    cout << back << ". " << "back" << endl;
+}
+
 
 void consoleUI::enemyTurn(int enemyAction, int pdefense, int eattack, int battleselect) {
     cout << "========== enemyTurn Start ==========\n" << endl;

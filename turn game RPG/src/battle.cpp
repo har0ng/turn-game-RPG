@@ -9,7 +9,7 @@
 #include <random>
 #include <algorithm> // std::max
 #include <memory> // smart pointer
-#include<string>
+#include <string>
 
 using std::cout;
 using std::endl;
@@ -101,13 +101,19 @@ void battle::playerTurn() {
 								 sk.mpCost, sk.activeTime, sk.turn, sk.enemyCnt);
 				}
 			}
-			skillSelect = inputCheck(1, skSize) -1;
-			getSkillSelect(skillSelect, skill ,res);
+			ui.exitSkill(0);
+			skillSelect = inputCheck(1, skSize) - 1;
+			if (skillSelect == -1) {
+				// 왜턴이 넘어가버리는데 크아악
+			}
+			getSkillSelect(skillSelect, skill, res);
 			
 			
 			/*
 			08/22 1636 -> 08/25
-			skillSelect가 옳바른 값이 되면 그 스킬이 활성화되서 스킬이 이뤄지게끔 하기
+				스킬을 적중 시켰을 때 그 디버프가 로그와 디버프의 상황이 남도록 만들어야함.
+				레벨 업 했을 때 얻는 스킬 UI추가
+				스킬 마나가 없을 때 못써지게 만들기
 			*/
 
 
@@ -188,6 +194,9 @@ int battle::inputCheck(int min, int max) { //battleselect, skillselect 구분 �
 			cout << "please input number." << endl;
 			continue; // 유효하지 않은 값으로 초기화
 		}
+		if (input == 0) {
+			return 0;
+		}
 		if (input >= min && input <= max) {
 			return input;
 		}
@@ -220,7 +229,8 @@ void battle::activeSkill(int skillSelect, std::vector<skill> const& skill, attac
 		attackEnemy(res.criticalYN, res.criticalLine,
 					static_cast<int>(res.criattack * skill[skillSelect].TDMultiplier),
 					static_cast<int>(res.attack * skill[skillSelect].TDMultiplier));
-		
+		skAtkEffect(skill[skillSelect].hpCost, skill[skillSelect].mpCost,
+					skill[skillSelect].activeTime, skill[skillSelect].turn);
 	}
 	else if (skill[skillSelect].referenceStatus == "maxHp") {
 
@@ -259,4 +269,14 @@ attackInfo battle::atkInfo() {
 	attackData.criattack = static_cast<int>(attackData.attack * 1.3);
 
 	return attackData; // 구조체 통째로 반환
+}
+
+void battle::skAtkEffect(int hpCost, int mpCost, int activeTime, int turn) {
+	if (hpCost == 0) {
+		p->setCurrent_mana(std::max(0, current_mana - mpCost));
+		current_mana = p->getCurrent_mana();
+	}
+	while (this->turn <= turn + this->turn) {
+		
+	}
 }
