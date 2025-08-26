@@ -191,13 +191,16 @@ void player::initSkills() {
 			sk.name = s.value("name", "unknown");
 			sk.targetObject = s.value("targetObject", "player");
 			sk.power = s.value("power", 0);
-			sk.multiplier = s.value("multiplier", 1.0);
+			sk.TDMultiplier = s.value("TDMultiplier", 1.0);
+			sk.playerMultiplier = s.value("playerMultiplier", 0.0);
+			sk.referenceStatus = s.value("referenceStatus", "none");
 			sk.hpCost = s.value("hpCost", 0);
 			sk.mpCost = s.value("mpCost", 0);
 			sk.activeTime = s.value("activeTime", 1);
 			sk.turn = s.value("turn", 1);
 			sk.levelReq = s.value("levelReq", 1);
 			sk.enemyCnt = s.value("enemyCnt", 1);
+			sk.passiveActive = s.value("passiveActive", false);
 			sk.debuff = stringToDebuff(s.value("debuff", "none"));
 		}
 		else {

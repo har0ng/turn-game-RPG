@@ -47,4 +47,10 @@ public:
 	bool getPlay() const;   // 플레이어의 체력이 남아있어 지속 가능한지 확인
 	std::unique_ptr<player> getPlayerPtr(); // 플레이어 정보 계속 들고 가야해서 들고 갈 바구니 만든 것
 	int inputCheck(int min, int max);
+
+	void getSkillSelect(int skillSelect, std::vector<skill> const& skill); //스킬 뭐쓰는지 입력 받아오기
+	void passiveSkill(int skillSelect, std::vector<skill> const& skill); //passive 스킬 처리
+	void activeSkill(int skillSelect, std::vector<skill> const& skill); //acrive 스킬 처리
+	void attackEnemy(bool criticalYN,int criticalLine ,int criattack, int attack); //플레이어가 에너미 공격
+	
 };

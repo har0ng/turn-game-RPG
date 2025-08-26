@@ -1,4 +1,4 @@
-//skillEnum.h
+﻿//skillEnum.h
 
 #pragma once
 #include <string>
@@ -9,13 +9,16 @@ struct skill {
 	std::string name{"unknown"}; // skill name
 	std::string targetObject{"player"}; //skill target (player,enemy)
 	int power{0}; // totalDamage = totalDamage + power 
-	float multiplier{1.0}; // totalDamage * , power *
+	float TDMultiplier{1.0}; // totalDamage *
+	float playerMultiplier{0.0}; //attack, heal ,defense * etc
+	std::string referenceStatus{ "none" }; //totalDamage, defense,attack, maxHp etc
 	int hpCost{0}; //berserker
 	int mpCost{0};
 	int activeTime{1}; // active passive skill time(turn)
 	int turn{1}; // CT: turn
 	int levelReq{1}; // level required
 	int enemyCnt{1}; // attack anemy number count (enemy 1, 2, 3)
+	bool passiveActive{false}; //true == active / false == passive , turn을 확인하는 문구를 넣기 위함.
 	debuffStatus debuff; //debuff
 };
 
@@ -28,7 +31,7 @@ enum class commonSkill {
 };
 enum class warriorSkill {
 	//lv2
-	strength = 2, // attack * 1.3 , 3turn
+	strength = 2, // attack * 1.2 , 3turn
 	doubleAttack, // totalDamage = 2*(dmgcalculator(attack = attack * 0.8)) 
 	//lv3 
 	defenseUp, // defense += defense * 1.2

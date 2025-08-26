@@ -9,6 +9,7 @@
 #include <random>
 #include <algorithm> // std::max
 #include <memory> // smart pointer
+#include<string>
 
 using std::cout;
 using std::endl;
@@ -84,26 +85,18 @@ void battle::battleStatus() {
 void battle::playerTurn() {
 	ui.playerTurnUI();
 	bool criticalYN = false; //크리티컬인지 아닌지 확인
-	int attack = 0; //스킬 데미지도 여기로 값을 줘야해서 do 밖에 빼서 씀
-	int criattack = 0;
+	std::uniform_int_distribution<unsigned int> dmg(pattack - 2, pattack + 1);//데미지
+	std::uniform_real_distribution<float> randomDmg(0.05, 0.1);//데미지에 더해줄 %난수
+	std::uniform_int_distribution<unsigned int> cri(1, 100); //크리티컬 계산
+	int criticalLine = cri(gen);
+	int damage = dmg(gen);
+	float randomDamage = randomDmg(gen);
+	int attack = static_cast<int>(damage + (damage * (damage * randomDamage))); // 난수화 데미지
+	int criattack = static_cast<int>(attack * 1.3);
 	 do{
 		 battleselect = inputCheck(1,3);
 		if (battleselect == 1) { // 1. 공격 2. 방어 3.스킬
-			std::uniform_int_distribution<unsigned int> dmg(pattack-2, pattack +1);//데미지
-			std::uniform_real_distribution<float> randomDmg(0.05, 0.1);//데미지에 더해줄 %난수
-			std::uniform_int_distribution<unsigned int> cri(1, 100); //크리티컬 계산
-			int criticalLine = cri(gen);
-			int damage = dmg(gen);
-			float randomDamage = randomDmg(gen);
-			attack = static_cast<int>(damage + (damage * (damage * randomDamage))); // 난수화 데미지
-			criattack = static_cast<int>(attack * 1.3);
-			if (criticalLine <= p->getCritical()) { // 크리티컬 시 1.3배 데미지
-				criticalYN = true;
-				ehp = e->enemyTakeDamage(ehp, criattack); // 소수점 이하 버림
-			}
-			else  {
-				ehp = e->enemyTakeDamage(ehp, attack);
-			}
+			attackEnemy(criticalYN,criticalLine ,criattack, attack);
 		}
 
 		if (battleselect == 3) { //스킬창
@@ -117,6 +110,7 @@ void battle::playerTurn() {
 				}
 			}
 			skillSelect = inputCheck(1, skSize) -1;
+			getSkillSelect(skillSelect, skill);
 			
 			
 			/*
@@ -208,3 +202,51 @@ int battle::inputCheck(int min, int max) { //battleselect, skillselect 구분 �
 		cout << "do not imoport. retry please" << endl;
 	}
 } 
+
+void battle::getSkillSelect(int skillSelect, std::vector<skill> const& skill) {
+	if (skill[skillSelect].passiveActive == false) {
+		passiveSkill(skillSelect, skill);
+	}
+	else {
+		activeSkill(skillSelect, skill);
+	}
+	
+}
+
+void battle::passiveSkill(int skillSelect, std::vector<skill> const& skill) { //false
+	if (skill[skillSelect].referenceStatus == "attack") {
+	
+	}
+	else if(skill[skillSelect].referenceStatus == "defense") {
+
+	}
+
+}
+
+void battle::activeSkill(int skillSelect, std::vector<skill> const& skill) { //true
+	if (skill[skillSelect].referenceStatus == "totalDamage") {
+		
+	}
+	else if (skill[skillSelect].referenceStatus == "maxHp") {
+
+	}
+	else if (skill[skillSelect].referenceStatus == "playerDebuff") {
+
+	}
+	else if (skill[skillSelect].referenceStatus == "totalDamage&attack") {
+
+	}
+	else if (skill[skillSelect].referenceStatus == "defense") {
+
+	}
+}
+
+void battle::attackEnemy(bool criticalYN,int criticalLine ,int criattack, int attack) {
+	if (criticalLine <= p->getCritical()) { // 크리티컬 시 1.3배 데미지
+		criticalYN = true;
+		ehp = e->enemyTakeDamage(ehp, criattack); // 소수점 이하 버림
+	}
+	else {
+		ehp = e->enemyTakeDamage(ehp, attack);
+	}
+}
