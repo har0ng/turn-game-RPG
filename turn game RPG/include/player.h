@@ -35,8 +35,8 @@ private:
 	std::vector<skill> skills; //스킬 목록
 	playerStatusSnapShot beforePlayer; //전투 시작전 상태(레벨업 비교)
 	playerStatusSnapShot afterPlayer; //전투 후 상태 데이터(레벨업 비교)
-	playerStatusSnapShot battleStatus; // 매 턴 갱신되는 상태 (버프 미적용 스텟)
-	playerStatusSnapShot turnStatus;   // 매 턴 갱신되는 상태 (버프 적용 스텟)
+	playerStatusSnapShot battlePlayer; // 매 턴 갱신되는 상태 (버프 미적용 스텟)
+	playerStatusSnapShot turnPlayer;   // 매 턴 갱신되는 상태 (버프 적용 스텟)
 	debuffStatus debuff; //디버프 값 설정
 	referenceStatus reference; //player의 skill 행위의 목적성 확인
 public:
@@ -57,8 +57,8 @@ public:
 	std::vector<skill> getSkills() const; // 스킬 목록
 	playerStatusSnapShot getBeforePlayer() const; //전투 시작전 상태(레벨업 비교)
 	playerStatusSnapShot getAfterPlayer() const; //전투 후 상태 데이터(레벨업 비교)
-	playerStatusSnapShot getBattleStatus() const; // 매 턴 갱신되는 상태 (버프 미적용 스텟)
-	playerStatusSnapShot getTurnStatus() const;   // 매 턴 갱신되는 상태 (버프 적용 스텟)
+	playerStatusSnapShot getBattlePlayer() const; // 매 턴 갱신되는 상태 (버프 미적용 스텟)
+	playerStatusSnapShot getTurnPlayer() const;   // 매 턴 갱신되는 상태 (버프 적용 스텟)
 	
 	debuffStatus getDebuff() const; //디버프 목록
 
@@ -76,8 +76,8 @@ public:
 	void setCritical(int cri);
 	void setBeforePlayer();
 	void setAfterPlayer();
-	void setBattleStatus();  
-	void setTurnStatus();  
+	void setBattlePlayer();
+	void setTurnPlayer();
 	void setDebuff(int deffnum);
 	
 

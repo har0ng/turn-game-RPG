@@ -32,6 +32,8 @@ player::player() :player_health(30)
 	setBeforePlayer(); /*구조체의 내용을 들고올려면 스코프 안에서 set을 통해 복사해오는게 편함. 
 					   const 변수 같은게 없기에 이니셜라이저 안해도 됌*/
 	setAfterPlayer();
+	setTurnPlayer();
+	setBattlePlayer();
 	initSkills();       // 스킬 벡터 채우기
 } //initializing
 
@@ -81,11 +83,11 @@ playerStatusSnapShot player::getBeforePlayer() const {
 playerStatusSnapShot player::getAfterPlayer() const {
 	return afterPlayer;
 }
-playerStatusSnapShot player::getBattleStatus() const{
-	return battleStatus;
+playerStatusSnapShot player::getBattlePlayer() const{
+	return battlePlayer;
 }
-playerStatusSnapShot player::getTurnStatus() const{
-	return turnStatus;
+playerStatusSnapShot player::getTurnPlayer() const{
+	return turnPlayer;
 }
 debuffStatus player::getDebuff() const {
 	return debuff;
@@ -151,31 +153,31 @@ void player::setAfterPlayer() {
 	afterPlayer.agility = agility;
 	afterPlayer.critical = critical;
 }
-void player::setBattleStatus() { // 매 턴 갱신되는 상태 (버프 미적용 스텟)
-	beforeBattleStatus.health = player_health;
-	beforeBattleStatus.current_health = player_current_health;
-	beforeBattleStatus.attack = basic_attack;
-	beforeBattleStatus.defense = basic_defense;
-	beforeBattleStatus.level = level;
-	beforeBattleStatus.level_exp = level_exp;
-	beforeBattleStatus.now_exp = now_exp;
-	beforeBattleStatus.mana = mana;
-	beforeBattleStatus.current_mana = current_mana;
-	beforeBattleStatus.agility = agility;
-	beforeBattleStatus.critical = critical;
+void player::setBattlePlayer() { // 매 턴 갱신되는 상태 (버프 미적용 스텟)
+	battlePlayer.health = player_health;
+	battlePlayer.current_health = player_current_health;
+	battlePlayer.attack = basic_attack;
+	battlePlayer.defense = basic_defense;
+	battlePlayer.level = level;
+	battlePlayer.level_exp = level_exp;
+	battlePlayer.now_exp = now_exp;
+	battlePlayer.mana = mana;
+	battlePlayer.current_mana = current_mana;
+	battlePlayer.agility = agility;
+	battlePlayer.critical = critical;
 }
-void player::setTurnStatus() { // 매 턴 갱신되는 상태 (버프 적용 스텟)
-	beforeTurnStatus.health = player_health;
-	beforeTurnStatus.current_health = player_current_health;
-	beforeTurnStatus.attack = basic_attack;
-	beforeTurnStatus.defense = basic_defense;
-	beforeTurnStatus.level = level;
-	beforeTurnStatus.level_exp = level_exp;
-	beforeTurnStatus.now_exp = now_exp;
-	beforeTurnStatus.mana = mana;
-	beforeTurnStatus.current_mana = current_mana;
-	beforeTurnStatus.agility = agility;
-	beforeTurnStatus.critical = critical;
+void player::setTurnPlayer() { // 매 턴 갱신되는 상태 (버프 적용 스텟)
+	turnPlayer.health = player_health;
+	turnPlayer.current_health = player_current_health;
+	turnPlayer.attack = basic_attack;
+	turnPlayer.defense = basic_defense;
+	turnPlayer.level = level;
+	turnPlayer.level_exp = level_exp;
+	turnPlayer.now_exp = now_exp;
+	turnPlayer.mana = mana;
+	turnPlayer.current_mana = current_mana;
+	turnPlayer.agility = agility;
+	turnPlayer.critical = critical;
 }
 void player::setDebuff(int debuffnum) {
 	debuff = static_cast<debuffStatus>(debuffnum);

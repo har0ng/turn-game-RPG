@@ -50,8 +50,10 @@ battle::battle(unique_ptr<player> _p , unique_ptr<enemy> _e)
 };
 
 void battle::startBattle() { //배틀 시작
+	p->setBeforePlayer(); //전투 시작전 상태(레벨업 비교)
 	while (cphp > 0 && ehp > 0) { //체력이 0 이하가 되는 순간 종료
-		p->setBeforePlayer(); //전투 상태 beforeTurnStatus 갱신 =====
+		p->setBattlePlayer(); // (버프 미적용 스텟)
+		p->setTurnPlayer();	  // (버프 적용 스텟)
 		battleStatus(); //유저와 적의 상황(체력 공격력 등)
 		playerTurn(); //유저 턴
 		if (ehp <= 0) { //무승부 방지
@@ -68,7 +70,7 @@ void battle::startBattle() { //배틀 시작
 	p->setAfterPlayer(); //전투 후 플레이어 정보 저장
 
 	if (p->getBeforePlayer().level != p->getAfterPlayer().level) { //레벨 업을 했다면
-		ui.showStatusChange(p->getBeforePlayer(), p->getAfterPlayer()); // 능력치 변화 보여주기
+		ui.showStatusChange(p->getBattlePlayer(), p->getAfterPlayer()); // 능력치 변화 보여주기
 		ui.enterToContinue(); //엔터 누르면 넘어가는 기능
 	}
 }
@@ -234,7 +236,7 @@ void battle::getSkillSelect(int skillSelect, std::vector<skill> const& skill, at
 		cout << "Error : skillReferenceStatus is none" << endl; //디버그용 릴리스 넘어갈 떄 반드시 삭제
 		return;
 	case (int)referenceStatus::attack:
-		ui.executeSkill(pattack - p->getBeforePlayer().attack, skill[skillSelect].activeTime);
+		ui.executeSkill(pattack - p->getBattlePlayer().attack, skill[skillSelect].activeTime);
 		return;
 	case (int)referenceStatus::defense:
 		return;
@@ -322,3 +324,7 @@ void battle::skAtkEffect(int hpCost, int mpCost, int activeTime, int turn) {
 		}
 	}
 }
+
+//버프를 쓸 때 battlePlayer에는 버프 적용 x , turnPlayer 엔 버프 적용 O
+//만약 레벨업을 한다면 battlePlayer를 기준으로 보여주기.
+//모든 스테이터스에서 버프를 통한 강화된 스테이터스를 빼버리고 보여주면 됨.
