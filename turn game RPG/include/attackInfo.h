@@ -2,9 +2,9 @@
 #pragma once
 
 struct attackInfo { //player
-	bool criticalYN;
-	int criticalLine;
-	int damage;
-	int attack;
-	int criattack;
+	bool criticalYN{ false };
+	int criticalLine{ 0 };
+	int damage{ 0 };
+	int attack{ 0 };
+	int criattack{ 0 };
 };

@@ -83,32 +83,34 @@ void battle::battleStatus() {
 }	
 
 void battle::playerTurn() {
-	ui.playerTurnUI();
 	attackInfo res = atkInfo();
-	 do{
-		 battleselect = inputCheck(1,3);
+	while (true) {
+		ui.playerTurnUI();
+		battleselect = inputCheck(1, 3);
 		if (battleselect == 1) { // 1. 공격 2. 방어 3.스킬
-			attackEnemy(res.criticalYN, res.criticalLine , res.criattack, res.attack);
+			attackEnemy(res.criticalYN, res.criticalLine, res.criattack, res.attack);
+			break;
 		}
-
-		if (battleselect == 3) { //스킬창
+		else if (battleselect == 2) { // 방어
+			break;
+		}
+		else if (battleselect == 3) { //스킬창
 			const auto& skill = p->getSkills(); //heal, powerStrike, antiDebuff가 나옴
 			int skSize = 0;
-			for (const auto& sk : skill) {  
+			for (const auto& sk : skill) {
 				if (level >= (int)sk.levelReq) {
 					skSize++;
 					ui.showSkill(skSize, sk.charactorClass, sk.name, sk.hpCost,
-								 sk.mpCost, sk.activeTime, sk.turn, sk.enemyCnt);
+						sk.mpCost, sk.activeTime, sk.turn, sk.enemyCnt);
 				}
 			}
 			ui.exitSkill(0);
 			skillSelect = inputCheck(1, skSize) - 1;
 			if (skillSelect == -1) {
-				// 왜턴이 넘어가버리는데 크아악
+				continue;
 			}
 			getSkillSelect(skillSelect, skill, res);
-			
-			
+			break;
 			/*
 			08/22 1636 -> 08/25
 				스킬을 적중 시켰을 때 그 디버프가 로그와 디버프의 상황이 남도록 만들어야함.
@@ -118,8 +120,7 @@ void battle::playerTurn() {
 
 
 		}
-	 } while (battleselect != 1 && battleselect != 2 && battleselect != 3);
-
+	}
 	ui.playerTurn(cphp, pdefense, battleselect, res.attack, res.criattack, res.criticalYN);//log를 불러오기위해 log에서 필요로 하는 값 다 넘겨주기
 }
 
