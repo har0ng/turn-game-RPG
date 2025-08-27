@@ -88,7 +88,7 @@ void battle::playerTurn() {
 		ui.playerTurnUI();
 		battleselect = inputCheck(1, 3);
 		if (battleselect == 1) { // 1. 공격 2. 방어 3.스킬
-			attackEnemy(res.criticalYN, res.criticalLine, res.criattack, res.attack);
+			attackEnemy(res.criticalYN, res.criattack, res.attack);
 			break;
 		}
 		else if (battleselect == 2) { // 방어
@@ -101,25 +101,42 @@ void battle::playerTurn() {
 				if (level >= (int)sk.levelReq) {
 					skSize++;
 					ui.showSkill(skSize, sk.charactorClass, sk.name, sk.hpCost,
-						sk.mpCost, sk.activeTime, sk.turn, sk.enemyCnt);
+						sk.mpCost, current_mana, sk.activeTime, sk.turn, sk.enemyCnt);
 				}
 			}
 			ui.exitSkill(0);
-			skillSelect = inputCheck(1, skSize) - 1;
-			if (skillSelect == -1) {
+
+			bool skillCheck = false;
+			while (true) {
+				skillSelect = inputCheck(1, skSize) - 1;
+				if (skillSelect == -1) {
+					break;
+				}
+				else {
+					if (current_mana < skill[skillSelect].mpCost) {
+						ui.skillMpcostRetry();
+						continue;
+					}
+					getSkillSelect(skillSelect, skill, res);
+					skillCheck = true;
+					break;
+				}
+			}
+			if (skillCheck == false) {
 				continue;
 			}
-			getSkillSelect(skillSelect, skill, res);
-			break;
 			/*
 			08/22 1636 -> 08/25
 				스킬을 적중 시켰을 때 그 디버프가 로그와 디버프의 상황이 남도록 만들어야함.
 				레벨 업 했을 때 얻는 스킬 UI추가
 				스킬 마나가 없을 때 못써지게 만들기
+
+
+			
+				스킬 써졌을 때 스킬 써졌다고 UI 추가
 			*/
-
-
 		}
+		break;
 	}
 	ui.playerTurn(cphp, pdefense, battleselect, res.attack, res.criattack, res.criticalYN);//log를 불러오기위해 log에서 필요로 하는 값 다 넘겨주기
 }
@@ -212,44 +229,62 @@ void battle::getSkillSelect(int skillSelect, std::vector<skill> const& skill, at
 	else {
 		activeSkill(skillSelect, skill, res);
 	}
+
+	switch ((int)skill[skillSelect].referenceStatus){
+	case (int)referenceStatus::none:
+		cout << "Error : skillReferenceStatus is none" << endl; //디버그용 릴리스 넘어갈 떄 반드시 삭제
+		return;
+	case (int)referenceStatus::attack:
+		ui.executeSkill(pattack - p->getBeforePlayer().attack, skill[skillSelect].activeTime);
+		return;
+	case (int)referenceStatus::defense:
+		return;
+	case (int)referenceStatus::totalDamage:
+		ui.executeSkill(res.attack, res.criattack, res.criticalYN, skill[skillSelect].name);
+		return;
+	case (int)referenceStatus::maxHp:
+		return;
+	case (int)referenceStatus::playerDebuff:
+		return;
+	case (int)referenceStatus::tatalDamageAndAttack:
+		return;
+	default:
+		return;
+	}
 	
 }
 
 void battle::passiveSkill(int skillSelect, std::vector<skill> const& skill, attackInfo res) { //false
-	if (skill[skillSelect].referenceStatus == "attack") {
-	
+	if ((int)skill[skillSelect].referenceStatus == (int)referenceStatus::attack) {
+		p->setBasic_attack(static_cast<int>(pattack + (pattack * skill[skillSelect].playerMultiplier)));
+		pattack = p->getBasic_attack();
 	}
-	else if(skill[skillSelect].referenceStatus == "defense") {
+	else if((int)skill[skillSelect].referenceStatus == (int)referenceStatus::defense) {
 
 	}
-
 }
 
 void battle::activeSkill(int skillSelect, std::vector<skill> const& skill, attackInfo res) { //true
-	if (skill[skillSelect].referenceStatus == "totalDamage") {
-		attackEnemy(res.criticalYN, res.criticalLine,
+	if ((int)skill[skillSelect].referenceStatus == (int)referenceStatus::totalDamage) {
+		attackEnemy(res.criticalYN,
 					static_cast<int>(res.criattack * skill[skillSelect].TDMultiplier),
 					static_cast<int>(res.attack * skill[skillSelect].TDMultiplier));
 		skAtkEffect(skill[skillSelect].hpCost, skill[skillSelect].mpCost,
 					skill[skillSelect].activeTime, skill[skillSelect].turn);
 	}
-	else if (skill[skillSelect].referenceStatus == "maxHp") {
+	else if ((int)skill[skillSelect].referenceStatus == (int)referenceStatus::maxHp) { 
 
 	}
-	else if (skill[skillSelect].referenceStatus == "playerDebuff") {
+	else if ((int)skill[skillSelect].referenceStatus == (int)referenceStatus::playerDebuff) { 
 
 	}
-	else if (skill[skillSelect].referenceStatus == "totalDamage&attack") {
-
-	}
-	else if (skill[skillSelect].referenceStatus == "defense") {
+	else if ((int)skill[skillSelect].referenceStatus == (int)referenceStatus::tatalDamageAndAttack) {
 
 	}
 }
 
-void battle::attackEnemy(bool criticalYN,int criticalLine ,int criattack, int attack) {
-	if (criticalLine <= p->getCritical()) { // 크리티컬 시 1.3배 데미지
-		criticalYN = true;
+void battle::attackEnemy(bool criticalYN,int criattack, int attack) {
+	if (criticalYN == true) { // 크리티컬 시 1.3배 데미지
 		ehp = e->enemyTakeDamage(ehp, criattack); // 소수점 이하 버림
 	}
 	else {
@@ -264,6 +299,9 @@ attackInfo battle::atkInfo() {
 	std::uniform_int_distribution<unsigned int> cri(1, 100);
 
 	attackData.criticalLine = cri(gen);
+	if (attackData.criticalLine <= p->getCritical()) {
+		attackData.criticalYN = true;
+	}
 	int damage = dmg(gen);
 	float randomDamage = randomDmg(gen);
 	attackData.attack = static_cast<int>(damage + (damage * (damage * randomDamage)));
@@ -273,11 +311,8 @@ attackInfo battle::atkInfo() {
 }
 
 void battle::skAtkEffect(int hpCost, int mpCost, int activeTime, int turn) {
-	if (hpCost == 0) {
+	if (hpCost == 0) {//버서커 제외 모든 클래스 동일
 		p->setCurrent_mana(std::max(0, current_mana - mpCost));
 		current_mana = p->getCurrent_mana();
-	}
-	while (this->turn <= turn + this->turn) {
-		
 	}
 }

@@ -4,7 +4,6 @@
 #include <vector>
 #include <string>
 #include "skillEnum.h"
-#include "debuffEnum.h"
 
 struct playerStatusSnapShot { //before ,after 저장 (저장, 스테이터스 상태변화 등등 많이 쓰임)
 	int health{0};
@@ -37,6 +36,7 @@ private:
 	playerStatusSnapShot beforePlayer; // 특정 시기 이전 플레이어 정보(저장, 레벨업 등)
 	playerStatusSnapShot afterPlayer; // 특정 시기 이후 플레이어 정보(저장, 레벨업 등)
 	debuffStatus debuff; //디버프 값 설정
+	referenceStatus reference; //player의 skill 행위의 목적성 확인
 public:
 	player();//player 체력 값 초기화
 	virtual ~player() = default; //스마트 포인터가 있더라도 가상 쪽을 지워주지 않으면 override 한 것들이 안지워짐
@@ -86,8 +86,11 @@ public:
 	//json
 	void skillClear(); //스킬 초기화
 	void roadSkillsToJson(); //직업에 필요한 스킬들을 json에서 빼오기 위해 필요
-	debuffStatus stringToDebuff(const std::string& str); // //string → enum 변환용
+	debuffStatus stringToDebuff(const std::string& str); //string → enum 변환용
 	std::string debuffToString(debuffStatus debuff); //enum -> string 변환용
+	referenceStatus stringToReference(const std::string& str); //string → enum 변환용
+	std::string referenceToString(referenceStatus reference); //enum -> string 변환용
+
 };
 
 //전직은 get, set을 이용해 자식클래스에서 새로운 변수 안만들고 부모 활용.

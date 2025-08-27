@@ -3,6 +3,7 @@
 #pragma once
 #include <string>
 #include "debuffEnum.h"
+#include "skillReferenceStatus.h"
 
 struct skill {
 	std::string charactorClass{""};  // class
@@ -11,7 +12,7 @@ struct skill {
 	int power{0}; // totalDamage = totalDamage + power 
 	float TDMultiplier{1.0}; // totalDamage *
 	float playerMultiplier{0.0}; //attack, heal ,defense * etc
-	std::string referenceStatus{ "none" }; //totalDamage, defense,attack, maxHp etc
+	referenceStatus referenceStatus; //totalDamage, defense,attack, maxHp etc
 	int hpCost{0}; //berserker
 	int mpCost{0};
 	int activeTime{1}; // active passive skill time(turn)

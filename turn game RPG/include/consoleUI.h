@@ -20,8 +20,11 @@ public:
     void playerTurnUI();
     void playerTurn(int cphp, int pdefense,int battleselect,int attack, int criattack, bool criticalYN);
     void showSkill(int skillSize, std::string charactorClass, std::string name, int hpCost, 
-                   int mpCost, int activeTime, int turn, int enemyCnt);
+                   int mpCost,int current_mana, int activeTime, int turn, int enemyCnt);
     void exitSkill(int back);
+    void executeSkill(int pattack, int activeTime);
+    void executeSkill(int attack, int criattack, bool criticalYN, std::string name);
+    void skillMpcostRetry(); //스킬 마나 부족이니 다시
     void enemyTurn(int enemyAction, int pdefense, int eattack, int battleselect);
     void battleEnd(int cphp);
     void levelup_selectClassUI();
@@ -31,5 +34,4 @@ public:
                              ,int mana, int current_mana);
     void enterToContinue();
     void showStatusChange(playerStatusSnapShot beforePlayer, playerStatusSnapShot afterPlayer);
-    void activeSkillOfReference();
 };  

@@ -25,8 +25,9 @@ player::player() :player_health(30)
 , level_exp(10)
 , now_exp(0)
 , agility(1)
-, critical(1)
+, critical(99)
 , debuff(debuffStatus::none)
+, reference(referenceStatus::none)
 {
 	setBeforePlayer(); /*구조체의 내용을 들고올려면 스코프 안에서 set을 통해 복사해오는게 편함. 
 					   const 변수 같은게 없기에 이니셜라이저 안해도 됌*/
@@ -193,7 +194,7 @@ void player::initSkills() {
 			sk.power = s.value("power", 0);
 			sk.TDMultiplier = s.value("TDMultiplier", 1.0);
 			sk.playerMultiplier = s.value("playerMultiplier", 0.0);
-			sk.referenceStatus = s.value("referenceStatus", "none");
+			sk.referenceStatus = stringToReference(s.value("referenceStatus", "none"));
 			sk.hpCost = s.value("hpCost", 0);
 			sk.mpCost = s.value("mpCost", 0);
 			sk.activeTime = s.value("activeTime", 1);
@@ -264,6 +265,36 @@ std::string player::debuffToString(debuffStatus debuff){ //enum -> string 변환
 		return "defDown";
 	case debuffStatus::atkDown:
 		return "atkDown";
+	default:
+		return "none";
+	}
+}
+referenceStatus player::stringToReference(const std::string& str){
+	if (str == "none") { return referenceStatus::none; }
+	if (str == "attack") { return referenceStatus::attack; }
+	if (str == "defense") { return referenceStatus::defense; }
+	if (str == "totalDamage") { return referenceStatus::totalDamage; }
+	if (str == "maxHp") { return referenceStatus::maxHp; }
+	if (str == "playerDebuff") { return referenceStatus::playerDebuff; }
+	if (str == "tatalDamageAndAttack") { return referenceStatus::tatalDamageAndAttack; }
+	return referenceStatus::none;
+}
+std::string player::referenceToString(referenceStatus reference){
+	switch (reference){
+	case referenceStatus::none:
+		return "none";
+	case referenceStatus::attack:
+		return "attack";
+	case referenceStatus::defense:
+		return "defense";
+	case referenceStatus::totalDamage:
+		return "totalDamage";
+	case referenceStatus::maxHp:
+		return "maxHp";
+	case referenceStatus::playerDebuff:
+		return "playerDebuff";
+	case referenceStatus::tatalDamageAndAttack:
+		return "tatalDamageAndAttack";
 	default:
 		return "none";
 	}

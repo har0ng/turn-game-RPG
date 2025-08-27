@@ -74,7 +74,7 @@
 	 "power": 0,   
 	 "TDmultiplier": 2.0,
 	 "playerMultiplier":0.8,
-	 "referenceStatus":"totalDamage&attack",
+	 "referenceStatus":"totalDamageAndAttack",
 	 "hpCost": 2,
 	 "mpCost": 3, 
 	 "activeTime": 1,

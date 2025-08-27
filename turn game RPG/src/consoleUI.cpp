@@ -52,11 +52,16 @@ void consoleUI::playerTurn(int cphp, int pdefense, int battleselect, int attack,
 
 
 void consoleUI::showSkill(int skillSize, std::string charactorClass, std::string name, int hpCost, 
-                          int mpCost, int activeTime, int turn, int enemyCnt) {
-    if (charactorClass != "warriorB") {
+                          int mpCost, int current_mana, int activeTime, int turn, int enemyCnt) {
+    if (charactorClass != "warriorB" && current_mana >= mpCost) {
         cout << skillSize << ". "
             << std::left << std::setw(20) << name
             << " MP: " << mpCost << endl;
+    }
+    else if (charactorClass != "warriorB" && current_mana < mpCost) {
+        cout << skillSize << ". "
+            << std::left << std::setw(20) << name
+            << " MP: " << "Mp不足" << endl;
     }
 }
 
@@ -64,6 +69,28 @@ void consoleUI::exitSkill(int back) {
     cout << endl;
     cout << endl;
     cout << back << ". " << "back" << endl;
+}
+
+void consoleUI::executeSkill(int pattack, int activeTime){
+    cout << activeTime << "turnの間powerが" << pattack << "くらいあがります。" << endl;
+}
+
+void consoleUI::executeSkill(int attack, int criattack, bool criticalYN, std::string name){
+    cout << name << "を使用しました。" << endl;
+    if (criticalYN == false) {
+        cout << "attack enemy!" << endl;
+        cout << "enemy takes " << attack << " damage." << endl;
+    }
+    else if (criticalYN == true) {
+        cout << "attack enemy!" << endl;
+        cout << "critical!!" << "\n enemy takes " << criattack << " damage." << endl;
+    }
+}
+
+void consoleUI::skillMpcostRetry(){
+    cout << "MPがないです！もう一度入力してください。" << endl;
+    cout << endl;
+    cout << endl;
 }
 
 
