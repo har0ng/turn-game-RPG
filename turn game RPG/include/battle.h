@@ -53,6 +53,7 @@ public:
 	void getSkillSelect(int skillSelect, std::vector<skill> const& skill, attackInfo attackData); //스킬 뭐쓰는지 입력 받아오기
 	void passiveSkill(int skillSelect, std::vector<skill> const& skill, attackInfo attackData); //passive 스킬 처리
 	void activeSkill(int skillSelect, std::vector<skill> const& skill, attackInfo attackData); //acrive 스킬 처리
+
 	void attackEnemy(bool criticalYN,int criattack, int attack); //플레이어가 에너미 공격
 	attackInfo atkInfo();
 	void skAtkEffect(int hpCost, int mpCost, int activeTime, int turn);

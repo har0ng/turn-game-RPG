@@ -51,8 +51,7 @@ battle::battle(unique_ptr<player> _p , unique_ptr<enemy> _e)
 
 void battle::startBattle() { //배틀 시작
 	while (cphp > 0 && ehp > 0) { //체력이 0 이하가 되는 순간 종료
-		p->setBeforePlayer(); //전투 전 플레이어 정보 저장
-
+		p->setBeforePlayer(); //전투 상태 beforeTurnStatus 갱신 =====
 		battleStatus(); //유저와 적의 상황(체력 공격력 등)
 		playerTurn(); //유저 턴
 		if (ehp <= 0) { //무승부 방지
@@ -255,9 +254,12 @@ void battle::getSkillSelect(int skillSelect, std::vector<skill> const& skill, at
 }
 
 void battle::passiveSkill(int skillSelect, std::vector<skill> const& skill, attackInfo res) { //false
+
 	if ((int)skill[skillSelect].referenceStatus == (int)referenceStatus::attack) {
 		p->setBasic_attack(static_cast<int>(pattack + (pattack * skill[skillSelect].playerMultiplier)));
 		pattack = p->getBasic_attack();
+		skAtkEffect(skill[skillSelect].hpCost, skill[skillSelect].mpCost,
+			skill[skillSelect].activeTime, skill[skillSelect].turn);
 	}
 	else if((int)skill[skillSelect].referenceStatus == (int)referenceStatus::defense) {
 
@@ -314,5 +316,9 @@ void battle::skAtkEffect(int hpCost, int mpCost, int activeTime, int turn) {
 	if (hpCost == 0) {//버서커 제외 모든 클래스 동일
 		p->setCurrent_mana(std::max(0, current_mana - mpCost));
 		current_mana = p->getCurrent_mana();
+		// 버프 지속시간이 끝나면 원래 스탯으로 되돌리기
+		if (this->turn == turn + activeTime) {
+
+		}
 	}
 }

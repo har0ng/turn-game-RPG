@@ -25,7 +25,7 @@ player::player() :player_health(30)
 , level_exp(10)
 , now_exp(0)
 , agility(1)
-, critical(99)
+, critical(1)
 , debuff(debuffStatus::none)
 , reference(referenceStatus::none)
 {
@@ -81,6 +81,12 @@ playerStatusSnapShot player::getBeforePlayer() const {
 playerStatusSnapShot player::getAfterPlayer() const {
 	return afterPlayer;
 }
+playerStatusSnapShot player::getBattleStatus() const{
+	return battleStatus;
+}
+playerStatusSnapShot player::getTurnStatus() const{
+	return turnStatus;
+}
 debuffStatus player::getDebuff() const {
 	return debuff;
 }
@@ -119,7 +125,7 @@ void player::setAgility(int agi) {
 void player::setCritical(int cri) {
 	critical = cri;
 }
-void player::setBeforePlayer() {
+void player::setBeforePlayer() { // 기존 setBeforePlayer는 전투 중 버프용으로 사용
 	beforePlayer.health = player_health;
 	beforePlayer.current_health = player_current_health;
 	beforePlayer.attack = basic_attack;
@@ -144,6 +150,32 @@ void player::setAfterPlayer() {
 	afterPlayer.current_mana = current_mana;
 	afterPlayer.agility = agility;
 	afterPlayer.critical = critical;
+}
+void player::setBattleStatus() { // 매 턴 갱신되는 상태 (버프 미적용 스텟)
+	beforeBattleStatus.health = player_health;
+	beforeBattleStatus.current_health = player_current_health;
+	beforeBattleStatus.attack = basic_attack;
+	beforeBattleStatus.defense = basic_defense;
+	beforeBattleStatus.level = level;
+	beforeBattleStatus.level_exp = level_exp;
+	beforeBattleStatus.now_exp = now_exp;
+	beforeBattleStatus.mana = mana;
+	beforeBattleStatus.current_mana = current_mana;
+	beforeBattleStatus.agility = agility;
+	beforeBattleStatus.critical = critical;
+}
+void player::setTurnStatus() { // 매 턴 갱신되는 상태 (버프 적용 스텟)
+	beforeTurnStatus.health = player_health;
+	beforeTurnStatus.current_health = player_current_health;
+	beforeTurnStatus.attack = basic_attack;
+	beforeTurnStatus.defense = basic_defense;
+	beforeTurnStatus.level = level;
+	beforeTurnStatus.level_exp = level_exp;
+	beforeTurnStatus.now_exp = now_exp;
+	beforeTurnStatus.mana = mana;
+	beforeTurnStatus.current_mana = current_mana;
+	beforeTurnStatus.agility = agility;
+	beforeTurnStatus.critical = critical;
 }
 void player::setDebuff(int debuffnum) {
 	debuff = static_cast<debuffStatus>(debuffnum);

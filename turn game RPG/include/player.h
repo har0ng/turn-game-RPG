@@ -33,8 +33,10 @@ private:
 	int agility; //AGI, 회피율 , 안보여줄꺼임 
 	int critical; //CRI, 크리티컬 , 안보여줄꺼임
 	std::vector<skill> skills; //스킬 목록
-	playerStatusSnapShot beforePlayer; // 특정 시기 이전 플레이어 정보(저장, 레벨업 등)
-	playerStatusSnapShot afterPlayer; // 특정 시기 이후 플레이어 정보(저장, 레벨업 등)
+	playerStatusSnapShot beforePlayer; //전투 시작전 상태(레벨업 비교)
+	playerStatusSnapShot afterPlayer; //전투 후 상태 데이터(레벨업 비교)
+	playerStatusSnapShot battleStatus; // 매 턴 갱신되는 상태 (버프 미적용 스텟)
+	playerStatusSnapShot turnStatus;   // 매 턴 갱신되는 상태 (버프 적용 스텟)
 	debuffStatus debuff; //디버프 값 설정
 	referenceStatus reference; //player의 skill 행위의 목적성 확인
 public:
@@ -53,8 +55,11 @@ public:
 	int getAgility() const; // 회피율
 	int getCritical() const; // 크리티컬율
 	std::vector<skill> getSkills() const; // 스킬 목록
-	playerStatusSnapShot getBeforePlayer() const; //저장 전 혹은 싸움 전 플레이어 데이터
-	playerStatusSnapShot getAfterPlayer() const; //저장 후 혹은 싸움 후 플레이어 데이터
+	playerStatusSnapShot getBeforePlayer() const; //전투 시작전 상태(레벨업 비교)
+	playerStatusSnapShot getAfterPlayer() const; //전투 후 상태 데이터(레벨업 비교)
+	playerStatusSnapShot getBattleStatus() const; // 매 턴 갱신되는 상태 (버프 미적용 스텟)
+	playerStatusSnapShot getTurnStatus() const;   // 매 턴 갱신되는 상태 (버프 적용 스텟)
+	
 	debuffStatus getDebuff() const; //디버프 목록
 
 	//set
@@ -71,6 +76,8 @@ public:
 	void setCritical(int cri);
 	void setBeforePlayer();
 	void setAfterPlayer();
+	void setBattleStatus();  
+	void setTurnStatus();  
 	void setDebuff(int deffnum);
 	
 
