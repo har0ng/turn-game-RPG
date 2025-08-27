@@ -156,15 +156,15 @@ void player::setAfterPlayer() {
 void player::setBattlePlayer() { // 매 턴 갱신되는 상태 (버프 미적용 스텟)
 	battlePlayer.health = player_health;
 	battlePlayer.current_health = player_current_health;
-	battlePlayer.attack = basic_attack;
-	battlePlayer.defense = basic_defense;
+	battlePlayer.attack = getBeforePlayer().attack;
+	battlePlayer.defense = getBeforePlayer().defense;
 	battlePlayer.level = level;
 	battlePlayer.level_exp = level_exp;
 	battlePlayer.now_exp = now_exp;
 	battlePlayer.mana = mana;
 	battlePlayer.current_mana = current_mana;
-	battlePlayer.agility = agility;
-	battlePlayer.critical = critical;
+	battlePlayer.agility = getBeforePlayer().agility;
+	battlePlayer.critical = getBeforePlayer().critical;
 }
 void player::setTurnPlayer() { // 매 턴 갱신되는 상태 (버프 적용 스텟)
 	turnPlayer.health = player_health;

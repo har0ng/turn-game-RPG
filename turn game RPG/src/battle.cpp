@@ -52,8 +52,8 @@ battle::battle(unique_ptr<player> _p , unique_ptr<enemy> _e)
 void battle::startBattle() { //배틀 시작
 	p->setBeforePlayer(); //전투 시작전 상태(레벨업 비교)
 	while (cphp > 0 && ehp > 0) { //체력이 0 이하가 되는 순간 종료
-		p->setBattlePlayer(); // (버프 미적용 스텟)
 		p->setTurnPlayer();	  // (버프 적용 스텟)
+		p->setBattlePlayer(); // (버프 미적용 스텟)
 		battleStatus(); //유저와 적의 상황(체력 공격력 등)
 		playerTurn(); //유저 턴
 		if (ehp <= 0) { //무승부 방지
@@ -130,11 +130,11 @@ void battle::playerTurn() {
 			08/22 1636 -> 08/25
 				스킬을 적중 시켰을 때 그 디버프가 로그와 디버프의 상황이 남도록 만들어야함.
 				레벨 업 했을 때 얻는 스킬 UI추가
-				스킬 마나가 없을 때 못써지게 만들기
-
-
-			
-				스킬 써졌을 때 스킬 써졌다고 UI 추가
+				
+				싸움이 끝나면 버프가 없어지게 하고 afterPlayer에 저장 되야함.
+				액티브 스킬의 지속시간이 끝나면 싸움 도중에도 패시브가 비활성화 되어야함
+				스킬의 쿨타임 표시 및 쿨타임 내엔 스킬 사용 비활성화
+				UI를 통해 어느 스텟이 어떻게 높아져있고 몇턴 남았는지 battleStatus함수에 넣기.
 			*/
 		}
 		break;
@@ -324,7 +324,3 @@ void battle::skAtkEffect(int hpCost, int mpCost, int activeTime, int turn) {
 		}
 	}
 }
-
-//버프를 쓸 때 battlePlayer에는 버프 적용 x , turnPlayer 엔 버프 적용 O
-//만약 레벨업을 한다면 battlePlayer를 기준으로 보여주기.
-//모든 스테이터스에서 버프를 통한 강화된 스테이터스를 빼버리고 보여주면 됨.
