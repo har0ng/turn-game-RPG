@@ -24,6 +24,7 @@ public:
     void exitSkill(int back);
     void executeSkillAtk(int pattack, int activeTime);
     void executeSkillDef(int pdefense, int activeTime);
+    void executeSkill(int heal);
     void executeSkill(int attack, int criattack, bool criticalYN, std::string name);
     void skillMpcostRetry(); //스킬 마나 부족이니 다시
     void enemyTurn(int enemyAction, int pdefense, int eattack, int battleselect);

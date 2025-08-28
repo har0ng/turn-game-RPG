@@ -250,6 +250,7 @@ void battle::getSkillSelect(int skillSelect, std::vector<skill> const& skill, at
 		ui.executeSkill(res.attack, res.criattack, res.criticalYN, skill[skillSelect].name);
 		return;
 	case (int)referenceStatus::maxHp:
+		ui.executeSkill(static_cast<int>(php * 0.2));
 		return;
 	case (int)referenceStatus::playerDebuff:
 		return;
@@ -286,7 +287,9 @@ void battle::activeSkill(int skillSelect, std::vector<skill> const& skill, attac
 		skillCost(skill[skillSelect].hpCost, skill[skillSelect].mpCost);
 	}
 	else if ((int)skill[skillSelect].referenceStatus == (int)referenceStatus::maxHp) { 
-
+		p->setPlayer_current_health(std::min(p->getPlayer_health(), static_cast<int>(cphp + (php * 0.2))));
+		cphp = p->getPlayer_current_health();
+		skillCost(skill[skillSelect].hpCost, skill[skillSelect].mpCost);
 	}
 	else if ((int)skill[skillSelect].referenceStatus == (int)referenceStatus::playerDebuff) { 
 
@@ -327,6 +330,6 @@ void battle::skillCost(int hpCost, int mpCost) {
 	if (hpCost == 0) {//버서커 제외 모든 클래스 동일
 		p->setCurrent_mana(std::max(0, current_mana - mpCost));
 		current_mana = p->getCurrent_mana();
-		
 	}
 }
+

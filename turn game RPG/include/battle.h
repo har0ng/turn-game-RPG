@@ -57,4 +57,5 @@ public:
 	void attackEnemy(bool criticalYN,int criattack, int attack); //플레이어가 에너미 공격
 	attackInfo atkInfo();
 	void skillCost(int hpCost, int mpCost);
+
 };

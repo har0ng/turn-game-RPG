@@ -80,6 +80,10 @@ void consoleUI::executeSkillDef(int pdefense, int activeTime){
 
 }
 
+void consoleUI::executeSkill(int heal){
+    cout <<"HPを " << heal << " 回復しました。" << endl;
+}
+
 void consoleUI::executeSkill(int attack, int criattack, bool criticalYN, std::string name){
     cout << name << "を使用しました。" << endl;
     if (criticalYN == false) {
