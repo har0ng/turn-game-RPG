@@ -28,6 +28,9 @@ player::player() :player_health(30)
 , critical(1)
 , debuff(debuffStatus::none)
 , reference(referenceStatus::none)
+, activeBuffTurn(0)
+, buffAttack(0)
+, buffDefense(0)
 {
 	setBeforePlayer(); /*구조체의 내용을 들고올려면 스코프 안에서 set을 통해 복사해오는게 편함. 
 					   const 변수 같은게 없기에 이니셜라이저 안해도 됌*/
@@ -91,6 +94,15 @@ playerStatusSnapShot player::getTurnPlayer() const{
 }
 debuffStatus player::getDebuff() const {
 	return debuff;
+}
+int player::getActiveBuffTurn() const{
+	return activeBuffTurn;
+}
+int player::getBuffAttack() const{
+	return buffAttack;
+}
+int player::getBuffDefese() const{
+	return buffDefense;
 }
 
 //set
@@ -169,8 +181,8 @@ void player::setBattlePlayer() { // 매 턴 갱신되는 상태 (버프 미적�
 void player::setTurnPlayer() { // 매 턴 갱신되는 상태 (버프 적용 스텟)
 	turnPlayer.health = player_health;
 	turnPlayer.current_health = player_current_health;
-	turnPlayer.attack = basic_attack;
-	turnPlayer.defense = basic_defense;
+	turnPlayer.attack = basic_attack + buffAttack;
+	turnPlayer.defense = basic_defense + buffDefense;
 	turnPlayer.level = level;
 	turnPlayer.level_exp = level_exp;
 	turnPlayer.now_exp = now_exp;
@@ -332,4 +344,28 @@ std::string player::referenceToString(referenceStatus reference){
 	default:
 		return "none";
 	}
+}
+void player::resetBuffs() { //버프 삭제
+    turnPlayer = battlePlayer;
+    activeBuffTurn = 0;
+    buffAttack = 0;
+    buffDefense = 0;
+}
+
+
+void player::applyBuff(int atk, int def, int turn) {// 버프 적용
+    buffAttack = atk;
+    buffDefense = def;
+    activeBuffTurn = turn;
+}
+
+
+void player::decreaseBuffTurns() {// 매 턴 버프 감소
+    if (activeBuffTurn > 0) {
+        activeBuffTurn--;
+        if (activeBuffTurn <= 0) {
+            // 버프 턴 종료 시 초기화
+            resetBuffs();
+        }
+    }
 }

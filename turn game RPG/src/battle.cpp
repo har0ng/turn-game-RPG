@@ -49,9 +49,10 @@ battle::battle(unique_ptr<player> _p , unique_ptr<enemy> _e)
 	play = true;
 };
 
-void battle::startBattle() { //배틀 시작
+void battle::startBattle() { //배틀 시작	
 	p->setBeforePlayer(); //전투 시작전 상태(레벨업 비교)
 	while (cphp > 0 && ehp > 0) { //체력이 0 이하가 되는 순간 종료
+		p->decreaseBuffTurns(); //버프 삭제 카운터 다운
 		p->setTurnPlayer();	  // (버프 적용 스텟)
 		p->setBattlePlayer(); // (버프 미적용 스텟)
 		battleStatus(); //유저와 적의 상황(체력 공격력 등)
@@ -63,10 +64,11 @@ void battle::startBattle() { //배틀 시작
 	}
 	battleEnd(); // 전투 종료
 
+
 	if (p->getLevel() == 2 && p -> classChangeYN()){ // 2레벨 전직, 만약 전직했으면 안뜸
 		levelup_selectClass(); //전직
 	}
-
+	
 	p->setAfterPlayer(); //전투 후 플레이어 정보 저장
 
 	if (p->getBeforePlayer().level != p->getAfterPlayer().level) { //레벨 업을 했다면
@@ -79,8 +81,8 @@ void battle::battleStatus() {
 	std::uniform_int_distribution<unsigned int> enemyDamage(4, 7); //랜덤 범위 조정
 	eattack = enemyDamage(gen); //적의 공격력을 범위 내 초기화된 수로 랜덤화
 	turn++; //몇턴 째인지 셈
-	
-	ui.battleStatus(turn, php, cphp, pattack, pdefense, ehp, eattack, level, level_exp, now_exp, mana, current_mana, p->debuffToString(debuff)); //log를 불러오기위해 log에서 필요로 하는 값 다 넘겨주기
+	int a = p->getBuffAttack();
+	ui.battleStatus(turn, php, cphp, p->getTurnPlayer().attack, p->getTurnPlayer().defense, ehp, eattack, level, level_exp, now_exp, mana, current_mana, p->debuffToString(debuff)); //log를 불러오기위해 log에서 필요로 하는 값 다 넘겨주기
 }	
 
 void battle::playerTurn() {
@@ -131,8 +133,9 @@ void battle::playerTurn() {
 				스킬을 적중 시켰을 때 그 디버프가 로그와 디버프의 상황이 남도록 만들어야함.
 				레벨 업 했을 때 얻는 스킬 UI추가
 				
-				싸움이 끝나면 버프가 없어지게 하고 afterPlayer에 저장 되야함.
-				액티브 스킬의 지속시간이 끝나면 싸움 도중에도 패시브가 비활성화 되어야함
+				스킬이 제한시간 혹은 배틀이 끝난후 사라지긴 하지만
+				방어력 업과 공격력 업의 타임스탬프, 스테이터스 증가가 공유되고 있으며
+				하나가 꺼지면 둘다 꺼짐.
 				스킬의 쿨타임 표시 및 쿨타임 내엔 스킬 사용 비활성화
 				UI를 통해 어느 스텟이 어떻게 높아져있고 몇턴 남았는지 battleStatus함수에 넣기.
 			*/
@@ -167,6 +170,7 @@ void battle::enemyTurn() {
 
 void battle::battleEnd() {
 	ui.battleEnd(cphp);//log를 불러오기위해 log에서 필요로 하는 값 다 넘겨주기
+	p->resetBuffs(); // 버프 스테이터스를 버프가 없는 스테이터스로 전환
 	if (cphp <= 0) {
 		play = false;
 		exit(0);
@@ -236,7 +240,7 @@ void battle::getSkillSelect(int skillSelect, std::vector<skill> const& skill, at
 		cout << "Error : skillReferenceStatus is none" << endl; //디버그용 릴리스 넘어갈 떄 반드시 삭제
 		return;
 	case (int)referenceStatus::attack:
-		ui.executeSkill(pattack - p->getBattlePlayer().attack, skill[skillSelect].activeTime);
+		ui.executeSkill(p->getBuffAttack() + p->getTurnPlayer().attack - pattack, skill[skillSelect].activeTime);
 		return;
 	case (int)referenceStatus::defense:
 		return;
@@ -258,10 +262,9 @@ void battle::getSkillSelect(int skillSelect, std::vector<skill> const& skill, at
 void battle::passiveSkill(int skillSelect, std::vector<skill> const& skill, attackInfo res) { //false
 
 	if ((int)skill[skillSelect].referenceStatus == (int)referenceStatus::attack) {
-		p->setBasic_attack(static_cast<int>(pattack + (pattack * skill[skillSelect].playerMultiplier)));
-		pattack = p->getBasic_attack();
-		skAtkEffect(skill[skillSelect].hpCost, skill[skillSelect].mpCost,
-			skill[skillSelect].activeTime, skill[skillSelect].turn);
+		p->applyBuff(static_cast<int>(skill[skillSelect].playerMultiplier * pattack), 0, 
+					 skill[skillSelect].activeTime);
+		skillCost(skill[skillSelect].hpCost, skill[skillSelect].mpCost);
 	}
 	else if((int)skill[skillSelect].referenceStatus == (int)referenceStatus::defense) {
 
@@ -273,8 +276,7 @@ void battle::activeSkill(int skillSelect, std::vector<skill> const& skill, attac
 		attackEnemy(res.criticalYN,
 					static_cast<int>(res.criattack * skill[skillSelect].TDMultiplier),
 					static_cast<int>(res.attack * skill[skillSelect].TDMultiplier));
-		skAtkEffect(skill[skillSelect].hpCost, skill[skillSelect].mpCost,
-					skill[skillSelect].activeTime, skill[skillSelect].turn);
+		skillCost(skill[skillSelect].hpCost, skill[skillSelect].mpCost);
 	}
 	else if ((int)skill[skillSelect].referenceStatus == (int)referenceStatus::maxHp) { 
 
@@ -314,13 +316,10 @@ attackInfo battle::atkInfo() {
 	return attackData; // 구조체 통째로 반환
 }
 
-void battle::skAtkEffect(int hpCost, int mpCost, int activeTime, int turn) {
+void battle::skillCost(int hpCost, int mpCost) {
 	if (hpCost == 0) {//버서커 제외 모든 클래스 동일
 		p->setCurrent_mana(std::max(0, current_mana - mpCost));
 		current_mana = p->getCurrent_mana();
-		// 버프 지속시간이 끝나면 원래 스탯으로 되돌리기
-		if (this->turn == turn + activeTime) {
-
-		}
+		
 	}
 }

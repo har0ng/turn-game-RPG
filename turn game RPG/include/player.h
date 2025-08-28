@@ -39,6 +39,9 @@ private:
 	playerStatusSnapShot turnPlayer;   // 매 턴 갱신되는 상태 (버프 적용 스텟)
 	debuffStatus debuff; //디버프 값 설정
 	referenceStatus reference; //player의 skill 행위의 목적성 확인
+	int activeBuffTurn; // 현재 버프 지속 턴
+	int buffAttack;     // 현재 적용된 공격 버프
+	int buffDefense;    // 현재 적용된 방어 버프
 public:
 	player();//player 체력 값 초기화
 	virtual ~player() = default; //스마트 포인터가 있더라도 가상 쪽을 지워주지 않으면 override 한 것들이 안지워짐
@@ -59,8 +62,12 @@ public:
 	playerStatusSnapShot getAfterPlayer() const; //전투 후 상태 데이터(레벨업 비교)
 	playerStatusSnapShot getBattlePlayer() const; // 매 턴 갱신되는 상태 (버프 미적용 스텟)
 	playerStatusSnapShot getTurnPlayer() const;   // 매 턴 갱신되는 상태 (버프 적용 스텟)
-	
 	debuffStatus getDebuff() const; //디버프 목록
+	int getActiveBuffTurn() const;
+	int getBuffAttack() const;
+	int getBuffDefese() const;
+
+
 
 	//set
 	void setPlayer_health(int hp); //전직 시 새롭게 정의
@@ -98,6 +105,10 @@ public:
 	referenceStatus stringToReference(const std::string& str); //string → enum 변환용
 	std::string referenceToString(referenceStatus reference); //enum -> string 변환용
 
+	//buff
+	void resetBuffs(); // 모든 버프 제거
+	void applyBuff(int atk, int def, int turn); // 버프 적용
+	void decreaseBuffTurns(); // 턴 감소 처리
 };
 
 //전직은 get, set을 이용해 자식클래스에서 새로운 변수 안만들고 부모 활용.

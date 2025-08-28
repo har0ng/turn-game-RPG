@@ -15,7 +15,7 @@ struct skill {
 	referenceStatus referenceStatus; //totalDamage, defense,attack, maxHp etc
 	int hpCost{0}; //berserker
 	int mpCost{0};
-	int activeTime{1}; // active passive skill time(turn)
+	int activeTime{1}; // active passive skill time(turn) //activeTime 적어놓은 턴보다 -1 턴만 유지 되기에 그걸 생각하고 쓸것
 	int turn{1}; // CT: turn
 	int levelReq{1}; // level required
 	int enemyCnt{1}; // attack anemy number count (enemy 1, 2, 3)
@@ -32,10 +32,10 @@ enum class commonSkill {
 };
 enum class warriorSkill {
 	//lv2
-	strength = 2, // attack * 1.2 , 3turn
+	strength = 2, // attack * 0.2 , 2turn
 	doubleAttack, // totalDamage = 2*(dmgcalculator(attack = attack * 0.8)) 
 	//lv3 
-	defenseUp, // defense += defense * 1.2
+	defenseUp, // defense += defense * 0.2
 	reflection, // defense * 0.7
 	//lv4
 	disarrayAttack, // totalDamage * 0.8 , enemy turn delete
