@@ -29,10 +29,11 @@ magician::magician(const player& p) :player(p){ //magician status set
 void magician::levelup() { // if level > 2 (+status) 
     setPlayer_health(getPlayer_health() + 2);
     setMana(getMana() + 5);
+    player::levelup();
     if (getLevel() > 3 && getLevel() % 3 == 2) {
         setBasic_attack(getBasic_attack() + 1);
     }
-    player::levelup();
+    
 }
 bool magician::classChangeYN() const { //전직 후 flase로 함으로써 전직창 이제 안뜸
     return false;

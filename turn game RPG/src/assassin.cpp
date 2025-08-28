@@ -27,13 +27,14 @@ assassin::assassin(const player& p) :player(p){ //assassin status set
 void assassin::levelup() { // if level > 2 (+status) 
     setPlayer_health(getPlayer_health() + 2);
     setMana(getMana() +2);
-    if (getLevel() > 3 && getLevel() % 2 == 0) {
+    player::levelup();
+    if (getLevel() % 2 == 0) {
         setBasic_attack(getBasic_attack() + 1);
     }
-    if (getLevel() > 3 && getLevel() % 3 == 2) {
+    if (getLevel() % 3 == 2) {
         setPlayer_defense(getPlayer_defense() + 1);
     }
-    player::levelup();
+    
 }
 bool assassin::classChangeYN() const { //전직 후 flase로 함으로써 전직창 이제 안뜸
     return false;

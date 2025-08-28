@@ -134,11 +134,9 @@ void battle::playerTurn() {
 				스킬을 적중 시켰을 때 그 디버프가 로그와 디버프의 상황이 남도록 만들어야함.
 				레벨 업 했을 때 얻는 스킬 UI추가
 				
-				스킬이 제한시간 혹은 배틀이 끝난후 사라지긴 하지만
-				방어력 업과 공격력 업의 타임스탬프, 스테이터스 증가가 공유되고 있으며
-				하나가 꺼지면 둘다 꺼짐.
 				스킬의 쿨타임 표시 및 쿨타임 내엔 스킬 사용 비활성화
-				UI를 통해 어느 스텟이 어떻게 높아져있고 몇턴 남았는지 battleStatus함수에 넣기.
+				UI를 통해 어느 스텟이 어떻게 높아져있고 몇턴 남았는지 넣기.
+
 			*/
 		}
 		break;
@@ -252,7 +250,8 @@ void battle::getSkillSelect(int skillSelect, std::vector<skill> const& skill, at
 	case (int)referenceStatus::maxHp:
 		ui.executeSkill(static_cast<int>(php * 0.2));
 		return;
-	case (int)referenceStatus::playerDebuff:
+	case (int)referenceStatus::dispelDebuff:
+		ui.executeSkill();
 		return;
 	case (int)referenceStatus::tatalDamageAndAttack:
 		return;
@@ -291,8 +290,12 @@ void battle::activeSkill(int skillSelect, std::vector<skill> const& skill, attac
 		cphp = p->getPlayer_current_health();
 		skillCost(skill[skillSelect].hpCost, skill[skillSelect].mpCost);
 	}
-	else if ((int)skill[skillSelect].referenceStatus == (int)referenceStatus::playerDebuff) { 
-
+	else if ((int)skill[skillSelect].referenceStatus == (int)referenceStatus::dispelDebuff) { 
+		if (p->debuffToString(debuff) != "none") {
+			p->setDebuff(0);//none
+			debuff = p->getDebuff();
+		}
+		skillCost(skill[skillSelect].hpCost, skill[skillSelect].mpCost);
 	}
 	else if ((int)skill[skillSelect].referenceStatus == (int)referenceStatus::tatalDamageAndAttack) {
 

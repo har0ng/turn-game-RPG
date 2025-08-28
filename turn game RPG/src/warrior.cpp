@@ -30,11 +30,11 @@ warrior::warrior(const player& p):player(p) { //warrior status set
 void warrior::levelup() { // if level > 2 (+status) 
     setPlayer_health(getPlayer_health() + 5);
     setMana(getMana() + 2);
+    player::levelup();
     if (getLevel() % 2 == 0) {
         setBasic_attack(getBasic_attack() + 1);
         setPlayer_defense(getPlayer_defense() + 1);
     }
-    player::levelup();
 }
 
 bool warrior::classChangeYN() const { //전직 후 flase로 함으로써 전직창 이제 안뜸

@@ -11,6 +11,6 @@ enum class referenceStatus { //스킬 사용 목적 및 구분을 위함
 	//active
 	totalDamage,
 	maxHp,
-	playerDebuff,
+	dispelDebuff,
 	tatalDamageAndAttack,
 };

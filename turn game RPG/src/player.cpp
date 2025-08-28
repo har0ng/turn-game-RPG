@@ -321,7 +321,7 @@ referenceStatus player::stringToReference(const std::string& str){
 	if (str == "defense") { return referenceStatus::defense; }
 	if (str == "totalDamage") { return referenceStatus::totalDamage; }
 	if (str == "maxHp") { return referenceStatus::maxHp; }
-	if (str == "playerDebuff") { return referenceStatus::playerDebuff; }
+	if (str == "dispelDebuff") { return referenceStatus::dispelDebuff; }
 	if (str == "tatalDamageAndAttack") { return referenceStatus::tatalDamageAndAttack; }
 	return referenceStatus::none;
 }
@@ -337,8 +337,8 @@ std::string player::referenceToString(referenceStatus reference){
 		return "totalDamage";
 	case referenceStatus::maxHp:
 		return "maxHp";
-	case referenceStatus::playerDebuff:
-		return "playerDebuff";
+	case referenceStatus::dispelDebuff:
+		return "dispelDebuff";
 	case referenceStatus::tatalDamageAndAttack:
 		return "tatalDamageAndAttack";
 	default:

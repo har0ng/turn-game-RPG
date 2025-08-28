@@ -18,6 +18,7 @@ struct playerStatusSnapShot { //before ,after 저장 (저장, 스테이터스 �
 	int current_mana{0};
 	int agility{0};
 	int critical{0};
+	debuffStatus debuff{ debuffStatus::none };
 };
 
 class player {

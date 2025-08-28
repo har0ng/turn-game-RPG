@@ -80,6 +80,10 @@ void consoleUI::executeSkillDef(int pdefense, int activeTime){
 
 }
 
+void consoleUI::executeSkill(){
+    cout << "デバフが`消えました。" << endl;
+}
+
 void consoleUI::executeSkill(int heal){
     cout <<"HPを " << heal << " 回復しました。" << endl;
 }

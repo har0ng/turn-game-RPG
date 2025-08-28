@@ -40,7 +40,7 @@
 	 "power": 0, 
 	 "TDmultiplier": 0.0,
 	 "playerMultiplier":0.0,
-	 "referenceStatus":"playerDebuff",
+	 "referenceStatus":"dispelDebuff",
 	 "hpCost": 0,
 	 "mpCost": 3, 
 	 "activeTime": 1,
