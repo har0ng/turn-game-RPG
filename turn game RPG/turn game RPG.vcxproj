@@ -31,6 +31,7 @@
   <ItemGroup>
     <ClInclude Include="assets\json.hpp" />
     <ClInclude Include="assets\json_fwd.hpp" />
+    <ClInclude Include="buff.h" />
     <ClInclude Include="include\attackInfo.h" />
     <ClInclude Include="include\battle.h" />
     <ClInclude Include="include\consoleUI.h" />

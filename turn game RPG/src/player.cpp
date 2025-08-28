@@ -345,27 +345,31 @@ std::string player::referenceToString(referenceStatus reference){
 		return "none";
 	}
 }
-void player::resetBuffs() { //버프 삭제
-    turnPlayer = battlePlayer;
-    activeBuffTurn = 0;
-    buffAttack = 0;
-    buffDefense = 0;
+void player::updateBuffedStats() {
+	buffAttack = 0;
+	buffDefense = 0;
+	for (auto& b : buffs) {
+		if (b.active) {
+			buffAttack += b.attackBoost;
+			buffDefense += b.defenseBoost;
+		}
+	}
 }
-
-
-void player::applyBuff(int atk, int def, int turn) {// 버프 적용
-    buffAttack = atk;
-    buffDefense = def;
-    activeBuffTurn = turn;
+void player::decreaseBuffTurns(int turn) {//남은 버프 턴 계산
+	for (auto& b : buffs) {
+		if (!b.active) continue;       // 이미 종료된 버프는 무시
+		if (b.remainingTurn <= turn) {
+			b.active = false;          // 버프 종료
+		}
+	}
+	// 현재 유효 버프 반영
+	updateBuffedStats();
 }
-
-
-void player::decreaseBuffTurns() {// 매 턴 버프 감소
-    if (activeBuffTurn > 0) {
-        activeBuffTurn--;
-        if (activeBuffTurn <= 0) {
-            // 버프 턴 종료 시 초기화
-            resetBuffs();
-        }
-    }
+void player::pushBuff(std::string name, int atk, int def, int remainTurn, bool check){
+	buffs.push_back({ name,atk,def,remainTurn,check });
+}
+void player::clearBuff() {//전투 후 사용중이던 버프 전부 삭제
+	buffs.clear();
+	buffAttack = 0;
+	buffDefense = 0;
 }

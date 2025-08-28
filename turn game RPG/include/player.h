@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include "skillEnum.h"
+#include "buff.h"
 
 struct playerStatusSnapShot { //before ,after 저장 (저장, 스테이터스 상태변화 등등 많이 쓰임)
 	int health{0};
@@ -33,6 +34,7 @@ private:
 	int agility; //AGI, 회피율 , 안보여줄꺼임 
 	int critical; //CRI, 크리티컬 , 안보여줄꺼임
 	std::vector<skill> skills; //스킬 목록
+	std::vector<buff> buffs; //버프 목록
 	playerStatusSnapShot beforePlayer; //전투 시작전 상태(레벨업 비교)
 	playerStatusSnapShot afterPlayer; //전투 후 상태 데이터(레벨업 비교)
 	playerStatusSnapShot battlePlayer; // 매 턴 갱신되는 상태 (버프 미적용 스텟)
@@ -106,9 +108,10 @@ public:
 	std::string referenceToString(referenceStatus reference); //enum -> string 변환용
 
 	//buff
-	void resetBuffs(); // 모든 버프 제거
-	void applyBuff(int atk, int def, int turn); // 버프 적용
-	void decreaseBuffTurns(); // 턴 감소 처리
+	void updateBuffedStats();//버프 적용
+	void decreaseBuffTurns(int turn); // 턴 감소 처리
+	void pushBuff(std::string name, int atk, int def, int remainTurn, bool check);//사용한 버프를 버프목록에 추가
+	void clearBuff();
 };
 
 //전직은 get, set을 이용해 자식클래스에서 새로운 변수 안만들고 부모 활용.

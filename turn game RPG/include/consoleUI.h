@@ -22,7 +22,8 @@ public:
     void showSkill(int skillSize, std::string charactorClass, std::string name, int hpCost, 
                    int mpCost,int current_mana, int activeTime, int turn, int enemyCnt);
     void exitSkill(int back);
-    void executeSkill(int pattack, int activeTime);
+    void executeSkillAtk(int pattack, int activeTime);
+    void executeSkillDef(int pdefense, int activeTime);
     void executeSkill(int attack, int criattack, bool criticalYN, std::string name);
     void skillMpcostRetry(); //스킬 마나 부족이니 다시
     void enemyTurn(int enemyAction, int pdefense, int eattack, int battleselect);

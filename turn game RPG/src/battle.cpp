@@ -4,6 +4,7 @@
 #include "enemy.h"
 #include "consoleUI.h"
 #include "battle.h"
+#include "buff.h"
 
 #include <iostream>
 #include <random>
@@ -52,7 +53,6 @@ battle::battle(unique_ptr<player> _p , unique_ptr<enemy> _e)
 void battle::startBattle() { //배틀 시작	
 	p->setBeforePlayer(); //전투 시작전 상태(레벨업 비교)
 	while (cphp > 0 && ehp > 0) { //체력이 0 이하가 되는 순간 종료
-		p->decreaseBuffTurns(); //버프 삭제 카운터 다운
 		p->setTurnPlayer();	  // (버프 적용 스텟)
 		p->setBattlePlayer(); // (버프 미적용 스텟)
 		battleStatus(); //유저와 적의 상황(체력 공격력 등)
@@ -61,6 +61,7 @@ void battle::startBattle() { //배틀 시작
 			break;
 		}
 		enemyTurn(); //enemy 턴
+		p->decreaseBuffTurns(turn); //버프 삭제 카운터 다운
 	}
 	battleEnd(); // 전투 종료
 
@@ -129,7 +130,7 @@ void battle::playerTurn() {
 				continue;
 			}
 			/*
-			08/22 1636 -> 08/25
+			08/22 1636 -> 08/28
 				스킬을 적중 시켰을 때 그 디버프가 로그와 디버프의 상황이 남도록 만들어야함.
 				레벨 업 했을 때 얻는 스킬 UI추가
 				
@@ -142,7 +143,7 @@ void battle::playerTurn() {
 		}
 		break;
 	}
-	ui.playerTurn(cphp, pdefense, battleselect, res.attack, res.criattack, res.criticalYN);//log를 불러오기위해 log에서 필요로 하는 값 다 넘겨주기
+	ui.playerTurn(cphp, p->getTurnPlayer().defense, battleselect, res.attack, res.criattack, res.criticalYN);//log를 불러오기위해 log에서 필요로 하는 값 다 넘겨주기
 }
 
 void battle::enemyTurn() {
@@ -170,7 +171,7 @@ void battle::enemyTurn() {
 
 void battle::battleEnd() {
 	ui.battleEnd(cphp);//log를 불러오기위해 log에서 필요로 하는 값 다 넘겨주기
-	p->resetBuffs(); // 버프 스테이터스를 버프가 없는 스테이터스로 전환
+ 	p->clearBuff();
 	if (cphp <= 0) {
 		play = false;
 		exit(0);
@@ -240,9 +241,10 @@ void battle::getSkillSelect(int skillSelect, std::vector<skill> const& skill, at
 		cout << "Error : skillReferenceStatus is none" << endl; //디버그용 릴리스 넘어갈 떄 반드시 삭제
 		return;
 	case (int)referenceStatus::attack:
-		ui.executeSkill(p->getBuffAttack() + p->getTurnPlayer().attack - pattack, skill[skillSelect].activeTime);
+		ui.executeSkillAtk(p->getBuffAttack() + p->getTurnPlayer().attack - pattack, skill[skillSelect].activeTime);
 		return;
 	case (int)referenceStatus::defense:
+		ui.executeSkillDef(p->getBuffDefese() + p->getTurnPlayer().defense - pdefense, skill[skillSelect].activeTime);
 		return;
 	case (int)referenceStatus::totalDamage:
 		ui.executeSkill(res.attack, res.criattack, res.criticalYN, skill[skillSelect].name);
@@ -256,18 +258,23 @@ void battle::getSkillSelect(int skillSelect, std::vector<skill> const& skill, at
 	default:
 		return;
 	}
-	
+	//08/28 1637
+	//switch(debuff) 추가해야함 enemy에 debuff 스테이터스 아직 없어서 추가 안함..
 }
 
 void battle::passiveSkill(int skillSelect, std::vector<skill> const& skill, attackInfo res) { //false
 
 	if ((int)skill[skillSelect].referenceStatus == (int)referenceStatus::attack) {
-		p->applyBuff(static_cast<int>(skill[skillSelect].playerMultiplier * pattack), 0, 
-					 skill[skillSelect].activeTime);
+		p->pushBuff(skill[skillSelect].name, static_cast<int>(skill[skillSelect].playerMultiplier * pattack),
+			0, this->turn + skill[skillSelect].activeTime,true);
+		p->updateBuffedStats();
 		skillCost(skill[skillSelect].hpCost, skill[skillSelect].mpCost);
 	}
 	else if((int)skill[skillSelect].referenceStatus == (int)referenceStatus::defense) {
-
+		p->pushBuff(skill[skillSelect].name, 0, static_cast<int>(skill[skillSelect].playerMultiplier * pdefense),
+			this->turn + skill[skillSelect].activeTime, true);
+		p->updateBuffedStats();
+		skillCost(skill[skillSelect].hpCost, skill[skillSelect].mpCost);
 	}
 }
 

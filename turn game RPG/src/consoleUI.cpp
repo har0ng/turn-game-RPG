@@ -71,8 +71,13 @@ void consoleUI::exitSkill(int back) {
     cout << back << ". " << "back" << endl;
 }
 
-void consoleUI::executeSkill(int pattack, int activeTime){
-    cout << activeTime << "turnの間powerが" << pattack << "くらいあがります。" << endl;
+void consoleUI::executeSkillAtk(int pattack, int activeTime){
+    cout << activeTime << "turnの間powerが" << pattack << "あがります。" << endl;
+}
+
+void consoleUI::executeSkillDef(int pdefense, int activeTime){
+    cout << activeTime << "turnの間defenseが" << pdefense << "あがります。" << endl;
+
 }
 
 void consoleUI::executeSkill(int attack, int criattack, bool criticalYN, std::string name){
