@@ -78,15 +78,9 @@ void battle::startBattle() { //배틀 시작
 	p->clearDisable();
 }
 
-void battle:: showSkillChange(const playerStatusSnapShot& backup) { // 레벨 업 후 얻은 스킬 목록
-	//const auto& sk = p->getSkills(); //레벨 업 후 스킬 목록
-	//
-	//std::vector<skill> levelUpGetskill; //레벨 업 후 새로 얻은 스킬 목록
-
-	//size_t getSkillSize = sk.size() - backup.skills.size();
-	//for (size_t s = getSkillSize; s < sk.size(); s++) {
-	//	ui.showSkillChange(sk[s].name);
-	//}
+void battle:: showSkillChange() { // 레벨 업 후 얻은 스킬 목록
+	//모든 스킬을 초기화하며 새로운 스킬을 배우는 방식이 아니라 
+	//기존 스킬에 새로운 스킬 더하는 방식으로 initskill 고칠것
 }
 
 void battle::battleStatus() {

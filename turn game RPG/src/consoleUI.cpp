@@ -206,6 +206,7 @@ void consoleUI::levelup_playerStatus(int php, int cphp, int pattack, int pdefens
 }
 
 void consoleUI::enterToContinue() { //enter을 누를시 다음 화면으로 넘어가게끔 조정
+    cout << endl;
     cout << "Press Enter to continue..." << endl; //사용자 임의대로 화면 넘기기
     cin.ignore();//ignore과 get으로 enter을 쳤을 때 넘어갈 수 있게 조절.
     cin.get();
@@ -266,7 +267,7 @@ void consoleUI::showStatusChange(playerStatusSnapShot beforePlayer, playerStatus
     cout << endl;
 }
 
-void consoleUI::showSkillChange(std::string skillName){
-        cout << skillName << "を学びました！" << endl;
+void consoleUI::showSkillChange(){
+  
 }
 
