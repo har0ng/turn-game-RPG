@@ -65,17 +65,28 @@ void battle::startBattle() { //배틀 시작
 	}
 	battleEnd(); // 전투 종료
 
-
 	if (p->getLevel() == 2 && p -> classChangeYN()){ // 2레벨 전직, 만약 전직했으면 안뜸
 		levelup_selectClass(); //전직
 	}
-	
+
 	p->setAfterPlayer(); //전투 후 플레이어 정보 저장
 
 	if (p->getBeforePlayer().level != p->getAfterPlayer().level) { //레벨 업을 했다면
 		ui.showStatusChange(p->getBattlePlayer(), p->getAfterPlayer()); // 능력치 변화 보여주기
 		ui.enterToContinue(); //엔터 누르면 넘어가는 기능
 	}
+	p->clearDisable();
+}
+
+void battle:: showSkillChange(const playerStatusSnapShot& backup) { // 레벨 업 후 얻은 스킬 목록
+	//const auto& sk = p->getSkills(); //레벨 업 후 스킬 목록
+	//
+	//std::vector<skill> levelUpGetskill; //레벨 업 후 새로 얻은 스킬 목록
+
+	//size_t getSkillSize = sk.size() - backup.skills.size();
+	//for (size_t s = getSkillSize; s < sk.size(); s++) {
+	//	ui.showSkillChange(sk[s].name);
+	//}
 }
 
 void battle::battleStatus() {
@@ -148,6 +159,7 @@ void battle::playerTurn() {
 			/*
 			08/22 1636 -> 08/28
 				스킬을 적중 시켰을 때 그 디버프가 로그와 디버프의 상황이 남도록 만들어야함.
+				
 				레벨 업 했을 때 얻는 스킬 UI추가
 				
 				UI를 통해 어느 스텟이 어떻게 높아져있고 몇턴 남았는지 넣기.
@@ -184,7 +196,6 @@ void battle::enemyTurn() {
 void battle::battleEnd() {
 	ui.battleEnd(cphp);//log를 불러오기위해 log에서 필요로 하는 값 다 넘겨주기
  	p->clearBuff();
-	p->clearDisable();
 	if (cphp <= 0) {
 		play = false;
 		exit(0);
@@ -202,6 +213,7 @@ void battle::levelup_selectClass() { // class change , 전직
 	int selectClass;
 	cin >> selectClass;
 	ui.levelup_selectClass(level, selectClass);
+	
 	if (selectClass == 1) { // Warrior
 		p = std::make_unique<warrior>(*p); // player 객체를 warrior로 복사 생성
 	}
@@ -211,6 +223,8 @@ void battle::levelup_selectClass() { // class change , 전직
 	else if (selectClass == 3) { // Assassin
 		p = std::make_unique<assassin>(*p);
 	}
+
+
 }
 
 bool battle::getPlay() const { //게임이 지속 가능한지 플레이어의 체력이 남아있는지 확인

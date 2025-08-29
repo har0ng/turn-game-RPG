@@ -108,7 +108,7 @@
 	 "power": 0,   
 	 "TDmultiplier": 1.2,
 	 "playerMultiplier":0.7,
-	 "referenceStatus":"defense",
+	 "referenceStatus":"defenseAttack",
 	 "hpCost": 0,
 	 "mpCost": 3, 
 	 "activeTime": 1,

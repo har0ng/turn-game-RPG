@@ -155,6 +155,8 @@ void player::setBeforePlayer() { // 기존 setBeforePlayer는 전투 중 버프�
 	beforePlayer.current_mana = current_mana;
 	beforePlayer.agility = agility;
 	beforePlayer.critical = critical;
+	beforePlayer.debuff = debuff;
+	beforePlayer.skills = skills;
 }
 void player::setAfterPlayer() {
 	afterPlayer.health = player_health;
@@ -168,6 +170,8 @@ void player::setAfterPlayer() {
 	afterPlayer.current_mana = current_mana;
 	afterPlayer.agility = agility;
 	afterPlayer.critical = critical;
+	beforePlayer.debuff = debuff;
+	beforePlayer.skills = skills;
 }
 void player::setBattlePlayer() { // 매 턴 갱신되는 상태 (버프 미적용 스텟)
 	battlePlayer.health = player_health;
@@ -181,6 +185,8 @@ void player::setBattlePlayer() { // 매 턴 갱신되는 상태 (버프 미적�
 	battlePlayer.current_mana = current_mana;
 	battlePlayer.agility = getBeforePlayer().agility;
 	battlePlayer.critical = getBeforePlayer().critical;
+	beforePlayer.debuff = debuff;
+	beforePlayer.skills = skills;
 }
 void player::setTurnPlayer() { // 매 턴 갱신되는 상태 (버프 적용 스텟)
 	turnPlayer.health = player_health;
@@ -194,6 +200,8 @@ void player::setTurnPlayer() { // 매 턴 갱신되는 상태 (버프 적용 스
 	turnPlayer.current_mana = current_mana;
 	turnPlayer.agility = agility;
 	turnPlayer.critical = critical;
+	beforePlayer.debuff = debuff;
+	beforePlayer.skills = skills;
 }
 void player::setDebuff(int debuffnum) {
 	debuff = static_cast<debuffStatus>(debuffnum);

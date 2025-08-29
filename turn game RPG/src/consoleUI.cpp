@@ -266,3 +266,7 @@ void consoleUI::showStatusChange(playerStatusSnapShot beforePlayer, playerStatus
     cout << endl;
 }
 
+void consoleUI::showSkillChange(std::string skillName){
+        cout << skillName << "を学びました！" << endl;
+}
+
