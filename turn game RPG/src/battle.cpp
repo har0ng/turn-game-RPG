@@ -82,6 +82,7 @@ void battle::battleStatus() {
 	std::uniform_int_distribution<unsigned int> enemyDamage(4, 7); //랜덤 범위 조정
 	eattack = enemyDamage(gen); //적의 공격력을 범위 내 초기화된 수로 랜덤화
 	turn++; //몇턴 째인지 셈
+	p->skillCT(); //쿨타임 백터 전체 쿨 다운
 	int a = p->getBuffAttack();
 	ui.battleStatus(turn, php, cphp, p->getTurnPlayer().attack, p->getTurnPlayer().defense, ehp, eattack, level, level_exp, now_exp, mana, current_mana, p->debuffToString(debuff)); //log를 불러오기위해 log에서 필요로 하는 값 다 넘겨주기
 }	
@@ -100,16 +101,25 @@ void battle::playerTurn() {
 		}
 		else if (battleselect == 3) { //스킬창
 			const auto& skill = p->getSkills(); //heal, powerStrike, antiDebuff가 나옴
+			const auto& disable = p->getDisables();
 			int skSize = 0;
-			for (const auto& sk : skill) {
-				if (level >= (int)sk.levelReq) {
+			for (size_t i = 0; i < skill.size(); ++i) {
+				if (level >= (int)skill[i].levelReq) {
 					skSize++;
-					ui.showSkill(skSize, sk.charactorClass, sk.name, sk.hpCost,
-						sk.mpCost, current_mana, sk.activeTime, sk.turn, sk.enemyCnt);
+					bool enabled = disable[i].enabled;
+					int remainingTurn = disable[i].remainTurn;
+
+					if (enabled == true) {
+						ui.showSkill(skSize, skill[i].charactorClass, skill[i].name,
+							skill[i].hpCost, skill[i].mpCost, current_mana,
+							skill[i].activeTime, skill[i].turn, skill[i].enemyCnt);
+					}
+					else {
+						ui.showSkill(skSize, skill[i].name, disable[i].remainTurn, skill[i].mpCost);
+					}
 				}
 			}
 			ui.exitSkill(0);
-
 			bool skillCheck = false;
 			while (true) {
 				skillSelect = inputCheck(1, skSize) - 1;
@@ -121,8 +131,14 @@ void battle::playerTurn() {
 						ui.skillMpcostRetry();
 						continue;
 					}
+					else if (disable[skillSelect].enabled == false) {
+						ui.skillCoolTimeRetry();
+						continue;
+
+					}
 					getSkillSelect(skillSelect, skill, res);
 					skillCheck = true;
+					p->skillDisable(skillSelect, skill[skillSelect].turn);
 					break;
 				}
 			}
@@ -134,9 +150,7 @@ void battle::playerTurn() {
 				스킬을 적중 시켰을 때 그 디버프가 로그와 디버프의 상황이 남도록 만들어야함.
 				레벨 업 했을 때 얻는 스킬 UI추가
 				
-				스킬의 쿨타임 표시 및 쿨타임 내엔 스킬 사용 비활성화
 				UI를 통해 어느 스텟이 어떻게 높아져있고 몇턴 남았는지 넣기.
-
 			*/
 		}
 		break;
@@ -170,6 +184,7 @@ void battle::enemyTurn() {
 void battle::battleEnd() {
 	ui.battleEnd(cphp);//log를 불러오기위해 log에서 필요로 하는 값 다 넘겨주기
  	p->clearBuff();
+	p->clearDisable();
 	if (cphp <= 0) {
 		play = false;
 		exit(0);

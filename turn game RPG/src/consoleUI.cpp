@@ -65,6 +65,13 @@ void consoleUI::showSkill(int skillSize, std::string charactorClass, std::string
     }
 }
 
+void consoleUI::showSkill(int skillSize, std::string name, int remainturn, int mpCost){
+        cout << skillSize << ". "
+            << std::left << std::setw(20) << name
+            << " MP: " << mpCost
+            << " CT: " << remainturn << endl;
+}
+
 void consoleUI::exitSkill(int back) {
     cout << endl;
     cout << endl;
@@ -81,7 +88,7 @@ void consoleUI::executeSkillDef(int pdefense, int activeTime){
 }
 
 void consoleUI::executeSkill(){
-    cout << "デバフが`消えました。" << endl;
+    cout << "デバフが消えました。" << endl;
 }
 
 void consoleUI::executeSkill(int heal){
@@ -104,6 +111,10 @@ void consoleUI::skillMpcostRetry(){
     cout << "MPがないです！もう一度入力してください。" << endl;
     cout << endl;
     cout << endl;
+}
+
+void consoleUI::skillCoolTimeRetry(){
+    cout << "まだこのスキルは使用できません。もう一度入力してください。" << endl;
 }
 
 

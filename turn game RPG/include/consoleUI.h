@@ -21,6 +21,7 @@ public:
     void playerTurn(int cphp, int pdefense,int battleselect,int attack, int criattack, bool criticalYN);
     void showSkill(int skillSize, std::string charactorClass, std::string name, int hpCost, 
                    int mpCost,int current_mana, int activeTime, int turn, int enemyCnt);
+    void showSkill(int skillSize, std::string name, int remainturn ,int mpCost);
     void exitSkill(int back);
     void executeSkillAtk(int pattack, int activeTime);
     void executeSkillDef(int pdefense, int activeTime);
@@ -28,6 +29,7 @@ public:
     void executeSkill(int heal);
     void executeSkill(int attack, int criattack, bool criticalYN, std::string name);
     void skillMpcostRetry(); //스킬 마나 부족이니 다시
+    void skillCoolTimeRetry(); // 스킬 쿨타임이니 다시
     void enemyTurn(int enemyAction, int pdefense, int eattack, int battleselect);
     void battleEnd(int cphp);
     void levelup_selectClassUI();

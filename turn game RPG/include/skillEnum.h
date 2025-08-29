@@ -12,7 +12,7 @@ struct skill {
 	int power{0}; // totalDamage = totalDamage + power 
 	float TDMultiplier{1.0}; // totalDamage *
 	float playerMultiplier{0.0}; //attack, heal ,defense * etc
-	referenceStatus referenceStatus; //totalDamage, defense,attack, maxHp etc
+	referenceStatus referenceStatus{referenceStatus::none}; //totalDamage, defense,attack, maxHp etc
 	int hpCost{0}; //berserker
 	int mpCost{0};
 	int activeTime{1}; // active passive skill time(turn) //activeTime 적어놓은 턴보다 -1 턴만 유지 되기에 그걸 생각하고 쓸것
@@ -20,7 +20,7 @@ struct skill {
 	int levelReq{1}; // level required
 	int enemyCnt{1}; // attack anemy number count (enemy 1, 2, 3)
 	bool passiveActive{false}; //true == active / false == passive , turn을 확인하는 문구를 넣기 위함.
-	debuffStatus debuff; //debuff
+	debuffStatus debuff{debuffStatus::none}; //debuff
 };
 
 

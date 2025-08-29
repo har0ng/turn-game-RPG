@@ -2,12 +2,9 @@
 
 #include "player.h"
 #include "debuffEnum.h"
-#include "skillEnum.h"
 #include <iostream>
-#include <vector>
 #include <fstream>
 #include <json.hpp>
-#include <string>
 
 
 using std::cout;
@@ -38,6 +35,7 @@ player::player() :player_health(30)
 	setTurnPlayer();
 	setBattlePlayer();
 	initSkills();       // 스킬 벡터 채우기
+	disables.resize(skills.size(), { 0, true }); // remainTurn=0, enabled=true
 } //initializing
 
 //get
@@ -79,6 +77,12 @@ std::vector<skill> player::getSkills() const {
 		return {};
 	}
 	return skills;
+}
+std::vector<disable> player::getDisables() const{
+	if (disables.empty()) {
+		return {};
+	}
+	return disables;
 }
 playerStatusSnapShot player::getBeforePlayer() const {
 	return beforePlayer;
@@ -372,4 +376,25 @@ void player::clearBuff() {//전투 후 사용중이던 버프 전부 삭제
 	buffs.clear();
 	buffAttack = 0;
 	buffDefense = 0;
+}
+void player::skillDisable(int skillSelect, int turn){
+	disables[skillSelect].remainTurn = turn;
+	disables[skillSelect].enabled = false;
+}
+void player::skillCT() {
+	for (auto& status : disables) {
+		if (status.remainTurn > 0) {
+			status.remainTurn--;
+		}
+		if (status.remainTurn == 0) {
+			status.enabled = true;  // 스킬 사용 가능
+		}
+		else {
+			status.enabled = false; // 스킬 사용 불가
+		}
+	}
+}
+void player::clearDisable() {
+	disables.clear();
+	disables.resize(skills.size(), { 0, true }); // remainTurn=0, enabled=true
 }
