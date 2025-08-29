@@ -235,7 +235,6 @@ bool player::classChangeYN() const { //전직하면 false로 바꾸게 해주면
 }
 void player::initSkills() {
 	roadSkillsToJson();
-	skillClear(); //다른 cpp에도 쓰기 위해 함수화
 	 //skillData는 skill.json임
 	if (skillData.empty()) { // 스킬데이터에 스킬이 없는데 무언가 넣을려하면 에러(기저 조건)
 		return;
@@ -261,19 +260,30 @@ void player::initSkills() {
 			sk.enemyCnt = s.value("enemyCnt", 1);
 			sk.passiveActive = s.value("passiveActive", false);
 			sk.debuff = stringToDebuff(s.value("debuff", "none"));
+
+			// 이미 있는 스킬이면 추가하지 않음
+			auto it = std::find_if(skills.begin(), skills.end(),
+				[&](const skill& s_existing) { 
+					return s_existing.name == sk.name; 
+				}); /*0901 반드시 이거 알아보기
+					모든 스킬을 초기화하며 새로운 스킬을 배우는 방식이 아니라
+					기존 스킬에 새로운 스킬 더하는 방식으로 initskill 고친 것인데 그냥 복붙한거라
+					이게 어떤식으로 이뤄지는지 조차 모름 또한 이걸 통해 UI까지 만들어서
+					레벨업 했을 때 배운 스킬이 뭔지 알아야함
+					안정성 검사 또한 아직 안해서 디버깅도 해줘야함 제대로 된건지
+					*/
+
+			if (it == skills.end()) { // 없다면 추가
+				skills.push_back(std::move(sk));
+			}
 		}
 		else {
 			continue;  // 바로 다음 JSON 스킬항목으로 넘어감
 		}
-		// 안전하게 벡터에 이동 추가
-		skills.push_back(std::move(sk));
 	}
 }
 std::string player::getClassName() {//자신의 직업에 대한 클래스 함수가 무엇인지 알기 위함, player.cpp 니깐 클래스 함수는 player
 	return "player";
-}
-void player::skillClear(){
-	skills.clear();
 }
 void player::roadSkillsToJson() { //직업에 필요한 스킬들을 json에서 빼오기 위해 필요
 	std::ifstream file("assets/skill.json");

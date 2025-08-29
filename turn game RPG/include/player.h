@@ -106,7 +106,6 @@ public:
 	virtual std::string getClassName(); //자신의 직업에 대한 클래스 함수가 무엇인지 알기위함.
 
 	//json
-	void skillClear(); //스킬 초기화
 	void roadSkillsToJson(); //직업에 필요한 스킬들을 json에서 빼오기 위해 필요
 	debuffStatus stringToDebuff(const std::string& str); //string → enum 변환용
 	std::string debuffToString(debuffStatus debuff); //enum -> string 변환용
