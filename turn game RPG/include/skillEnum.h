@@ -51,16 +51,37 @@ enum class warriorSkill {
 	disarrayAttack, // totalDamage * 0.8 , enemy turn delete
 };
 
-enum class ContractSkill { //계약
+enum class ContractSkill { //계약 구체 12개
 		//lv6
+		overLapping = 9, //다음 계약 강화 , -1구체
+		onePointStrike, //일점 공격 , -1구체
+		//lv7
+		
+		//lv8
+		overStrength, //극한 강화 , -3구체
+		
+		//lv9 
+		
+		//lv10
+		
+		//lv11
+		im, // 나는 계약  /-3 구체
+		slash, //벤다 계약  /-4 구체
+		you //너를 계약 3개다 활성화 시 필살 일격 /-3 구체
 };
 enum class aspireSkill{ //갈망
 		//lv6
-		berserker, /* warrior attack skill mpCost instead hpCost(mpCost/2, 0.4/down, 0.5/up)
+		berserker = 9, /* warrior attack skill mpCost instead hpCost(mpCost/2, 0.4/down, 0.5/up)
 				,attack * 1.8, on/off */
 		//lv7
 		
+		//lv8
+
+		//lv9
+		
 		//lv10
+
+		//lv11
 		leviathan //totalDamage * 1.1 + 50
 };
 enum class magicianSkill {
