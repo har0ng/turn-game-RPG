@@ -39,5 +39,5 @@ public:
                              ,int mana, int current_mana);
     void enterToContinue();
     void showStatusChange(playerStatusSnapShot beforePlayer, playerStatusSnapShot afterPlayer);
-    void showSkillChange();
+    void showGetSkill(std::string name); //추가 스킬 UI
 };  

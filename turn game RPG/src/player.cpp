@@ -262,20 +262,17 @@ void player::initSkills() {
 			sk.debuff = stringToDebuff(s.value("debuff", "none"));
 
 			// 이미 있는 스킬이면 추가하지 않음
-			auto it = std::find_if(skills.begin(), skills.end(),
-				[&](const skill& s_existing) { 
-					return s_existing.name == sk.name; 
-				}); /*0901 반드시 이거 알아보기
-					모든 스킬을 초기화하며 새로운 스킬을 배우는 방식이 아니라
-					기존 스킬에 새로운 스킬 더하는 방식으로 initskill 고친 것인데 그냥 복붙한거라
-					이게 어떤식으로 이뤄지는지 조차 모름 또한 이걸 통해 UI까지 만들어서
-					레벨업 했을 때 배운 스킬이 뭔지 알아야함
-					안정성 검사 또한 아직 안해서 디버깅도 해줘야함 제대로 된건지
-					*/
-
+			auto it = skills.end();
+			for (auto iter = skills.begin(); iter != skills.end(); ++iter) {
+				if (iter->name == sk.name) {
+					it = iter;
+					break;
+				}
+			}
 			if (it == skills.end()) { // 없다면 추가
 				skills.push_back(std::move(sk));
 			}
+			/* 검사 또한 아직 안해서 디버깅도 해줘야함 제대로 된건지	*/
 		}
 		else {
 			continue;  // 바로 다음 JSON 스킬항목으로 넘어감

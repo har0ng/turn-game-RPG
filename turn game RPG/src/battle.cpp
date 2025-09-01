@@ -65,22 +65,49 @@ void battle::startBattle() { //배틀 시작
 	}
 	battleEnd(); // 전투 종료
 
+	std::vector<skill> beforeSkill; //레벨업 전 스킬
+	for (auto s : p->getSkills()) { //레벨에 따른 스킬이 아닌 직업 스킬 다 들고와서 레벨 따라 들고오게 막음
+		if (p->getBeforePlayer().level >= s.levelReq) {
+			beforeSkill.push_back(s);
+		}
+	}
+	
 	if (p->getLevel() == 2 && p -> classChangeYN()){ // 2레벨 전직, 만약 전직했으면 안뜸
 		levelup_selectClass(); //전직
 	}
 
 	p->setAfterPlayer(); //전투 후 플레이어 정보 저장
 
+	std::vector<skill> afterSkill; //레벨업 후 스킬
+	for(auto s : p->getSkills()){ //레벨에 따른 스킬이 아닌 직업 스킬 다 들고와서 레벨 따라 들고오게 막음
+		if (p->getAfterPlayer().level >= s.levelReq) {
+			afterSkill.push_back(s);
+		}
+	}
+	
 	if (p->getBeforePlayer().level != p->getAfterPlayer().level) { //레벨 업을 했다면
 		ui.showStatusChange(p->getBattlePlayer(), p->getAfterPlayer()); // 능력치 변화 보여주기
+		showGetSkill(beforeSkill, afterSkill);
 		ui.enterToContinue(); //엔터 누르면 넘어가는 기능
+		p->clearDisable();
 	}
-	p->clearDisable();
 }
 
-void battle:: showSkillChange() { // 레벨 업 후 얻은 스킬 목록
-	//모든 스킬을 초기화하며 새로운 스킬을 배우는 방식이 아니라 
-	//기존 스킬에 새로운 스킬 더하는 방식으로 initskill 고칠것
+void battle::showGetSkill(std::vector<skill> beforeSkill, std::vector<skill> afterSkill) { // 레벨 업 후 얻은 스킬 목록
+	std::vector<skill> returnTest;
+	std::sort(beforeSkill.begin(), beforeSkill.end()); 
+	std::sort(afterSkill.begin(), afterSkill.end()); 
+
+	std::set_difference(afterSkill.begin(), afterSkill.end(),
+						beforeSkill.begin(), beforeSkill.end(),
+						std::back_inserter(returnTest));
+	for (auto it = returnTest.begin(); it != returnTest.end(); ++it) {
+		ui.showGetSkill(it->name);
+	}
+	/*iterator은 참조해서 쓸 때 그 데이터값이 바뀔 염려가 있어 알고리즘에 관한 기술을 사용못함
+	그러니 이를 쓰기위해선 본래의 값을 그대로 쓸 필요가 있음. 그래서 새로운 객체를 만들어 복사본으로
+	비교하는 것으로함.*/
+	//set_difference에서 서로의 비교를 위해 operator>,operator==을 struct에 구현 필요
 }
 
 void battle::battleStatus() {
@@ -153,8 +180,6 @@ void battle::playerTurn() {
 			/*
 			08/22 1636 -> 08/28
 				스킬을 적중 시켰을 때 그 디버프가 로그와 디버프의 상황이 남도록 만들어야함.
-				
-				레벨 업 했을 때 얻는 스킬 UI추가
 				
 				UI를 통해 어느 스텟이 어떻게 높아져있고 몇턴 남았는지 넣기.
 			*/

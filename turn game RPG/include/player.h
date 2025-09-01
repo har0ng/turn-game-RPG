@@ -123,6 +123,8 @@ public:
 	void skillCT(); //쿨타임 제거
 	void clearDisable(); //전투 끝나고 쿨타임 모두 초기화
 
+	//skill
+	
 };
 
 //전직은 get, set을 이용해 자식클래스에서 새로운 변수 안만들고 부모 활용.

@@ -21,6 +21,14 @@ struct skill {
 	int enemyCnt{1}; // attack anemy number count (enemy 1, 2, 3)
 	bool passiveActive{false}; //true == active / false == passive , turn을 확인하는 문구를 넣기 위함.
 	debuffStatus debuff{debuffStatus::none}; //debuff
+
+	//true이면 반환.기존 객체가 다른 객체보다 작을 때 기존 객체 반환, 기준은 name
+	bool operator<(const skill& other) const {
+		return name < other.name; // std::string의 < 사용
+	}
+	bool operator==(const skill& other) const {
+		return name == other.name; // 이름이 같으면 같은 스킬로 간주
+	}
 };
 
 
