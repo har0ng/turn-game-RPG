@@ -409,7 +409,7 @@ void player::skillCT() {
 		}
 	}
 }
-void player::clearDisable() {
+void player::clearDisable() { //전투 끝나고 쿨타임 모두 초기화
 	disables.clear();
 	disables.resize(skills.size(), { 0, true }); // remainTurn=0, enabled=true
 }

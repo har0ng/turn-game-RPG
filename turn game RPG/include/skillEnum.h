@@ -40,77 +40,79 @@ enum class commonSkill {
 };
 enum class warriorSkill {
 	//lv2
-	strength = 2, // attack * 0.2 , 2turn
-	doubleAttack, // totalDamage = 2*(dmgcalculator(attack = attack * 0.8)) 
+	doubleAttack = 3,  // totalDamage = 2*(dmgcalculator(attack = attack * 0.8)) 
 	//lv3 
+	strength, // attack * 0.2 , 2turn
 	defenseUp, // defense += defense * 0.2
-	reflection, // defense * 0.7
 	//lv4
-	disarrayAttack, // totalDamage * 0.8 , enemy turn delete
-	scarring // 
+	reflection, // defense * 0.7
+	scarring, // 출혈(bleed) 3턴, totalDamage * 0.9
 	//lv5
-	
-	//lv6
-
+	disarrayAttack, // totalDamage * 0.8 , enemy turn delete
 };
 
-enum class warriorA {
-
+enum class ContractSkill { //계약
+		//lv6
 };
-enum class warriorB{
-		//lv7
+enum class aspireSkill{ //갈망
+		//lv6
 		berserker, /* warrior attack skill mpCost instead hpCost(mpCost/2, 0.4/down, 0.5/up)
-					,attack * 1.8, on/off */
+				,attack * 1.8, on/off */
+		//lv7
+		
 		//lv10
 		leviathan //totalDamage * 1.1 + 50
 };
 enum class magicianSkill {
 	//lv2
-	magicArrow = 2, // totalDamage = attack 
+	magicArrow = 3, // totalDamage = attack 
 	magicGard,
 	//lv3
 	fireball,
 	waterball,
 	//lv4
-	lightning,
 	stoneEdge,
-	freeze,
 	//lv5
 	blaze,
 	wave,
-	//lv6
-	lightingStorm,
-	freezeBreak
+	
+
 };
 
-enum class magicianA {
+enum class elementMagicianSkill { //원소
+	//lv6 
+	lightning,
+	freeze,
+	//lv7
+
 	//lv8
 	overrode, // on/off
 	//lv9
-
+	lightingStorm,
+	freezeBreak,
 	//lv10
 	meteor,
+	//lv11
 	RedSpiderLily,
 	absoluteZero
 };
-enum class magicianB {
+enum class waveMagicianSkill { //파동
 	//lv8
 	overrode // on/off
 };
-enum class assassinSkill {
+enum class demensionSkill { //차원
 	//lv2
-	poison = 2,
-	speedUp
+	speedUp = 3,
+	
 	//lv3
 	//lv4
 	//lv5
-	//lv6
 
 };
-enum class assassinA {
+enum class ConceptSkill { //관념(클로버, 금전)
 
 };
-enum class assassinB {
+enum class forceFieldSkill { //역장(비틀림)
 	//lv7
 	hiding
 	//lv8

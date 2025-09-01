@@ -162,20 +162,20 @@ public:
 	*/
 
 };
-class assassin :public player {
+class demension :public player {
 public:
-	assassin();
-	assassin(const player& p);
+	demension();
+	demension(const player& p);
 	void levelup() override;
 	bool classChangeYN() const override;
 	void initSkills() override;
 	std::string getClassName() override;
 
 	/*
-	int assassin_health;  // 2 level : +4 , +1 levelup : +2
-	int assassin_attack;  // 2 level : +4 , +2 levelup : +1
-	int assassin_defense;  // 2 level : +1, +3 levelup : +1
-	int assassin_mana; // 2 level : +15 , +1 level up : +2
+	int demension_health;  // 2 level : +4 , +1 levelup : +2
+	int demension_attack;  // 2 level : +4 , +2 levelup : +1
+	int demension_defense;  // 2 level : +1, +3 levelup : +1
+	int demension_mana; // 2 level : +15 , +1 level up : +2
 	int agility; // 2 level : +3
 	*/
 };

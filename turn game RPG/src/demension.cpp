@@ -7,8 +7,8 @@
 using std::cout;
 using std::cin;
 
-assassin::assassin(){}
-assassin::assassin(const player& p) :player(p){ //assassin status set
+demension::demension(){}
+demension::demension(const player& p) :player(p){ //assassin status set
     setPlayer_health(p.getPlayer_health() + 4);
     setPlayer_current_health(p.getPlayer_current_health() + 4);
     setBasic_attack(p.getBasic_attack() + 4);
@@ -24,7 +24,7 @@ assassin::assassin(const player& p) :player(p){ //assassin status set
     initSkills();
 }
 
-void assassin::levelup() { // if level > 2 (+status) 
+void demension::levelup() { // if level > 2 (+status) 
     setPlayer_health(getPlayer_health() + 2);
     setMana(getMana() +2);
     player::levelup();
@@ -36,12 +36,12 @@ void assassin::levelup() { // if level > 2 (+status)
     }
     
 }
-bool assassin::classChangeYN() const { //전직 후 flase로 함으로써 전직창 이제 안뜸
+bool demension::classChangeYN() const { //전직 후 flase로 함으로써 전직창 이제 안뜸
     return false;
 }				   
-void assassin::initSkills() {
+void demension::initSkills() {
     player::initSkills();
 }
-std::string assassin::getClassName() { //자신의 직업에 대한 클래스 함수가 무엇인지 알기 위함, assassin.cpp 니깐 클래스 함수는 assassin
-    return "assassin";
+std::string demension::getClassName() { //자신의 직업에 대한 클래스 함수가 무엇인지 알기 위함, assassin.cpp 니깐 클래스 함수는 assassin
+    return "demension";
 }

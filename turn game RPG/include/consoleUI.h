@@ -14,9 +14,10 @@ UI 출력 책임만 갖게 하기 위해(SRP)
 
 class consoleUI {
 public:
-    void battleStatus(int turn, int php, int cphp, int pattack,int pdefense, int ehp
-                     ,int eattack, int level, int level_exp, int now_exp
-                     ,int mana, int current_mana, std::string debuff);
+    void battleStatus(int turn, int php, int cphp, int pattack, int pdefense, int ehp
+        , int eattack, int level, int level_exp, int now_exp
+        , int mana, int current_mana, std::string debuff
+        , int buffAttack, int buffDefense, std::string className);
     void playerTurnUI();
     void playerTurn(int cphp, int pdefense,int battleselect,int attack, int criattack, bool criticalYN);
     void showSkill(int skillSize, std::string charactorClass, std::string name, int hpCost, 

@@ -20,7 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="src\assassin.cpp" />
+    <ClCompile Include="src\demension.cpp" />
     <ClCompile Include="src\battle.cpp" />
     <ClCompile Include="src\consoleUI.cpp" />
     <ClCompile Include="src\enemy.cpp" />
@@ -31,9 +31,9 @@
   <ItemGroup>
     <ClInclude Include="assets\json.hpp" />
     <ClInclude Include="assets\json_fwd.hpp" />
-    <ClInclude Include="buff.h" />
     <ClInclude Include="include\attackInfo.h" />
     <ClInclude Include="include\battle.h" />
+    <ClInclude Include="include\buff.h" />
     <ClInclude Include="include\consoleUI.h" />
     <ClInclude Include="include\debuffEnum.h" />
     <ClInclude Include="include\enemy.h" />

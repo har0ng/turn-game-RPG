@@ -88,9 +88,9 @@ void battle::startBattle() { //배틀 시작
 	if (p->getBeforePlayer().level != p->getAfterPlayer().level) { //레벨 업을 했다면
 		ui.showStatusChange(p->getBattlePlayer(), p->getAfterPlayer()); // 능력치 변화 보여주기
 		showGetSkill(beforeSkill, afterSkill);
-		ui.enterToContinue(); //엔터 누르면 넘어가는 기능
-		p->clearDisable();
+		ui.enterToContinue(); //엔터 누르면 넘어가는 기능	
 	}
+	p->clearDisable(); //전투 끝나고 쿨타임 모두 초기화
 }
 
 void battle::showGetSkill(std::vector<skill> beforeSkill, std::vector<skill> afterSkill) { // 레벨 업 후 얻은 스킬 목록
@@ -116,7 +116,10 @@ void battle::battleStatus() {
 	turn++; //몇턴 째인지 셈
 	p->skillCT(); //쿨타임 백터 전체 쿨 다운
 	int a = p->getBuffAttack();
-	ui.battleStatus(turn, php, cphp, p->getTurnPlayer().attack, p->getTurnPlayer().defense, ehp, eattack, level, level_exp, now_exp, mana, current_mana, p->debuffToString(debuff)); //log를 불러오기위해 log에서 필요로 하는 값 다 넘겨주기
+	ui.battleStatus(turn, php, cphp, p->getTurnPlayer().attack, p->getTurnPlayer().defense, 
+					ehp, eattack, level, level_exp, now_exp, mana, current_mana, 
+					p->debuffToString(debuff),p->getBuffAttack(), p->getBuffDefese(),
+					p->getClassName()); //log를 불러오기위해 log에서 필요로 하는 값 다 넘겨주기
 }	
 
 void battle::playerTurn() {
@@ -179,9 +182,12 @@ void battle::playerTurn() {
 			}
 			/*
 			08/22 1636 -> 08/28
+				스킬 추가
+
 				스킬을 적중 시켰을 때 그 디버프가 로그와 디버프의 상황이 남도록 만들어야함.
-				
-				UI를 통해 어느 스텟이 어떻게 높아져있고 몇턴 남았는지 넣기.
+				(에너미 디버프 만들 필요)
+
+				직업 6종류 추가
 			*/
 		}
 		break;
@@ -240,7 +246,7 @@ void battle::levelup_selectClass() { // class change , 전직
 		p = std::make_unique<magician>(*p);
 	}
 	else if (selectClass == 3) { // Assassin
-		p = std::make_unique<assassin>(*p);
+		p = std::make_unique<demension>(*p);
 	}
 
 

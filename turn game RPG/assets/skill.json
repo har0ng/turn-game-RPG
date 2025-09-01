@@ -62,7 +62,7 @@
 	 "mpCost": 4, 
 	 "activeTime": 3,
 	 "turn": 3,
-	 "levelReq": 2,
+	 "levelReq": 3,
 	 "enemyCnt" : 0,
 	 "passiveActive":false,
 	 "debuff": "none"
@@ -129,7 +129,7 @@
 	 "hpCost": 2,
 	 "mpCost": 3, 
 	 "activeTime": 1,
-	 "turn": 3,
+	 "turn": 4,
 	 "levelReq": 4,
 	 "enemyCnt" : 1,
 	 "passiveActive":true,

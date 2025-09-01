@@ -30,7 +30,7 @@ void magician::levelup() { // if level > 2 (+status)
     setPlayer_health(getPlayer_health() + 2);
     setMana(getMana() + 5);
     player::levelup();
-    if (getLevel() > 3 && getLevel() % 3 == 2) {
+    if (getLevel() % 3 == 2) {
         setBasic_attack(getBasic_attack() + 1);
     }
     

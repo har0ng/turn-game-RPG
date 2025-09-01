@@ -9,14 +9,30 @@ using std::cin;
 
 void consoleUI::battleStatus(int turn, int php, int cphp, int pattack, int pdefense
                             ,int ehp, int eattack, int level, int level_exp
-                            ,int now_exp, int mana, int current_mana, std::string debuff) {
+                            ,int now_exp, int mana, int current_mana, std::string debuff
+                            ,int buffAttack, int buffDefense, std::string className) {
     cout << "========== Battle Status ==========" << endl;
     cout << endl;
     cout << turn << " turn" << endl;
-    cout << "*player\n Lv: " << level << " ,exp: " << now_exp << "/" << level_exp
-        << "\n hp: " << cphp << "/" << php << "\n mp: " << current_mana << "/" << mana
-        << "\n power: " << pattack << "\n defense: " << pdefense
-        << "\n debuff: " << debuff << endl;
+    cout << "*player";
+    if (className == "player") {
+        cout << "(" << "common" << ")";
+    }
+    else {
+        cout << "(" << className << ")";
+    }
+    cout << "\n Lv: " << level << " ,exp: " << now_exp << "/" << level_exp
+            << "\n hp: " << cphp << "/" << php << "\n mp: " << current_mana << "/" << mana
+            << "\n power: " << pattack;
+  
+    if (buffAttack != 0) {
+        cout << "(" << buffAttack << "↑" << ")";
+        }
+    cout << "\n defense: " << pdefense;
+        if (buffDefense != 0) {
+            cout << "(" << buffDefense << "↑" << ")";
+        }
+   cout  << "\n debuff: " << debuff << endl;
     cout << endl;
     cout << "*enemy\n hp: " << ehp << "\n power: " << eattack << endl;
     cout << endl;
@@ -161,7 +177,7 @@ void consoleUI::levelup_selectClassUI() { // 2레벨 직업 정하기
         cout << endl;
         cout << "========== class change =============" << endl;
         cout << "congratulations　level 2!" << endl;
-        cout << "select your class!" << "\n (1)warrior (2)magician (3)assassin" << endl;
+        cout << "select your class!" << "\n (1)warrior (2)magician (3)demension" << endl;
         cout << "\n(1)warrior" << endl;
         cout << "max hp + 10 / +1 level : max hp +5" << endl;
         cout << "max mp + 10 / +1 level : max mp +2" << endl;
@@ -172,7 +188,7 @@ void consoleUI::levelup_selectClassUI() { // 2레벨 직업 정하기
         cout << "max mp + 25 / +1 level : max mp +5" << endl;
         cout << "attack + 1  / +3 level : attack + 1" << endl;
         cout << "defense + 1" << endl;
-        cout << "\n(3)assassin" << endl;
+        cout << "\n(3)demension" << endl;
         cout << "max hp + 4  / +1 level : max hp +2" << endl;
         cout << "max mp + 15 / +1 level : max mp +2" << endl;
         cout << "attack + 4  / +2 level : attack + 1" << endl;
@@ -188,7 +204,7 @@ void consoleUI::levelup_selectClass(int level, int selectClass) {
         cout << "your class is magician! " << endl;
     }
     else if (selectClass == 3) {
-        cout << "your class is assassin! " << endl;
+        cout << "your class is demension! " << endl;
     }
     cout << "========== class change =============" << endl;
     cout << endl;
