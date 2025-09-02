@@ -10,7 +10,7 @@ using std::cout;
 using std::cin;
 
 chesed::chesed() {}
-chesed::chesed(const player& p) :player(p) { //warrior status set
+chesed::chesed(const player& p) :player(p) { 
     setPlayer_health(p.getPlayer_health() + 10);
     setPlayer_current_health(p.getPlayer_current_health() + 10);
     setBasic_attack(p.getBasic_attack() + 3);
@@ -43,6 +43,6 @@ bool chesed::classChangeYN() const { //전직 후 flase로 함으로써 전직�
 void chesed::initSkills() {
     player::initSkills();
 }
-std::string chesed::getClassName() {//자신의 직업에 대한 클래스 함수가 무엇인지 알기 위함  warrior.cpp 니깐 클래스 함수는 warrior
+std::string chesed::getClassName() {//자신의 직업에 대한 클래스 함수가 무엇인지 알기 위함
     return "chesed";
 }

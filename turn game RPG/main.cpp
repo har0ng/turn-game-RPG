@@ -32,7 +32,7 @@ int main() {
     std::unique_ptr<player> myPlayer = std::make_unique<player>(); // 객체 만들어짐 ,한번만
      
     {// 시작하자마자 직업 선택
-        std::unique_ptr<enemy> dummyEnemy = std::make_unique<enemy>();
+        std::unique_ptr<enemy> dummyEnemy = std::make_unique<enemy>(); //에너미 객체가없으면 못만들어서 더미로 만들어둠
         battle tempBattle(std::move(myPlayer), std::move(dummyEnemy));
         tempBattle.selectClass();                  // 직업 선택 UI 호출
         myPlayer = std::move(tempBattle.getPlayerPtr()); // 선택 후 myPlayer 복구

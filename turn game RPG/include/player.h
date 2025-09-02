@@ -123,8 +123,6 @@ public:
 	void skillCT(); //쿨타임 제거
 	void clearDisable(); //전투 끝나고 쿨타임 모두 초기화
 
-	//skill
-	
 };
 
 //전직은 get, set을 이용해 자식클래스에서 새로운 변수 안만들고 부모 활용.
@@ -137,10 +135,10 @@ public:
 	void initSkills() override;
 	std::string getClassName() override;
 	/*
-		int warrior_health; // 1 level : +10 , +1 levelup : +5
-		int warrior_attack; // 1 level : +3 , +2 levelup : +1
-		int warrior_defense; // 1 level : +3, +2 levelup : +1
-		int warrior_mana; // 1 level : +10 , +1 level up : +2
+		int tiferet_health; // 1 level : +10 , +1 levelup : +5
+		int tiferet_attack; // 1 level : +3 , +2 levelup : +1
+		int tiferet_defense; // 1 level : +3, +2 levelup : +1
+		int tiferet_mana; // 1 level : +10 , +1 level up : +2
 	*/
 
 };
@@ -154,10 +152,10 @@ public:
 	void initSkills() override;
 	std::string getClassName() override;
 	/*
-		int warrior_health; // 1 level : +10 , +1 levelup : +5
-		int warrior_attack; // 1 level : +3 , +2 levelup : +1
-		int warrior_defense; // 1 level : +3, +2 levelup : +1
-		int warrior_mana; // 1 level : +10 , +1 level up : +2
+		int chesed_health; // 1 level : +10 , +1 levelup : +5
+		int chesed_attack; // 1 level : +3 , +2 levelup : +1
+		int chesed_defense; // 1 level : +3, +2 levelup : +1
+		int chesed_mana; // 1 level : +10 , +1 level up : +2
 	*/
 
 };
@@ -172,10 +170,10 @@ public:
 	std::string getClassName() override;
 
 	/*
-	int magician_health; // 1 level : +5 , +1 levelup : +2
-	int magician_attack; // 1 level : +1 , +3 levelup : +1
-	int magician_defense; // 1 level : +1, null
-	int magician_mana; // 1 level : +25 , +1 level up : +5
+	int gevurah_health; // 1 level : +5 , +1 levelup : +2
+	int gevurah_attack; // 1 level : +1 , +3 levelup : +1
+	int gevurah_defense; // 1 level : +1, null
+	int gevurah_mana; // 1 level : +25 , +1 level up : +5
 	*/
 
 };
@@ -190,10 +188,10 @@ public:
 	std::string getClassName() override;
 
 	/*
-	int magician_health; // 1 level : +5 , +1 levelup : +2
-	int magician_attack; // 1 level : +1 , +3 levelup : +1
-	int magician_defense; // 1 level : +1, null
-	int magician_mana; // 1 level : +25 , +1 level up : +5
+	int malkuth_health; // 1 level : +5 , +1 levelup : +2
+	int malkuth_attack; // 1 level : +1 , +3 levelup : +1
+	int malkuth_defense; // 1 level : +1, null
+	int malkuth_mana; // 1 level : +25 , +1 level up : +5
 	*/
 
 };
@@ -208,10 +206,10 @@ public:
 	std::string getClassName() override;
 
 	/*
-	int demension_health;  // 1 level : +4 , +1 levelup : +2
-	int demension_attack;  // 1 level : +4 , +2 levelup : +1
-	int demension_defense;  // 1 level : +1, +3 levelup : +1
-	int demension_mana; // 1 level : +15 , +1 level up : +2
+	int yesod_health;  // 1 level : +4 , +1 levelup : +2
+	int yesod_attack;  // 1 level : +4 , +2 levelup : +1
+	int yesod_defense;  // 1 level : +1, +3 levelup : +1
+	int yesod_mana; // 1 level : +15 , +1 level up : +2
 	int agility; // 1 level : +3
 	*/
 };
@@ -226,10 +224,10 @@ public:
 	std::string getClassName() override;
 
 	/*
-	int demension_health;  // 1 level : +4 , +1 levelup : +2
-	int demension_attack;  // 1 level : +4 , +2 levelup : +1
-	int demension_defense;  // 1 level : +1, +3 levelup : +1
-	int demension_mana; // 1 level : +15 , +1 level up : +2
+	int binah_health;  // 1 level : +4 , +1 levelup : +2
+	int binah_attack;  // 1 level : +4 , +2 levelup : +1
+	int binah_defense;  // 1 level : +1, +3 levelup : +1
+	int binah_mana; // 1 level : +15 , +1 level up : +2
 	int agility; // 1 level : +3
 	*/
 };
