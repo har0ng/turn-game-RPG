@@ -173,22 +173,37 @@ void consoleUI::battleEnd(int cphp) {
 	}
 }
 
-void consoleUI::levelup_selectClassUI() { // 2레벨 직업 정하기
+void consoleUI::selectClassUI() { // 2레벨 직업 정하기
         cout << endl;
-        cout << "========== class change =============" << endl;
-        cout << "congratulations　level 2!" << endl;
-        cout << "select your class!" << "\n (1)warrior (2)magician (3)demension" << endl;
-        cout << "\n(1)warrior" << endl;
+        cout << "========== select Class =============" << endl;
+        cout << "select your class!" << "\n (1)tiferet (2)chesed (3)gevurah (4)malkuth (5)yesod (6)binah" << endl;
+        cout << "\n(1)tiferet" << endl;
         cout << "max hp + 10 / +1 level : max hp +5" << endl;
         cout << "max mp + 10 / +1 level : max mp +2" << endl;
         cout << "attack + 3  / +2 level : attack + 1" << endl;
         cout << "defense + 3 / +2 level : defense + 1" << endl;
-        cout << "\n(2)magician" << endl;
+        cout << "\n(2)chesed" << endl;
+        cout << "max hp + 10 / +1 level : max hp +5" << endl;
+        cout << "max mp + 10 / +1 level : max mp +2" << endl;
+        cout << "attack + 3  / +2 level : attack + 1" << endl;
+        cout << "defense + 3 / +2 level : defense + 1" << endl;
+        cout << "\n(3)gevurah" << endl;
         cout << "max hp + 5  / +1 level : max hp +2" << endl;
         cout << "max mp + 25 / +1 level : max mp +5" << endl;
         cout << "attack + 1  / +3 level : attack + 1" << endl;
         cout << "defense + 1" << endl;
-        cout << "\n(3)demension" << endl;
+        cout << "\n(4)malkuth" << endl;
+        cout << "max hp + 5  / +1 level : max hp +2" << endl;
+        cout << "max mp + 25 / +1 level : max mp +5" << endl;
+        cout << "attack + 1  / +3 level : attack + 1" << endl;
+        cout << "defense + 1" << endl;
+        cout << "\n(5)yesod" << endl;
+        cout << "max hp + 4  / +1 level : max hp +2" << endl;
+        cout << "max mp + 15 / +1 level : max mp +2" << endl;
+        cout << "attack + 4  / +2 level : attack + 1" << endl;
+        cout << "defense + 3 / +3 level : defense + 1" << endl;
+        cout << "agility + 4" << endl;
+        cout << "\n(6)binah" << endl;
         cout << "max hp + 4  / +1 level : max hp +2" << endl;
         cout << "max mp + 15 / +1 level : max mp +2" << endl;
         cout << "attack + 4  / +2 level : attack + 1" << endl;
@@ -196,15 +211,15 @@ void consoleUI::levelup_selectClassUI() { // 2레벨 직업 정하기
         cout << "agility + 4" << endl;
 }
 
-void consoleUI::levelup_selectClass(int level, int selectClass) {
+void consoleUI::selectClass(int level, int selectClass) {
     if (selectClass == 1) {
-        cout << "your class is warrior! " << endl;
+        cout << "your class is tiferet! " << endl;
     } 
-    else if (selectClass == 2) {
-        cout << "your class is magician! " << endl;
-    }
     else if (selectClass == 3) {
-        cout << "your class is demension! " << endl;
+        cout << "your class is gevurah! " << endl;
+    }
+    else if (selectClass == 5) {
+        cout << "your class is yesod! " << endl;
     }
     cout << "========== class change =============" << endl;
     cout << endl;

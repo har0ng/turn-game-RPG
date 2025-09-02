@@ -27,7 +27,7 @@
     <ClCompile Include="main.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="src\demension.cpp">
+    <ClCompile Include="src\yesod.cpp">
       <Filter>ソース ファイル\src</Filter>
     </ClCompile>
     <ClCompile Include="src\battle.cpp">
@@ -39,13 +39,22 @@
     <ClCompile Include="src\enemy.cpp">
       <Filter>ソース ファイル\src</Filter>
     </ClCompile>
-    <ClCompile Include="src\magician.cpp">
+    <ClCompile Include="src\gevurah.cpp">
       <Filter>ソース ファイル\src</Filter>
     </ClCompile>
     <ClCompile Include="src\player.cpp">
       <Filter>ソース ファイル\src</Filter>
     </ClCompile>
-    <ClCompile Include="src\warrior.cpp">
+    <ClCompile Include="src\tiferet.cpp">
+      <Filter>ソース ファイル\src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\binah.cpp">
+      <Filter>ソース ファイル\src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\chesed.cpp">
+      <Filter>ソース ファイル\src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\malkuth.cpp">
       <Filter>ソース ファイル\src</Filter>
     </ClCompile>
   </ItemGroup>

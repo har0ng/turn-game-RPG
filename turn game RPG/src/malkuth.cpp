@@ -1,4 +1,4 @@
-﻿//magician.cpp
+﻿//malkuth.cpp
 
 #include <iostream>
 #include "player.h"
@@ -9,8 +9,8 @@ using std::cout;
 using std::cin;
 
 
-magician::magician() {}
-magician::magician(const player& p) :player(p){ //magician status set
+malkuth::malkuth() {}
+malkuth::malkuth(const player& p) :player(p) { //magician status set
     setPlayer_health(p.getPlayer_health() + 5);
     setPlayer_current_health(p.getPlayer_current_health() + 5);
     setBasic_attack(p.getBasic_attack() + 1);
@@ -26,23 +26,23 @@ magician::magician(const player& p) :player(p){ //magician status set
     initSkills();
 }
 
-void magician::levelup() { // if level > 2 (+status) 
+void malkuth::levelup() { // if level > 2 (+status) 
     setPlayer_health(getPlayer_health() + 2);
     setMana(getMana() + 5);
     player::levelup();
     if (getLevel() % 3 == 2) {
         setBasic_attack(getBasic_attack() + 1);
     }
-    
+
 }
-bool magician::classChangeYN() const { //전직 후 flase로 함으로써 전직창 이제 안뜸
+bool malkuth::classChangeYN() const { //전직 후 flase로 함으로써 전직창 이제 안뜸
     return false;
 }
-void magician::initSkills() {
+void malkuth::initSkills() {
     player::initSkills();
 
 }
-std::string magician::getClassName() { ////자신의 직업에 대한 클래스 함수가 무엇인지 알기 위함, magician.cpp 니깐 클래스 함수는 magician
-    return "magician";
+std::string malkuth::getClassName() { ////자신의 직업에 대한 클래스 함수가 무엇인지 알기 위함, magician.cpp 니깐 클래스 함수는 magician
+    return "malkuth";
 }
 

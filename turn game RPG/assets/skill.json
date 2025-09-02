@@ -34,24 +34,7 @@
 	 "debuff": "none"
 	},
 	{
-	 "charactorClass": "common",
-	 "name": "antiDebuff",
-	 "targetObject": "player",
-	 "power": 0, 
-	 "TDmultiplier": 0.0,
-	 "playerMultiplier":0.0,
-	 "referenceStatus":"dispelDebuff",
-	 "hpCost": 0,
-	 "mpCost": 3, 
-	 "activeTime": 1,
-	 "turn": 4,
-	 "levelReq": 1,
-	 "enemyCnt" : 0,
-	 "passiveActive":true,
-	 "debuff": "none"
-	},
-	{
-	 "charactorClass": "warrior",
+	 "charactorClass": "tiferet",
 	 "name": "strength",
 	 "targetObject": "player",
 	 "power": 0,   
@@ -68,7 +51,7 @@
 	 "debuff": "none"
 	},
 	{
-	 "charactorClass": "warrior",
+	 "charactorClass": "tiferet",
 	 "name": "doubleAttack",
 	 "targetObject": "enemy",
 	 "power": 0,   
@@ -85,7 +68,7 @@
 	 "debuff": "none"
 	},
 	{
-	 "charactorClass": "warrior",
+	 "charactorClass": "tiferet",
 	 "name": "defenseUp",
 	 "targetObject": "player",
 	 "power": 0,   
@@ -102,7 +85,7 @@
 	 "debuff": "none"
 	},
 	{
-	 "charactorClass": "warrior",
+	 "charactorClass": "tiferet",
 	 "name": "reflection",
 	 "targetObject": "enemy",
 	 "power": 0,   
@@ -119,7 +102,7 @@
 	 "debuff": "none"
 	},
 	{
-	 "charactorClass": "warrior",
+	 "charactorClass": "tiferet",
 	 "name": "disarrayAttack",
 	 "targetObject": "enemy",
 	 "power": 0,   

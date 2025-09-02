@@ -1,4 +1,4 @@
-﻿//warrior.cpp
+﻿//chesed.cpp
 
 #include <iostream>
 #include "player.h"
@@ -9,10 +9,9 @@
 using std::cout;
 using std::cin;
 
-
-warrior::warrior() {}
-warrior::warrior(const player& p):player(p) { //warrior status set
-	setPlayer_health(p.getPlayer_health() + 10);
+chesed::chesed() {}
+chesed::chesed(const player& p) :player(p) { //warrior status set
+    setPlayer_health(p.getPlayer_health() + 10);
     setPlayer_current_health(p.getPlayer_current_health() + 10);
     setBasic_attack(p.getBasic_attack() + 3);
     setPlayer_defense(p.getPlayer_defense() + 3);
@@ -27,7 +26,7 @@ warrior::warrior(const player& p):player(p) { //warrior status set
     initSkills();
 }
 
-void warrior::levelup() { // if level > 2 (+status) 
+void chesed::levelup() { // if level > 2 (+status) 
     setPlayer_health(getPlayer_health() + 5);
     setMana(getMana() + 2);
     player::levelup();
@@ -37,13 +36,13 @@ void warrior::levelup() { // if level > 2 (+status)
     }
 }
 
-bool warrior::classChangeYN() const { //전직 후 flase로 함으로써 전직창 이제 안뜸
+bool chesed::classChangeYN() const { //전직 후 flase로 함으로써 전직창 이제 안뜸
     return false;
 }
 
-void warrior::initSkills() {
+void chesed::initSkills() {
     player::initSkills();
 }
-std::string warrior::getClassName() {//자신의 직업에 대한 클래스 함수가 무엇인지 알기 위함  warrior.cpp 니깐 클래스 함수는 warrior
-    return "warrior";
+std::string chesed::getClassName() {//자신의 직업에 대한 클래스 함수가 무엇인지 알기 위함  warrior.cpp 니깐 클래스 함수는 warrior
+    return "chesed";
 }

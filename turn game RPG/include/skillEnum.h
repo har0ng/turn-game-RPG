@@ -32,15 +32,15 @@ struct skill {
 };
 
 
-
-enum class commonSkill {
+//Skillname
+enum class commonSkill { // 공용 1레벨
 	powerStrike, //totaldamage * 1.3
 	heal, // maxhp *0.2
-	antiDebuff //debuff remove
 };
-enum class warriorSkill {
+//2레벨 부터 직업 스킬 분류
+enum class tiferetSkill {
 	//lv2
-	doubleAttack = 3,  // totalDamage = 2*(dmgcalculator(attack = attack * 0.8)) 
+	doubleAttack = 2,  // totalDamage = 2*(dmgcalculator(attack = attack * 0.8)) 
 	//lv3 
 	strength, // attack * 0.2 , 2turn
 	defenseUp, // defense += defense * 0.2
@@ -49,30 +49,28 @@ enum class warriorSkill {
 	scarring, // 출혈(bleed) 3턴, totalDamage * 0.9
 	//lv5
 	disarrayAttack, // totalDamage * 0.8 , enemy turn delete
-};
+	//lv6
+	overLapping, //다음 계약 강화 , -1구체
+	onePointStrike, //일점 공격
+	//lv7
+	theLigthOfTruth, //진실의 빛 , 모든 cc기로부터 3턴 무효화 , -2구체 / 강화 시 5턴
+	contractOfGuardian,//수호자의 계약, 치명적 일격(HP -40%) 한번 무효화 , -2구체 /강화 시, 두번
+	//lv8
+	overStrength, //극한 강화 , -3구체
 
-enum class ContractSkill { //계약 구체 12개
-		//lv6
-		overLapping = 9, //다음 계약 강화 , -1구체
-		onePointStrike, //일점 공격 , -1구체
-		//lv7
-		
-		//lv8
-		overStrength, //극한 강화 , -3구체
-		
-		//lv9 
-		
-		//lv10
-		
-		//lv11
-		im, // 나는 계약  /-3 구체
-		slash, //벤다 계약  /-4 구체
-		you //너를 계약 3개다 활성화 시 필살 일격 /-3 구체
+	//lv9 
+
+	//lv10
+
+	//lv11
+	im, // 나는 계약  /-3 구체
+	slash, //벤다 계약  /-4 구체
+	you //너를 계약 3개다 활성화 시 필살 일격 /-3 구체
 };
-enum class aspireSkill{ //갈망
+		
+enum class chesedSkill{ //그림자
 		//lv6
-		berserker = 9, /* warrior attack skill mpCost instead hpCost(mpCost/2, 0.4/down, 0.5/up)
-				,attack * 1.8, on/off */
+		
 		//lv7
 		
 		//lv8
@@ -84,9 +82,14 @@ enum class aspireSkill{ //갈망
 		//lv11
 		leviathan //totalDamage * 1.1 + 50
 };
-enum class magicianSkill {
+enum class gevurahSkill { //파동
+	//lv8
+	overrode // on/off
+};
+
+enum class malkuthSkill { //원소
 	//lv2
-	magicArrow = 3, // totalDamage = attack 
+	magicArrow = 2, // totalDamage = attack 
 	magicGard,
 	//lv3
 	fireball,
@@ -96,11 +99,6 @@ enum class magicianSkill {
 	//lv5
 	blaze,
 	wave,
-	
-
-};
-
-enum class elementMagicianSkill { //원소
 	//lv6 
 	lightning,
 	freeze,
@@ -117,26 +115,20 @@ enum class elementMagicianSkill { //원소
 	RedSpiderLily,
 	absoluteZero
 };
-enum class waveMagicianSkill { //파동
-	//lv8
-	overrode // on/off
-};
-enum class demensionSkill { //차원
+
+enum class yesodSkill { //역장(비틀림)
 	//lv2
-	speedUp = 3,
-	
+	speedUp = 2,
+
 	//lv3
 	//lv4
 	//lv5
-
-};
-enum class ConceptSkill { //관념(클로버, 금전)
-
-};
-enum class forceFieldSkill { //역장(비틀림)
 	//lv7
 	hiding
 	//lv8
 	//lv9
 	//lv10
+};
+enum class binahSkill { //관념(클로버, 금전)
+
 };

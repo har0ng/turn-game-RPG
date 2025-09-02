@@ -72,8 +72,8 @@ public:
 	playerStatusSnapShot getTurnPlayer() const;   // 매 턴 갱신되는 상태 (버프 적용 스텟)
 	debuffStatus getDebuff() const; //디버프 목록
 	int getActiveBuffTurn() const;
-	int getBuffAttack() const;
-	int getBuffDefese() const;
+	int getBuffAttack() const; 	// 현재 적용된 공격 버프
+	int getBuffDefese() const;	// 현재 적용된 방어 버프
 
 
 
@@ -128,55 +128,108 @@ public:
 };
 
 //전직은 get, set을 이용해 자식클래스에서 새로운 변수 안만들고 부모 활용.
-//if player level == 2, give to class
-class warrior :public player {
+class tiferet :public player { //티페리트
 public:
-	warrior();
-	warrior(const player& p);
+	tiferet();
+	tiferet(const player& p);
 	void levelup() override;
 	bool classChangeYN() const override;
 	void initSkills() override;
 	std::string getClassName() override;
 	/*
-		int warrior_health; // 2 level : +10 , +1 levelup : +5
-		int warrior_attack; // 2 level : +3 , +2 levelup : +1
-		int warrior_defense; // 2 level : +3, +2 levelup : +1
-		int warrior_mana; // 2 level : +10 , +1 level up : +2
+		int warrior_health; // 1 level : +10 , +1 levelup : +5
+		int warrior_attack; // 1 level : +3 , +2 levelup : +1
+		int warrior_defense; // 1 level : +3, +2 levelup : +1
+		int warrior_mana; // 1 level : +10 , +1 level up : +2
 	*/
 
 };
-class magician :public player {
+
+class chesed :public player { //헤세드
 public:
-	magician();
-	magician(const player& p);
+	chesed();
+	chesed(const player& p);
+	void levelup() override;
+	bool classChangeYN() const override;
+	void initSkills() override;
+	std::string getClassName() override;
+	/*
+		int warrior_health; // 1 level : +10 , +1 levelup : +5
+		int warrior_attack; // 1 level : +3 , +2 levelup : +1
+		int warrior_defense; // 1 level : +3, +2 levelup : +1
+		int warrior_mana; // 1 level : +10 , +1 level up : +2
+	*/
+
+};
+
+class gevurah :public player { //게부라 (누켈라비)
+public:
+	gevurah();
+	gevurah(const player& p);
 	void levelup() override;
 	bool classChangeYN() const override;
 	void initSkills() override;
 	std::string getClassName() override;
 
 	/*
-	int magician_health; // 2 level : +5 , +1 levelup : +2
-	int magician_attack; // 2 level : +1 , +3 levelup : +1
-	int magician_defense; // 2 level : +1, null
-	int magician_mana; // 2 level : +25 , +1 level up : +5
+	int magician_health; // 1 level : +5 , +1 levelup : +2
+	int magician_attack; // 1 level : +1 , +3 levelup : +1
+	int magician_defense; // 1 level : +1, null
+	int magician_mana; // 1 level : +25 , +1 level up : +5
 	*/
 
 };
-class demension :public player {
+
+class malkuth :public player { //말쿠트 (아도나이)
 public:
-	demension();
-	demension(const player& p);
+	malkuth();
+	malkuth(const player& p);
 	void levelup() override;
 	bool classChangeYN() const override;
 	void initSkills() override;
 	std::string getClassName() override;
 
 	/*
-	int demension_health;  // 2 level : +4 , +1 levelup : +2
-	int demension_attack;  // 2 level : +4 , +2 levelup : +1
-	int demension_defense;  // 2 level : +1, +3 levelup : +1
-	int demension_mana; // 2 level : +15 , +1 level up : +2
-	int agility; // 2 level : +3
+	int magician_health; // 1 level : +5 , +1 levelup : +2
+	int magician_attack; // 1 level : +1 , +3 levelup : +1
+	int magician_defense; // 1 level : +1, null
+	int magician_mana; // 1 level : +25 , +1 level up : +5
+	*/
+
+};
+
+class yesod :public player { // 예소드
+public:
+	yesod();
+	yesod(const player& p);
+	void levelup() override;
+	bool classChangeYN() const override;
+	void initSkills() override;
+	std::string getClassName() override;
+
+	/*
+	int demension_health;  // 1 level : +4 , +1 levelup : +2
+	int demension_attack;  // 1 level : +4 , +2 levelup : +1
+	int demension_defense;  // 1 level : +1, +3 levelup : +1
+	int demension_mana; // 1 level : +15 , +1 level up : +2
+	int agility; // 1 level : +3
 	*/
 };
 
+class binah :public player { //비나 (에릴림)
+public:
+	binah();
+	binah(const player& p);
+	void levelup() override;
+	bool classChangeYN() const override;
+	void initSkills() override;
+	std::string getClassName() override;
+
+	/*
+	int demension_health;  // 1 level : +4 , +1 levelup : +2
+	int demension_attack;  // 1 level : +4 , +2 levelup : +1
+	int demension_defense;  // 1 level : +1, +3 levelup : +1
+	int demension_mana; // 1 level : +15 , +1 level up : +2
+	int agility; // 1 level : +3
+	*/
+};

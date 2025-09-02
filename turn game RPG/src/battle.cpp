@@ -71,10 +71,6 @@ void battle::startBattle() { //배틀 시작
 			beforeSkill.push_back(s);
 		}
 	}
-	
-	if (p->getLevel() == 2 && p -> classChangeYN()){ // 2레벨 전직, 만약 전직했으면 안뜸
-		levelup_selectClass(); //전직
-	}
 
 	p->setAfterPlayer(); //전투 후 플레이어 정보 저장
 
@@ -233,22 +229,31 @@ void battle::battleEnd() {
 	}
 }
 
-void battle::levelup_selectClass() { // class change , 전직
-	ui.levelup_selectClassUI();
+void battle::selectClass() { // selectClass
+
+	ui.selectClassUI();
 	int selectClass;
 	cin >> selectClass;
-	ui.levelup_selectClass(level, selectClass);
+	ui.selectClass(level, selectClass);
 	
-	if (selectClass == 1) { // Warrior
-		p = std::make_unique<warrior>(*p); // player 객체를 warrior로 복사 생성
+	if (selectClass == 1) { // tiferet
+		p = std::make_unique<tiferet>(*p); // player 객체를 tiferet로 복사 생성
 	}
-	else if (selectClass == 2) { // Magician
-		p = std::make_unique<magician>(*p);
+	else if (selectClass == 2) { // chesed
+		p = std::make_unique<chesed>(*p);
 	}
-	else if (selectClass == 3) { // Assassin
-		p = std::make_unique<demension>(*p);
+	else if (selectClass == 3) { // gevurah
+		p = std::make_unique<gevurah>(*p);
 	}
-
+	else if (selectClass == 4) { // malkuth
+		p = std::make_unique<malkuth>(*p);
+	}
+	else if (selectClass == 5) { // yesod
+		p = std::make_unique<yesod>(*p);
+	}
+	else if (selectClass == 6) { // binah
+		p = std::make_unique<binah>(*p);
+	}
 
 }
 

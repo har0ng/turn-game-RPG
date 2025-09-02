@@ -33,8 +33,8 @@ public:
     void skillCoolTimeRetry(); // 스킬 쿨타임이니 다시
     void enemyTurn(int enemyAction, int pdefense, int eattack, int battleselect);
     void battleEnd(int cphp);
-    void levelup_selectClassUI();
-    void levelup_selectClass(int level, int selectClass);
+    void selectClassUI();
+    void selectClass(int level, int selectClass);
     void levelup_playerStatus(int php, int cphp, int pattack, int pdefense
                              ,int level, int level_exp, int now_exp
                              ,int mana, int current_mana);

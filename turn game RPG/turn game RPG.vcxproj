@@ -20,13 +20,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="src\demension.cpp" />
+    <ClCompile Include="src\binah.cpp" />
+    <ClCompile Include="src\chesed.cpp" />
+    <ClCompile Include="src\malkuth.cpp" />
+    <ClCompile Include="src\yesod.cpp" />
     <ClCompile Include="src\battle.cpp" />
     <ClCompile Include="src\consoleUI.cpp" />
     <ClCompile Include="src\enemy.cpp" />
-    <ClCompile Include="src\magician.cpp" />
+    <ClCompile Include="src\gevurah.cpp" />
     <ClCompile Include="src\player.cpp" />
-    <ClCompile Include="src\warrior.cpp" />
+    <ClCompile Include="src\tiferet.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="assets\json.hpp" />
