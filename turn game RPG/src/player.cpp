@@ -252,7 +252,7 @@ void player::initSkills() {
 			sk.TDMultiplier = s.value("TDMultiplier", 1.0);
 			sk.playerMultiplier = s.value("playerMultiplier", 0.0);
 			sk.referenceStatus = stringToReference(s.value("referenceStatus", "none"));
-			sk.hpCost = s.value("hpCost", 0);
+			sk.contractCost = s.value("contractCost", 0);
 			sk.mpCost = s.value("mpCost", 0);
 			sk.activeTime = s.value("activeTime", 1);
 			sk.turn = s.value("turn", 1);
@@ -336,30 +336,48 @@ std::string player::debuffToString(debuffStatus debuff){ //enum -> string 변환
 }
 referenceStatus player::stringToReference(const std::string& str){
 	if (str == "none") { return referenceStatus::none; }
-	if (str == "attack") { return referenceStatus::attack; }
-	if (str == "defense") { return referenceStatus::defense; }
+	if (str == "notSpecified") { return referenceStatus::notSpecified; }
+	if (str == "attackBuff") { return referenceStatus::attackBuff; }
+	if (str == "defenseBuff") { return referenceStatus::defenseBuff; }
+	if (str == "totalDamageBUff") { return referenceStatus::totalDamageBUff; }
 	if (str == "totalDamage") { return referenceStatus::totalDamage; }
 	if (str == "maxHp") { return referenceStatus::maxHp; }
 	if (str == "dispelDebuff") { return referenceStatus::dispelDebuff; }
-	if (str == "tatalDamageAndAttack") { return referenceStatus::tatalDamageAndAttack; }
+	if (str == "totalDamageAndAttack") { return referenceStatus::totalDamageAndAttack; }
+	if (str == "contractenhanced") { return referenceStatus::contractenhanced; }
+	if (str == "defenseAttack") { return referenceStatus::defenseAttack; }
+	if (str == "takeDamage") { return referenceStatus::takeDamage; }
+	if (str == "dispelDebuffAndMaxHp") { return referenceStatus::dispelDebuffAndMaxHp; }
 	return referenceStatus::none;
 }
 std::string player::referenceToString(referenceStatus reference){
 	switch (reference){
 	case referenceStatus::none:
 		return "none";
-	case referenceStatus::attack:
-		return "attack";
-	case referenceStatus::defense:
-		return "defense";
+	case referenceStatus::notSpecified:
+		return "notSpecified";
+	case referenceStatus::attackBuff:
+		return "attackBuff";
+	case referenceStatus::defenseBuff:
+		return "defenseBuff";
+	case referenceStatus::totalDamageBUff:
+		return "totalDamageBUff";
 	case referenceStatus::totalDamage:
 		return "totalDamage";
 	case referenceStatus::maxHp:
 		return "maxHp";
 	case referenceStatus::dispelDebuff:
 		return "dispelDebuff";
-	case referenceStatus::tatalDamageAndAttack:
-		return "tatalDamageAndAttack";
+	case referenceStatus::totalDamageAndAttack:
+		return "totalDamageAndAttack";
+	case referenceStatus::contractenhanced:
+		return "contractenhanced";
+	case referenceStatus::defenseAttack:
+		return "defenseAttack";
+	case referenceStatus::takeDamage:
+		return "takeDamage";
+	case referenceStatus::dispelDebuffAndMaxHp:
+		return "dispelDebuffAndMaxHp";
 	default:
 		return "none";
 	}

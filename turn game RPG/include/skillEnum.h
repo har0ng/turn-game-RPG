@@ -9,16 +9,16 @@ struct skill {
 	std::string charactorClass{""};  // class
 	std::string name{"unknown"}; // skill name
 	std::string targetObject{"player"}; //skill target (player,enemy)
-	int power{0}; // totalDamage = totalDamage + power 
-	float TDMultiplier{1.0}; // totalDamage *
+	int power{0}; // 최종데미지에 +power 만큼 추가 데미지
+	float TDMultiplier{1.0}; // 토탈데미지에 % 만큼 추가데미지
 	float playerMultiplier{0.0}; //attack, heal ,defense * etc
 	referenceStatus referenceStatus{referenceStatus::none}; //totalDamage, defense,attack, maxHp etc
-	int hpCost{0}; //berserker
+	int contractCost{0}; //tiferet
 	int mpCost{0};
-	int activeTime{1}; // active passive skill time(turn) //activeTime 적어놓은 턴보다 -1 턴만 유지 되기에 그걸 생각하고 쓸것
-	int turn{1}; // CT: turn
-	int levelReq{1}; // level required
-	int enemyCnt{1}; // attack anemy number count (enemy 1, 2, 3)
+	int activeTime{1}; // active passive skill time(turn) //activeTime 적어놓은 턴보다 -1 턴만 유지 되기에 그걸 생각하고 쓸 것 / 즉 1로 설정하면 담턴에 꺼져있음
+	int turn{1}; // CT: turn 쿨타임
+	int levelReq{1}; // level required 레벨 제한
+	int enemyCnt{1}; // attack anemy number count (enemy 1, 2, 3) 몇명의 적을 때릴수 있는지
 	bool passiveActive{false}; //true == active / false == passive , turn을 확인하는 문구를 넣기 위함.
 	debuffStatus debuff{debuffStatus::none}; //debuff
 
@@ -38,34 +38,34 @@ enum class commonSkill { // 공용 1레벨
 	heal, // maxhp *0.2
 };
 //2레벨 부터 직업 스킬 분류
-enum class tiferetSkill {
+enum class tiferetSkill { //12개 구체
 	//lv2
-	doubleAttack = 2,  // totalDamage = 2*(dmgcalculator(attack = attack * 0.8)) 
+	overLapping, //다음 계약스킬 강화 , -1구체
+	doubleAttack,  // totalDamage = 2*(dmgcalculator(attack = attack * 0.8)) 
 	//lv3 
-	strength, // attack * 0.2 , 2turn
+	strength, // attack * 0.2 , 2turn , -1구체 / 강화 시, 3턴
 	defenseUp, // defense += defense * 0.2
 	//lv4
-	reflection, // defense * 0.7
+	reflection, // defenseAttack = defense + defense * 0.7 / totalDmg = defenseAttack * 1.2
 	scarring, // 출혈(bleed) 3턴, totalDamage * 0.9
-	//lv5
-	disarrayAttack, // totalDamage * 0.8 , enemy turn delete
+	//lv5	
+	disarrayAttack, // totalDamage * 0.8 , 혼란(2턴간 적이 플레이어 공격시 30% 확률로 자해 enemy totalDmg -60%) 
 	//lv6
-	overLapping, //다음 계약 강화 , -1구체
-	onePointStrike, //일점 공격
+	chainOfPact, //계약의 사슬, 2턴간 받는 피해의 50%를 적도 같이 데미지를 받음(반사아님), -2구체 / 강화 시, 60%
+	bladeOfOath, //계약의 검 (약점 공격), 치명타율 100% , 크리티컬 데미지 2배에서 2.5배 ,-3구체 / 강화 시, 3배 
 	//lv7
-	theLigthOfTruth, //진실의 빛 , 모든 cc기로부터 3턴 무효화 , -2구체 / 강화 시 5턴
-	contractOfGuardian,//수호자의 계약, 치명적 일격(HP -40%) 한번 무효화 , -2구체 /강화 시, 두번
+	theLightOfTruth, //진실의 빛 , 모든 cc기로부터 2턴 무효화 , -3구체 / 강화 시 3턴 /한번 사용시 그 전투에서 더이상 사용 불가
+	contractOfGuardian,//수호자의 계약, 치명적 일격(HP -40%) 한번 무효화 , -3구체 /강화 시, 두번 /한번 사용시 그전투에서 더이상 사용 불가
 	//lv8
-	overStrength, //극한 강화 , -3구체
-
+	halfSlash, // 거합, attack*=1.6 , 치명타 확률 +20%, -3구체 / 강화 시, attack*= 1.8, 치명타 확률 +40%
+	overclock, // 최대 6개까지의 구체 지정 사용 가능, 3턴동안 -1 구체당 최종데미지(totalDmg +10%, max +60%)/ 강화 불가능
 	//lv9 
-
+	weaponMaster, //만병지왕의 계약, -6 구체 / 이번 싸움이 끝날 때까지 모든 스킬 구체 사용량 1개 줄여줌 /강화 불가능
+	covenantUltima, //최후의 계약 , -7구체 / 체력 50% 회복 + 2턴 무적 /강화 시, 65% 회복 + 2턴 무적 /한번 사용시 그전투에서 더이상 사용 불가
 	//lv10
-
-	//lv11
-	im, // 나는 계약  /-3 구체
-	slash, //벤다 계약  /-4 구체
-	you //너를 계약 3개다 활성화 시 필살 일격 /-3 구체
+	im, // 나는 계약  /-3 구체 /강화 불가능
+	slash, //벤다 계약  /-4 구체 /강화 불가능
+	you //너를 계약 3개다 활성화 시 방어무시 상대방 최대 체력 60% /-3 구체 / 강화 불가능
 };
 		
 enum class chesedSkill{ //그림자

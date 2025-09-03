@@ -20,7 +20,7 @@ public:
         , int buffAttack, int buffDefense, std::string className);
     void playerTurnUI();
     void playerTurn(int cphp, int pdefense,int battleselect,int attack, int criattack, bool criticalYN);
-    void showSkill(int skillSize, std::string charactorClass, std::string name, int hpCost, 
+    void showSkill(int skillSize, std::string charactorClass, std::string name, int contractCost,
                    int mpCost,int current_mana, int activeTime, int turn, int enemyCnt);
     void showSkill(int skillSize, std::string name, int remainturn ,int mpCost);
     void exitSkill(int back);

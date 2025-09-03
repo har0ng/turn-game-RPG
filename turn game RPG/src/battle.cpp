@@ -142,7 +142,7 @@ void battle::playerTurn() {
 
 					if (enabled == true) {
 						ui.showSkill(skSize, skill[i].charactorClass, skill[i].name,
-							skill[i].hpCost, skill[i].mpCost, current_mana,
+							skill[i].contractCost, skill[i].mpCost, current_mana,
 							skill[i].activeTime, skill[i].turn, skill[i].enemyCnt);
 					}
 					else {
@@ -297,11 +297,15 @@ void battle::getSkillSelect(int skillSelect, std::vector<skill> const& skill, at
 	case (int)referenceStatus::none:
 		cout << "Error : skillReferenceStatus is none" << endl; //디버그용 릴리스 넘어갈 떄 반드시 삭제
 		return;
-	case (int)referenceStatus::attack:
+	case (int)referenceStatus::notSpecified: //어디에도 포함 안 될 때
+		return;
+	case (int)referenceStatus::attackBuff:
 		ui.executeSkillAtk(p->getBuffAttack() + p->getTurnPlayer().attack - pattack, skill[skillSelect].activeTime);
 		return;
-	case (int)referenceStatus::defense:
+	case (int)referenceStatus::defenseBuff:
 		ui.executeSkillDef(p->getBuffDefese() + p->getTurnPlayer().defense - pdefense, skill[skillSelect].activeTime);
+		return;
+	case (int)referenceStatus::totalDamageBUff:
 		return;
 	case (int)referenceStatus::totalDamage:
 		ui.executeSkill(res.attack, res.criattack, res.criticalYN, skill[skillSelect].name);
@@ -312,7 +316,15 @@ void battle::getSkillSelect(int skillSelect, std::vector<skill> const& skill, at
 	case (int)referenceStatus::dispelDebuff:
 		ui.executeSkill();
 		return;
-	case (int)referenceStatus::tatalDamageAndAttack:
+	case (int)referenceStatus::totalDamageAndAttack:
+		return;
+	case (int)referenceStatus::contractenhanced:
+		return;
+	case (int)referenceStatus::defenseAttack:
+		return;
+	case (int)referenceStatus::takeDamage:
+		return;
+	case (int)referenceStatus::dispelDebuffAndMaxHp:
 		return;
 	default:
 		return;
@@ -323,17 +335,17 @@ void battle::getSkillSelect(int skillSelect, std::vector<skill> const& skill, at
 
 void battle::passiveSkill(int skillSelect, std::vector<skill> const& skill, attackInfo res) { //false
 
-	if ((int)skill[skillSelect].referenceStatus == (int)referenceStatus::attack) {
+	if ((int)skill[skillSelect].referenceStatus == (int)referenceStatus::attackBuff) {
 		p->pushBuff(skill[skillSelect].name, static_cast<int>(skill[skillSelect].playerMultiplier * pattack),
 			0, this->turn + skill[skillSelect].activeTime,true);
 		p->updateBuffedStats();
-		skillCost(skill[skillSelect].hpCost, skill[skillSelect].mpCost);
+		skillCost(skill[skillSelect].contractCost, skill[skillSelect].mpCost);
 	}
-	else if((int)skill[skillSelect].referenceStatus == (int)referenceStatus::defense) {
+	else if((int)skill[skillSelect].referenceStatus == (int)referenceStatus::defenseBuff) {
 		p->pushBuff(skill[skillSelect].name, 0, static_cast<int>(skill[skillSelect].playerMultiplier * pdefense),
 			this->turn + skill[skillSelect].activeTime, true);
 		p->updateBuffedStats();
-		skillCost(skill[skillSelect].hpCost, skill[skillSelect].mpCost);
+		skillCost(skill[skillSelect].contractCost, skill[skillSelect].mpCost);
 	}
 }
 
@@ -342,21 +354,21 @@ void battle::activeSkill(int skillSelect, std::vector<skill> const& skill, attac
 		attackEnemy(res.criticalYN,
 					static_cast<int>(res.criattack * skill[skillSelect].TDMultiplier),
 					static_cast<int>(res.attack * skill[skillSelect].TDMultiplier));
-		skillCost(skill[skillSelect].hpCost, skill[skillSelect].mpCost);
+		skillCost(skill[skillSelect].contractCost, skill[skillSelect].mpCost);
 	}
 	else if ((int)skill[skillSelect].referenceStatus == (int)referenceStatus::maxHp) { 
 		p->setPlayer_current_health(std::min(p->getPlayer_health(), static_cast<int>(cphp + (php * 0.2))));
 		cphp = p->getPlayer_current_health();
-		skillCost(skill[skillSelect].hpCost, skill[skillSelect].mpCost);
+		skillCost(skill[skillSelect].contractCost, skill[skillSelect].mpCost);
 	}
 	else if ((int)skill[skillSelect].referenceStatus == (int)referenceStatus::dispelDebuff) { 
 		if (p->debuffToString(debuff) != "none") {
 			p->setDebuff(0);//none
 			debuff = p->getDebuff();
 		}
-		skillCost(skill[skillSelect].hpCost, skill[skillSelect].mpCost);
+		skillCost(skill[skillSelect].contractCost, skill[skillSelect].mpCost);
 	}
-	else if ((int)skill[skillSelect].referenceStatus == (int)referenceStatus::tatalDamageAndAttack) {
+	else if ((int)skill[skillSelect].referenceStatus == (int)referenceStatus::totalDamageAndAttack) {
 
 	}
 }
@@ -388,8 +400,8 @@ attackInfo battle::atkInfo() {
 	return attackData; // 구조체 통째로 반환
 }
 
-void battle::skillCost(int hpCost, int mpCost) {
-	if (hpCost == 0) {//버서커 제외 모든 클래스 동일
+void battle::skillCost(int contractCost, int mpCost) {
+	if (contractCost == 0) {//버서커 제외 모든 클래스 동일
 		p->setCurrent_mana(std::max(0, current_mana - mpCost));
 		current_mana = p->getCurrent_mana();
 	}

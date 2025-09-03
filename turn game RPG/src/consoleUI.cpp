@@ -67,7 +67,7 @@ void consoleUI::playerTurn(int cphp, int pdefense, int battleselect, int attack,
 }
 
 
-void consoleUI::showSkill(int skillSize, std::string charactorClass, std::string name, int hpCost, 
+void consoleUI::showSkill(int skillSize, std::string charactorClass, std::string name, int contractCost,
                           int mpCost, int current_mana, int activeTime, int turn, int enemyCnt) {
     if (charactorClass != "warriorB" && current_mana >= mpCost) {
         cout << skillSize << ". "

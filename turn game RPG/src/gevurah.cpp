@@ -42,7 +42,7 @@ void gevurah::initSkills() {
     player::initSkills();
 
 }
-std::string gevurah::getClassName() { ////자신의 직업에 대한 클래스 함수가 무엇인지 알기 위함, magician.cpp 니깐 클래스 함수는 magician
+std::string gevurah::getClassName() { //자신의 직업에 대한 클래스 함수가 무엇인지 알기 위함, magician.cpp 니깐 클래스 함수는 magician
     return "gevurah";
 }
 
