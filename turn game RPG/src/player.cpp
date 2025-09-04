@@ -84,16 +84,16 @@ std::vector<disable> player::getDisables() const{
 	}
 	return disables;
 }
-playerStatusSnapShot player::getBeforePlayer() const {
+playerStatusSnapShot& player::getBeforePlayer()  {
 	return beforePlayer;
 }
-playerStatusSnapShot player::getAfterPlayer() const {
+playerStatusSnapShot& player::getAfterPlayer()  {
 	return afterPlayer;
 }
-playerStatusSnapShot player::getBattlePlayer() const{
+playerStatusSnapShot& player::getBattlePlayer() {
 	return battlePlayer;
 }
-playerStatusSnapShot player::getTurnPlayer() const{
+playerStatusSnapShot& player::getTurnPlayer() {
 	return turnPlayer;
 }
 debuffStatus player::getDebuff() const {
@@ -105,7 +105,7 @@ int player::getActiveBuffTurn() const{
 int player::getBuffAttack() const{
 	return buffAttack;
 }
-int player::getBuffDefese() const{
+int player::getBuffDefense() const{
 	return buffDefense;
 }
 
@@ -191,8 +191,8 @@ void player::setBattlePlayer() { // 매 턴 갱신되는 상태 (버프 미적�
 void player::setTurnPlayer() { // 매 턴 갱신되는 상태 (버프 적용 스텟)
 	turnPlayer.health = player_health;
 	turnPlayer.current_health = player_current_health;
-	turnPlayer.attack = basic_attack + buffAttack;
-	turnPlayer.defense = basic_defense + buffDefense;
+	turnPlayer.attack = getBasic_attack() + buffAttack;
+	turnPlayer.defense = getPlayer_defense() + buffDefense;
 	turnPlayer.level = level;
 	turnPlayer.level_exp = level_exp;
 	turnPlayer.now_exp = now_exp;
@@ -229,9 +229,6 @@ int player::playerTakeExp(int take_exp) { //take exp
 		levelup();
 		return now_exp;
 	}
-}
-bool player::classChangeYN() const { //전직하면 false로 바꾸게 해주면 됨,
-	return true;
 }
 void player::initSkills() {
 	roadSkillsToJson();
@@ -432,3 +429,10 @@ void player::clearDisable() { //전투 끝나고 쿨타임 모두 초기화
 	disables.resize(skills.size(), { 0, true }); // remainTurn=0, enabled=true
 }
 
+//tiferet
+int player::getContract() const { //tiferet
+	return 0;
+}
+void player::setContract(int null) {
+	return;
+};

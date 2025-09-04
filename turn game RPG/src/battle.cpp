@@ -48,10 +48,14 @@ battle::battle(unique_ptr<player> _p , unique_ptr<enemy> _e)
 	turn = 0; // 몇번째 턴인지 알려주기위함.
 	//gameover(Y/N)
 	play = true;
+
+	//tiferet
+	contract = p->getContract();
+	
 };
 
-void battle::startBattle() { //배틀 시작	
-	p->setBeforePlayer(); //전투 시작전 상태(레벨업 비교)
+void battle::startBattle() { //배틀 시작
+		p->setBeforePlayer(); //전투 시작전 상태(레벨업 비교)
 	while (cphp > 0 && ehp > 0) { //체력이 0 이하가 되는 순간 종료
 		p->setTurnPlayer();	  // (버프 적용 스텟)
 		p->setBattlePlayer(); // (버프 미적용 스텟)
@@ -62,7 +66,13 @@ void battle::startBattle() { //배틀 시작
 		}
 		enemyTurn(); //enemy 턴
 		p->decreaseBuffTurns(turn); //버프 삭제 카운터 다운
+		if (p->getClassName() == "tiferet"){ //턴마다 1씩 회복
+			const int MAX_CONTRACT = 12;
+			p->setContract(std::min(MAX_CONTRACT, contract + 1));
+			contract = p->getContract();
+		}
 	}
+	
 	battleEnd(); // 전투 종료
 
 	std::vector<skill> beforeSkill; //레벨업 전 스킬
@@ -111,12 +121,19 @@ void battle::battleStatus() {
 	eattack = enemyDamage(gen); //적의 공격력을 범위 내 초기화된 수로 랜덤화
 	turn++; //몇턴 째인지 셈
 	p->skillCT(); //쿨타임 백터 전체 쿨 다운
-	int a = p->getBuffAttack();
-	ui.battleStatus(turn, php, cphp, p->getTurnPlayer().attack, p->getTurnPlayer().defense, 
-					ehp, eattack, level, level_exp, now_exp, mana, current_mana, 
-					p->debuffToString(debuff),p->getBuffAttack(), p->getBuffDefese(),
-					p->getClassName()); //log를 불러오기위해 log에서 필요로 하는 값 다 넘겨주기
-}	
+	if (p->getClassName() == "tiferet") {
+		ui.battleStatus(turn, php, cphp, p->getTurnPlayer().attack, p->getTurnPlayer().defense,
+			p->getContract(),ehp, eattack, level, level_exp, now_exp, mana, current_mana,
+			p->debuffToString(debuff), p->getBuffAttack(), p->getBuffDefense(),
+			p->getClassName());
+	}
+	else {
+		ui.battleStatus(turn, php, cphp, p->getTurnPlayer().attack, p->getTurnPlayer().defense,
+			ehp, eattack, level, level_exp, now_exp, mana, current_mana,
+			p->debuffToString(debuff), p->getBuffAttack(), p->getBuffDefense(),
+			p->getClassName()); //log를 불러오기위해 log에서 필요로 하는 값 다 넘겨주기
+	}
+}
 
 void battle::playerTurn() {
 	attackInfo res = atkInfo();
@@ -138,15 +155,14 @@ void battle::playerTurn() {
 				if (level >= (int)skill[i].levelReq) {
 					skSize++;
 					bool enabled = disable[i].enabled;
-					int remainingTurn = disable[i].remainTurn;
 
 					if (enabled == true) {
 						ui.showSkill(skSize, skill[i].charactorClass, skill[i].name,
-							skill[i].contractCost, skill[i].mpCost, current_mana,
+							contract,skill[i].contractCost, skill[i].mpCost, current_mana,
 							skill[i].activeTime, skill[i].turn, skill[i].enemyCnt);
 					}
 					else {
-						ui.showSkill(skSize, skill[i].name, disable[i].remainTurn, skill[i].mpCost);
+						ui.showSkill(skSize, skill[i].name, disable[i].remainTurn, skill[i].mpCost, skill[i].contractCost);
 					}
 				}
 			}
@@ -154,26 +170,30 @@ void battle::playerTurn() {
 			bool skillCheck = false;
 			while (true) {
 				skillSelect = inputCheck(1, skSize) - 1;
-				if (skillSelect == -1) {
+				if (skillSelect == -1) { // 0을 입력했을 때 무한 반복 깨기
 					break;
 				}
 				else {
-					if (current_mana < skill[skillSelect].mpCost) {
+					if (current_mana < skill[skillSelect].mpCost) { //현재 마나가 스킬 필요 마나보다 모자를 경우
 						ui.skillMpcostRetry();
 						continue;
 					}
-					else if (disable[skillSelect].enabled == false) {
+					else if (disable[skillSelect].enabled == false) { //스킬 쿨타임일 경우
 						ui.skillCoolTimeRetry();
 						continue;
 
 					}
-					getSkillSelect(skillSelect, skill, res);
-					skillCheck = true;
-					p->skillDisable(skillSelect, skill[skillSelect].turn);
+					else if (contract < skill[skillSelect].contractCost) { //tiferet한정
+						ui.skillContractCostRetry();
+						continue;
+					}
+					getSkillSelect(skillSelect, skill, res); //스킬이 정상적으로 써질 때
+					skillCheck = true; //쿨타임이 돌게끔 해주고
+					p->skillDisable(skillSelect, skill[skillSelect].turn); //스킬 쿨타임 vector에 집어넣기
 					break;
 				}
 			}
-			if (skillCheck == false) {
+			if (skillCheck == false) { //무한 반복을 깨고 나왔으니 그냥 넘어가게끔해서 battleSelect부터 다시 하게끔 하기.
 				continue;
 			}
 			/*
@@ -303,7 +323,7 @@ void battle::getSkillSelect(int skillSelect, std::vector<skill> const& skill, at
 		ui.executeSkillAtk(p->getBuffAttack() + p->getTurnPlayer().attack - pattack, skill[skillSelect].activeTime);
 		return;
 	case (int)referenceStatus::defenseBuff:
-		ui.executeSkillDef(p->getBuffDefese() + p->getTurnPlayer().defense - pdefense, skill[skillSelect].activeTime);
+		ui.executeSkillDef(p->getBuffDefense() + p->getTurnPlayer().defense - pdefense, skill[skillSelect].activeTime);
 		return;
 	case (int)referenceStatus::totalDamageBUff:
 		return;
@@ -401,9 +421,13 @@ attackInfo battle::atkInfo() {
 }
 
 void battle::skillCost(int contractCost, int mpCost) {
-	if (contractCost == 0) {//버서커 제외 모든 클래스 동일
+	if (contractCost == 0) {//teferit의 계약 스킬 제외
 		p->setCurrent_mana(std::max(0, current_mana - mpCost));
 		current_mana = p->getCurrent_mana();
+	}
+	else if (contractCost > 0) { // 계약 스킬
+		p->setContract(std::max(0, contract - contractCost));
+		contract = p->getContract();
 	}
 }
 

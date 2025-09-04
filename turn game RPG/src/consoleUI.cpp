@@ -41,6 +41,37 @@ void consoleUI::battleStatus(int turn, int php, int cphp, int pattack, int pdefe
     cout << endl;
 }
 
+void consoleUI::battleStatus(int turn, int php, int cphp, int pattack, int pdefense, int contract, int ehp, int eattack, int level, int level_exp, int now_exp, int mana, int current_mana, std::string debuff, int buffAttack, int buffDefense, std::string className){
+    cout << "========== Battle Status ==========" << endl;
+    cout << endl;
+    cout << turn << " turn" << endl;
+    cout << "*player";
+    if (className == "player") {
+        cout << "(" << "common" << ")";
+    }
+    else {
+        cout << "(" << className << ")";
+    }
+    cout << "\n Lv: " << level << " ,exp: " << now_exp << "/" << level_exp
+        << "\n hp: " << cphp << "/" << php << "\n mp: " << current_mana << "/" << mana
+        << "\n contract: " << contract << "\n power: " << pattack;
+
+    if (buffAttack != 0) {
+        cout << "(" << buffAttack << "↑" << ")";
+    }
+    cout << "\n defense: " << pdefense;
+    if (buffDefense != 0) {
+        cout << "(" << buffDefense << "↑" << ")";
+    }
+    cout << "\n debuff: " << debuff << endl;
+    cout << endl;
+    cout << "*enemy\n hp: " << ehp << "\n power: " << eattack << endl;
+    cout << endl;
+    cout << "========== Battle Status ==========" << endl;
+    cout << endl;
+    cout << endl;
+}
+
 void consoleUI::playerTurnUI() {
     cout << "========== playerTurn Start ==========\n" << endl;
     cout << "select player Action" << endl;
@@ -67,25 +98,44 @@ void consoleUI::playerTurn(int cphp, int pdefense, int battleselect, int attack,
 }
 
 
-void consoleUI::showSkill(int skillSize, std::string charactorClass, std::string name, int contractCost,
+void consoleUI::showSkill(int skillSize, std::string charactorClass, std::string name,int contract ,int contractCost,
                           int mpCost, int current_mana, int activeTime, int turn, int enemyCnt) {
-    if (charactorClass != "warriorB" && current_mana >= mpCost) {
+    if (contractCost == 0 && current_mana >= mpCost) {
         cout << skillSize << ". "
             << std::left << std::setw(20) << name
             << " MP: " << mpCost << endl;
     }
-    else if (charactorClass != "warriorB" && current_mana < mpCost) {
+    else if (contractCost == 0 && current_mana < mpCost) {
         cout << skillSize << ". "
             << std::left << std::setw(20) << name
             << " MP: " << "Mp不足" << endl;
     }
+    else if (contractCost > 0 && contract >= contractCost) {
+        cout << skillSize << ". "
+            << std::left << std::setw(20) << name
+            << " contract: " << contractCost << endl;
+    }
+    else if (contractCost > 0 && contract < contractCost) {
+        cout << skillSize << ". "
+            << std::left << std::setw(20) << name
+            << " contract: " << "契約できません。" << endl;
+    }
+
 }
 
-void consoleUI::showSkill(int skillSize, std::string name, int remainturn, int mpCost){
+void consoleUI::showSkill(int skillSize, std::string name, int remainturn, int mpCost, int contractCost){
+    if (mpCost > 0) {
         cout << skillSize << ". "
             << std::left << std::setw(20) << name
             << " MP: " << mpCost
             << " CT: " << remainturn << endl;
+    }
+    else if (contractCost > 0) {
+        cout << skillSize << ". "
+            << std::left << std::setw(20) << name
+            << " contract: " << contractCost
+            << " CT: " << remainturn << endl;
+    }
 }
 
 void consoleUI::exitSkill(int back) {
@@ -133,6 +183,10 @@ void consoleUI::skillCoolTimeRetry(){
     cout << "まだこのスキルは使用できません。もう一度入力してください。" << endl;
 }
 
+void consoleUI::skillContractCostRetry(){
+    cout << "contractが足りなくて契約できません！" << endl;
+}
+
 
 void consoleUI::enemyTurn(int enemyAction, int pdefense, int eattack, int battleselect) {
     cout << "========== enemyTurn Start ==========\n" << endl;
@@ -173,7 +227,7 @@ void consoleUI::battleEnd(int cphp) {
 	}
 }
 
-void consoleUI::selectClassUI() { // 2레벨 직업 정하기
+void consoleUI::selectClassUI() { // 1레벨 직업 정하기
         cout << endl;
         cout << "========== select Class =============" << endl;
         cout << "select your class!" << "\n (1)tiferet (2)chesed (3)gevurah (4)malkuth (5)yesod (6)binah" << endl;

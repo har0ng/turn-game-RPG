@@ -18,11 +18,15 @@ public:
         , int eattack, int level, int level_exp, int now_exp
         , int mana, int current_mana, std::string debuff
         , int buffAttack, int buffDefense, std::string className);
+    void battleStatus(int turn, int php, int cphp, int pattack, int pdefense,int contract ,int ehp
+        , int eattack, int level, int level_exp, int now_exp
+        , int mana, int current_mana, std::string debuff
+        , int buffAttack, int buffDefense, std::string className); //tiferet
     void playerTurnUI();
     void playerTurn(int cphp, int pdefense,int battleselect,int attack, int criattack, bool criticalYN);
-    void showSkill(int skillSize, std::string charactorClass, std::string name, int contractCost,
-                   int mpCost,int current_mana, int activeTime, int turn, int enemyCnt);
-    void showSkill(int skillSize, std::string name, int remainturn ,int mpCost);
+    void showSkill(int skillSize, std::string charactorClass, std::string name,int contract ,int contractCost,
+        int mpCost, int current_mana, int activeTime, int turn, int enemyCnt);
+    void showSkill(int skillSize, std::string name, int remainturn ,int mpCost, int contractCost);
     void exitSkill(int back);
     void executeSkillAtk(int pattack, int activeTime);
     void executeSkillDef(int pdefense, int activeTime);
@@ -31,6 +35,7 @@ public:
     void executeSkill(int attack, int criattack, bool criticalYN, std::string name);
     void skillMpcostRetry(); //스킬 마나 부족이니 다시
     void skillCoolTimeRetry(); // 스킬 쿨타임이니 다시
+    void skillContractCostRetry();
     void enemyTurn(int enemyAction, int pdefense, int eattack, int battleselect);
     void battleEnd(int cphp);
     void selectClassUI();

@@ -34,6 +34,9 @@ private:
 	int turn;
 	bool play; //player의 hp의 상태에 따라 게임 지속 가능한지 확인
 
+	//tiferet 전용
+	int contract; //tiferet 아니면 0
+
 	std::mt19937 gen; //seed random
 	std::random_device rd; //seed create
 

@@ -36,9 +36,7 @@ void yesod::levelup() { // if level > 2 (+status)
     }
     
 }
-bool yesod::classChangeYN() const { //전직 후 flase로 함으로써 전직창 이제 안뜸
-    return false;
-}				   
+				   
 void yesod::initSkills() {
     player::initSkills();
 }

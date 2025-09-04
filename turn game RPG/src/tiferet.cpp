@@ -9,8 +9,8 @@
 using std::cout;
 using std::cin;
 
-tiferet::tiferet() {}
-tiferet::tiferet(const player& p):player(p) { 
+tiferet::tiferet(){}
+tiferet::tiferet(const player& p):player(p), contract(12) {
 	setPlayer_health(p.getPlayer_health() + 10);
     setPlayer_current_health(p.getPlayer_current_health() + 10);
     setBasic_attack(p.getBasic_attack() + 3);
@@ -36,13 +36,95 @@ void tiferet::levelup() { // if level > 2 (+status)
     }
 }
 
-bool tiferet::classChangeYN() const { //전직 후 flase로 함으로써 전직창 이제 안뜸
-    return false;
-}
-
 void tiferet::initSkills() {
     player::initSkills();
 }
+
+//get
 std::string tiferet::getClassName() {//자신의 직업에 대한 클래스 함수가 무엇인지 알기 위함
     return "tiferet";
+}
+int tiferet::getContract() const {
+    return contract;
+}
+tiferetStatusSnapShot& tiferet::getBeforePlayer() {
+    return beforePlayer;
+}
+tiferetStatusSnapShot& tiferet::getAfterPlayer()  {
+    return afterPlayer;
+}
+tiferetStatusSnapShot& tiferet::getBattlePlayer()  {
+    return battlePlayer;
+}
+tiferetStatusSnapShot& tiferet::getTurnPlayer()  {
+    return turnPlayer;
+}
+
+//set
+void tiferet::setContract(int contract) {
+    this->contract = contract;
+}
+void tiferet::setBeforePlayer() {
+    beforePlayer.health = getPlayer_health();
+    beforePlayer.current_health = getPlayer_current_health();
+    beforePlayer.attack = getBasic_attack();
+    beforePlayer.defense = getPlayer_defense();
+    beforePlayer.level = getLevel();
+    beforePlayer.level_exp = getLevel_exp();
+    beforePlayer.now_exp = getNow_exp();
+    beforePlayer.mana = getMana();
+    beforePlayer.current_mana = getCurrent_mana();
+    beforePlayer.agility = getAgility();
+    beforePlayer.critical = getCritical();
+    beforePlayer.debuff = getDebuff();
+    beforePlayer.skills = getSkills();
+    beforePlayer.contract = contract;
+}
+void tiferet::setAfterPlayer() {
+    afterPlayer.health = getPlayer_health();
+    afterPlayer.current_health = getPlayer_current_health();
+    afterPlayer.attack = getBasic_attack();
+    afterPlayer.defense = getPlayer_defense();
+    afterPlayer.level = getLevel();
+    afterPlayer.level_exp = getLevel_exp();
+    afterPlayer.now_exp = getNow_exp();
+    afterPlayer.mana = getMana();
+    afterPlayer.current_mana = getCurrent_mana();
+    afterPlayer.agility = getAgility();
+    afterPlayer.critical = getCritical();
+    afterPlayer.debuff = getDebuff();
+    afterPlayer.skills = getSkills();
+    afterPlayer.contract = contract;
+}
+void tiferet::setBattlePlayer() {
+    battlePlayer.health = getPlayer_health();
+    battlePlayer.current_health = getPlayer_current_health();
+    battlePlayer.attack = getBasic_attack();
+    battlePlayer.defense = getPlayer_defense();
+    battlePlayer.level = getLevel();
+    battlePlayer.level_exp = getLevel_exp();
+    battlePlayer.now_exp = getNow_exp();
+    battlePlayer.mana = getMana();
+    battlePlayer.current_mana = getCurrent_mana();
+    battlePlayer.agility = getAgility();
+    battlePlayer.critical = getCritical();
+    battlePlayer.debuff = getDebuff();
+    battlePlayer.skills = getSkills();
+    battlePlayer.contract = contract;
+}
+void tiferet::setTurnPlayer() {
+    turnPlayer.health = getPlayer_health();
+    turnPlayer.current_health = getPlayer_current_health();
+    turnPlayer.attack = getBasic_attack() + getBuffAttack();
+    turnPlayer.defense = getPlayer_defense() + getBuffDefense();
+    turnPlayer.level = getLevel();
+    turnPlayer.level_exp = getLevel_exp();
+    turnPlayer.now_exp = getNow_exp();
+    turnPlayer.mana = getMana();
+    turnPlayer.current_mana = getCurrent_mana();
+    turnPlayer.agility = getAgility();
+    turnPlayer.critical = getCritical();
+    turnPlayer.debuff = getDebuff();
+    turnPlayer.skills = getSkills();
+    turnPlayer.contract = contract;
 }

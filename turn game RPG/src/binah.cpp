@@ -36,9 +36,6 @@ void binah::levelup() { // if level > 2 (+status)
     }
 
 }
-bool binah::classChangeYN() const { //전직 후 flase로 함으로써 전직창 이제 안뜸
-    return false;
-}
 void binah::initSkills() {
     player::initSkills();
 }

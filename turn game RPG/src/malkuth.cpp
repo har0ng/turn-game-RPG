@@ -35,9 +35,6 @@ void malkuth::levelup() { // if level > 2 (+status)
     }
 
 }
-bool malkuth::classChangeYN() const { //전직 후 flase로 함으로써 전직창 이제 안뜸
-    return false;
-}
 void malkuth::initSkills() {
     player::initSkills();
 

@@ -23,6 +23,9 @@ struct playerStatusSnapShot { //before ,after 저장 (저장, 스테이터스 �
 	std::vector<skill> skills;
 };
 
+struct tiferetStatusSnapShot : public playerStatusSnapShot {
+	int contract{ 0 };
+};
 class player {
 private:
 	int player_health; //player 체력 기본 30
@@ -49,6 +52,9 @@ private:
 	int activeBuffTurn; // 현재 버프 지속 턴
 	int buffAttack;     // 현재 적용된 공격 버프
 	int buffDefense;    // 현재 적용된 방어 버프
+
+	
+
 public:
 	player();//player 체력 값 초기화
 	virtual ~player() = default; //스마트 포인터가 있더라도 가상 쪽을 지워주지 않으면 override 한 것들이 안지워짐
@@ -66,14 +72,10 @@ public:
 	int getCritical() const; // 크리티컬율
 	std::vector<skill> getSkills() const; // 스킬 목록
 	std::vector<disable> getDisables() const; //쿨타임 스킬 목록
-	playerStatusSnapShot getBeforePlayer() const; //전투 시작전 상태(레벨업 비교)
-	playerStatusSnapShot getAfterPlayer() const; //전투 후 상태 데이터(레벨업 비교)
-	playerStatusSnapShot getBattlePlayer() const; // 매 턴 갱신되는 상태 (버프 미적용 스텟)
-	playerStatusSnapShot getTurnPlayer() const;   // 매 턴 갱신되는 상태 (버프 적용 스텟)
 	debuffStatus getDebuff() const; //디버프 목록
 	int getActiveBuffTurn() const;
 	int getBuffAttack() const; 	// 현재 적용된 공격 버프
-	int getBuffDefese() const;	// 현재 적용된 방어 버프
+	int getBuffDefense() const;	// 현재 적용된 방어 버프
 
 
 
@@ -89,10 +91,6 @@ public:
 	void setNow_exp(int lev);
 	void setAgility(int agi);
 	void setCritical(int cri);
-	void setBeforePlayer();
-	void setAfterPlayer();
-	void setBattlePlayer();
-	void setTurnPlayer();
 	void setDebuff(int deffnum);
 	
 
@@ -101,10 +99,18 @@ public:
 
 	//virtual
 	virtual void levelup();//레벨 업 할 때.
-	virtual bool classChangeYN() const; //전직 했는지 안했는지 확인
 	virtual void initSkills(); //직업에 따른 스킬을 따로 vector에 저장하기 위해 override
 	virtual std::string getClassName(); //자신의 직업에 대한 클래스 함수가 무엇인지 알기위함.
-
+	
+	virtual playerStatusSnapShot& getBeforePlayer(); //전투 시작전 상태(레벨업 비교)
+	virtual playerStatusSnapShot& getAfterPlayer(); //전투 후 상태 데이터(레벨업 비교)
+	virtual playerStatusSnapShot& getBattlePlayer(); // 매 턴 갱신되는 상태 (버프 미적용 스텟)
+	virtual playerStatusSnapShot& getTurnPlayer();   // 매 턴 갱신되는 상태 (버프 적용 스텟)
+	
+	virtual	void setBeforePlayer();
+	virtual	void setAfterPlayer();
+	virtual	void setBattlePlayer();
+	virtual void setTurnPlayer();
 	//json
 	void roadSkillsToJson(); //직업에 필요한 스킬들을 json에서 빼오기 위해 필요
 	debuffStatus stringToDebuff(const std::string& str); //string → enum 변환용
@@ -123,17 +129,40 @@ public:
 	void skillCT(); //쿨타임 제거
 	void clearDisable(); //전투 끝나고 쿨타임 모두 초기화
 
+	//tiferet
+	virtual int getContract() const;
+	virtual void setContract(int null);
 };
 
 //전직은 get, set을 이용해 자식클래스에서 새로운 변수 안만들고 부모 활용.
 class tiferet :public player { //티페리트
+private:
+	int contract; //계약
+	tiferetStatusSnapShot beforePlayer;
+	tiferetStatusSnapShot afterPlayer;
+	tiferetStatusSnapShot battlePlayer;
+	tiferetStatusSnapShot turnPlayer;
 public:
 	tiferet();
 	tiferet(const player& p);
-	void levelup() override;
-	bool classChangeYN() const override;
-	void initSkills() override;
-	std::string getClassName() override;
+	void levelup() override; //레벨업 시 얻는 스텟이 캐릭터마다 다르기에 override
+	void initSkills() override; //스킬을 json에서 받아올껀데 함수가 꽤 커서 override해서 절약
+	std::string getClassName() override; //직업 이름이 뭔지 알아야하는데 각 클래스마다 만들기 귀찮아서 override
+
+	//get
+	int getContract() const override;
+	tiferetStatusSnapShot& getBeforePlayer() override;
+	tiferetStatusSnapShot& getAfterPlayer()	override;
+	tiferetStatusSnapShot& getBattlePlayer() override;
+	tiferetStatusSnapShot& getTurnPlayer() override;
+
+	//set
+	void setContract(int contract) override; //턴마다 하나씩 추가시켜주기 위함	void setBeforePlayer();
+	void setBeforePlayer() override;
+	void setAfterPlayer() override;
+	void setBattlePlayer() override;
+	void setTurnPlayer() override;
+
 	/*
 		int tiferet_health; // 1 level : +10 , +1 levelup : +5
 		int tiferet_attack; // 1 level : +3 , +2 levelup : +1
@@ -148,7 +177,6 @@ public:
 	chesed();
 	chesed(const player& p);
 	void levelup() override;
-	bool classChangeYN() const override;
 	void initSkills() override;
 	std::string getClassName() override;
 	/*
@@ -165,7 +193,6 @@ public:
 	gevurah();
 	gevurah(const player& p);
 	void levelup() override;
-	bool classChangeYN() const override;
 	void initSkills() override;
 	std::string getClassName() override;
 
@@ -183,7 +210,6 @@ public:
 	malkuth();
 	malkuth(const player& p);
 	void levelup() override;
-	bool classChangeYN() const override;
 	void initSkills() override;
 	std::string getClassName() override;
 
@@ -201,7 +227,6 @@ public:
 	yesod();
 	yesod(const player& p);
 	void levelup() override;
-	bool classChangeYN() const override;
 	void initSkills() override;
 	std::string getClassName() override;
 
@@ -219,7 +244,6 @@ public:
 	binah();
 	binah(const player& p);
 	void levelup() override;
-	bool classChangeYN() const override;
 	void initSkills() override;
 	std::string getClassName() override;
 
