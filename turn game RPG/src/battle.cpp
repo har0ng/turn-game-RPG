@@ -229,6 +229,16 @@ void battle::enemyTurn() {
 			p->playerTakeDamage(eattack);   // player 내부 체력 갱신, (*p).playerTakeDamage(eattack) 주소값이 나타내는 값을 바꿈
 			cphp = p->getPlayer_current_health(); // battle 내 체력도 동기화
 		}
+		for (const auto a : p->getBuff()) { //계약의 사슬 관련
+			if (a.name == "chainOfPact" && a.active == true &&amplifyActivate == false) {
+				ehp = e->enemyTakeDamage(ehp,static_cast<int>(eattack*0.5));
+				ui.activeChain();
+			}
+			else if (a.name == "chainOfPact" && a.active == true && amplifyActivate != false) {
+				ehp = e->enemyTakeDamage(ehp, static_cast<int>(eattack*0.6));
+				ui.activeChain();
+			}
+		}
 	}
 
 	ui.enemyTurn(enemy_action, pdefense, eattack, battleselect);//log를 불러오기위해 log에서 필요로 하는 값 다 넘겨주기
@@ -305,7 +315,7 @@ int battle::inputCheck(int min, int max) { //battleselect, skillselect 구분 �
 		if (input >= min && input <= max) {
 			return input;
 		}
-		cout << "do not imoport. retry please" << endl;
+		cout << "do not import. retry please" << endl;
 	}
 } 
 
@@ -391,8 +401,14 @@ void battle::passiveSkill(int skillSelect, std::vector<skill> const& skill, atta
 	}
 	if ((int)skill[skillSelect].referenceStatus == (int)referenceStatus::takeDamage) { //chainOfPact
 		p->pushBuff(skill[skillSelect].name, 0, 0,
-			this->turn + skill[skillSelect].activeTime, true);
+			this->turn + skill[skillSelect].activeTime, true); //enemyTurn ()함수에 관련성 추가 할것
 		skillCost(skill[skillSelect].contractCost, skill[skillSelect].mpCost); //사슬의 activetime동안 있다고 battleStatus에 표시해줘야함.
+	}
+	if ((int)skill[skillSelect].referenceStatus == (int)referenceStatus::notSpecified &&
+		skill[skillSelect].name == "contractOfGuardian") { //contractOfGuardian
+		p->pushBuff(skill[skillSelect].name, 0, 0,
+			this->turn + skill[skillSelect].activeTime, true); //enemyTurn()함수에 관련성 추가 할 것
+		skillCost(skill[skillSelect].contractCost, skill[skillSelect].mpCost);
 	}
 }
 

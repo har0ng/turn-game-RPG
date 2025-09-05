@@ -71,9 +71,10 @@ public:
 	int getAgility() const; // 회피율
 	int getCritical() const; // 크리티컬율
 	std::vector<skill> getSkills() const; // 스킬 목록
-	std::vector<disable> getDisables() const; //쿨타임 스킬 목록
+	std::vector<disable> getDisables() const; //쿨타임 스킬목록
+	std::vector<buff> getBuff() const; //버프 목록
 	debuffStatus getDebuff() const; //디버프 목록
-	int getActiveBuffTurn() const;
+	int getActiveBuffTurn() const; // 현재 버프 지속 턴
 	int getBuffAttack() const; 	// 현재 적용된 공격 버프
 	int getBuffDefense() const;	// 현재 적용된 방어 버프
 

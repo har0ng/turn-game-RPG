@@ -217,7 +217,7 @@
 	 "turn": 999,
 	 "levelReq": 7,
 	 "enemyCnt" : 0,
-	 "passiveActive":true,
+	 "passiveActive":false,
 	 "debuff": "none"
 	},
 	{

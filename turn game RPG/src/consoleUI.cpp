@@ -368,3 +368,7 @@ void consoleUI::executeContract() {
 void consoleUI::executeChain(){
     cout << "鎖が掛かりました。" << endl;
 }
+
+void consoleUI::activeChain(){
+    cout << "契約の鎖が発動しました。" << endl;
+}

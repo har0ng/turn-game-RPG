@@ -84,6 +84,12 @@ std::vector<disable> player::getDisables() const{
 	}
 	return disables;
 }
+std::vector<buff> player::getBuff() const{
+	if (buffs.empty()) {
+		return {};
+	}
+	return buffs;
+}
 playerStatusSnapShot& player::getBeforePlayer()  {
 	return beforePlayer;
 }
@@ -407,7 +413,7 @@ void player::clearBuff() {//전투 후 사용중이던 버프 전부 삭제
 	buffAttack = 0;
 	buffDefense = 0;
 }
-void player::skillDisable( int skillSelect, int turn){
+void player::skillDisable(int skillSelect, int turn){
 	disables[skillSelect].remainTurn = turn; //CT 턴 기입
 	disables[skillSelect].enabled = false; //사용 불가능 하게
 }

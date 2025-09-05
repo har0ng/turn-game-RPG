@@ -48,6 +48,8 @@ public:
     void showStatusChange(playerStatusSnapShot beforePlayer, playerStatusSnapShot afterPlayer);
     void showGetSkill(std::string name); //추가 스킬 UI
 
+    //tiferet
     void executeContract(); //강화 증폭
-    void executeChain(); //계약의 사슬
+    void executeChain(); //계약의 사슬 플레이어가 사용 문구
+    void activeChain(); //계약의 사슬 에너미가 발동 문구
 };  
