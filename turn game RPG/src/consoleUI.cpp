@@ -17,7 +17,7 @@ void consoleUI::battleStatus(int turn, int php, int cphp, int pattack, int pdefe
     cout << "*player";
     if (className == "player") {
         cout << "(" << "common" << ")";
-    }
+    } //debug
     else {
         cout << "(" << className << ")";
     }
@@ -41,20 +41,22 @@ void consoleUI::battleStatus(int turn, int php, int cphp, int pattack, int pdefe
     cout << endl;
 }
 
-void consoleUI::battleStatus(int turn, int php, int cphp, int pattack, int pdefense, int contract, int ehp, int eattack, int level, int level_exp, int now_exp, int mana, int current_mana, std::string debuff, int buffAttack, int buffDefense, std::string className){
+void consoleUI::battleStatus(int turn, int php, int cphp, int pattack, int pdefense, int contract, 
+                             int ehp, int eattack, int level, int level_exp, int now_exp, int mana, 
+                             int current_mana, std::string debuff, int buffAttack, int buffDefense, 
+                             std::string className, bool amplifyActivate){
     cout << "========== Battle Status ==========" << endl;
     cout << endl;
     cout << turn << " turn" << endl;
     cout << "*player";
-    if (className == "player") {
-        cout << "(" << "common" << ")";
-    }
-    else {
-        cout << "(" << className << ")";
-    }
+    cout << "(" << className << ")";
     cout << "\n Lv: " << level << " ,exp: " << now_exp << "/" << level_exp
         << "\n hp: " << cphp << "/" << php << "\n mp: " << current_mana << "/" << mana
-        << "\n contract: " << contract << "\n power: " << pattack;
+        << "\n contract: " << contract;
+    if (amplifyActivate == true) {
+        cout << "(強化状態)";
+    }
+    cout << "\n power: " << pattack;
 
     if (buffAttack != 0) {
         cout << "(" << buffAttack << "↑" << ")";
@@ -156,21 +158,24 @@ void consoleUI::executeSkillDef(int pdefense, int activeTime){
 void consoleUI::executeSkill(){
     cout << "デバフが消えました。" << endl;
 }
-
-void consoleUI::executeSkill(int heal){
-    cout <<"HPを " << heal << " 回復しました。" << endl;
+void consoleUI::executeSkill(int defense, std::string skillName){
+    cout << "attack enemy!" << endl;
+    cout << "enemy takes " << defense << " damage." << endl;
 }
-
 void consoleUI::executeSkill(int attack, int criattack, bool criticalYN, std::string name){
     cout << name << "を使用しました。" << endl;
-    if (criticalYN == false) {
-        cout << "attack enemy!" << endl;
-        cout << "enemy takes " << attack << " damage." << endl;
-    }
-    else if (criticalYN == true) {
+    if (criticalYN == true || name == "bladeOfOath") {
         cout << "attack enemy!" << endl;
         cout << "critical!!" << "\n enemy takes " << criattack << " damage." << endl;
     }
+    else if (criticalYN == false) {
+        cout << "attack enemy!" << endl;
+        cout << "enemy takes " << attack << " damage." << endl;
+    }
+    
+}
+void consoleUI::executeHeal(int heal) {
+    cout << "HPを " << heal << " 回復しました。" << endl;
 }
 
 void consoleUI::skillMpcostRetry(){
@@ -356,3 +361,10 @@ void consoleUI::showGetSkill(std::string name) {
     cout << name << "を習得しました。" << endl;
 }
 
+void consoleUI::executeContract() {
+    cout << "次の一回に限り契約スキルが強化されます。" << endl;
+}
+
+void consoleUI::executeChain(){
+    cout << "鎖が掛かりました。" << endl;
+}

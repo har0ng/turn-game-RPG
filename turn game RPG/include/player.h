@@ -130,14 +130,21 @@ public:
 	void clearDisable(); //전투 끝나고 쿨타임 모두 초기화
 
 	//tiferet
+	//get
 	virtual int getContract() const;
+	virtual bool getAmplifyActivate() const;
+	//set
 	virtual void setContract(int null);
+	virtual void setAmplifyActivate(bool YN);
+	//other
+	
 };
 
 //전직은 get, set을 이용해 자식클래스에서 새로운 변수 안만들고 부모 활용.
 class tiferet :public player { //티페리트
 private:
-	int contract; //계약
+	int contract; //계약 가능 횟수 12
+	bool amplifyActivate; //강화 중인지 판별
 	tiferetStatusSnapShot beforePlayer;
 	tiferetStatusSnapShot afterPlayer;
 	tiferetStatusSnapShot battlePlayer;
@@ -155,6 +162,7 @@ public:
 	tiferetStatusSnapShot& getAfterPlayer()	override;
 	tiferetStatusSnapShot& getBattlePlayer() override;
 	tiferetStatusSnapShot& getTurnPlayer() override;
+	bool getAmplifyActivate() const override;
 
 	//set
 	void setContract(int contract) override; //턴마다 하나씩 추가시켜주기 위함	void setBeforePlayer();
@@ -162,7 +170,8 @@ public:
 	void setAfterPlayer() override;
 	void setBattlePlayer() override;
 	void setTurnPlayer() override;
-
+	void setAmplifyActivate(bool YN) override;
+	
 	/*
 		int tiferet_health; // 1 level : +10 , +1 levelup : +5
 		int tiferet_attack; // 1 level : +3 , +2 levelup : +1

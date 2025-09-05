@@ -31,6 +31,10 @@ struct skill {
 	}
 };
 
+/*구현 필요 
+scarring, disarrayAttack은 디버프 구현 필요 ,chainOfPact은 enemy.cpp에서 남은 부분 구현 필요
+theLight 부처그아래로 전부 그냥 구현 필요..		
+*/ 
 
 //Skillname
 enum class commonSkill { // 공용 1레벨
@@ -46,15 +50,22 @@ enum class tiferetSkill { //12개 구체
 	strength, // attack * 0.2 , 2turn , -1구체 / 강화 시, 3턴
 	defenseUp, // defense += defense * 0.2
 	//lv4
-	reflection, // defenseAttack = defense + defense * 0.7 / totalDmg = defenseAttack * 1.2
+	reflection, // defenseAttack = defense + (defense * 0.7) / totalDmg = defenseAttack * 1.2 / 왜쓰냐? 주사위 랜덤 안해서 방어력 비례 고정 뎀지임
 	scarring, // 출혈(bleed) 3턴, totalDamage * 0.9
 	//lv5	
 	disarrayAttack, // totalDamage * 0.8 , 혼란(2턴간 적이 플레이어 공격시 30% 확률로 자해 enemy totalDmg -60%) 
 	//lv6
 	chainOfPact, //계약의 사슬, 2턴간 받는 피해의 50%를 적도 같이 데미지를 받음(반사아님), -2구체 / 강화 시, 60%
-	bladeOfOath, //계약의 검 (약점 공격), 치명타율 100% , 크리티컬 데미지 2배에서 2.5배 ,-3구체 / 강화 시, 3배 
+					/*
+						player.cpp:패시브로 나한테 사슬 걸어놓고, 패시브가 유지중일 때 상대방한테 공격을 받으면
+						enemy.cpp: player buff 목록에 사슬버프가 있다면 절반 데미지를 자신도 데미지를 입게끔 하면 될듯.
+					*/
+	bladeOfOath, //계약의 검 (약점 공격), 치명타율 100% , totalDamage에 1.8배 ,-3구체 / 강화 시, 2.2배 
 	//lv7
 	theLightOfTruth, //진실의 빛 , 모든 cc기로부터 2턴 무효화 , -3구체 / 강화 시 3턴 /한번 사용시 그 전투에서 더이상 사용 불가
+						/*enemy의 debuff 스킬이 사용될 때 만약 player의 버프 목록에 이 스킬이 있다면
+							debuff는 안들어가게끔 if else로 enemy 턴에서 나눠주기 이건 player쪽에서 못함
+						*/
 	contractOfGuardian,//수호자의 계약, 치명적 일격(HP -40%) 한번 무효화 , -3구체 /강화 시, 두번 /한번 사용시 그전투에서 더이상 사용 불가
 	//lv8
 	halfSlash, // 거합, attack*=1.6 , 치명타 확률 +20%, -3구체 / 강화 시, attack*= 1.8, 치명타 확률 +40%

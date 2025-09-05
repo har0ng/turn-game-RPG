@@ -36,6 +36,7 @@ private:
 
 	//tiferet 전용
 	int contract; //tiferet 아니면 0
+	bool amplifyActivate; //계약 강화 true false
 
 	std::mt19937 gen; //seed random
 	std::random_device rd; //seed create

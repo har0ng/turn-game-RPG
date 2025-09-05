@@ -10,7 +10,7 @@ using std::cout;
 using std::cin;
 
 tiferet::tiferet(){}
-tiferet::tiferet(const player& p):player(p), contract(12) {
+tiferet::tiferet(const player& p) :player(p), contract(12),amplifyActivate(false) {
 	setPlayer_health(p.getPlayer_health() + 10);
     setPlayer_current_health(p.getPlayer_current_health() + 10);
     setBasic_attack(p.getBasic_attack() + 3);
@@ -58,6 +58,9 @@ tiferetStatusSnapShot& tiferet::getBattlePlayer()  {
 }
 tiferetStatusSnapShot& tiferet::getTurnPlayer()  {
     return turnPlayer;
+} 
+bool tiferet::getAmplifyActivate() const {
+    return amplifyActivate;
 }
 
 //set
@@ -127,4 +130,7 @@ void tiferet::setTurnPlayer() {
     turnPlayer.debuff = getDebuff();
     turnPlayer.skills = getSkills();
     turnPlayer.contract = contract;
+}
+void tiferet::setAmplifyActivate(bool YN) {
+    amplifyActivate = YN;
 }

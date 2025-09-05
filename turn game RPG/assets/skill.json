@@ -166,7 +166,7 @@
 	 "turn": 4,
 	 "levelReq": 6,
 	 "enemyCnt" : 1,
-	 "passiveActive":true,
+	 "passiveActive":false,
 	 "debuff": "none"
 	},
 	{
@@ -174,7 +174,7 @@
 	 "name": "bladeOfOath",
 	 "targetObject": "enemy",
 	 "power": 0,   
-	 "TDmultiplier": 0.0,
+	 "TDmultiplier": 1.8,
 	 "playerMultiplier":0.0,
 	 "referenceStatus":"totalDamage",
 	 "contractCost": 3,

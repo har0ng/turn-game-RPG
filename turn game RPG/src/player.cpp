@@ -400,16 +400,16 @@ void player::decreaseBuffTurns(int turn) {//남은 버프 턴 계산
 	updateBuffedStats();
 }
 void player::pushBuff(std::string name, int atk, int def, int remainTurn, bool check){
-	buffs.push_back({ name,atk,def,remainTurn,check });
+	buffs.push_back({ name,atk,def,remainTurn,check }); //버프 vector 목록에 추가
 }
 void player::clearBuff() {//전투 후 사용중이던 버프 전부 삭제
 	buffs.clear();
 	buffAttack = 0;
 	buffDefense = 0;
 }
-void player::skillDisable(int skillSelect, int turn){
-	disables[skillSelect].remainTurn = turn;
-	disables[skillSelect].enabled = false;
+void player::skillDisable( int skillSelect, int turn){
+	disables[skillSelect].remainTurn = turn; //CT 턴 기입
+	disables[skillSelect].enabled = false; //사용 불가능 하게
 }
 void player::skillCT() {
 	for (auto& status : disables) {
@@ -430,9 +430,18 @@ void player::clearDisable() { //전투 끝나고 쿨타임 모두 초기화
 }
 
 //tiferet
+//get
 int player::getContract() const { //tiferet
 	return 0;
 }
+bool player::getAmplifyActivate() const {
+	return false;
+}
+
+//set
 void player::setContract(int null) {
 	return;
 };
+void player::setAmplifyActivate(bool YN) {
+	return;
+}

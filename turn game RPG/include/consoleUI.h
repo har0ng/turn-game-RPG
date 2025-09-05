@@ -21,7 +21,7 @@ public:
     void battleStatus(int turn, int php, int cphp, int pattack, int pdefense,int contract ,int ehp
         , int eattack, int level, int level_exp, int now_exp
         , int mana, int current_mana, std::string debuff
-        , int buffAttack, int buffDefense, std::string className); //tiferet
+        , int buffAttack, int buffDefense, std::string className, bool amplifyActivate); //tiferet
     void playerTurnUI();
     void playerTurn(int cphp, int pdefense,int battleselect,int attack, int criattack, bool criticalYN);
     void showSkill(int skillSize, std::string charactorClass, std::string name,int contract ,int contractCost,
@@ -31,8 +31,9 @@ public:
     void executeSkillAtk(int pattack, int activeTime);
     void executeSkillDef(int pdefense, int activeTime);
     void executeSkill();
-    void executeSkill(int heal);
+    void executeSkill(int defense, std::string skillName); //defenseAttack
     void executeSkill(int attack, int criattack, bool criticalYN, std::string name);
+    void executeHeal(int heal);
     void skillMpcostRetry(); //스킬 마나 부족이니 다시
     void skillCoolTimeRetry(); // 스킬 쿨타임이니 다시
     void skillContractCostRetry();
@@ -46,4 +47,7 @@ public:
     void enterToContinue();
     void showStatusChange(playerStatusSnapShot beforePlayer, playerStatusSnapShot afterPlayer);
     void showGetSkill(std::string name); //추가 스킬 UI
+
+    void executeContract(); //강화 증폭
+    void executeChain(); //계약의 사슬
 };  

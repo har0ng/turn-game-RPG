@@ -51,7 +51,7 @@ battle::battle(unique_ptr<player> _p , unique_ptr<enemy> _e)
 
 	//tiferet
 	contract = p->getContract();
-	
+	amplifyActivate = p->getAmplifyActivate();
 };
 
 void battle::startBattle() { //배틀 시작
@@ -125,7 +125,7 @@ void battle::battleStatus() {
 		ui.battleStatus(turn, php, cphp, p->getTurnPlayer().attack, p->getTurnPlayer().defense,
 			p->getContract(),ehp, eattack, level, level_exp, now_exp, mana, current_mana,
 			p->debuffToString(debuff), p->getBuffAttack(), p->getBuffDefense(),
-			p->getClassName());
+			p->getClassName(),amplifyActivate);
 	}
 	else {
 		ui.battleStatus(turn, php, cphp, p->getTurnPlayer().attack, p->getTurnPlayer().defense,
@@ -236,13 +236,17 @@ void battle::enemyTurn() {
 
 void battle::battleEnd() {
 	ui.battleEnd(cphp);//log를 불러오기위해 log에서 필요로 하는 값 다 넘겨주기
- 	p->clearBuff();
+	p->clearBuff();
+	if (p->getClassName() == "tiferet") {
+		p->setContract(12);
+		contract = p->getContract();
+	}
 	if (cphp <= 0) {
 		play = false;
 		exit(0);
 	}	
 	else {
-		int instance_exp = 5;  // 몬스터의 종류, 레벨에따라 차등 적용해야하는데 임의로 경험치를 설정하고 테스트
+		int instance_exp = 20;  // 몬스터의 종류, 레벨에따라 차등 적용해야하는데 임의로 경험치를 설정하고 테스트
 		p->playerTakeExp(instance_exp); //player안의 nowexp 값 갱신
 		now_exp = p->getNow_exp(); // 갱신된 값으로 초기화
 		level_exp = p->getLevel_exp(); //레벨업 시 총 경험치 갱신된 값으로 초기화
@@ -328,21 +332,30 @@ void battle::getSkillSelect(int skillSelect, std::vector<skill> const& skill, at
 	case (int)referenceStatus::totalDamageBUff:
 		return;
 	case (int)referenceStatus::totalDamage:
-		ui.executeSkill(res.attack, res.criattack, res.criticalYN, skill[skillSelect].name);
+		if (skill[skillSelect].name != "bladeOfOath") {
+			ui.executeSkill(res.attack, static_cast<int>(res.criattack * skill[skillSelect].TDMultiplier), res.criticalYN, skill[skillSelect].name);
+		}
+		else if(skill[skillSelect].name == "bladeOfOath"){
+			ui.executeSkill(res.attack, static_cast<int>(res.criattack * 2.2), res.criticalYN, skill[skillSelect].name);
+		}
 		return;
 	case (int)referenceStatus::maxHp:
-		ui.executeSkill(static_cast<int>(php * 0.2));
+		ui.executeHeal(static_cast<int>(php * 0.2));
 		return;
 	case (int)referenceStatus::dispelDebuff:
 		ui.executeSkill();
 		return;
 	case (int)referenceStatus::totalDamageAndAttack:
 		return;
-	case (int)referenceStatus::contractenhanced:
+	case (int)referenceStatus::contractenhanced: //다음 계약 증폭
+		ui.executeContract();
 		return;
-	case (int)referenceStatus::defenseAttack:
+	case (int)referenceStatus::defenseAttack: //크리티컬 없음 얜
+		ui.executeSkill(static_cast<int>(
+			skill[skillSelect].playerMultiplier * (pdefense + (pdefense * skill[skillSelect].playerMultiplier))),skill[skillSelect].name);
 		return;
 	case (int)referenceStatus::takeDamage:
+		ui.executeChain();
 		return;
 	case (int)referenceStatus::dispelDebuffAndMaxHp:
 		return;
@@ -356,39 +369,79 @@ void battle::getSkillSelect(int skillSelect, std::vector<skill> const& skill, at
 void battle::passiveSkill(int skillSelect, std::vector<skill> const& skill, attackInfo res) { //false
 
 	if ((int)skill[skillSelect].referenceStatus == (int)referenceStatus::attackBuff) {
-		p->pushBuff(skill[skillSelect].name, static_cast<int>(skill[skillSelect].playerMultiplier * pattack),
-			0, this->turn + skill[skillSelect].activeTime,true);
-		p->updateBuffedStats();
+		if (amplifyActivate != true) { 
+			p->pushBuff(skill[skillSelect].name, static_cast<int>(skill[skillSelect].playerMultiplier * pattack),
+				0, this->turn + skill[skillSelect].activeTime, true);
+			p->updateBuffedStats();
+		}
+		else { //계약 강화 중이라면
+			p->pushBuff(skill[skillSelect].name, static_cast<int>(skill[skillSelect].playerMultiplier * pattack),
+				0, this->turn + skill[skillSelect].activeTime + 1, true);
+			p->updateBuffedStats();
+			p->setAmplifyActivate(false);
+			amplifyActivate = p->getAmplifyActivate();
+		}
 		skillCost(skill[skillSelect].contractCost, skill[skillSelect].mpCost);
 	}
-	else if((int)skill[skillSelect].referenceStatus == (int)referenceStatus::defenseBuff) {
+	if((int)skill[skillSelect].referenceStatus == (int)referenceStatus::defenseBuff) {
 		p->pushBuff(skill[skillSelect].name, 0, static_cast<int>(skill[skillSelect].playerMultiplier * pdefense),
 			this->turn + skill[skillSelect].activeTime, true);
 		p->updateBuffedStats();
 		skillCost(skill[skillSelect].contractCost, skill[skillSelect].mpCost);
 	}
+	if ((int)skill[skillSelect].referenceStatus == (int)referenceStatus::takeDamage) { //chainOfPact
+		p->pushBuff(skill[skillSelect].name, 0, 0,
+			this->turn + skill[skillSelect].activeTime, true);
+		skillCost(skill[skillSelect].contractCost, skill[skillSelect].mpCost); //사슬의 activetime동안 있다고 battleStatus에 표시해줘야함.
+	}
 }
 
 void battle::activeSkill(int skillSelect, std::vector<skill> const& skill, attackInfo res) { //true
-	if ((int)skill[skillSelect].referenceStatus == (int)referenceStatus::totalDamage) {
+	if ((int)skill[skillSelect].referenceStatus == (int)referenceStatus::totalDamage && 
+		skill[skillSelect].name != "bladeOfOath") {
 		attackEnemy(res.criticalYN,
 					static_cast<int>(res.criattack * skill[skillSelect].TDMultiplier),
 					static_cast<int>(res.attack * skill[skillSelect].TDMultiplier));
 		skillCost(skill[skillSelect].contractCost, skill[skillSelect].mpCost);
 	}
-	else if ((int)skill[skillSelect].referenceStatus == (int)referenceStatus::maxHp) { 
+	else if ((int)skill[skillSelect].referenceStatus == (int)referenceStatus::totalDamage &&
+		skill[skillSelect].name == "bladeOfOath") {
+		if (amplifyActivate != true) { //기존 bladeOfOath
+			attackEnemy(true,
+				static_cast<int>(res.criattack * skill[skillSelect].TDMultiplier),
+				static_cast<int>(res.attack * skill[skillSelect].TDMultiplier));
+		}
+		else {
+			attackEnemy(true,
+				static_cast<int>(res.criattack * 2.2),
+				static_cast<int>(res.attack * skill[skillSelect].TDMultiplier));
+		}
+		skillCost(skill[skillSelect].contractCost, skill[skillSelect].mpCost);
+	}
+
+	if ((int)skill[skillSelect].referenceStatus == (int)referenceStatus::maxHp) { 
 		p->setPlayer_current_health(std::min(p->getPlayer_health(), static_cast<int>(cphp + (php * 0.2))));
 		cphp = p->getPlayer_current_health();
 		skillCost(skill[skillSelect].contractCost, skill[skillSelect].mpCost);
 	}
-	else if ((int)skill[skillSelect].referenceStatus == (int)referenceStatus::dispelDebuff) { 
+	if ((int)skill[skillSelect].referenceStatus == (int)referenceStatus::dispelDebuff) { 
 		if (p->debuffToString(debuff) != "none") {
 			p->setDebuff(0);//none
 			debuff = p->getDebuff();
 		}
 		skillCost(skill[skillSelect].contractCost, skill[skillSelect].mpCost);
 	}
-	else if ((int)skill[skillSelect].referenceStatus == (int)referenceStatus::totalDamageAndAttack) {
+	if ((int)skill[skillSelect].referenceStatus == (int)referenceStatus::contractenhanced) {
+		p->setAmplifyActivate(true);
+		amplifyActivate = p->getAmplifyActivate();
+		skillCost(skill[skillSelect].contractCost, skill[skillSelect].mpCost);
+	}
+	if ((int)skill[skillSelect].referenceStatus == (int)referenceStatus::defenseAttack) {
+		attackEnemy(false, 0, static_cast<int>(
+			skill[skillSelect].playerMultiplier * (pdefense + (pdefense * skill[skillSelect].playerMultiplier))));
+		skillCost(skill[skillSelect].contractCost, skill[skillSelect].mpCost);
+	}
+	if ((int)skill[skillSelect].referenceStatus == (int)referenceStatus::totalDamageAndAttack) {
 
 	}
 }
