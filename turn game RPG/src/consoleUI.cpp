@@ -211,8 +211,7 @@ void consoleUI::enemyTurn(int enemyAction, int pdefense, int eattack, int battle
     cout << "\n========== enemyTurn End ==========" << endl;
     cout << endl;
     cout << endl;
-
-    cout << "Press Enter to continue..."<< endl; //사용자 임의대로 화면 넘기기
+    cout << "Press Enter to continue..." << endl; //사용자 임의대로 화면 넘기기
     cin.ignore();//ignore과 get으로 enter을 쳤을 때 넘어갈 수 있게 조절.
     cin.get();
 }
@@ -369,6 +368,27 @@ void consoleUI::executeChain(){
     cout << "鎖が掛かりました。" << endl;
 }
 
-void consoleUI::activeChain(){
+void consoleUI::activeChain(int enemyTakeDamage, int remainTurn){
     cout << "契約の鎖が発動しました。" << endl;
+    cout << "契約の効果で敵が" << enemyTakeDamage << "のダメージを受けました。" << endl;
+    cout << "鎖は" << remainTurn << "ターンになる時に消えます。" << endl;
+    cout << endl;
+    cout << endl;
+    cout << "Press Enter to continue..." << endl; //사용자 임의대로 화면 넘기기
+    cin.ignore();//ignore과 get으로 enter을 쳤을 때 넘어갈 수 있게 조절.
+    cin.get();
 }
+
+void consoleUI::activeLightofTruth(){
+    cout << "2ターンの間デバフにかかりません。" << endl;
+}
+
+void consoleUI::activeGuardian(){
+    cout << "ガーディアンがプレイヤーの近くを回ります。" << endl;
+}
+
+void consoleUI::executeGuardian(){
+    cout << "contractOfGuardianが発動しました。" << endl;
+    cout << "攻撃が塞がれました。" << endl;
+}
+

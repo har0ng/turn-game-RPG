@@ -122,7 +122,7 @@ public:
 	//buff
 	void updateBuffedStats();//버프 적용
 	void decreaseBuffTurns(int turn); // 턴 감소 처리
-	void pushBuff(std::string name, int atk, int def, int remainTurn, bool check);//사용한 버프를 버프목록에 추가
+	void pushBuff(std::string name, int atk, int def, int remainTurn, bool check, bool amplity);//사용한 버프를 버프목록에 추가
 	void clearBuff(); //전투 끝나고 버프 전부 초기화
 
 	//CT

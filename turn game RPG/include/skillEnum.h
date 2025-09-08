@@ -32,8 +32,8 @@ struct skill {
 };
 
 /*구현 필요 
-scarring, disarrayAttack은 디버프 구현 필요 ,chainOfPact은 enemy.cpp에서 남은 부분 구현 필요
-theLight 부처그아래로 전부 그냥 구현 필요..		
+scarring, disarrayAttack은 디버프 구현 필요
+theLight 부터 그아래로 전부 그냥 구현 필요..		
 */ 
 
 //Skillname

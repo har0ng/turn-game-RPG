@@ -214,34 +214,64 @@ void battle::playerTurn() {
 void battle::enemyTurn() {
 	std::uniform_int_distribution<unsigned int> dist(0, 2); //0. 상황 살피기, 1. 공격, 2. 공격
 	int enemy_action = dist(gen);
-
 	// 전투 로직 (데미지 계산 등)
 	if (enemy_action == 0) {
 		// 상황 살피기 (출력은 UI에서)
+		ui.enemyTurn(enemy_action, 0, 0, battleselect);
+		return;
 	}
-	else { 
-		if (battleselect == 2) { //player가 방어를 선택 했을 때
-			eattack = std::max(0, eattack - pdefense);
-			p->playerTakeDamage(eattack);   // player 내부 체력 갱신, (*p).playerTakeDamage(eattack) 주소값이 나타내는 값을 바꿈
-			cphp = p->getPlayer_current_health(); // battle 내 체력도 동기화
+	int guardian = 0; // 0이면 x, 1이면 기본, 2면 강화  / tiferet의 contractOfGuardian
+	for (const auto b : p->getBuff()) {
+		if (b.name == "contractOfGuardian" && b.active == true && b.amplify == false) {
+			guardian = 1;
 		}
-		else { //player가 방어가 아닌 다른걸 선택 했을 때
-			p->playerTakeDamage(eattack);   // player 내부 체력 갱신, (*p).playerTakeDamage(eattack) 주소값이 나타내는 값을 바꿈
-			cphp = p->getPlayer_current_health(); // battle 내 체력도 동기화
-		}
-		for (const auto a : p->getBuff()) { //계약의 사슬 관련
-			if (a.name == "chainOfPact" && a.active == true &&amplifyActivate == false) {
-				ehp = e->enemyTakeDamage(ehp,static_cast<int>(eattack*0.5));
-				ui.activeChain();
-			}
-			else if (a.name == "chainOfPact" && a.active == true && amplifyActivate != false) {
-				ehp = e->enemyTakeDamage(ehp, static_cast<int>(eattack*0.6));
-				ui.activeChain();
-			}
+		else if(b.name == "contractOfGuardian" && b.active == true && b.amplify == true){
+			guardian = 2;
 		}
 	}
 
+	if (guardian == 2) { // 완전 무효화
+		ui.executeGuardian();
+		return;
+	}
+
+	if (battleselect == 2 && guardian == 1 && std::max(0, eattack - pdefense) >= static_cast<int>(cphp * 0.4)) { //부분 무효화
+		ui.executeGuardian();
+		return;
+	}
+	if (battleselect != 2 && guardian == 1 && eattack >= static_cast<int>(cphp * 0.4)) { //부분 무효화
+		ui.executeGuardian();
+		return;
+	}
+	if (battleselect == 2) { //방어
+		eattack = std::max(0, eattack - pdefense);
+		p->playerTakeDamage(eattack);   // player 내부 체력 갱신, (*p).playerTakeDamage(eattack) 주소값이 나타내는 값을 바꿈
+		cphp = p->getPlayer_current_health(); // battle 내 체력도 동기화
+	}
+	else { // 공격 혹은 스킬
+		p->playerTakeDamage(eattack);   // player 내부 체력 갱신, (*p).playerTakeDamage(eattack) 주소값이 나타내는 값을 바꿈
+		cphp = p->getPlayer_current_health(); // battle 내 체력도 동기화
+	}
+
 	ui.enemyTurn(enemy_action, pdefense, eattack, battleselect);//log를 불러오기위해 log에서 필요로 하는 값 다 넘겨주기
+		
+	for (const auto a : p->getBuff()) { 
+		if (a.name == "chainOfPact" && a.active == true &&a.amplify == false) {//계약의 사슬 관련
+			ehp = e->enemyTakeDamage(ehp,static_cast<int>(eattack*0.5));
+			ui.activeChain(static_cast<int>(eattack * 0.5), a.remainingTurn);
+		}
+		else if (a.name == "chainOfPact" && a.active == true && a.amplify == true) {//계약의 사슬 관련
+			ehp = e->enemyTakeDamage(ehp, static_cast<int>(eattack*0.6));
+			ui.activeChain(static_cast<int>(eattack * 0.6), a.remainingTurn);
+		}
+
+		if (a.name == "theLightOfTruth" && a.active == true && a.amplify == false) { //remainTurn + turn 동안 debuff 무효화
+			//now(09/08) enemy debuff skill is none , need to enemy.cpp develop
+		}
+		else if (a.name == "theLightOfTruth" && a.active == true && a.amplify == true) { //remainTurn + turn 동안 debuff 무효화
+			//now(09/08) enemy debuff skill is none , need to enemy.cpp develop
+		}
+	}
 }
 
 void battle::battleEnd() {
@@ -327,11 +357,14 @@ void battle::getSkillSelect(int skillSelect, std::vector<skill> const& skill, at
 		activeSkill(skillSelect, skill, res);
 	}
 
-	switch ((int)skill[skillSelect].referenceStatus){
+	switch ((int)skill[skillSelect].referenceStatus) {
 	case (int)referenceStatus::none:
 		cout << "Error : skillReferenceStatus is none" << endl; //디버그용 릴리스 넘어갈 떄 반드시 삭제
 		return;
 	case (int)referenceStatus::notSpecified: //어디에도 포함 안 될 때
+		if (skill[skillSelect].name == "contractOfGuardian") {
+			ui.activeGuardian();
+		}
 		return;
 	case (int)referenceStatus::attackBuff:
 		ui.executeSkillAtk(p->getBuffAttack() + p->getTurnPlayer().attack - pattack, skill[skillSelect].activeTime);
@@ -368,6 +401,7 @@ void battle::getSkillSelect(int skillSelect, std::vector<skill> const& skill, at
 		ui.executeChain();
 		return;
 	case (int)referenceStatus::dispelDebuffAndMaxHp:
+		ui.activeLightofTruth();
 		return;
 	default:
 		return;
@@ -381,34 +415,50 @@ void battle::passiveSkill(int skillSelect, std::vector<skill> const& skill, atta
 	if ((int)skill[skillSelect].referenceStatus == (int)referenceStatus::attackBuff) {
 		if (amplifyActivate != true) { 
 			p->pushBuff(skill[skillSelect].name, static_cast<int>(skill[skillSelect].playerMultiplier * pattack),
-				0, this->turn + skill[skillSelect].activeTime, true);
+				0, this->turn + skill[skillSelect].activeTime, true, false);
 			p->updateBuffedStats();
 		}
 		else { //계약 강화 중이라면
 			p->pushBuff(skill[skillSelect].name, static_cast<int>(skill[skillSelect].playerMultiplier * pattack),
-				0, this->turn + skill[skillSelect].activeTime + 1, true);
+				0, this->turn + skill[skillSelect].activeTime + 1, true, true);
 			p->updateBuffedStats();
 			p->setAmplifyActivate(false);
 			amplifyActivate = p->getAmplifyActivate();
 		}
 		skillCost(skill[skillSelect].contractCost, skill[skillSelect].mpCost);
 	}
-	if((int)skill[skillSelect].referenceStatus == (int)referenceStatus::defenseBuff) {
+	if ((int)skill[skillSelect].referenceStatus == (int)referenceStatus::defenseBuff) {
 		p->pushBuff(skill[skillSelect].name, 0, static_cast<int>(skill[skillSelect].playerMultiplier * pdefense),
-			this->turn + skill[skillSelect].activeTime, true);
+			this->turn + skill[skillSelect].activeTime, true, false);
 		p->updateBuffedStats();
 		skillCost(skill[skillSelect].contractCost, skill[skillSelect].mpCost);
 	}
 	if ((int)skill[skillSelect].referenceStatus == (int)referenceStatus::takeDamage) { //chainOfPact
-		p->pushBuff(skill[skillSelect].name, 0, 0,
-			this->turn + skill[skillSelect].activeTime, true); //enemyTurn ()함수에 관련성 추가 할것
-		skillCost(skill[skillSelect].contractCost, skill[skillSelect].mpCost); //사슬의 activetime동안 있다고 battleStatus에 표시해줘야함.
+		if (amplifyActivate != true) {
+			p->pushBuff(skill[skillSelect].name, 0, 0,
+				this->turn + skill[skillSelect].activeTime, true, false);
+			skillCost(skill[skillSelect].contractCost, skill[skillSelect].mpCost);
+		}
+		else {//계약 강화 중이라면
+			p->pushBuff(skill[skillSelect].name, 0, 0,
+				this->turn + skill[skillSelect].activeTime, true, true);
+			skillCost(skill[skillSelect].contractCost, skill[skillSelect].mpCost);
+			p->setAmplifyActivate(false);
+			amplifyActivate = p->getAmplifyActivate();
+		}
 	}
 	if ((int)skill[skillSelect].referenceStatus == (int)referenceStatus::notSpecified &&
 		skill[skillSelect].name == "contractOfGuardian") { //contractOfGuardian
-		p->pushBuff(skill[skillSelect].name, 0, 0,
-			this->turn + skill[skillSelect].activeTime, true); //enemyTurn()함수에 관련성 추가 할 것
-		skillCost(skill[skillSelect].contractCost, skill[skillSelect].mpCost);
+		if (amplifyActivate != true) { // 강화 전
+			p->pushBuff(skill[skillSelect].name, 0, 0,
+				this->turn + skill[skillSelect].activeTime, true, false); //enemyTurn()함수에 관련성 추가 할 것
+			skillCost(skill[skillSelect].contractCost, skill[skillSelect].mpCost);
+		}
+		else { // 강화 후
+			p->pushBuff(skill[skillSelect].name, 0, 0,
+				this->turn + skill[skillSelect].activeTime, true, true); //enemyTurn()함수에 관련성 추가 할 것
+			skillCost(skill[skillSelect].contractCost, skill[skillSelect].mpCost);
+		}
 	}
 }
 
@@ -427,7 +477,7 @@ void battle::activeSkill(int skillSelect, std::vector<skill> const& skill, attac
 				static_cast<int>(res.criattack * skill[skillSelect].TDMultiplier),
 				static_cast<int>(res.attack * skill[skillSelect].TDMultiplier));
 		}
-		else {
+		else {//강화 bladeOfOath
 			attackEnemy(true,
 				static_cast<int>(res.criattack * 2.2),
 				static_cast<int>(res.attack * skill[skillSelect].TDMultiplier));
@@ -441,10 +491,8 @@ void battle::activeSkill(int skillSelect, std::vector<skill> const& skill, attac
 		skillCost(skill[skillSelect].contractCost, skill[skillSelect].mpCost);
 	}
 	if ((int)skill[skillSelect].referenceStatus == (int)referenceStatus::dispelDebuff) { 
-		if (p->debuffToString(debuff) != "none") {
-			p->setDebuff(0);//none
-			debuff = p->getDebuff();
-		}
+		p->setDebuff(0);//none
+		debuff = p->getDebuff();
 		skillCost(skill[skillSelect].contractCost, skill[skillSelect].mpCost);
 	}
 	if ((int)skill[skillSelect].referenceStatus == (int)referenceStatus::contractenhanced) {
@@ -459,6 +507,22 @@ void battle::activeSkill(int skillSelect, std::vector<skill> const& skill, attac
 	}
 	if ((int)skill[skillSelect].referenceStatus == (int)referenceStatus::totalDamageAndAttack) {
 
+	}
+	if ((int)skill[skillSelect].referenceStatus == (int)referenceStatus::dispelDebuffAndMaxHp) {//theLightOfTruth
+		if (amplifyActivate != true) { //기본
+			p->setDebuff(0);//none
+			debuff = p->getDebuff();
+			p->pushBuff(skill[skillSelect].name, 0, 0,
+				this->turn + skill[skillSelect].activeTime, true, false);
+			skillCost(skill[skillSelect].contractCost, skill[skillSelect].mpCost);
+		}
+		else { //강화 중
+			p->setDebuff(0);//none
+			debuff = p->getDebuff();
+			p->pushBuff(skill[skillSelect].name, 0, 0,
+				this->turn + skill[skillSelect].activeTime + 1, true, true); //남은 턴 +1
+			skillCost(skill[skillSelect].contractCost, skill[skillSelect].mpCost);
+		}
 	}
 }
 
