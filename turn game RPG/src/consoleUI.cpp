@@ -392,3 +392,9 @@ void consoleUI::executeGuardian(){
     cout << "攻撃が塞がれました。" << endl;
 }
 
+void consoleUI::setOverclockUI(){
+    cout << "使う契約の数を選んでください。(1~6)" << endl;
+    cout << "10%づつ最終ダメージがあがります。(max 60%)" << endl;
+    cout << "戻る(0)" << endl;
+}
+

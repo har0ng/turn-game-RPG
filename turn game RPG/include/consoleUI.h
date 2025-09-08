@@ -55,4 +55,5 @@ public:
     void activeLightofTruth();
     void activeGuardian(); // 스킬을 썼을 때
     void executeGuardian(); //스킬이 발동 됐을 때
+    void setOverclockUI(); // overclock에 쓸 contract 갯수 정하기
 };  
