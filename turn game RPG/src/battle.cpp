@@ -144,10 +144,10 @@ void battle::playerTurn() {
 			attackEnemy(res.criticalYN, res.criattack, res.attack);
 			break;
 		}
-		else if (battleselect == 2) { // 방어
+		if (battleselect == 2) { // 방어
 			break;
 		}
-		else if (battleselect == 3) { //스킬창
+		if (battleselect == 3) { //스킬창
 			const auto& skill = p->getSkills(); //heal, powerStrike, antiDebuff가 나옴
 			const auto& disable = p->getDisables();
 			int skSize = 0;
@@ -173,25 +173,30 @@ void battle::playerTurn() {
 				if (skillSelect == -1) { // 0을 입력했을 때 무한 반복 깨기
 					break;
 				}
-				else {
-					if (current_mana < skill[skillSelect].mpCost) { //현재 마나가 스킬 필요 마나보다 모자를 경우
-						ui.skillMpcostRetry();
-						continue;
-					}
-					else if (disable[skillSelect].enabled == false) { //스킬 쿨타임일 경우
-						ui.skillCoolTimeRetry();
-						continue;
-
-					}
-					else if (contract < skill[skillSelect].contractCost) { //tiferet한정
-						ui.skillContractCostRetry();
-						continue;
-					}
-					getSkillSelect(skillSelect, skill, res); //스킬이 정상적으로 써질 때
-					skillCheck = true; //쿨타임이 돌게끔 해주고
-					p->skillDisable(skillSelect, skill[skillSelect].turn); //스킬 쿨타임 vector에 집어넣기
-					break;
+				if (current_mana < skill[skillSelect].mpCost) { //현재 마나가 스킬 필요 마나보다 모자를 경우
+					ui.skillMpcostRetry();
+					continue;
 				}
+				if (disable[skillSelect].enabled == false) { //스킬 쿨타임일 경우
+					ui.skillCoolTimeRetry();
+					continue;
+				}
+				if (contract < skill[skillSelect].contractCost) { //tiferet한정
+					ui.skillContractCostRetry();
+					continue;
+				}
+				/*if (skill[skillSelect].name == "overclock" && p->getClassName() == "tiferet") {
+					int useContract = 0;
+					cin >> useContract;
+					if (useContract == 0){
+						continue;
+					}
+					else { skillCost(useContract, 0); }
+				}*/
+				getSkillSelect(skillSelect, skill, res); //스킬이 정상적으로 써질 때
+				skillCheck = true; //쿨타임이 돌게끔 해주고
+				p->skillDisable(skillSelect, skill[skillSelect].turn); //스킬 쿨타임 vector에 집어넣기
+				break;
 			}
 			if (skillCheck == false) { //무한 반복을 깨고 나왔으니 그냥 넘어가게끔해서 battleSelect부터 다시 하게끔 하기.
 				continue;
@@ -286,7 +291,7 @@ void battle::battleEnd() {
 		exit(0);
 	}	
 	else {
-		int instance_exp = 20;  // 몬스터의 종류, 레벨에따라 차등 적용해야하는데 임의로 경험치를 설정하고 테스트
+		int instance_exp = 700;  // 몬스터의 종류, 레벨에따라 차등 적용해야하는데 임의로 경험치를 설정하고 테스트
 		p->playerTakeExp(instance_exp); //player안의 nowexp 값 갱신
 		now_exp = p->getNow_exp(); // 갱신된 값으로 초기화
 		level_exp = p->getLevel_exp(); //레벨업 시 총 경험치 갱신된 값으로 초기화
@@ -372,15 +377,18 @@ void battle::getSkillSelect(int skillSelect, std::vector<skill> const& skill, at
 	case (int)referenceStatus::defenseBuff:
 		ui.executeSkillDef(p->getBuffDefense() + p->getTurnPlayer().defense - pdefense, skill[skillSelect].activeTime);
 		return;
-	case (int)referenceStatus::totalDamageBUff:
+	case (int)referenceStatus::totalDamageBuff:
 		return;
 	case (int)referenceStatus::totalDamage:
-		if (skill[skillSelect].name != "bladeOfOath") {
-			ui.executeSkill(res.attack, static_cast<int>(res.criattack * skill[skillSelect].TDMultiplier), res.criticalYN, skill[skillSelect].name);
+		if (skill[skillSelect].name == "halfSlash") {
+			ui.executeSkill(res.attack, res.criattack, attackData.criticalYN, skill[skillSelect].name); //res.criticalYN으로 하면 아래서 바꿔도 인수 넣은 시점으로 구분해서 바뀌지 않음.
+			return;
 		}
-		else if(skill[skillSelect].name == "bladeOfOath"){
+		if(skill[skillSelect].name == "bladeOfOath"){
 			ui.executeSkill(res.attack, static_cast<int>(res.criattack * 2.2), res.criticalYN, skill[skillSelect].name);
+			return;
 		}
+		ui.executeSkill(res.attack, static_cast<int>(res.criattack * skill[skillSelect].TDMultiplier), res.criticalYN, skill[skillSelect].name);
 		return;
 	case (int)referenceStatus::maxHp:
 		ui.executeHeal(static_cast<int>(php * 0.2));
@@ -413,7 +421,7 @@ void battle::getSkillSelect(int skillSelect, std::vector<skill> const& skill, at
 void battle::passiveSkill(int skillSelect, std::vector<skill> const& skill, attackInfo res) { //false
 
 	if ((int)skill[skillSelect].referenceStatus == (int)referenceStatus::attackBuff) {
-		if (amplifyActivate != true) { 
+		if (amplifyActivate != true) {
 			p->pushBuff(skill[skillSelect].name, static_cast<int>(skill[skillSelect].playerMultiplier * pattack),
 				0, this->turn + skill[skillSelect].activeTime, true, false);
 			p->updateBuffedStats();
@@ -460,17 +468,25 @@ void battle::passiveSkill(int skillSelect, std::vector<skill> const& skill, atta
 			skillCost(skill[skillSelect].contractCost, skill[skillSelect].mpCost);
 		}
 	}
+	if ((int)skill[skillSelect].referenceStatus == (int)referenceStatus::totalDamageBuff) {
+		/*int useContract = 0;
+		cin >> useContract;
+		if (useContract == 0) {
+			return;
+		}*/
+		else { skillCost(useContract, 0); }
+	}
 }
 
 void battle::activeSkill(int skillSelect, std::vector<skill> const& skill, attackInfo res) { //true
-	if ((int)skill[skillSelect].referenceStatus == (int)referenceStatus::totalDamage && 
-		skill[skillSelect].name != "bladeOfOath") {
+	if ((int)skill[skillSelect].referenceStatus == (int)referenceStatus::totalDamage &&
+		skill[skillSelect].name != "bladeOfOath" && skill[skillSelect].name != "halfSlash") {
 		attackEnemy(res.criticalYN,
-					static_cast<int>(res.criattack * skill[skillSelect].TDMultiplier),
-					static_cast<int>(res.attack * skill[skillSelect].TDMultiplier));
+			static_cast<int>(res.criattack * skill[skillSelect].TDMultiplier),
+			static_cast<int>(res.attack * skill[skillSelect].TDMultiplier));
 		skillCost(skill[skillSelect].contractCost, skill[skillSelect].mpCost);
 	}
-	else if ((int)skill[skillSelect].referenceStatus == (int)referenceStatus::totalDamage &&
+	if ((int)skill[skillSelect].referenceStatus == (int)referenceStatus::totalDamage &&
 		skill[skillSelect].name == "bladeOfOath") {
 		if (amplifyActivate != true) { //기존 bladeOfOath
 			attackEnemy(true,
@@ -484,7 +500,24 @@ void battle::activeSkill(int skillSelect, std::vector<skill> const& skill, attac
 		}
 		skillCost(skill[skillSelect].contractCost, skill[skillSelect].mpCost);
 	}
-
+	if ((int)skill[skillSelect].referenceStatus == (int)referenceStatus::totalDamage &&
+		skill[skillSelect].name == "halfSlash") {
+		if (amplifyActivate != true) { //기존 halfSlash
+			attackData.criticalYN = ((p->getCritical() + 20) >= res.criticalLine) ? true : false; //치명타율 재설정
+			p->pushBuff(skill[skillSelect].name, static_cast<int>(skill[skillSelect].playerMultiplier * pattack),
+				0, this->turn + skill[skillSelect].activeTime, true, false);// 1회용 공격력 증가
+			attackEnemy(res.criticalYN, static_cast<int>(res.criattack), static_cast<int>(res.attack)); // 공격력이 증가한거지 총합데미지가 증가한게 아니라 원본
+			skillCost(skill[skillSelect].contractCost, skill[skillSelect].mpCost);
+		}
+		else {//강화 halfSlash
+			attackData.criticalYN = ((p->getCritical() + 40) >= res.criticalLine) ? true : false; //치명타율 재설정
+			p->pushBuff(skill[skillSelect].name, static_cast<int>(skill[skillSelect].playerMultiplier+0.5 * pattack),
+				0, this->turn + skill[skillSelect].activeTime, true, true); // 1회용 공격력 증가
+			attackEnemy(res.criticalYN, static_cast<int>(res.criattack), static_cast<int>(res.attack)); // 공격력이 증가한거지 총합데미지가 증가한게 아니라 원본
+			skillCost(skill[skillSelect].contractCost, skill[skillSelect].mpCost);
+		}
+		skillCost(skill[skillSelect].contractCost, skill[skillSelect].mpCost);
+	}
 	if ((int)skill[skillSelect].referenceStatus == (int)referenceStatus::maxHp) { 
 		p->setPlayer_current_health(std::min(p->getPlayer_health(), static_cast<int>(cphp + (php * 0.2))));
 		cphp = p->getPlayer_current_health();
@@ -524,6 +557,7 @@ void battle::activeSkill(int skillSelect, std::vector<skill> const& skill, attac
 			skillCost(skill[skillSelect].contractCost, skill[skillSelect].mpCost);
 		}
 	}
+
 }
 
 void battle::attackEnemy(bool criticalYN,int criattack, int attack) {
@@ -558,7 +592,7 @@ void battle::skillCost(int contractCost, int mpCost) {
 		p->setCurrent_mana(std::max(0, current_mana - mpCost));
 		current_mana = p->getCurrent_mana();
 	}
-	else if (contractCost > 0) { // 계약 스킬
+	else if (contractCost > 0 && mpCost == 0) { // 계약 스킬
 		p->setContract(std::max(0, contract - contractCost));
 		contract = p->getContract();
 	}

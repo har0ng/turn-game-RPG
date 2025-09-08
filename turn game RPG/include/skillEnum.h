@@ -68,7 +68,7 @@ enum class tiferetSkill { //12개 구체
 						*/
 	contractOfGuardian,//수호자의 계약, 치명적 일격(HP -40%) 한번 받는 데미지의 절반 무효화 , -3구체 /강화 시, 한번 받는 데미지 전부 무효화 
 	//lv8
-	halfSlash, // 거합, attack*=1.6 , 치명타 확률 +20%, -3구체 / 강화 시, attack*= 1.8, 치명타 확률 +40%
+	halfSlash, // 거합, attack*=1.9 , 치명타 확률 +20%, -3구체 / 강화 시, attack*= 2.4, 치명타 확률 +40%
 	overclock, // 최대 6개까지의 구체 지정 사용 가능, 3턴동안 -1 구체당 최종데미지(totalDmg +10%, max +60%)/ 강화 불가능
 	//lv9 
 	weaponMaster, //만병지왕의 계약, -6 구체 / 이번 싸움이 끝날 때까지 모든 스킬 구체 사용량 1개 줄여줌 /강화 불가능

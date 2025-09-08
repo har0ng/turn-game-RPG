@@ -226,15 +226,12 @@ void player::levelup() { //레벨 업.
 	debuff = debuffStatus::none;
 }
 int player::playerTakeExp(int take_exp) { //take exp
-	if (now_exp + take_exp< getLevel_exp()) { //not level up
-		now_exp += take_exp;
-		return now_exp;
-	}
-	else { //level up , exp cal
-		now_exp += take_exp - getLevel_exp();
+	now_exp += take_exp;
+	while (now_exp >= getLevel_exp()) { // 여러 레벨업 처리
+		now_exp -= getLevel_exp();      // 레벨업에 필요한 경험치 차감
 		levelup();
-		return now_exp;
 	}
+	return now_exp;
 }
 void player::initSkills() {
 	roadSkillsToJson();
@@ -342,7 +339,7 @@ referenceStatus player::stringToReference(const std::string& str){
 	if (str == "notSpecified") { return referenceStatus::notSpecified; }
 	if (str == "attackBuff") { return referenceStatus::attackBuff; }
 	if (str == "defenseBuff") { return referenceStatus::defenseBuff; }
-	if (str == "totalDamageBUff") { return referenceStatus::totalDamageBUff; }
+	if (str == "totalDamageBuff") { return referenceStatus::totalDamageBuff; }
 	if (str == "totalDamage") { return referenceStatus::totalDamage; }
 	if (str == "maxHp") { return referenceStatus::maxHp; }
 	if (str == "dispelDebuff") { return referenceStatus::dispelDebuff; }
@@ -363,8 +360,8 @@ std::string player::referenceToString(referenceStatus reference){
 		return "attackBuff";
 	case referenceStatus::defenseBuff:
 		return "defenseBuff";
-	case referenceStatus::totalDamageBUff:
-		return "totalDamageBUff";
+	case referenceStatus::totalDamageBuff:
+		return "totalDamageBuff";
 	case referenceStatus::totalDamage:
 		return "totalDamage";
 	case referenceStatus::maxHp:

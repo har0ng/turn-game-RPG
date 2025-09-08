@@ -8,7 +8,7 @@ enum class referenceStatus { //스킬 사용 목적 및 구분을 위함 (만들
 	//passive
 	attackBuff, //공격력
 	defenseBuff, //방어력
-	totalDamageBUff, //최종데미지
+	totalDamageBuff, //최종데미지
 	//active
 	totalDamage, //최종데미지
 	maxHp, //최대 체력 비례
