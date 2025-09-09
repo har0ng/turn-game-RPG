@@ -16,14 +16,14 @@ class consoleUI {
 public:
     void battleStatus(int turn, int php, int cphp, int pattack, int pdefense, int ehp
         , int eattack, int level, int level_exp, int now_exp
-        , int mana, int current_mana, std::string debuff
+        , int mana, int current_mana, std::string debuff , std::vector<buff> buffs
         , int buffAttack, int buffDefense, std::string className);
     void battleStatus(int turn, int php, int cphp, int pattack, int pdefense,int contract ,int ehp
         , int eattack, int level, int level_exp, int now_exp
-        , int mana, int current_mana, std::string debuff
+        , int mana, int current_mana, std::string debuff, std::vector<buff> buffs
         , int buffAttack, int buffDefense, std::string className, bool amplifyActivate); //tiferet
     void playerTurnUI();
-    void playerTurn(int cphp, int pdefense,int battleselect,int attack, int criattack, bool criticalYN);
+    void playerTurn(int cphp, int pdefense,int battleselect,int finalAttack, bool criticalYN);
     void showSkill(int skillSize, std::string charactorClass, std::string name,int contract ,int contractCost,
         int mpCost, int current_mana, int activeTime, int turn, int enemyCnt);
     void showSkill(int skillSize, std::string name, int remainturn ,int mpCost, int contractCost);
@@ -32,7 +32,7 @@ public:
     void executeSkillDef(int pdefense, int activeTime);
     void executeSkill();
     void executeSkill(int defense, std::string skillName); //defenseAttack
-    void executeSkill(int attack, int criattack, bool criticalYN, std::string name);
+    void executeSkill(int finalAttack, bool criticalYN, std::string name);
     void executeHeal(int heal);
     void skillMpcostRetry(); //스킬 마나 부족이니 다시
     void skillCoolTimeRetry(); // 스킬 쿨타임이니 다시
@@ -54,6 +54,7 @@ public:
     void activeChain(int enemyTakeDamage, int remainTurn); //계약의 사슬 에너미가 발동 문구
     void activeLightofTruth();
     void activeGuardian(); // 스킬을 썼을 때
+    void activeWeaponMaster(); //만병지왕의 계약
     void executeGuardian(); //스킬이 발동 됐을 때
     void setOverclockUI(); // overclock에 쓸 contract 갯수 정하기
     void executeOverclock();

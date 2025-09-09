@@ -55,7 +55,7 @@
 	 "name": "doubleAttack",
 	 "targetObject": "enemy",
 	 "power": 0,   
-	 "TDmultiplier": 2.0,
+	 "TDmultiplier": 1.5,
 	 "playerMultiplier":0.8,
 	 "referenceStatus":"totalDamageAndAttack",
 	 "contractCost": 0,
@@ -268,7 +268,7 @@
 	 "turn": 999,
 	 "levelReq": 9,
 	 "enemyCnt" : 0,
-	 "passiveActive":true,
+	 "passiveActive":false,
 	 "debuff": "none"
 	},
 	{

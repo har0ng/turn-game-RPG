@@ -9,7 +9,7 @@ using std::cin;
 
 void consoleUI::battleStatus(int turn, int php, int cphp, int pattack, int pdefense
                             ,int ehp, int eattack, int level, int level_exp
-                            ,int now_exp, int mana, int current_mana, std::string debuff
+                            ,int now_exp, int mana, int current_mana, std::string debuff, std::vector<buff> buffs
                             ,int buffAttack, int buffDefense, std::string className) {
     cout << "========== Battle Status ==========" << endl;
     cout << endl;
@@ -32,7 +32,17 @@ void consoleUI::battleStatus(int turn, int php, int cphp, int pattack, int pdefe
         if (buffDefense != 0) {
             cout << "(" << buffDefense << "↑" << ")";
         }
-   cout  << "\n debuff: " << debuff << endl;
+    cout << "\n debuff: " << debuff;
+    cout << "\n buff: ";
+   for (const auto b : buffs) {
+       /*if (prev(buffs.end())) { // 09.10
+                                    consoleUI에 battleStatus 부분 buff status 잘 작동하게 고치고 스킬 나머지 추가
+           cout << b.name << endl;
+       }*/
+      /* else {
+           cout << b.name << ", " ;
+       }*/
+   }
     cout << endl;
     cout << "*enemy\n hp: " << ehp << "\n power: " << eattack << endl;
     cout << endl;
@@ -43,7 +53,7 @@ void consoleUI::battleStatus(int turn, int php, int cphp, int pattack, int pdefe
 
 void consoleUI::battleStatus(int turn, int php, int cphp, int pattack, int pdefense, int contract, 
                              int ehp, int eattack, int level, int level_exp, int now_exp, int mana, 
-                             int current_mana, std::string debuff, int buffAttack, int buffDefense, 
+                             int current_mana, std::string debuff, std::vector<buff> buffs, int buffAttack, int buffDefense,
                              std::string className, bool amplifyActivate){
     cout << "========== Battle Status ==========" << endl;
     cout << endl;
@@ -65,7 +75,16 @@ void consoleUI::battleStatus(int turn, int php, int cphp, int pattack, int pdefe
     if (buffDefense != 0) {
         cout << "(" << buffDefense << "↑" << ")";
     }
-    cout << "\n debuff: " << debuff << endl;
+    cout << "\n debuff: " << debuff;
+    cout << "\n buff: ";
+    for (const auto b : buffs) {
+        if (buffs.size() - 1) {
+            cout << b.name << endl;
+        }
+        else {
+            cout << b.name << ", ";
+        }
+    }
     cout << endl;
     cout << "*enemy\n hp: " << ehp << "\n power: " << eattack << endl;
     cout << endl;
@@ -80,14 +99,14 @@ void consoleUI::playerTurnUI() {
     cout << "(1)attack  " << "  (2)defense" << "  (3)skill" << endl;
 }
 
-void consoleUI::playerTurn(int cphp, int pdefense, int battleselect, int attack, int criattack, bool criticalYN) {
+void consoleUI::playerTurn(int cphp, int pdefense, int battleselect, int finalAttack, bool criticalYN) {
     if (battleselect == 1 && criticalYN == false) {
         cout << "attack enemy!" << endl;
-        cout << "enemy takes " << attack << " damage." << endl;
+        cout << "enemy takes " << finalAttack << " damage." << endl;
     }
     else if(battleselect == 1 && criticalYN == true){
         cout << "attack enemy!" << endl;
-        cout << "critical!!" << "\n enemy takes " << criattack << " damage." << endl;
+        cout << "critical!!" << "\n enemy takes " << finalAttack << " damage." << endl;
     }
     else if (battleselect == 2) {
         cout << "defense body" << endl;
@@ -162,15 +181,15 @@ void consoleUI::executeSkill(int defense, std::string skillName){
     cout << "attack enemy!" << endl;
     cout << "enemy takes " << defense << " damage." << endl;
 }
-void consoleUI::executeSkill(int attack, int criattack, bool criticalYN, std::string name){
+void consoleUI::executeSkill(int finalAttack, bool criticalYN, std::string name){
     cout << name << "を使用しました。" << endl;
     if (criticalYN == true || name == "bladeOfOath") {
         cout << "attack enemy!" << endl;
-        cout << "critical!!" << "\n enemy takes " << criattack << " damage." << endl;
+        cout << "critical!!" << "\n enemy takes " << finalAttack << " damage." << endl;
     }
     else if (criticalYN == false) {
         cout << "attack enemy!" << endl;
-        cout << "enemy takes " << attack << " damage." << endl;
+        cout << "enemy takes " << finalAttack << " damage." << endl;
     }
     
 }
@@ -385,6 +404,10 @@ void consoleUI::activeLightofTruth(){
 
 void consoleUI::activeGuardian(){
     cout << "ガーディアンがプレイヤーの近くを回ります。" << endl;
+}
+
+void consoleUI::activeWeaponMaster(){
+    cout << "万兵の王の契約が繋がりました。" << endl;
 }
 
 void consoleUI::executeGuardian(){

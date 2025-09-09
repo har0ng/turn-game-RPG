@@ -440,7 +440,6 @@ int player::getContract() const { //tiferet
 bool player::getAmplifyActivate() const {
 	return false;
 }
-
 //set
 void player::setContract(int null) {
 	return;
@@ -448,7 +447,6 @@ void player::setContract(int null) {
 void player::setAmplifyActivate(bool YN) {
 	return;
 }
-
 //other
 bool player::noneOverclock() {
 	return false;

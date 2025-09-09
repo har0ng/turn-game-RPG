@@ -32,8 +32,7 @@ struct skill {
 };
 
 /*구현 필요 
-scarring, disarrayAttack은 디버프 구현 필요
-theLight 부터 그아래로 전부 그냥 구현 필요..		
+lv 9 ~ lv 10
 */ 
 
 //Skillname
