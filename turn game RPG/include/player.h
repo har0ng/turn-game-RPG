@@ -122,7 +122,7 @@ public:
 	//buff
 	void updateBuffedStats();//버프 적용
 	void decreaseBuffTurns(int turn); // 턴 감소 처리
-	void pushBuff(std::string name, int atk, int def, int remainTurn, bool check, bool amplity);//사용한 버프를 버프목록에 추가
+	void pushBuff(std::string name, int atk, int def, int stack, int remainTurn, bool check, bool amplity);//사용한 버프를 버프목록에 추가
 	void clearBuff(); //전투 끝나고 버프 전부 초기화
 
 	//CT
@@ -138,7 +138,7 @@ public:
 	virtual void setContract(int null);
 	virtual void setAmplifyActivate(bool YN);
 	//other
-	
+	virtual bool noneOverclock(); //overclock 발동 중인지 확인
 };
 
 //전직은 get, set을 이용해 자식클래스에서 새로운 변수 안만들고 부모 활용.
@@ -156,6 +156,8 @@ public:
 	void levelup() override; //레벨업 시 얻는 스텟이 캐릭터마다 다르기에 override
 	void initSkills() override; //스킬을 json에서 받아올껀데 함수가 꽤 커서 override해서 절약
 	std::string getClassName() override; //직업 이름이 뭔지 알아야하는데 각 클래스마다 만들기 귀찮아서 override
+	bool noneOverclock() override;
+
 
 	//get
 	int getContract() const override;
@@ -172,7 +174,6 @@ public:
 	void setBattlePlayer() override;
 	void setTurnPlayer() override;
 	void setAmplifyActivate(bool YN) override;
-	
 	/*
 		int tiferet_health; // 1 level : +10 , +1 levelup : +5
 		int tiferet_attack; // 1 level : +3 , +2 levelup : +1

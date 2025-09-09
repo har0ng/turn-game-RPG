@@ -58,8 +58,9 @@ public:
 	void passiveSkill(int skillSelect, std::vector<skill> const& skill, attackInfo attackData); //passive 스킬 처리
 	void activeSkill(int skillSelect, std::vector<skill> const& skill, attackInfo attackData); //acrive 스킬 처리
 
-	void attackEnemy(bool criticalYN,int criattack, int attack); //플레이어가 에너미 공격
+	void attackEnemy(bool criticalYN,int criattack, int attack, float totalDamageBuff = 1.0f); //플레이어가 에너미 공격
 	attackInfo atkInfo();
 	void skillCost(int contractCost, int mpCost);
 	void showGetSkill(std::vector<skill> beforeTest, std::vector<skill> afterTest);
+	
 };

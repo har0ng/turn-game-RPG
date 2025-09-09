@@ -150,25 +150,26 @@ void battle::playerTurn() {
 		if (battleselect == 3) { //스킬창
 			const auto& skill = p->getSkills(); //heal, powerStrike, antiDebuff가 나옴
 			const auto& disable = p->getDisables();
-			int skSize = 0;
-			for (size_t i = 0; i < skill.size(); ++i) {
-				if (level >= (int)skill[i].levelReq) {
-					skSize++;
-					bool enabled = disable[i].enabled;
-
-					if (enabled == true) {
-						ui.showSkill(skSize, skill[i].charactorClass, skill[i].name,
-							contract,skill[i].contractCost, skill[i].mpCost, current_mana,
-							skill[i].activeTime, skill[i].turn, skill[i].enemyCnt);
-					}
-					else {
-						ui.showSkill(skSize, skill[i].name, disable[i].remainTurn, skill[i].mpCost, skill[i].contractCost);
-					}
-				}
-			}
-			ui.exitSkill(0);
 			bool skillCheck = false;
 			while (true) {
+				int skSize = 0;
+				for (size_t i = 0; i < skill.size(); ++i) {
+					if (level >= (int)skill[i].levelReq) {
+						skSize++;
+						bool enabled = disable[i].enabled;
+
+						if (enabled == true) {
+							ui.showSkill(skSize, skill[i].charactorClass, skill[i].name,
+								contract, skill[i].contractCost, skill[i].mpCost, current_mana,
+								skill[i].activeTime, skill[i].turn, skill[i].enemyCnt);
+						}
+						else {
+							ui.showSkill(skSize, skill[i].name, disable[i].remainTurn, skill[i].mpCost, skill[i].contractCost);
+						}
+					}
+				}
+				ui.exitSkill(0);
+
 				skillSelect = inputCheck(1, skSize) - 1;
 				if (skillSelect == -1) { // 0을 입력했을 때 무한 반복 깨기
 					break;
@@ -186,16 +187,13 @@ void battle::playerTurn() {
 					continue;
 				}
 				getSkillSelect(skillSelect, skill, res); //스킬이 정상적으로 써질 때
-				bool overclockAct = false;
-				for (const auto b : p->getBuff()) {
-					if (b.name == "overclock" && b.active == true) {
-						overclockAct = true;
-						break;
+
+				if (p->getClassName() == "tiferet" && skill[skillSelect].name == "overclock") {
+					if (p->noneOverclock() == false) {
+						continue;
 					}
 				}
-				if (overclockAct == false) {
-					continue;
-				}
+
 				skillCheck = true; //쿨타임이 돌게끔 해주고
 				p->skillDisable(skillSelect, skill[skillSelect].turn); //스킬 쿨타임 vector에 집어넣기
 				break;
@@ -209,6 +207,8 @@ void battle::playerTurn() {
 
 				스킬을 적중 시켰을 때 그 디버프가 로그와 디버프의 상황이 남도록 만들어야함.
 				(에너미 디버프 만들 필요)
+
+				최종데미지 UI어떡하지
 			*/
 		}
 		break;
@@ -283,7 +283,7 @@ void battle::battleEnd() {
 	ui.battleEnd(cphp);//log를 불러오기위해 log에서 필요로 하는 값 다 넘겨주기
 	p->clearBuff();
 	if (p->getClassName() == "tiferet") {
-		p->setContract(12);
+		p->setContract(std::min(p->getContract() + 3, 12));
 		contract = p->getContract();
 	}
 	if (cphp <= 0) {
@@ -423,12 +423,12 @@ void battle::passiveSkill(int skillSelect, std::vector<skill> const& skill, atta
 	if ((int)skill[skillSelect].referenceStatus == (int)referenceStatus::attackBuff) {
 		if (amplifyActivate != true) {
 			p->pushBuff(skill[skillSelect].name, static_cast<int>(skill[skillSelect].playerMultiplier * pattack),
-				0, this->turn + skill[skillSelect].activeTime, true, false);
+				0, 0,this->turn + skill[skillSelect].activeTime, true, false);
 			p->updateBuffedStats();
 		}
 		else { //계약 강화 중이라면
 			p->pushBuff(skill[skillSelect].name, static_cast<int>(skill[skillSelect].playerMultiplier * pattack),
-				0, this->turn + skill[skillSelect].activeTime + 1, true, true);
+				0, 0,this->turn + skill[skillSelect].activeTime + 1, true, true);
 			p->updateBuffedStats();
 			p->setAmplifyActivate(false);
 			amplifyActivate = p->getAmplifyActivate();
@@ -437,18 +437,18 @@ void battle::passiveSkill(int skillSelect, std::vector<skill> const& skill, atta
 	}
 	if ((int)skill[skillSelect].referenceStatus == (int)referenceStatus::defenseBuff) {
 		p->pushBuff(skill[skillSelect].name, 0, static_cast<int>(skill[skillSelect].playerMultiplier * pdefense),
-			this->turn + skill[skillSelect].activeTime, true, false);
+			0,this->turn + skill[skillSelect].activeTime, true, false);
 		p->updateBuffedStats();
 		skillCost(skill[skillSelect].contractCost, skill[skillSelect].mpCost);
 	}
 	if ((int)skill[skillSelect].referenceStatus == (int)referenceStatus::takeDamage) { //chainOfPact
 		if (amplifyActivate != true) {
-			p->pushBuff(skill[skillSelect].name, 0, 0,
+			p->pushBuff(skill[skillSelect].name, 0, 0, 0,
 				this->turn + skill[skillSelect].activeTime, true, false);
 			skillCost(skill[skillSelect].contractCost, skill[skillSelect].mpCost);
 		}
 		else {//계약 강화 중이라면
-			p->pushBuff(skill[skillSelect].name, 0, 0,
+			p->pushBuff(skill[skillSelect].name, 0, 0, 0,
 				this->turn + skill[skillSelect].activeTime, true, true);
 			skillCost(skill[skillSelect].contractCost, skill[skillSelect].mpCost);
 			p->setAmplifyActivate(false);
@@ -458,27 +458,28 @@ void battle::passiveSkill(int skillSelect, std::vector<skill> const& skill, atta
 	if ((int)skill[skillSelect].referenceStatus == (int)referenceStatus::notSpecified &&
 		skill[skillSelect].name == "contractOfGuardian") { //contractOfGuardian
 		if (amplifyActivate != true) { // 강화 전
-			p->pushBuff(skill[skillSelect].name, 0, 0,
+			p->pushBuff(skill[skillSelect].name, 0, 0, 0,
 				this->turn + skill[skillSelect].activeTime, true, false); //enemyTurn()함수에 관련성 추가 할 것
 			skillCost(skill[skillSelect].contractCost, skill[skillSelect].mpCost);
 		}
 		else { // 강화 후
-			p->pushBuff(skill[skillSelect].name, 0, 0,
+			p->pushBuff(skill[skillSelect].name, 0, 0, 0,
 				this->turn + skill[skillSelect].activeTime, true, true); //enemyTurn()함수에 관련성 추가 할 것
 			skillCost(skill[skillSelect].contractCost, skill[skillSelect].mpCost);
 		}
 	}
 	if ((int)skill[skillSelect].referenceStatus == (int)referenceStatus::totalDamageBuff) {
-		int useContract = 0;
+		int useContract = 0; //이걸 attackenemy로 넘겨서 몇개인지 알아야 최종데미지 10% ~ 60% 까지 계산 가능
 		ui.setOverclockUI();
 		cin >> useContract;
 		if (useContract == 0) {
 			return;
 		}
 		else {
-			p->pushBuff(skill[skillSelect].name, static_cast<int>(skill[skillSelect].playerMultiplier * pattack),
-				0, this->turn + skill[skillSelect].activeTime + 1, true, false);
+			p->pushBuff(skill[skillSelect].name, 0,
+				0, useContract, this->turn + skill[skillSelect].activeTime, true, false);
 			skillCost(useContract, 0); 
+			ui.executeOverclock();
 		}
 	}
 }
@@ -510,7 +511,7 @@ void battle::activeSkill(int skillSelect, std::vector<skill> const& skill, attac
 		if (amplifyActivate != true) { //기존 halfSlash
 			attackData.criticalYN = ((p->getCritical() + 20) >= res.criticalLine) ? true : false; //치명타율 재설정
 			p->pushBuff(skill[skillSelect].name, static_cast<int>(skill[skillSelect].playerMultiplier * pattack),
-				0, this->turn + skill[skillSelect].activeTime, true, false);// 1회용 공격력 증가
+				0, 0, this->turn + skill[skillSelect].activeTime, true, false);// 1회용 공격력 증가
 			p->updateBuffedStats();
 			attackEnemy(res.criticalYN, static_cast<int>(res.criattack), static_cast<int>(res.attack)); // 공격력이 증가한거지 총합데미지가 증가한게 아니라 원본
 			skillCost(skill[skillSelect].contractCost, skill[skillSelect].mpCost);
@@ -518,7 +519,7 @@ void battle::activeSkill(int skillSelect, std::vector<skill> const& skill, attac
 		else {//강화 halfSlash
 			attackData.criticalYN = ((p->getCritical() + 40) >= res.criticalLine) ? true : false; //치명타율 재설정
 			p->pushBuff(skill[skillSelect].name, static_cast<int>(skill[skillSelect].playerMultiplier+0.5 * pattack),
-				0, this->turn + skill[skillSelect].activeTime, true, true); // 1회용 공격력 증가
+				0, 0, this->turn + skill[skillSelect].activeTime, true, true); // 1회용 공격력 증가
 			p->updateBuffedStats();
 			attackEnemy(res.criticalYN, static_cast<int>(res.criattack), static_cast<int>(res.attack)); // 공격력이 증가한거지 총합데미지가 증가한게 아니라 원본
 			skillCost(skill[skillSelect].contractCost, skill[skillSelect].mpCost);
@@ -552,14 +553,14 @@ void battle::activeSkill(int skillSelect, std::vector<skill> const& skill, attac
 		if (amplifyActivate != true) { //기본
 			p->setDebuff(0);//none
 			debuff = p->getDebuff();
-			p->pushBuff(skill[skillSelect].name, 0, 0,
+			p->pushBuff(skill[skillSelect].name, 0, 0, 0,
 				this->turn + skill[skillSelect].activeTime, true, false);
 			skillCost(skill[skillSelect].contractCost, skill[skillSelect].mpCost);
 		}
 		else { //강화 중
 			p->setDebuff(0);//none
 			debuff = p->getDebuff();
-			p->pushBuff(skill[skillSelect].name, 0, 0,
+			p->pushBuff(skill[skillSelect].name, 0, 0, 0,
 				this->turn + skill[skillSelect].activeTime + 1, true, true); //남은 턴 +1
 			skillCost(skill[skillSelect].contractCost, skill[skillSelect].mpCost);
 		}
@@ -567,13 +568,19 @@ void battle::activeSkill(int skillSelect, std::vector<skill> const& skill, attac
 
 }
 
-void battle::attackEnemy(bool criticalYN,int criattack, int attack) {
-	if (criticalYN == true) { // 크리티컬 시 1.3배 데미지
-		ehp = e->enemyTakeDamage(ehp, criattack); // 소수점 이하 버림
+void battle::attackEnemy(bool criticalYN,int criattack, int attack, float totalDamageBuff) {
+	// overclock 버프 적용
+	for (const auto& b : p->getBuff()) {
+		if (b.name == "overclock" && b.active) {
+			totalDamageBuff += 0.1f * b.stack;
+		}
 	}
-	else {
-		ehp = e->enemyTakeDamage(ehp, attack);
-	}
+
+	// 최대 1.6배 제한
+	totalDamageBuff = std::min(totalDamageBuff, 1.6f);
+
+	int baseDamage = criticalYN ? criattack : attack;
+	ehp = e->enemyTakeDamage(ehp, static_cast<int>(baseDamage * totalDamageBuff)); //소수점 이하 버림,크리티컬시 1.3배
 }
 
 attackInfo battle::atkInfo() {

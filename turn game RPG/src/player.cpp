@@ -402,8 +402,8 @@ void player::decreaseBuffTurns(int turn) {//남은 버프 턴 계산
 	// 현재 유효 버프 반영
 	updateBuffedStats();
 }
-void player::pushBuff(std::string name, int atk, int def, int remainTurn, bool check, bool amplity){
-	buffs.push_back({ name,atk,def,remainTurn,check,amplity }); //버프 vector 목록에 추가
+void player::pushBuff(std::string name, int atk, int def,int stack ,int remainTurn, bool check, bool amplity){
+	buffs.push_back({ name,atk,def,stack,remainTurn,check,amplity }); //버프 vector 목록에 추가
 }
 void player::clearBuff() {//전투 후 사용중이던 버프 전부 삭제
 	buffs.clear();
@@ -447,4 +447,9 @@ void player::setContract(int null) {
 };
 void player::setAmplifyActivate(bool YN) {
 	return;
+}
+
+//other
+bool player::noneOverclock() {
+	return false;
 }

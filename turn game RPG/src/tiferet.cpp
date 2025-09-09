@@ -134,3 +134,16 @@ void tiferet::setTurnPlayer() {
 void tiferet::setAmplifyActivate(bool YN) {
     amplifyActivate = YN;
 }
+bool tiferet::noneOverclock() { //overclock 발동 중인지 확인
+    bool overclockAct = false;
+    for (const auto b : getBuff()) {
+        if (b.name == "overclock" && b.active == true) {
+            overclockAct = true;
+            break;
+        }
+    }
+    if (overclockAct == true) {
+        return true;
+    }
+    return false;
+}

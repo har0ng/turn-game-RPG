@@ -398,3 +398,8 @@ void consoleUI::setOverclockUI(){
     cout << "戻る(0)" << endl;
 }
 
+void consoleUI::executeOverclock() {
+    cout << "overclockの契約が繋がりました。" << endl;
+}
+
+
