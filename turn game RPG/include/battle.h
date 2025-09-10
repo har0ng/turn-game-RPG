@@ -29,6 +29,7 @@ private:
 	attackInfo attackData; //player 공격 계수 정보
 
 	int ehp;       // enemy health
+	int echp;
 	int eattack; //enemy attack
 
 	int turn;

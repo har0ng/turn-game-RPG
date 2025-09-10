@@ -8,7 +8,7 @@ using std::cout;
 using std::cin;
 
 void consoleUI::battleStatus(int turn, int php, int cphp, int pattack, int pdefense
-                            ,int ehp, int eattack, int level, int level_exp
+                            ,int ehp,int echp ,int eattack, int level, int level_exp
                             ,int now_exp, int mana, int current_mana, std::string debuff, std::vector<buff> buffs
                             ,int buffAttack, int buffDefense, std::string className) {
     cout << "========== Battle Status ==========" << endl;
@@ -34,17 +34,16 @@ void consoleUI::battleStatus(int turn, int php, int cphp, int pattack, int pdefe
         }
     cout << "\n debuff: " << debuff;
     cout << "\n buff: ";
-   for (const auto b : buffs) {
-       /*if (prev(buffs.end())) { // 09.10
-                                    consoleUI에 battleStatus 부분 buff status 잘 작동하게 고치고 스킬 나머지 추가
-           cout << b.name << endl;
-       }*/
-      /* else {
-           cout << b.name << ", " ;
-       }*/
-   }
+    for (auto it = buffs.begin(); it != buffs.end(); ++it) {
+        if (it == prev(buffs.end()) && it->active) {
+            cout << it->name << endl;
+        }
+        else if (it->active) {
+            cout << it->name << ", ";
+        }
+    }
     cout << endl;
-    cout << "*enemy\n hp: " << ehp << "\n power: " << eattack << endl;
+    cout << "*enemy\n hp: " << echp <<"/" << ehp << "\n power: " << eattack << endl;
     cout << endl;
     cout << "========== Battle Status ==========" << endl;
     cout << endl;
@@ -52,9 +51,9 @@ void consoleUI::battleStatus(int turn, int php, int cphp, int pattack, int pdefe
 }
 
 void consoleUI::battleStatus(int turn, int php, int cphp, int pattack, int pdefense, int contract, 
-                             int ehp, int eattack, int level, int level_exp, int now_exp, int mana, 
-                             int current_mana, std::string debuff, std::vector<buff> buffs, int buffAttack, int buffDefense,
-                             std::string className, bool amplifyActivate){
+                             int ehp, int echp, int eattack, int level, int level_exp, int now_exp, int mana, 
+                             int current_mana, std::string debuff, std::vector<buff> buffs, std::vector<buff>imSlashYou,
+                             int buffAttack, int buffDefense, std::string className, bool amplifyActivate){
     cout << "========== Battle Status ==========" << endl;
     cout << endl;
     cout << turn << " turn" << endl;
@@ -77,16 +76,27 @@ void consoleUI::battleStatus(int turn, int php, int cphp, int pattack, int pdefe
     }
     cout << "\n debuff: " << debuff;
     cout << "\n buff: ";
-    for (const auto b : buffs) {
-        if (buffs.size() - 1) {
-            cout << b.name << endl;
+    for (auto it = buffs.begin(); it != buffs.end(); ++it) {
+        if (it == prev(buffs.end()) && it->active) {
+            cout << it->name << endl;
         }
-        else {
-            cout << b.name << ", ";
+        else if(it->active){
+            cout << it->name << ", ";
+        }
+    }
+    if (!imSlashYou.empty()) {
+        cout << "\n 契約: ";
+        for (auto it = imSlashYou.begin(); it != imSlashYou.end(); ++it) {
+            if (it == prev(imSlashYou.end()) && it->active) {
+                cout << it->name << endl;
+            }
+            else if (it->active) {
+                cout << it->name << ", ";
+            }
         }
     }
     cout << endl;
-    cout << "*enemy\n hp: " << ehp << "\n power: " << eattack << endl;
+    cout << "*enemy\n hp: " << echp << "/" << ehp << "\n power: " << eattack << endl;
     cout << endl;
     cout << "========== Battle Status ==========" << endl;
     cout << endl;
@@ -410,9 +420,17 @@ void consoleUI::activeWeaponMaster(){
     cout << "万兵の王の契約が繋がりました。" << endl;
 }
 
-void consoleUI::executeGuardian(){
+void consoleUI::executeGuardian() {
+    cout << "========== enemyTurn Start ==========\n" << endl;
+    cout << "enemy attacked!" << endl;
     cout << "contractOfGuardianが発動しました。" << endl;
     cout << "攻撃が塞がれました。" << endl;
+    cout << "\n========== enemyTurn End ==========" << endl;
+    cout << endl;
+    cout << endl;
+    cout << "Press Enter to continue..." << endl; //사용자 임의대로 화면 넘기기
+    cin.ignore();//ignore과 get으로 enter을 쳤을 때 넘어갈 수 있게 조절.
+    cin.get();
 }
 
 void consoleUI::setOverclockUI(){
@@ -423,6 +441,38 @@ void consoleUI::setOverclockUI(){
 
 void consoleUI::executeOverclock() {
     cout << "overclockの契約が繋がりました。" << endl;
+}
+
+void consoleUI::activeCovenantUltima(){
+    cout << "最後の契約が繋がりました。" << endl;
+}
+
+void consoleUI::executeCovenantUltima(){
+    cout << "========== enemyTurn Start ==========\n" << endl;
+    cout << "enemy attacked!" << endl;
+    cout << "契約に守られます。" << endl;
+    cout << "攻撃が塞がれました。" << endl;
+    cout << "\n========== enemyTurn End ==========" << endl;
+    cout << endl;
+    cout << endl;
+    cout << "Press Enter to continue..." << endl; //사용자 임의대로 화면 넘기기
+    cin.ignore();//ignore과 get으로 enter을 쳤을 때 넘어갈 수 있게 조절.
+    cin.get();
+}
+
+void consoleUI::activeIm(){
+    cout << "契約する。私は" << endl;
+}
+
+void consoleUI::activeSlash(){
+    cout << "契約する。必ず" << endl;
+}
+
+
+void consoleUI::acitveYou(int finalAttack){
+    cout << "契約する。私は必ず切る" << endl;
+    cout << "attack enemy!" << endl;
+    cout << "enemy takes " << finalAttack << " damage." << endl;
 }
 
 

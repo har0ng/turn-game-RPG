@@ -26,6 +26,7 @@ tiferet::tiferet(const player& p) :player(p), contract(12),amplifyActivate(false
     initSkills();
 }
 
+//other
 void tiferet::levelup() { // if level > 2 (+status) 
     setPlayer_health(getPlayer_health() + 5);
     setMana(getMana() + 2);
@@ -35,11 +36,15 @@ void tiferet::levelup() { // if level > 2 (+status)
         setPlayer_defense(getPlayer_defense() + 1);
     }
 }
-
 void tiferet::initSkills() {
     player::initSkills();
 }
-
+void tiferet::pushImSlashYou(std::string name, int atk, int def, int stack, int remainTurn, bool check, bool amplity) {
+    imslashYou.push_back({ name,atk,def,stack,remainTurn,check,amplity });
+}
+void tiferet::clearImSlashYou() {
+    imslashYou.clear();
+}
 //get
 std::string tiferet::getClassName() {//자신의 직업에 대한 클래스 함수가 무엇인지 알기 위함
     return "tiferet";
@@ -61,6 +66,12 @@ tiferetStatusSnapShot& tiferet::getTurnPlayer()  {
 } 
 bool tiferet::getAmplifyActivate() const {
     return amplifyActivate;
+}
+std::vector<buff> tiferet::getImSlashYou() const{
+    if (imslashYou.empty()) {
+        return {};
+    }
+    return imslashYou;
 }
 
 //set
@@ -143,6 +154,32 @@ bool tiferet::noneOverclock() { //overclock 발동 중인지 확인
         }
     }
     if (overclockAct == true) {
+        return true;
+    }
+    return false;
+}
+bool tiferet::noneIm() {
+    bool imAct = false;
+    for (const auto b : getImSlashYou()) {
+        if (b.name == "im" && b.active == true) {
+            imAct = true;
+            break;
+        }
+    }
+    if (imAct == true) {
+        return true;
+    }
+    return false;
+}
+bool tiferet::noneSlash() {
+    bool slashAct = false;
+    for (const auto b : getImSlashYou()) {
+        if (b.name == "slash" && b.active == true) {
+            slashAct = true;
+            break;
+        }
+    }
+    if (slashAct == true) {
         return true;
     }
     return false;

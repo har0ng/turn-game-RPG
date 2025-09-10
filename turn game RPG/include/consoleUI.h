@@ -14,13 +14,13 @@ UI 출력 책임만 갖게 하기 위해(SRP)
 
 class consoleUI {
 public:
-    void battleStatus(int turn, int php, int cphp, int pattack, int pdefense, int ehp
+    void battleStatus(int turn, int php, int cphp, int pattack, int pdefense, int ehp, int cehp
         , int eattack, int level, int level_exp, int now_exp
         , int mana, int current_mana, std::string debuff , std::vector<buff> buffs
         , int buffAttack, int buffDefense, std::string className);
-    void battleStatus(int turn, int php, int cphp, int pattack, int pdefense,int contract ,int ehp
+    void battleStatus(int turn, int php, int cphp, int pattack, int pdefense,int contract ,int ehp, int cehp
         , int eattack, int level, int level_exp, int now_exp
-        , int mana, int current_mana, std::string debuff, std::vector<buff> buffs
+        , int mana, int current_mana, std::string debuff, std::vector<buff> buffs, std::vector<buff>imSlashYou
         , int buffAttack, int buffDefense, std::string className, bool amplifyActivate); //tiferet
     void playerTurnUI();
     void playerTurn(int cphp, int pdefense,int battleselect,int finalAttack, bool criticalYN);
@@ -58,4 +58,9 @@ public:
     void executeGuardian(); //스킬이 발동 됐을 때
     void setOverclockUI(); // overclock에 쓸 contract 갯수 정하기
     void executeOverclock();
+    void activeCovenantUltima(); //썼을 때
+    void executeCovenantUltima(); //발동 됐을 때
+    void activeIm();
+    void activeSlash();
+    void acitveYou(int finalAttack);
 };  

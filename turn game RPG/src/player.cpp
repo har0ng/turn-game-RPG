@@ -440,6 +440,9 @@ int player::getContract() const { //tiferet
 bool player::getAmplifyActivate() const {
 	return false;
 }
+ std::vector<buff> player::getImSlashYou() const{
+	 return {};
+}
 //set
 void player::setContract(int null) {
 	return;
@@ -450,4 +453,16 @@ void player::setAmplifyActivate(bool YN) {
 //other
 bool player::noneOverclock() {
 	return false;
+}
+bool player::noneIm() {
+	return false;
+}
+bool player::noneSlash() {
+	return false;
+}
+void player::pushImSlashYou(std::string name, int atk, int def, int stack, int remainTurn, bool check, bool amplity) {
+	return;
+}
+void player::clearImSlashYou() {
+	return;
 }

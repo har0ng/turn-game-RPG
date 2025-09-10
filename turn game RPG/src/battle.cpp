@@ -41,6 +41,7 @@ battle::battle(unique_ptr<player> _p , unique_ptr<enemy> _e)
 
 	//enemy
 	ehp = e->getEnemy_health(); //enemy 체력 get으로 받아오기
+	echp = e->getEnemyCurrentHealth();
 	eattack = 0; //enemy 공격력은 private 이니 0으로 미리 초기화
 	
 	
@@ -56,12 +57,12 @@ battle::battle(unique_ptr<player> _p , unique_ptr<enemy> _e)
 
 void battle::startBattle() { //배틀 시작
 		p->setBeforePlayer(); //전투 시작전 상태(레벨업 비교)
-	while (cphp > 0 && ehp > 0) { //체력이 0 이하가 되는 순간 종료
+	while (cphp > 0 && echp > 0) { //체력이 0 이하가 되는 순간 종료
 		p->setTurnPlayer();	  // (버프 적용 스텟)
 		p->setBattlePlayer(); // (버프 미적용 스텟)
 		battleStatus(); //유저와 적의 상황(체력 공격력 등)
 		playerTurn(); //유저 턴
-		if (ehp <= 0) { //무승부 방지
+		if (echp <= 0) { //무승부 방지
 			break;
 		}
 		enemyTurn(); //enemy 턴
@@ -123,13 +124,13 @@ void battle::battleStatus() {
 	p->skillCT(); //쿨타임 백터 전체 쿨 다운
 	if (p->getClassName() == "tiferet") {
 		ui.battleStatus(turn, php, cphp, p->getTurnPlayer().attack, p->getTurnPlayer().defense,
-			p->getContract(),ehp, eattack, level, level_exp, now_exp, mana, current_mana,
-			p->debuffToString(debuff),p->getBuff(), p->getBuffAttack(), p->getBuffDefense(),
+			p->getContract(),ehp,echp ,eattack, level, level_exp, now_exp, mana, current_mana,
+			p->debuffToString(debuff),p->getBuff(), p->getImSlashYou(),p->getBuffAttack(), p->getBuffDefense(),
 			p->getClassName(),amplifyActivate);
 	}
 	else {
 		ui.battleStatus(turn, php, cphp, p->getTurnPlayer().attack, p->getTurnPlayer().defense,
-			ehp, eattack, level, level_exp, now_exp, mana, current_mana,
+			ehp, echp, eattack, level, level_exp, now_exp, mana, current_mana,
 			p->debuffToString(debuff), p->getBuff(), p->getBuffAttack(), p->getBuffDefense(),
 			p->getClassName()); //log를 불러오기위해 log에서 필요로 하는 값 다 넘겨주기
 	}
@@ -207,9 +208,25 @@ void battle::playerTurn() {
 						continue;
 					}
 				}
+				if (p->getClassName() == "tiferet" && skill[skillSelect].name == "slash") {
+					if (p->noneIm() == false) {
+						continue;
+					}
+				}
+				if (p->getClassName() == "tiferet" && skill[skillSelect].name == "you") {
+					if (p->noneSlash() == false) {
+						continue;
+					}
+				}
 
 				skillCheck = true; //쿨타임이 돌게끔 해주고
 				p->skillDisable(skillSelect, skill[skillSelect].turn); //스킬 쿨타임 vector에 집어넣기
+				
+				if (skill[skillSelect].name == "you") { //tiferet
+					p->clearImSlashYou();
+				}
+				
+				
 				break;
 			}
 			if (skillCheck == false) { //무한 반복을 깨고 나왔으니 그냥 넘어가게끔해서 battleSelect부터 다시 하게끔 하기.
@@ -239,6 +256,7 @@ void battle::enemyTurn() {
 		ui.enemyTurn(enemy_action, 0, 0, battleselect);
 		return;
 	}
+	//공격 전
 	int guardian = 0; // 0이면 x, 1이면 기본, 2면 강화  / tiferet의 contractOfGuardian
 	for (const auto b : p->getBuff()) {
 		if (b.name == "contractOfGuardian" && b.active == true && b.amplify == false) {
@@ -246,6 +264,10 @@ void battle::enemyTurn() {
 		}
 		else if(b.name == "contractOfGuardian" && b.active == true && b.amplify == true){
 			guardian = 2;
+		}
+		if (b.name == "covenantUltima" && b.active) {
+			ui.executeCovenantUltima();
+			return;
 		}
 	}
 
@@ -262,6 +284,7 @@ void battle::enemyTurn() {
 		ui.executeGuardian();
 		return;
 	}
+
 	if (battleselect == 2) { //방어
 		eattack = std::max(0, eattack - pdefense);
 		p->playerTakeDamage(eattack);   // player 내부 체력 갱신, (*p).playerTakeDamage(eattack) 주소값이 나타내는 값을 바꿈
@@ -273,21 +296,21 @@ void battle::enemyTurn() {
 	}
 
 	ui.enemyTurn(enemy_action, pdefense, eattack, battleselect);//log를 불러오기위해 log에서 필요로 하는 값 다 넘겨주기
-		
+	//적의 공격 후	
 	for (const auto a : p->getBuff()) { 
 		if (a.name == "chainOfPact" && a.active == true &&a.amplify == false) {//계약의 사슬 관련
-			ehp = e->enemyTakeDamage(ehp,static_cast<int>(eattack*0.5));
+			echp = e->enemyTakeDamage(echp,static_cast<int>(eattack*0.5));
 			ui.activeChain(static_cast<int>(eattack * 0.5), a.remainingTurn);
 		}
 		else if (a.name == "chainOfPact" && a.active == true && a.amplify == true) {//계약의 사슬 관련
-			ehp = e->enemyTakeDamage(ehp, static_cast<int>(eattack*0.6));
+			echp = e->enemyTakeDamage(echp, static_cast<int>(eattack*0.6));
 			ui.activeChain(static_cast<int>(eattack * 0.6), a.remainingTurn);
 		}
 
-		if (a.name == "theLightOfTruth" && a.active == true && a.amplify == false) { //remainTurn + turn 동안 debuff 무효화
+		if (a.name == "theLightOfTruth" && a.active && a.amplify == false) { //remainTurn + turn 동안 debuff 무효화
 			//now(09/08) enemy debuff skill is none , need to enemy.cpp develop
 		}
-		else if (a.name == "theLightOfTruth" && a.active == true && a.amplify == true) { //remainTurn + turn 동안 debuff 무효화
+		else if (a.name == "theLightOfTruth" && a.active && a.amplify == true) { //remainTurn + turn 동안 debuff 무효화
 			//now(09/08) enemy debuff skill is none , need to enemy.cpp develop
 		}
 	}
@@ -395,6 +418,15 @@ void battle::getSkillReference(int skillSelect, std::vector<skill> const& skill,
 			else if (skill[skillSelect].name == "weaponMaster") {
 				ui.activeWeaponMaster();
 			}
+			else if (skill[skillSelect].name == "im") {
+				ui.activeIm();
+			}
+			else if (skill[skillSelect].name == "slash") {
+				ui.activeSlash();
+			}
+			else if (skill[skillSelect].name == "you") {
+				ui.acitveYou(finalAttack);
+			}
 			return;
 		case (int)referenceStatus::attackBuff:
 			ui.executeSkillAtk(p->getBuffAttack() + p->getTurnPlayer().attack - pattack, skill[skillSelect].activeTime);
@@ -416,7 +448,10 @@ void battle::getSkillReference(int skillSelect, std::vector<skill> const& skill,
 			ui.executeSkill(finalAttack, res.criticalYN, skill[skillSelect].name);
 			return;
 		case (int)referenceStatus::maxHp:
-			ui.executeHeal(static_cast<int>(php * 0.2));
+			if (skill[skillSelect].name == "covenantUltima") {
+				ui.activeCovenantUltima();
+			}
+			ui.executeHeal(static_cast<int>(php * skill[skillSelect].playerMultiplier));
 			return;
 		case (int)referenceStatus::dispelDebuff:
 			ui.executeSkill();
@@ -558,8 +593,25 @@ int battle::activeSkill(int skillSelect, std::vector<skill> const& skill, attack
 		}
 		skillCost(skill[skillSelect].contractCost, skill[skillSelect].mpCost);
 	}
+	if ((int)skill[skillSelect].referenceStatus == (int)referenceStatus::maxHp &&
+		skill[skillSelect].name == "covenantUltima") {
+		if (amplifyActivate != true) { // 강화 전
+			p->setPlayer_current_health(std::min(p->getPlayer_health(), static_cast<int>(cphp + (php * skill[skillSelect].playerMultiplier))));
+			cphp = p->getPlayer_current_health();
+			p->pushBuff(skill[skillSelect].name, 0,
+				0, 0, this->turn + skill[skillSelect].activeTime, true, false);
+			skillCost(skill[skillSelect].contractCost, skill[skillSelect].mpCost);
+		}
+		else { // 강화 후
+			p->setPlayer_current_health(std::min(p->getPlayer_health(), static_cast<int>(cphp + (php * 0.65))));
+			cphp = p->getPlayer_current_health();
+			p->pushBuff(skill[skillSelect].name, 0,
+				0, 0, this->turn + skill[skillSelect].activeTime, true, true);
+			skillCost(skill[skillSelect].contractCost, skill[skillSelect].mpCost);
+		}
+	}
 	if ((int)skill[skillSelect].referenceStatus == (int)referenceStatus::maxHp) { 
-		p->setPlayer_current_health(std::min(p->getPlayer_health(), static_cast<int>(cphp + (php * 0.2))));
+		p->setPlayer_current_health(std::min(p->getPlayer_health(), static_cast<int>(cphp + (php * skill[skillSelect].playerMultiplier))));
 		cphp = p->getPlayer_current_health();
 		skillCost(skill[skillSelect].contractCost, skill[skillSelect].mpCost);
 	}
@@ -604,14 +656,59 @@ int battle::activeSkill(int skillSelect, std::vector<skill> const& skill, attack
 			skillCost(skill[skillSelect].contractCost, skill[skillSelect].mpCost);
 		}
 	}
+	if ((int)skill[skillSelect].referenceStatus == (int)referenceStatus::notSpecified) {
+		if (skill[skillSelect].name == "im") {
+			p->pushImSlashYou(skill[skillSelect].name, 0,
+				0, 0, this->turn + skill[skillSelect].activeTime, true, false);
+			skillCost(skill[skillSelect].contractCost, skill[skillSelect].mpCost);
+		}
+		else if (skill[skillSelect].name == "slash") {
+			bool check = false;
+			for (const auto i: p->getImSlashYou()) {
+				if (i.name == "im") {
+					check = true;
+					break;
+				}
+			}
+			if (check == false) { return 0;}
+			p->pushImSlashYou(skill[skillSelect].name, 0,
+				0, 0, this->turn + skill[skillSelect].activeTime, true, false);
+			skillCost(skill[skillSelect].contractCost, skill[skillSelect].mpCost);
+		}
+		else if (skill[skillSelect].name == "you") {
+			bool check = false;
+			for (const auto i : p->getImSlashYou()) {
+				if (i.name == "im") {
+					check = true;
+					break;
+				}
+			}
+			if (check == false) { return 0; }
+			p->pushImSlashYou(skill[skillSelect].name, 0,
+				0, 0, this->turn + skill[skillSelect].activeTime, true, false);
+			skillCost(skill[skillSelect].contractCost, skill[skillSelect].mpCost);
+			return attackEnemy(false, 0,
+				static_cast<int>(ehp* skill[skillSelect].playerMultiplier));
+		}
+	}
 	return 0;
 }
 
 int battle::attackEnemy(bool criticalYN,int criattack, int attack, float totalDamageBuff) {
-	// overclock 버프 적용
-	for (const auto& b : p->getBuff()) {
-		if (b.name == "overclock" && b.active) {
-			totalDamageBuff += 0.1f * b.stack;
+	// 특수 버프 적용
+	if (totalDamageBuff <= 1.1f) {
+		for (const auto& b : p->getBuff()) {
+			if (b.name == "overclock" && b.active) {
+				totalDamageBuff += 0.1f * b.stack;
+			}
+		}
+	}
+	if(p->getClassName() == "tiferet" && p->getLevel() >= 10){
+		for (const auto& i : p->getImSlashYou()) {
+			if (i.name == "you" && i.active) { // 이 기술엔 최종데미지 버프 안붙음
+				totalDamageBuff = 1.0f;
+				break;
+			}
 		}
 	}
 
@@ -619,7 +716,8 @@ int battle::attackEnemy(bool criticalYN,int criattack, int attack, float totalDa
 	totalDamageBuff = std::min(totalDamageBuff, 1.6f);
 
 	int baseDamage = criticalYN ? criattack : attack;
-	ehp = e->enemyTakeDamage(ehp, static_cast<int>(baseDamage * totalDamageBuff)); //소수점 이하 버림,크리티컬시 1.3배
+	echp = e->enemyTakeDamage(echp, static_cast<int>(baseDamage * totalDamageBuff)); //소수점 이하 버림,크리티컬시 1.3배
+	e->setEnemyCurrentHealth(echp);
 	return static_cast<int>(baseDamage * totalDamageBuff);
 }
 

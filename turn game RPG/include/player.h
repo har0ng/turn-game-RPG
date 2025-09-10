@@ -134,11 +134,16 @@ public:
 	//get
 	virtual int getContract() const;
 	virtual bool getAmplifyActivate() const;
+	virtual std::vector<buff> getImSlashYou() const;
 	//set
 	virtual void setContract(int null);
 	virtual void setAmplifyActivate(bool YN);
 	//other
 	virtual bool noneOverclock(); //overclock 발동 중인지 확인
+	virtual bool noneIm(); // im 발동 중인지 확인
+	virtual bool noneSlash(); // slash 발동 중인지 확인
+	virtual void pushImSlashYou(std::string name, int atk, int def, int stack, int remainTurn, bool check, bool amplity);
+	virtual void clearImSlashYou();
 };
 
 //전직은 get, set을 이용해 자식클래스에서 새로운 변수 안만들고 부모 활용.
@@ -150,14 +155,20 @@ private:
 	tiferetStatusSnapShot afterPlayer;
 	tiferetStatusSnapShot battlePlayer;
 	tiferetStatusSnapShot turnPlayer;
+	std::vector<buff> imslashYou;
 public:
 	tiferet();
 	tiferet(const player& p);
+
+	//other
 	void levelup() override; //레벨업 시 얻는 스텟이 캐릭터마다 다르기에 override
 	void initSkills() override; //스킬을 json에서 받아올껀데 함수가 꽤 커서 override해서 절약
 	std::string getClassName() override; //직업 이름이 뭔지 알아야하는데 각 클래스마다 만들기 귀찮아서 override
 	bool noneOverclock() override;
-
+	bool noneIm() override;
+	bool noneSlash() override;
+	void pushImSlashYou(std::string name, int atk, int def, int stack, int remainTurn, bool check, bool amplity) override;
+	void clearImSlashYou() override;
 
 	//get
 	int getContract() const override;
@@ -166,6 +177,7 @@ public:
 	tiferetStatusSnapShot& getBattlePlayer() override;
 	tiferetStatusSnapShot& getTurnPlayer() override;
 	bool getAmplifyActivate() const override;
+	std::vector<buff> getImSlashYou() const override;
 
 	//set
 	void setContract(int contract) override; //턴마다 하나씩 추가시켜주기 위함	void setBeforePlayer();
@@ -174,6 +186,7 @@ public:
 	void setBattlePlayer() override;
 	void setTurnPlayer() override;
 	void setAmplifyActivate(bool YN) override;
+
 	/*
 		int tiferet_health; // 1 level : +10 , +1 levelup : +5
 		int tiferet_attack; // 1 level : +3 , +2 levelup : +1
