@@ -1,7 +1,6 @@
 ﻿//main.cpp
 
 #include "battle.h"
-
 #include <iostream>
 
 
@@ -39,8 +38,8 @@ int main() {
     }
 
     while (true) {
-
-        std::unique_ptr<enemy> myEnemy = std::make_unique<enemy>(); //객체 만들어짐, 계속 while을 통해 새롭게 생성
+        enemy e; // 플레이어의 레벨과 각층에따라 달라질 적을 위해 enemy.cpp에서 구분하고 그걸 끌고 오기 위함
+        std::unique_ptr<enemy> myEnemy = std::make_unique<enemy>(10, 11, myPlayer->getLevel()); //객체 만들어짐, 계속 while을 통해 새롭게 생성
         //객체가 쓸모 없어지면 (unique)자동소멸자로 저절로 소멸
 
         battle b(std::move(myPlayer), std::move(myEnemy)); //unique다 보니 옮겨줌

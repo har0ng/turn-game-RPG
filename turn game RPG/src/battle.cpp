@@ -42,7 +42,7 @@ battle::battle(unique_ptr<player> _p , unique_ptr<enemy> _e)
 	//enemy
 	ehp = e->getEnemy_health(); //enemy 체력 get으로 받아오기
 	echp = e->getEnemyCurrentHealth();
-	eattack = 0; //enemy 공격력은 private 이니 0으로 미리 초기화
+	eattack = e->getPower(); //enemy 공격력은 private 이니 0으로 미리 초기화
 	
 	
 	//battletime
@@ -118,8 +118,6 @@ void battle::showGetSkill(std::vector<skill> beforeSkill, std::vector<skill> aft
 }
 
 void battle::battleStatus() {
-	std::uniform_int_distribution<unsigned int> enemyDamage(4, 7); //랜덤 범위 조정
-	eattack = enemyDamage(gen); //적의 공격력을 범위 내 초기화된 수로 랜덤화
 	turn++; //몇턴 째인지 셈
 	p->skillCT(); //쿨타임 백터 전체 쿨 다운
 	if (p->getClassName() == "tiferet") {
@@ -248,8 +246,7 @@ void battle::playerTurn() {
 }
 
 void battle::enemyTurn() {
-	std::uniform_int_distribution<unsigned int> dist(0, 2); //0. 상황 살피기, 1. 공격, 2. 공격
-	int enemy_action = dist(gen);
+	int enemy_action = e->enemyAction();
 	// 전투 로직 (데미지 계산 등)
 	if (enemy_action == 0) {
 		// 상황 살피기 (출력은 UI에서)
