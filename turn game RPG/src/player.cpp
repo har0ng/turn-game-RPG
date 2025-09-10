@@ -135,13 +135,13 @@ void player::setCurrent_mana(int mp) {
 	current_mana = mp;
 }
 void player::setLevel(int lev){
-	level = lev;
+	level = std::min(10,lev);
 }
-void player::setLevel_exp(int lev) {
-	level_exp = lev;
+void player::setLevel_exp(int exp) {
+	level_exp = exp;
 }
-void player::setNow_exp(int lev){
-	now_exp = lev;
+void player::setNow_exp(int exp){
+	now_exp = exp;
 }
 void player::setAgility(int agi) {
 	agility = agi;

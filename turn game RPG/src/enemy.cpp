@@ -8,6 +8,7 @@ using std::endl;
 
 
 
+
 enemy::enemy(){}
 
 // min ~ max 범위에서 체력 랜덤 설정
