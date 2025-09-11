@@ -31,10 +31,6 @@ struct skill {
 	}
 };
 
-/*구현 필요 
-lv 9 ~ lv 10
-*/ 
-
 //Skillname
 enum class commonSkill { // 공용 1레벨
 	powerStrike, //totaldamage * 1.3

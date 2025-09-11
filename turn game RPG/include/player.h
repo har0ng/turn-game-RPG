@@ -96,7 +96,7 @@ public:
 	
 
 	int playerTakeDamage(int dmg);//데미지를 입었을 때
-	int playerTakeExp(int take_exp); //현재 경험치 + 받은 경험치	
+	void playerTakeExp(int take_exp); //현재 경험치 + 받은 경험치	
 
 	//virtual
 	virtual void levelup();//레벨 업 할 때.

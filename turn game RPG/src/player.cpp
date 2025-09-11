@@ -219,19 +219,27 @@ int player::playerTakeDamage(int dmg) { //현재 체력 - 받은 데미지 계�
 	return player_current_health;
 }
 void player::levelup() { //레벨 업.
-	level++;
-	level_exp *= 2; //필요 경험치 2배씩 증가
+	++level;
+	if (level < 10) {
+		level_exp *= 2; //필요 경험치 2배씩 증가
+	}
+	else {
+		level_exp = 0;
+		now_exp = 0;
+	}
 	player_current_health = player_health; //체력 회복
 	current_mana = mana; //마나 회복
 	debuff = debuffStatus::none;
 }
-int player::playerTakeExp(int take_exp) { //take exp
+void player::playerTakeExp(int take_exp) { //take exp	
 	now_exp += take_exp;
-	while (now_exp >= getLevel_exp()) { // 여러 레벨업 처리
-		now_exp -= getLevel_exp();      // 레벨업에 필요한 경험치 차감
-		levelup();
+	if (level < 10) {
+		while (now_exp >= getLevel_exp()) { // 여러 레벨업 처리
+			now_exp -= getLevel_exp();      // 레벨업에 필요한 경험치 차감
+			levelup();
+			if (level == 10) { return; }
+		}
 	}
-	return now_exp;
 }
 void player::initSkills() {
 	roadSkillsToJson();
@@ -291,23 +299,30 @@ void player::roadSkillsToJson() { //직업에 필요한 스킬들을 json에서 
 }
 debuffStatus player::stringToDebuff(const std::string& str){ //string → enum 변환용
 	if (str == "none") { return debuffStatus::none; }
+	if (str == "agiDown") { return debuffStatus::agiDown; }
+	if (str == "criDown") { return debuffStatus::criDown; }
+	if (str == "defDown") { return debuffStatus::defDown; }
+	if (str == "atkDown") { return debuffStatus::atkDown; }
 	if (str == "disarray") { return debuffStatus::disarray; }
 	if (str == "weekness") { return debuffStatus::weekness; }
 	if (str == "bleed") { return debuffStatus::bleed; }
 	if (str == "burn") { return debuffStatus::burn; }
 	if (str == "wet") { return debuffStatus::wet; }
-	if (str == "freeze") { return debuffStatus::freeze; }
-	if (str == "electricShock") { return debuffStatus::electricShock; }
-	if (str == "agiDown") { return debuffStatus::agiDown; }
-	if (str == "criDown") { return debuffStatus::criDown; }
-	if (str == "defDown") { return debuffStatus::defDown; }
-	if (str == "atkDown") { return debuffStatus::atkDown; }
+	
 	return debuffStatus::none; // default
 }
 std::string player::debuffToString(debuffStatus debuff){ //enum -> string 변환용
 	switch (debuff){
 	case debuffStatus::none:
 		return "none";
+	case debuffStatus::agiDown:
+		return "agiDown";
+	case debuffStatus::criDown:
+		return "criDown";
+	case debuffStatus::defDown:
+		return "defDown";
+	case debuffStatus::atkDown:
+		return "atkDown";
 	case debuffStatus::disarray:
 		return "disarray";
 	case debuffStatus::weekness:
@@ -318,18 +333,6 @@ std::string player::debuffToString(debuffStatus debuff){ //enum -> string 변환
 		return "burn";
 	case debuffStatus::wet:
 		return "wet";
-	case debuffStatus::freeze:
-		return "freeze";
-	case debuffStatus::electricShock:
-		return "electricShock";
-	case debuffStatus::agiDown:
-		return "agiDown";
-	case debuffStatus::criDown:
-		return "criDown";
-	case debuffStatus::defDown:
-		return "defDown";
-	case debuffStatus::atkDown:
-		return "atkDown";
 	default:
 		return "none";
 	}
