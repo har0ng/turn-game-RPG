@@ -19,6 +19,7 @@ private:
 	int activeBuffTurn; // 현재 버프 지속 턴
 	int buffAttack;     // 현재 적용된 공격 버프
 	int buffDefense;    // 현재 적용된 방어 버프
+	int expReward; //죽을 시, 플레이어에게 줄 경험치
 	std::vector<enemySkill> skills; //스킬 목록
 	std::vector<enemyBuff> buffs; //버프 목록
 	std::vector<deBuff> deBuffs; //디버프 목록
@@ -43,6 +44,7 @@ public:
 	int getActiveBuffTurn() const; // 현재 버프 지속 턴
 	int getBuffAttack() const; 	// 현재 적용된 공격 버프
 	int getBuffDefense() const;	// 현재 적용된 방어 버프
+	int getExpReward() const; //죽을시, 플레이어에게 줄 경험치
 	std::vector<enemySkill> getSkills() const; //스킬 목록
 	std::vector<enemyBuff> getBuffs() const; //버프 목록
 	std::vector<enemySkillDisable> getDisables() const; //쿨타임 걸린 스킬 목록
@@ -50,9 +52,10 @@ public:
 
 	//set
 	void setEnemyCurrentHealth(int hp);
-	void setDefense(int enemyType, int level); //0 = 잡몹, 1 = 엘리트 , 2 = 보스 (level에 따라 가산)
+	void setDefense(std::string enemyType, int level); //0 = 잡몹, 1 = 엘리트 , 2 = 보스 (level에 따라 가산)
 	void setAgility(int agi);
 	void setCritical(int cri);
+	void setExpReward(int playerLv, int enemyLv,int mapFloor ,const std::string& enemyType);
 	void pushDeBuff(std::string deBuffName, int agiDown, int criDown,
 					int defenseDown, int attackDown, int stack,
 					int remainingTurn, bool active);
@@ -68,7 +71,7 @@ public:
 //one
 class one : public enemy { //눈 하나
 private:
-	int enemyType; //잡몹, 엘리트 몹, 보스 몹
+	std::string enemyType; //잡몹, 엘리트 몹, 보스 몹
 public:
 	one();
 	one(const enemy& e);
@@ -77,7 +80,7 @@ public:
 //two
 class two : public enemy { //눈 둘
 private:
-	int enemyType; //잡몹, 엘리트 몹, 보스 몹
+	std::string enemyType; //잡몹, 엘리트 몹, 보스 몹
 public:
 	two();
 	virtual ~two() = default;
@@ -85,7 +88,7 @@ public:
 };
 class EliteTwo : public two { //엘리트 몹 눈 둘
 private:
-	int enemyType; //잡몹, 엘리트 몹, 보스 몹
+	std::string enemyType; //잡몹, 엘리트 몹, 보스 몹
 public:
 	EliteTwo();
 	EliteTwo(const two& two);
@@ -94,7 +97,7 @@ public:
 //three
 class three : public enemy { //눈 셋
 private:
-	int enemyType; //잡몹, 엘리트 몹, 보스 몹
+	std::string enemyType; //잡몹, 엘리트 몹, 보스 몹
 public:
 	three();
 	virtual ~three() = default;
@@ -102,7 +105,7 @@ public:
 };
 class EliteThree : public three { //엘리트 몹 눈 셋
 private:
-	int enemyType; //잡몹, 엘리트 몹, 보스 몹
+	std::string enemyType; //잡몹, 엘리트 몹, 보스 몹
 public:
 	EliteThree();
 	EliteThree(const three& three);
@@ -111,7 +114,7 @@ public:
 //four
 class four : public enemy { //눈 넷
 private:
-	int enemyType; //잡몹, 엘리트 몹, 보스 몹
+	std::string enemyType; //잡몹, 엘리트 몹, 보스 몹
 public:
 	four();
 	virtual ~four() = default;
@@ -119,7 +122,7 @@ public:
 };
 class EliteFour : public four { //엘리트 몹 눈 넷
 private:
-	int enemyType; //잡몹, 엘리트 몹, 보스 몹
+	std::string enemyType; //잡몹, 엘리트 몹, 보스 몹
 public:
 	EliteFour();
 	EliteFour(const four& four);
@@ -128,7 +131,7 @@ public:
 //five
 class five : public enemy { //눈 다섯
 private:
-	int enemyType; //잡몹, 엘리트 몹, 보스 몹
+	std::string enemyType; //잡몹, 엘리트 몹, 보스 몹
 public:
 	five();
 	virtual ~five() = default;
@@ -136,7 +139,7 @@ public:
 };
 class EliteFive : public five { //엘리트 몹 눈 다섯
 private:
-	int enemyType; //잡몹, 엘리트 몹, 보스 몹
+	std::string enemyType; //잡몹, 엘리트 몹, 보스 몹
 public:
 	EliteFive();
 	EliteFive(const five& five);
@@ -145,7 +148,7 @@ public:
 //six
 class six : public enemy { //눈 여섯
 private:
-	int enemyType; //잡몹, 엘리트 몹, 보스 몹
+	std::string enemyType; //잡몹, 엘리트 몹, 보스 몹
 public:
 	six();
 	virtual ~six() = default;
@@ -153,7 +156,7 @@ public:
 };
 class EliteSix : public six { //엘리트 몹 눈 여섯
 private:
-	int enemyType; //잡몹, 엘리트 몹, 보스 몹
+	std::string enemyType; //잡몹, 엘리트 몹, 보스 몹
 public:
 	EliteSix();
 	EliteSix(const six& six);
@@ -163,7 +166,7 @@ public:
 //boss
 class oneFloorBoss : public enemy { //1층 보스
 private:
-	int enemyType; //잡몹, 엘리트 몹, 보스 몹
+	std::string enemyType; //잡몹, 엘리트 몹, 보스 몹
 public:
 	oneFloorBoss();
 	oneFloorBoss(const enemy& e);
