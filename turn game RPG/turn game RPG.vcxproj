@@ -22,7 +22,17 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="src\binah.cpp" />
     <ClCompile Include="src\chesed.cpp" />
+    <ClCompile Include="src\eliteFive.cpp" />
+    <ClCompile Include="src\eliteFour.cpp" />
+    <ClCompile Include="src\eliteThree.cpp" />
+    <ClCompile Include="src\eliteTwo.cpp" />
+    <ClCompile Include="src\five.cpp" />
+    <ClCompile Include="src\four.cpp" />
     <ClCompile Include="src\malkuth.cpp" />
+    <ClCompile Include="src\one.cpp" />
+    <ClCompile Include="src\oneFloorBoss.cpp" />
+    <ClCompile Include="src\three.cpp" />
+    <ClCompile Include="src\two.cpp" />
     <ClCompile Include="src\yesod.cpp" />
     <ClCompile Include="src\battle.cpp" />
     <ClCompile Include="src\consoleUI.cpp" />

@@ -57,6 +57,36 @@
     <ClCompile Include="src\malkuth.cpp">
       <Filter>ソース ファイル\src</Filter>
     </ClCompile>
+    <ClCompile Include="src\one.cpp">
+      <Filter>ソース ファイル\include</Filter>
+    </ClCompile>
+    <ClCompile Include="src\oneFloorBoss.cpp">
+      <Filter>ソース ファイル\include</Filter>
+    </ClCompile>
+    <ClCompile Include="src\three.cpp">
+      <Filter>ソース ファイル\include</Filter>
+    </ClCompile>
+    <ClCompile Include="src\two.cpp">
+      <Filter>ソース ファイル\include</Filter>
+    </ClCompile>
+    <ClCompile Include="src\eliteFive.cpp">
+      <Filter>ソース ファイル\include</Filter>
+    </ClCompile>
+    <ClCompile Include="src\eliteFour.cpp">
+      <Filter>ソース ファイル\include</Filter>
+    </ClCompile>
+    <ClCompile Include="src\eliteThree.cpp">
+      <Filter>ソース ファイル\include</Filter>
+    </ClCompile>
+    <ClCompile Include="src\eliteTwo.cpp">
+      <Filter>ソース ファイル\include</Filter>
+    </ClCompile>
+    <ClCompile Include="src\five.cpp">
+      <Filter>ソース ファイル\include</Filter>
+    </ClCompile>
+    <ClCompile Include="src\four.cpp">
+      <Filter>ソース ファイル\include</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\battle.h">

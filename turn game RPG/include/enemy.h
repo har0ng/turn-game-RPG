@@ -6,6 +6,11 @@
 #include "enemySkillDisable.h"
 #include "enemyBuff.h"
 #include "debuffEnum.h"
+ 
+struct RandomMinMax { // attack, health
+	int min;
+	int max;
+};
 
 class enemy { //homunculus
 private:
@@ -25,8 +30,7 @@ private:
 	std::vector<deBuff> deBuffs; //디버프 목록
 	std::vector<enemySkillDisable> disables; //쿨타임 걸린 스킬 목록
 	
-	std::random_device rd; //seed create
-	std::mt19937 gen; //seed random
+	
 	
 public:
 	enemy();
@@ -52,6 +56,7 @@ public:
 
 	//set
 	void setEnemyCurrentHealth(int hp);
+	void setPower(int power);
 	void setDefense(std::string enemyType, int level); //0 = 잡몹, 1 = 엘리트 , 2 = 보스 (level에 따라 가산)
 	void setAgility(int agi);
 	void setCritical(int cri);
@@ -59,22 +64,37 @@ public:
 	void pushDeBuff(std::string deBuffName, int agiDown, int criDown,
 					int defenseDown, int attackDown, int stack,
 					int remainingTurn, bool active);
+	
 	//other
 	int enemyTakeDamage(int rest_health, int dmg);//데미지를 입었을 때
-	int enemyAction();
+	
 
 	//virtual
-	virtual void setLevel(int playerLv); // 엘리트 몹, 보스 몹은 레벨이 정해져있기 때문에 랜덤x
-	
+	virtual RandomMinMax setEnemy_health(int enemyLv, std::string enemyType);
+	virtual void setLevel(int enemyLv); // 엘리트 몹, 보스 몹은 레벨이 정해져있기 때문에 랜덤x
+	virtual RandomMinMax randomPower(int enemyLv, std::string enemyType);//몹의 레벨과 잡,엘리트,보스에 따라 나뉨
+	virtual void decidePower(RandomMinMax minMax); //공격력 최소와 최대에서 랜덤화 뽑은 후 setPower에 보내기
+	virtual int enemyAction();
 };	
 
 //one
 class one : public enemy { //눈 하나
 private:
 	std::string enemyType; //잡몹, 엘리트 몹, 보스 몹
+
+	std::random_device rd; //seed create
+	std::mt19937 gen; //seed random
 public:
 	one();
 	one(const enemy& e);
+
+	//override
+	RandomMinMax setEnemy_health(int enemyLv, std::string enemyType) override;
+	RandomMinMax randomPower(int enemyLv, std::string enemyType) override;
+	void decidePower(RandomMinMax minMax) override;
+	void setLevel(int playerLv) override;
+	int enemyAction() override;
+
 };
 
 //two
@@ -86,12 +106,12 @@ public:
 	virtual ~two() = default;
 	two(const enemy& e);
 };
-class EliteTwo : public two { //엘리트 몹 눈 둘
+class eliteTwo : public enemy { //엘리트 몹 눈 둘
 private:
 	std::string enemyType; //잡몹, 엘리트 몹, 보스 몹
 public:
-	EliteTwo();
-	EliteTwo(const two& two);
+	eliteTwo();
+	eliteTwo(const enemy& e);
 };
 
 //three
@@ -103,12 +123,12 @@ public:
 	virtual ~three() = default;
 	three(const enemy& e);
 };
-class EliteThree : public three { //엘리트 몹 눈 셋
+class eliteThree : public enemy { //엘리트 몹 눈 셋
 private:
 	std::string enemyType; //잡몹, 엘리트 몹, 보스 몹
 public:
-	EliteThree();
-	EliteThree(const three& three);
+	eliteThree();
+	eliteThree(const enemy& e);
 };
 
 //four
@@ -120,12 +140,12 @@ public:
 	virtual ~four() = default;
 	four(const enemy& e);
 };
-class EliteFour : public four { //엘리트 몹 눈 넷
+class eliteFour : public enemy { //엘리트 몹 눈 넷
 private:
 	std::string enemyType; //잡몹, 엘리트 몹, 보스 몹
 public:
-	EliteFour();
-	EliteFour(const four& four);
+	eliteFour();
+	eliteFour(const enemy& e);
 };
 
 //five
@@ -137,29 +157,12 @@ public:
 	virtual ~five() = default;
 	five(const enemy& e);
 };
-class EliteFive : public five { //엘리트 몹 눈 다섯
+class eliteFive : public enemy { //엘리트 몹 눈 다섯
 private:
 	std::string enemyType; //잡몹, 엘리트 몹, 보스 몹
 public:
-	EliteFive();
-	EliteFive(const five& five);
-};
-
-//six
-class six : public enemy { //눈 여섯
-private:
-	std::string enemyType; //잡몹, 엘리트 몹, 보스 몹
-public:
-	six();
-	virtual ~six() = default;
-	six(const enemy& e);
-};
-class EliteSix : public six { //엘리트 몹 눈 여섯
-private:
-	std::string enemyType; //잡몹, 엘리트 몹, 보스 몹
-public:
-	EliteSix();
-	EliteSix(const six& six);
+	eliteFive();
+	eliteFive(const enemy& e);
 };
 
 

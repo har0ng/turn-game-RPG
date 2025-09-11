@@ -6,32 +6,20 @@
 using std::cout;
 using std::endl;
 
-enemy::enemy(){}
-
 // min ~ max 범위에서 체력 랜덤 설정
 enemy::enemy(int minHp, int maxHp, int playerLv) : 
-    gen(rd()),
+    enemy_health(0),
+    enemyCurrentHealth(0),
+    level(0),
     power(0),
     defense(0),
     agility(0),
     critical(0),
     activeBuffTurn(0), 
     buffAttack(0), 
-    buffDefense(0)
-{
-    // 체력 랜덤
-    std::uniform_int_distribution<int> dist(minHp, maxHp);
-    enemy_health = dist(gen);
-    enemyCurrentHealth = enemy_health;
-
-    // 레벨 랜덤: playerLevel ±1
-    std::uniform_int_distribution<int> levelDist(std::max(1, playerLv - 1), playerLv + 1);
-    level = levelDist(gen);
-
-    // 공격력 랜덤
-    std::uniform_int_distribution<int> powerDist(4, 7);
-    power = powerDist(gen);
-}
+    buffDefense(0),
+    expReward(0)
+{}
 
 
 //get
@@ -96,6 +84,9 @@ std::vector<deBuff> enemy::getDeBuffs() const {
 //set
 void enemy::setEnemyCurrentHealth(int hp) {
     enemyCurrentHealth = std::max(0, hp); // 0 이하 방지
+}
+void enemy::setPower(int power) {
+    this->power = power;
 }
 void enemy::setDefense(std::string enemyType, int level) {
     if (enemyType == "normal") { //잡몹
@@ -163,6 +154,7 @@ void enemy::pushDeBuff(std::string deBuffName, int agiDown, int criDown,
                         stack, remainingTurn, active });
 }
 
+
 //other
 int enemy::enemyTakeDamage(int echp, int dmg) { //공격 받은 후 남은 체력
     int hp = 0;
@@ -174,14 +166,23 @@ int enemy::enemyTakeDamage(int echp, int dmg) { //공격 받은 후 남은 체�
     }
 	return hp;
 }
-int enemy::enemyAction(){
-    std::uniform_int_distribution<unsigned int> dist(0, 2); //0. 상황 살피기, 1. 공격, 2. 공격
-    return dist(gen);
-}
 
 //virtual
-void enemy::setLevel(int playerLv) {
+RandomMinMax enemy::setEnemy_health(int enemyLv, std::string enemyType) {
+    return{ {0},{0} };
+}
+RandomMinMax enemy::randomPower(int enemyLv, std::string enemyType) {
     return;
 }
+void enemy::decidePower(RandomMinMax minMax) {
+    return;
+}
+void enemy::setLevel(int enemyLv) {
+    level = enemyLv;
+}
+int enemy::enemyAction() {
+    return 0;
+}
+
 
 
