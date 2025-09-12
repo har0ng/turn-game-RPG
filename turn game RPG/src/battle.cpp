@@ -326,7 +326,7 @@ void battle::battleEnd() {
 	}	
 	else {
 		if (level < 10) {
-			int instance_exp = 100;  // 몬스터의 종류, 레벨에따라 차등 적용해야하는데 임의로 경험치를 설정하고 테스트
+			int instance_exp = 500;  // 몬스터의 종류, 레벨에따라 차등 적용해야하는데 임의로 경험치를 설정하고 테스트
 			p->playerTakeExp(instance_exp); //player안의 nowexp 값 갱신
 			now_exp = p->getNow_exp(); // 갱신된 값으로 초기화
 			level_exp = p->getLevel_exp(); //레벨업 시 총 경험치 갱신된 값으로 초기화

@@ -266,12 +266,17 @@ RandomMinMax enemy::randomPower(int enemyLv, std::string enemyType, int floor) {
     int max = 0;
     if (enemyType == "normal") {
         switch (enemyLv) {
-        case 1: min = 4, max = 7; break;
-        case 2: min = 6, max = 9; break;
-        case 3: min = 8, max = 11; break;
-        case 4: min = 10, max = 13; break;
-        case 5: min = 12, max = 15; break;
-        case 6: min = 15, max = 18; break;
+        case 1: min = 4, max = 6; break;
+        case 2: min = 6, max = 8; break;
+        case 3: min = 7, max = 9; break;
+        case 4: min = 8, max = 10; break;
+        case 5: min = 9, max = 11; break;
+        case 6: min = 10, max = 12; break;
+        case 7: min = 13, max = 15; break;
+        case 8: min = 14, max = 16; break;
+        case 9: min = 16, max = 19; break;
+        case 10: min = 19, max = 23; break;
+        case 11: min = 21, max = 26; break;
         default:
             break;
         }
@@ -280,9 +285,14 @@ RandomMinMax enemy::randomPower(int enemyLv, std::string enemyType, int floor) {
         switch (enemyLv) {
         case 2: min = 9, max = 18; break;
         case 3: min = 13, max = 21; break;
-        case 4: min = 16, max = 26; break;
-        case 5: min = 20, max = 30; break;
-        case 6: min = 24, max = 33; break;
+        case 4: min = 16, max = 23; break;
+        case 5: min = 19, max = 28; break;
+        case 6: min = 23, max = 31; break;
+        case 7: min = 25, max = 33; break;
+        case 8: min = 27, max = 35; break;
+        case 9: min = 33, max = 39; break;
+        case 10: min = 35, max = 41; break;
+        case 11: min = 39, max = 45; break;
         default:
             break;
         }
