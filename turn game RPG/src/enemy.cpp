@@ -206,7 +206,7 @@ std::string enemy::randomEnemyType() { //적이 노말인지 엘리트인지 랜
     std::random_device rd; //seed create
     std::mt19937 gen; //seed random
     std::uniform_int_distribution<int> enemyTypelDist(0, 3);
-    return enemyTypelDist(gen) == 3 ? "elite" : "elite";
+    return enemyTypelDist(gen) == 3 ? "elite" : "normal";
 }
 RandomMinMax enemy::randomHealth(int enemyLv, std::string enemyType, int floor) {
     // 체력 랜덤
@@ -219,7 +219,12 @@ RandomMinMax enemy::randomHealth(int enemyLv, std::string enemyType, int floor) 
         case 3: min = 26, max = 36; break;
         case 4: min = 30, max = 39; break;
         case 5: min = 37, max = 45; break;
-        case 6: min = 41, max = 51; break;
+        case 6: min = 44, max = 51; break;
+        case 7: min = 50, max = 59; break;
+        case 8: min = 56, max = 64; break;
+        case 9: min = 61; max = 71; break;
+        case 10: min = 67; max = 79; break;
+        case 11: min = 76; max = 86; break;
         default:
             break;
         }
@@ -231,6 +236,11 @@ RandomMinMax enemy::randomHealth(int enemyLv, std::string enemyType, int floor) 
         case 4: min = 88, max = 118; break;
         case 5: min = 109, max = 137; break;
         case 6: min = 121, max = 158; break;
+        case 7: min = 148, max = 172; break;
+        case 8: min = 166, max = 186; break;
+        case 9: min = 182, max = 215; break;
+        case 10: min = 201, max = 242; break;
+        case 11: min = 230, max = 270; break;
         default:
             break;
         }

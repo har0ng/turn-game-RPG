@@ -40,12 +40,13 @@ int main() {
     while (true) {
         enemy e; // 플레이어의 레벨과 각층에따라 달라질 적을 위해 enemy.cpp에서 구분하고 그걸 끌고 오기 위함
         std::unique_ptr<enemy> myEnemy;
+        std::string enemyType = e.randomEnemyType();
         e.setPlayerLevel(myPlayer->getLevel());
-        if (e.randomEnemyType() == "normal") {
+        if (enemyType == "normal") {
             myEnemy = std::make_unique<normal>(e.getPlayerLevel()); //객체 만들어짐, 계속 while을 통해 새롭게 생성
         //객체가 쓸모 없어지면 (unique)자동소멸자로 저절로 소멸
         }
-        else if(e.randomEnemyType() == "elite") {
+        else if(enemyType == "elite") {
             myEnemy = std::make_unique<elite>(e.getPlayerLevel());
         }
         else {
