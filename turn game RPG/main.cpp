@@ -39,10 +39,20 @@ int main() {
 
     while (true) {
         enemy e; // 플레이어의 레벨과 각층에따라 달라질 적을 위해 enemy.cpp에서 구분하고 그걸 끌고 오기 위함
-        std::unique_ptr<enemy> myEnemy = std::make_unique<enemy>(10, 11, myPlayer->getLevel()); //객체 만들어짐, 계속 while을 통해 새롭게 생성
+        std::unique_ptr<enemy> myEnemy;
+        e.setPlayerLevel(myPlayer->getLevel());
+        if (e.randomEnemyType() == "normal") {
+            myEnemy = std::make_unique<normal>(e.getPlayerLevel()); //객체 만들어짐, 계속 while을 통해 새롭게 생성
         //객체가 쓸모 없어지면 (unique)자동소멸자로 저절로 소멸
+        }
+        else if(e.randomEnemyType() == "elite") {
+            myEnemy = std::make_unique<elite>(e.getPlayerLevel());
+        }
+        else {
+            myEnemy = std::make_unique<boss>(e.getPlayerLevel());
+        }
 
-        battle b(std::move(myPlayer), std::move(myEnemy)); //unique다 보니 옮겨줌
+        battle b(std::move(myPlayer), std::move(myEnemy)); //unique 둘다 유니크라 포인터가 하나뿐이니 옮겨줌
 
         b.startBattle();  // 전투 시작 및 종료까지 내부에서 처리(battle.cpp)
         if (b.getPlay() == false) {

@@ -11,7 +11,6 @@ using std::cout;
 using std::endl;
 nlohmann::json skillData; //json 객체 선언
 
-
 player::player() :player_health(30)
 , player_current_health(30)
 , basic_attack(5)
