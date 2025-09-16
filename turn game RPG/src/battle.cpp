@@ -122,13 +122,13 @@ void battle::battleStatus() {
 	p->skillCT(); //쿨타임 백터 전체 쿨 다운
 	if (p->getClassName() == "tiferet") {
 		ui.battleStatus(turn, php, cphp, p->getTurnPlayer().attack, p->getTurnPlayer().defense,
-			p->getContract(),ehp,echp ,eattack, level, level_exp, now_exp, mana, current_mana,
+			p->getContract(), e->getEnemyType(), ehp, echp ,eattack, level, level_exp, now_exp, mana, current_mana,
 			p->debuffToString(debuff),p->getBuff(), p->getImSlashYou(),p->getBuffAttack(), p->getBuffDefense(),
 			p->getClassName(),amplifyActivate);
 	}
 	else {
 		ui.battleStatus(turn, php, cphp, p->getTurnPlayer().attack, p->getTurnPlayer().defense,
-			ehp, echp, eattack, level, level_exp, now_exp, mana, current_mana,
+			e->getEnemyType(), ehp, echp, eattack, level, level_exp, now_exp, mana, current_mana,
 			p->debuffToString(debuff), p->getBuff(), p->getBuffAttack(), p->getBuffDefense(),
 			p->getClassName()); //log를 불러오기위해 log에서 필요로 하는 값 다 넘겨주기
 	}
@@ -331,6 +331,7 @@ void battle::battleEnd() {
 		level_exp = p->getLevel_exp(); //레벨업 시 총 경험치 갱신된 값으로 초기화
 	}
 }
+
 void battle::selectClass() { // selectClass
 
 	ui.selectClassUI();

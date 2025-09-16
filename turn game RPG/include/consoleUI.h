@@ -14,12 +14,12 @@ UI 출력 책임만 갖게 하기 위해(SRP)
 
 class consoleUI {
 public:
-    void battleStatus(int turn, int php, int cphp, int pattack, int pdefense, int ehp, int cehp
+    void battleStatus(int turn, int php, int cphp, int pattack, int pdefense, std::string enemyType, int ehp, int cehp
         , int eattack, int level, int level_exp, int now_exp
         , int mana, int current_mana, std::string debuff , std::vector<buff> buffs
         , int buffAttack, int buffDefense, std::string className);
-    void battleStatus(int turn, int php, int cphp, int pattack, int pdefense,int contract ,int ehp, int cehp
-        , int eattack, int level, int level_exp, int now_exp
+    void battleStatus(int turn, int php, int cphp, int pattack, int pdefense,int contract , std::string enemyType
+        , int ehp, int cehp, int eattack, int level, int level_exp, int now_exp
         , int mana, int current_mana, std::string debuff, std::vector<buff> buffs, std::vector<buff>imSlashYou
         , int buffAttack, int buffDefense, std::string className, bool amplifyActivate); //tiferet
     void playerTurnUI();

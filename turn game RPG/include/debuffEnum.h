@@ -11,18 +11,12 @@ enum class debuffStatus {
 	weekness, // 약화, 2턴동안 20% 데미지 추가로 받음
 	bleed, // 출혈, 4턴동안 턴당 maxhp 대비 hp-4%
 	burn, // 화상, 3턴동안 maxhp 대비 hp-7% , 젖음에 해제. 상태이상 
-	wet, // 젖음, 3턴동안 젖음 상태 agi -20%
-
-	
+	wet // 젖음, 3턴동안 젖음 상태 agi -20%
 
 };
 struct deBuff {
 	std::string name{ "unknown" }; //스킬 이름
-	int agiDown{ 0 };
-	int criDown{ 0 };
-	int defenseDown{ 0 };//얼마나 방어력이 내려가는지
-	int attackDown{ 0 };//얼마나 공격력이 내려가는지
-	int stack{ 0 };// 다용도
+	int stack{ 0 };// enum class와 연계해서 디버프 효과 적용
 	int remainingTurn{ 0 };//남은턴
 	bool active = true; // false면 무시
 };

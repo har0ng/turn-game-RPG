@@ -18,7 +18,7 @@ private:
 	int enemyCurrentHealth; // enemy 현재 체력
 	int level; //enemy level
 	int power; //공격력
-	int defense; //방어 선택시 방어력
+	/*int defense; *///방어 선택시 방어력
 	int agility; //AGI, 회피율 , 안보여줄꺼임 
 	int critical; //CRI, 크리티컬 , 안보여줄꺼임
 	int activeBuffTurn; // 현재 버프 지속 턴
@@ -60,14 +60,12 @@ public:
 	void setEnemyCurrentHealth(int hp);
 	void setLevel(int enemyLv); // 엘리트 몹, 보스 몹은 레벨이 정해져있기 때문에 랜덤x
 	void setPower(int power);
-	void setDefense(std::string enemyType, int level); //0 = 잡몹, 1 = 엘리트 , 2 = 보스 (level에 따라 가산)
+	//void setDefense(std::string enemyType, int level);
 	void setAgility(int agi);
 	void setCritical(int cri);
 	void setExpReward(int playerLv, int enemyLv,int mapFloor ,const std::string& enemyType);
 	void setPlayerLevel(int playerLv);
-	void pushDeBuff(std::string deBuffName, int agiDown, int criDown,
-					int defenseDown, int attackDown, int stack,
-					int remainingTurn, bool active);
+	void pushDeBuff(std::string deBuffName, int stack, int remainingTurn, bool active);
 	void setEnemyType(std::string enemyType);
 	
 	//other
@@ -75,7 +73,7 @@ public:
 	std::string randomEnemyType(); //에너미가 normal, elite 중 뭔지 랜덤 지정
 	RandomMinMax randomHealth(int enemyLv, std::string enemyType, int floor);//몹의 레벨과 잡,엘리트,보스에 따라 나뉨
 	RandomMinMax randomPower(int enemyLv, std::string enemyType, int floor);//몹의 레벨과 잡,엘리트,보스에 따라 나뉨
-	
+	//void executeDeBuff(std::vector<deBuff> deBuffs);
 
 	//virtual
 	virtual void decideHealth(RandomMinMax minMax);// 체력의 최소와 최대에서 랜덤으로 뽑은 후 저장

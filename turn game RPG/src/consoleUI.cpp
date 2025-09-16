@@ -8,7 +8,7 @@ using std::cout;
 using std::cin;
 
 void consoleUI::battleStatus(int turn, int php, int cphp, int pattack, int pdefense
-                            ,int ehp,int echp ,int eattack, int level, int level_exp
+                            , std::string enemyType, int ehp,int echp ,int eattack, int level, int level_exp
                             ,int now_exp, int mana, int current_mana, std::string debuff, std::vector<buff> buffs
                             ,int buffAttack, int buffDefense, std::string className) {
     cout << "========== Battle Status ==========" << endl;
@@ -43,7 +43,8 @@ void consoleUI::battleStatus(int turn, int php, int cphp, int pattack, int pdefe
         }
     }
     cout << endl;
-    cout << "*enemy\n hp: " << echp <<"/" << ehp << "\n power: " << eattack << endl;
+    cout << "*enemy" << "(" <<enemyType << ")" << endl;
+    cout << " hp: " << echp <<"/" << ehp << "\n power : " << eattack << endl;
     cout << endl;
     cout << "========== Battle Status ==========" << endl;
     cout << endl;
@@ -51,7 +52,7 @@ void consoleUI::battleStatus(int turn, int php, int cphp, int pattack, int pdefe
 }
 
 void consoleUI::battleStatus(int turn, int php, int cphp, int pattack, int pdefense, int contract, 
-                             int ehp, int echp, int eattack, int level, int level_exp, int now_exp, int mana, 
+                             std::string enemyType, int ehp, int echp, int eattack, int level, int level_exp, int now_exp, int mana,
                              int current_mana, std::string debuff, std::vector<buff> buffs, std::vector<buff>imSlashYou,
                              int buffAttack, int buffDefense, std::string className, bool amplifyActivate){
     cout << "========== Battle Status ==========" << endl;
@@ -96,7 +97,8 @@ void consoleUI::battleStatus(int turn, int php, int cphp, int pattack, int pdefe
         }
     }
     cout << endl;
-    cout << "*enemy\n hp: " << echp << "/" << ehp << "\n power: " << eattack << endl;
+    cout << "*enemy" << "(" << enemyType << ")" << endl;
+    cout << " hp: " << echp << "/" << ehp << "\n power : " << eattack << endl;
     cout << endl;
     cout << "========== Battle Status ==========" << endl;
     cout << endl;

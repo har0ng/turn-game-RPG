@@ -66,6 +66,9 @@
     <ClCompile Include="src\boss.cpp">
       <Filter>ソース ファイル\src</Filter>
     </ClCompile>
+    <ClCompile Include="src\map.cpp">
+      <Filter>ソース ファイル\src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\battle.h">
@@ -111,6 +114,9 @@
       <Filter>ソース ファイル\include</Filter>
     </ClInclude>
     <ClInclude Include="include\enemySkillDisable.h">
+      <Filter>ソース ファイル\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\map.h">
       <Filter>ソース ファイル\include</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,6 +1,7 @@
 ﻿//main.cpp
 
 #include "battle.h"
+#include "map.h"
 #include <iostream>
 
 using std::cout;
@@ -24,6 +25,8 @@ int main() {
     } while (start != 1 && start != 2);
 
     std::unique_ptr<player> myPlayer = std::make_unique<player>(); // 객체 만들어짐 ,한번만
+
+    std::vector<room> gameMap = upperPartCreateMap();
      
     {// 시작하자마자 직업 선택
         std::unique_ptr<enemy> dummyEnemy = std::make_unique<enemy>(); //에너미 객체가없으면 못만들어서 더미로 만들어둠
@@ -32,31 +35,81 @@ int main() {
         myPlayer = std::move(tempBattle.getPlayerPtr()); // 선택 후 myPlayer 복구
     }
 
+    int startRoomId = 1; //시작
     while (true) {
-        enemy e; // 플레이어의 레벨과 각층에따라 달라질 적을 위해 enemy.cpp에서 구분하고 그걸 끌고 오기 위함
-        std::unique_ptr<enemy> myEnemy;
-        std::string enemyType = e.randomEnemyType();
-        e.setPlayerLevel(myPlayer->getLevel());
-        if (enemyType == "normal") {
-            myEnemy = std::make_unique<normal>(e.getPlayerLevel()); //객체 만들어짐, 계속 while을 통해 새롭게 생성
-        //객체가 쓸모 없어지면 (unique)자동소멸자로 저절로 소멸
+        room& currentRoom = gameMap[startRoomId - 1]; //시작의 방
+
+        // 연결된 방 출력
+        if (!currentRoom.connectedRoom.empty()) {
+            for (size_t i = 0; i < currentRoom.connectedRoom.size(); i++) {
+                int nextId = currentRoom.connectedRoom[i];
+                cout << i + 1 << ": room ID " << nextId << " / roomType: " << gameMap[nextId - 1].name << "\n";
+            }
+
+            int choice = 0;
+            do {
+                cout << "next room Select: ";
+                cin >> choice;
+                if (cin.fail() || choice < 1 || choice >(int)currentRoom.connectedRoom.size()) {
+                    cin.clear();
+                    cin.ignore(1000, '\n');
+                    choice = 0;
+                }
+            } while (choice == 0);
+
+            startRoomId = currentRoom.connectedRoom[choice - 1]; // 선택한 방으로 이동
         }
-        else if(enemyType == "elite") {
-            myEnemy = std::make_unique<elite>(e.getPlayerLevel());
+
+        // 방 이동 후 currentRoom 갱신
+        currentRoom = gameMap[startRoomId - 1];
+
+        if (currentRoom.name == "rest") {
+            myPlayer->restPlayer();
+            cout << "HPを回復しました。" << endl;
         }
-        else {
+        else if (currentRoom.name == "enemy") {
+            enemy e; // 플레이어의 레벨과 각층에따라 달라질 적을 위해 enemy.cpp에서 구분하고 그걸 끌고 오기 위함
+            std::unique_ptr<enemy> myEnemy;
+            std::string enemyType = e.randomEnemyType();
+            e.setPlayerLevel(myPlayer->getLevel());
+            if (enemyType == "normal") {
+                myEnemy = std::make_unique<normal>(e.getPlayerLevel()); //객체 만들어짐, 계속 while을 통해 새롭게 생성
+            //객체가 쓸모 없어지면 (unique)자동소멸자로 저절로 소멸
+            }
+            else if (enemyType == "elite") {
+                myEnemy = std::make_unique<elite>(e.getPlayerLevel());
+            }
+
+            battle b(std::move(myPlayer), std::move(myEnemy)); //unique 둘다 유니크라 포인터가 하나뿐이니 옮겨줌
+
+            b.startBattle();  // 전투 시작 및 종료까지 내부에서 처리(battle.cpp)
+            if (b.getPlay() == false) {
+                break;
+            }
+
+            // battle 끝나고, myPlayer를 다시 받기 위해 unique_ptr 복구 필요
+            myPlayer = std::move(b.getPlayerPtr());
+        }
+        else if (currentRoom.name == "boss") {
+            enemy e; // 플레이어의 레벨과 각층에따라 달라질 적을 위해 enemy.cpp에서 구분하고 그걸 끌고 오기 위함
+            std::unique_ptr<enemy> myEnemy;
             myEnemy = std::make_unique<boss>(e.getPlayerLevel());
+            battle b(std::move(myPlayer), std::move(myEnemy)); //unique 둘다 유니크라 포인터가 하나뿐이니 옮겨줌
+
+            b.startBattle();  // 전투 시작 및 종료까지 내부에서 처리(battle.cpp)
+            if (b.getPlay() == false) {
+                break;
+            }
+
+            // battle 끝나고, myPlayer를 다시 받기 위해 unique_ptr 복구 필요
+            myPlayer = std::move(b.getPlayerPtr());
         }
 
-        battle b(std::move(myPlayer), std::move(myEnemy)); //unique 둘다 유니크라 포인터가 하나뿐이니 옮겨줌
-
-        b.startBattle();  // 전투 시작 및 종료까지 내부에서 처리(battle.cpp)
-        if (b.getPlay() == false) {
-            break;
+        // 이동할 방 선택
+        if (currentRoom.connectedRoom.empty()) {
+            cout << "clear!\n";
+            break; // 마지막 보스 방
         }
-
-        // battle 끝나고, myPlayer를 다시 받기 위해 unique_ptr 복구 필요
-        myPlayer = std::move(b.getPlayerPtr());
     }
     return 0;
 }

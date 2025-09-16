@@ -11,7 +11,7 @@ enemy::enemy()
     enemyCurrentHealth(0),
     level(1),
     power(0),
-    defense(0),
+   /* defense(0),*/
     agility(0),
     critical(0),
     activeBuffTurn(0),
@@ -27,7 +27,7 @@ enemy::enemy(int playerLv) :
     enemyCurrentHealth(0),
     level(1),
     power(0),
-    defense(0),
+    /*defense(0),*/
     agility(0),
     critical(0),
     activeBuffTurn(0),
@@ -53,9 +53,9 @@ int enemy::getLevel() const{
 int enemy::getPower() const{
     return power;
 }
-int enemy::getDefense() const{
-    return defense;
-}
+//int enemy::getDefense() const{
+//    return defense;
+//}
 int enemy::getAgility() const{
     return agility;
 }
@@ -118,17 +118,17 @@ void enemy::setLevel(int enemyLv) {
 void enemy::setPower(int power) {
     this->power = power;
 }
-void enemy::setDefense(std::string enemyType, int level) {
-    if (enemyType == "normal") { //잡몹
-        defense = 3 + (level*1);
-    }
-    else if (enemyType == "elite") { //엘리트
-        defense = 5 + static_cast<int>(level * 1.5);
-    }
-    else if (enemyType == "boss") { //보스
-        defense = 10 + (level * 2);
-    }
-}
+//void enemy::setDefense(std::string enemyType, int level) {
+//    if (enemyType == "normal") { //잡몹
+//        defense = 3 + (level*1);
+//    }
+//    else if (enemyType == "elite") { //엘리트
+//        defense = 5 + static_cast<int>(level * 1.5);
+//    }
+//    else if (enemyType == "boss") { //보스
+//        defense = 10 + (level * 2);
+//    }
+//}
 void enemy::setAgility(int agi){
     agility = agi;
 }
@@ -163,13 +163,13 @@ void enemy::setExpReward(int playerLv, int enemyLv,int mapFloor ,const std::stri
     }
     else if (enemyType == "boss") {
         switch (mapFloor){
-        case 1: baseExp = 20; break;
-        case 2: baseExp = 80; break;
-        case 3: baseExp = 320; break;
-        case 4: baseExp = 640; break;
-        case 5: baseExp = 1280; break;
-        case 6: baseExp = 2560; break;
-        case 7: baseExp = 0; break;
+        case 1: baseExp = 50; break;
+        case 2: baseExp = 100; break;
+        case 3: baseExp = 200; break;
+        case 4: baseExp = 340; break;
+        case 5: baseExp = 680; break;
+        case 6: baseExp = 1360; break;
+        case 7: baseExp = 2100; break;
         default:
             break;
         }
@@ -180,11 +180,8 @@ void enemy::setExpReward(int playerLv, int enemyLv,int mapFloor ,const std::stri
 void enemy::setPlayerLevel(int playerLv){
     playerLevel = playerLv;
 }
-void enemy::pushDeBuff(std::string deBuffName, int agiDown, int criDown,
-                       int defenseDown, int attackDown, int stack,
-                       int remainingTurn, bool active) {
-    deBuffs.push_back({ deBuffName, agiDown, criDown, defenseDown, attackDown,
-                        stack, remainingTurn, active });
+void enemy::pushDeBuff(std::string deBuffName, int stack, int remainingTurn, bool active) {
+    deBuffs.push_back({ deBuffName, stack, remainingTurn, active });
 }
 void enemy::setEnemyType(std::string enemyType){
     this->enemyType = enemyType;
@@ -203,9 +200,9 @@ int enemy::enemyTakeDamage(int echp, int dmg) { //공격 받은 후 남은 체�
 }
 std::string enemy::randomEnemyType() { //적이 노말인지 엘리트인지 랜덤
     std::random_device rd; //seed create
-    std::mt19937 gen; //seed random
+    std::mt19937 gen(rd()); //seed random
     std::uniform_int_distribution<int> enemyTypelDist(0, 3);
-    return enemyTypelDist(gen) == 3 ? "elite" : "normal";
+    return enemyTypelDist(gen) == 2 ? "elite" : "normal";
 }
 RandomMinMax enemy::randomHealth(int enemyLv, std::string enemyType, int floor) {
     // 체력 랜덤
@@ -230,16 +227,16 @@ RandomMinMax enemy::randomHealth(int enemyLv, std::string enemyType, int floor) 
     }
     else if (enemyType == "elite") {
         switch (enemyLv) {
-        case 2: min = 55, max = 67; break;
-        case 3: min = 77, max = 90; break;
-        case 4: min = 88, max = 118; break;
-        case 5: min = 109, max = 137; break;
-        case 6: min = 121, max = 158; break;
-        case 7: min = 148, max = 172; break;
-        case 8: min = 166, max = 186; break;
-        case 9: min = 182, max = 215; break;
-        case 10: min = 201, max = 242; break;
-        case 11: min = 230, max = 270; break;
+        case 2: min = 37, max = 44; break;
+        case 3: min = 40, max = 47; break;
+        case 4: min = 43, max = 50; break;
+        case 5: min = 46, max = 57; break;
+        case 6: min = 50, max = 58; break;
+        case 7: min = 54, max = 62; break;
+        case 8: min = 58, max = 68; break;
+        case 9: min = 63, max = 73; break;
+        case 10: min = 68, max = 78; break;
+        case 11: min = 73, max = 83; break;
         default:
             break;
         }
@@ -282,23 +279,23 @@ RandomMinMax enemy::randomPower(int enemyLv, std::string enemyType, int floor) {
     }
     else if (enemyType == "elite") {
         switch (enemyLv) {
-        case 2: min = 9, max = 18; break;
-        case 3: min = 13, max = 21; break;
-        case 4: min = 16, max = 23; break;
-        case 5: min = 19, max = 28; break;
-        case 6: min = 23, max = 31; break;
-        case 7: min = 25, max = 33; break;
-        case 8: min = 27, max = 35; break;
-        case 9: min = 33, max = 39; break;
-        case 10: min = 35, max = 41; break;
-        case 11: min = 39, max = 45; break;
+        case 2: min = 9, max = 11; break;
+        case 3: min = 11, max = 13; break;
+        case 4: min = 14, max = 17; break;
+        case 5: min = 16, max = 20; break;
+        case 6: min = 18, max = 21; break;
+        case 7: min = 19, max = 24; break;
+        case 8: min = 21, max = 26; break;
+        case 9: min = 23, max = 28; break;
+        case 10: min = 27, max = 32; break;
+        case 11: min = 30, max = 35; break;
         default:
             break;
         }
     }
     else if (enemyType == "boss") {
         switch (floor) {
-        case 1: min = 16, max = 23; break;
+        case 1: min = 14, max = 20; break;
         case 2: break;
         case 3: break;
         case 4: break;
@@ -311,6 +308,7 @@ RandomMinMax enemy::randomPower(int enemyLv, std::string enemyType, int floor) {
     }
     return RandomMinMax{ {min},{max} };
 }
+
 
 //virtual
 void enemy::decideHealth(RandomMinMax minMax){

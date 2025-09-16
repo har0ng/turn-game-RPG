@@ -5,6 +5,7 @@
 #include <iostream>
 #include <fstream>
 #include <json.hpp>
+#include <algorithm> // std::max
 
 
 using std::cout;
@@ -217,19 +218,6 @@ int player::playerTakeDamage(int dmg) { //현재 체력 - 받은 데미지 계�
 	player_current_health = std::max(0, player_current_health - dmg); // 0이하로 떨어져서 오버플로우 안일어나게 막기
 	return player_current_health;
 }
-void player::levelup() { //레벨 업.
-	++level;
-	if (level < 10) {
-		level_exp *= 2; //필요 경험치 2배씩 증가
-	}
-	else {
-		level_exp = 0;
-		now_exp = 0;
-	}
-	player_current_health = player_health; //체력 회복
-	current_mana = mana; //마나 회복
-	debuff = debuffStatus::none;
-}
 void player::playerTakeExp(int take_exp) { //take exp	
 	now_exp += take_exp;
 	if (level < 10) {
@@ -240,9 +228,15 @@ void player::playerTakeExp(int take_exp) { //take exp
 		}
 	}
 }
+void player::restPlayer(){
+	int restHp = static_cast<int>(player_health * 0.3);
+	player_current_health = std::min(player_health, player_current_health + restHp);
+}
+
+//virtual
 void player::initSkills() {
 	roadSkillsToJson();
-	 //skillData는 skill.json임
+	//skillData는 skill.json임
 	if (skillData.empty()) { // 스킬데이터에 스킬이 없는데 무언가 넣을려하면 에러(기저 조건)
 		return;
 	}
@@ -289,14 +283,29 @@ void player::initSkills() {
 std::string player::getClassName() {//자신의 직업에 대한 클래스 함수가 무엇인지 알기 위함, player.cpp 니깐 클래스 함수는 player
 	return "player";
 }
+void player::levelup() { //레벨 업.
+	++level;
+	if (level < 10) {
+		level_exp *= 2; //필요 경험치 2배씩 증가
+	}
+	else {
+		level_exp = 0;
+		now_exp = 0;
+	}
+	player_current_health = player_health; //체력 회복
+	current_mana = mana; //마나 회복
+	debuff = debuffStatus::none;
+}
+
+//json
 void player::roadSkillsToJson() { //직업에 필요한 스킬들을 json에서 빼오기 위해 필요
 	std::ifstream file("assets/skill.json");
 	if (file.is_open()) {
 		file >> skillData; // JSON 파일 전체 읽어서 skillData에 저장
-		
+
 	}
 }
-debuffStatus player::stringToDebuff(const std::string& str){ //string → enum 변환용
+debuffStatus player::stringToDebuff(const std::string& str) { //string → enum 변환용
 	if (str == "none") { return debuffStatus::none; }
 	if (str == "agiDown") { return debuffStatus::agiDown; }
 	if (str == "criDown") { return debuffStatus::criDown; }
@@ -307,11 +316,11 @@ debuffStatus player::stringToDebuff(const std::string& str){ //string → enum �
 	if (str == "bleed") { return debuffStatus::bleed; }
 	if (str == "burn") { return debuffStatus::burn; }
 	if (str == "wet") { return debuffStatus::wet; }
-	
+
 	return debuffStatus::none; // default
 }
-std::string player::debuffToString(debuffStatus debuff){ //enum -> string 변환용
-	switch (debuff){
+std::string player::debuffToString(debuffStatus debuff) { //enum -> string 변환용
+	switch (debuff) {
 	case debuffStatus::none:
 		return "none";
 	case debuffStatus::agiDown:
@@ -336,7 +345,7 @@ std::string player::debuffToString(debuffStatus debuff){ //enum -> string 변환
 		return "none";
 	}
 }
-referenceStatus player::stringToReference(const std::string& str){
+referenceStatus player::stringToReference(const std::string& str) {
 	if (str == "none") { return referenceStatus::none; }
 	if (str == "notSpecified") { return referenceStatus::notSpecified; }
 	if (str == "attackBuff") { return referenceStatus::attackBuff; }
@@ -352,8 +361,8 @@ referenceStatus player::stringToReference(const std::string& str){
 	if (str == "dispelDebuffAndMaxHp") { return referenceStatus::dispelDebuffAndMaxHp; }
 	return referenceStatus::none;
 }
-std::string player::referenceToString(referenceStatus reference){
-	switch (reference){
+std::string player::referenceToString(referenceStatus reference) {
+	switch (reference) {
 	case referenceStatus::none:
 		return "none";
 	case referenceStatus::notSpecified:
@@ -384,6 +393,8 @@ std::string player::referenceToString(referenceStatus reference){
 		return "none";
 	}
 }
+
+//buff
 void player::updateBuffedStats() {
 	buffAttack = 0;
 	buffDefense = 0;
@@ -404,7 +415,7 @@ void player::decreaseBuffTurns(int turn) {//남은 버프 턴 계산
 	// 현재 유효 버프 반영
 	updateBuffedStats();
 }
-void player::pushBuff(std::string name, int atk, int def,int stack ,int remainTurn, bool check, bool amplity){
+void player::pushBuff(std::string name, int atk, int def, int stack, int remainTurn, bool check, bool amplity) {
 	buffs.push_back({ name,atk,def,stack,remainTurn,check,amplity }); //버프 vector 목록에 추가
 }
 void player::clearBuff() {//전투 후 사용중이던 버프 전부 삭제
@@ -412,7 +423,9 @@ void player::clearBuff() {//전투 후 사용중이던 버프 전부 삭제
 	buffAttack = 0;
 	buffDefense = 0;
 }
-void player::skillDisable(int skillSelect, int turn){
+
+//CT
+void player::skillDisable(int skillSelect, int turn) {
 	disables[skillSelect].remainTurn = turn; //CT 턴 기입
 	disables[skillSelect].enabled = false; //사용 불가능 하게
 }
