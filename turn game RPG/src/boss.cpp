@@ -6,4 +6,7 @@
 using std::cout;
 using std::cin;
 
-boss::boss(const enemy& e) :enemy(e), gen(rd()) {}
+//not random parameter!
+
+boss::boss(const enemy& e) :enemy(e), gen(rd()) {
+}

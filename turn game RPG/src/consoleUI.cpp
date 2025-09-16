@@ -245,13 +245,14 @@ void consoleUI::enemyTurn(int enemyAction, int pdefense, int eattack, int battle
     cin.get();
 }
 
-void consoleUI::battleEnd(int cphp) {
+void consoleUI::battleEnd(int cphp, int exp) {
 	cout << "========== Battle End =============" << endl;
 	if (cphp <= 0) { // user hp == 0
-		cout << "lose player" << endl;
+        cout << "バトルで負け倒れました..." << endl;
 	}
     else { //enemy hp == 0
-        cout << "wins player!" << endl;
+        cout << "バトルで勝ちました！" << endl;
+        cout << exp << "経験値を獲得した！" << endl;
         cout << endl;
         cout << endl;
         cout << "Press Enter to continue..." << endl; //사용자 임의대로 화면 넘기기

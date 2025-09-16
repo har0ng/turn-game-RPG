@@ -25,7 +25,7 @@ enemy::enemy()
 enemy::enemy(int playerLv) :
     enemy_health(0),
     enemyCurrentHealth(0),
-    level(0),
+    level(1),
     power(0),
     defense(0),
     agility(0),
@@ -34,12 +34,11 @@ enemy::enemy(int playerLv) :
     buffAttack(0),
     buffDefense(0),
     expReward(0),
-    playerLevel(0),
+    playerLevel(1),
     enemyType("")
 {
     setPlayerLevel(playerLv);
 }
-
 
 //get
 int enemy::getEnemy_health() const { // private에 숨긴 값 get set으로 들고오기

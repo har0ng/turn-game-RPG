@@ -38,7 +38,7 @@ public:
     void skillCoolTimeRetry(); // 스킬 쿨타임이니 다시
     void skillContractCostRetry();
     void enemyTurn(int enemyAction, int pdefense, int eattack, int battleselect);
-    void battleEnd(int cphp);
+    void battleEnd(int cphp, int exp);
     void selectClassUI();
     void selectClass(int level, int selectClass);
     void levelup_playerStatus(int php, int cphp, int pattack, int pdefense

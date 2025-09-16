@@ -3,14 +3,9 @@
 #include "battle.h"
 #include <iostream>
 
-
-
 using std::cout;
 using std::endl;
 using std::cin;
-
-
-
 
 int main() {
     cout << "(1)start  " << "(2)end" << endl; // menu

@@ -14,6 +14,7 @@ normal::normal(const enemy& e) :enemy(e), gen(rd()) {
     //현재 체력 설정 전에 전체 체력 설정을 먼저
     setEnemyCurrentHealth(getEnemy_health());
     decidePower(randomPower(getLevel(), getEnemyType(), 1));
+    setExpReward(getPlayerLevel(), getLevel(), 1, getEnemyType()); //demo라 1층
 }
 
 //override
