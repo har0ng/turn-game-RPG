@@ -5,11 +5,22 @@
 #include "consoleUI.h"
 #include <iostream>
 
+#include <SFML/Graphics.hpp>
+
 using std::cout;
 using std::endl;
 using std::cin;
 
 int main() {
+    sf::RenderWindow window(sf::VideoMode(800, 600), "SFML Window");
+
+    sf::Font font;
+    if (!font.loadFromFile("assets/fonts/smartfont.otf")) {
+       cout << "failed!" << endl;
+        return -1;
+    }
+
+
     cout << "(1)start  " << "(2)end" << endl; // menu
     int start = 0;
     do {
