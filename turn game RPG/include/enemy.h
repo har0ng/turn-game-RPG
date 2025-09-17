@@ -119,6 +119,10 @@ private:
 	std::random_device rd; //seed create
 	std::mt19937 gen; //seed random
 public:
-	boss();
 	boss(const enemy& e);
+	// override
+	void decideHealth(RandomMinMax minMax) override;
+	void decidePower(RandomMinMax minMax) override;
+	void decideLevel(int playerLv) override;
+	int enemyAction() override;
 };

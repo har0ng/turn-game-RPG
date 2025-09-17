@@ -630,9 +630,6 @@ int battle::activeSkill(int skillSelect, std::vector<skill> const& skill, attack
 	}
 	if ((int)skill[skillSelect].referenceStatus == (int)referenceStatus::totalDamageAndAttack) {
 		skillCost(skill[skillSelect].contractCost, skill[skillSelect].mpCost);
-		p->pushBuff(skill[skillSelect].name, static_cast<int>(skill[skillSelect].playerMultiplier * pattack),
-			0, 0, this->turn + skill[skillSelect].activeTime, true, false);// 1회용 공격력 증가
-		p->updateBuffedStats();
 		return attackEnemy(res.criticalYN,
 			static_cast<int>(res.criattack) * skill[skillSelect].TDMultiplier,
 			static_cast<int>(res.attack) * skill[skillSelect].TDMultiplier);

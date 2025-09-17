@@ -2,6 +2,7 @@
 
 #include "battle.h"
 #include "map.h"
+#include "consoleUI.h"
 #include <iostream>
 
 using std::cout;
@@ -35,18 +36,19 @@ int main() {
         myPlayer = std::move(tempBattle.getPlayerPtr()); // 선택 후 myPlayer 복구
     }
 
-    int startRoomId = 1; //시작
+    size_t startRoomId = 1; //시작
+    consoleUI ui;
     while (true) {
         room& currentRoom = gameMap[startRoomId - 1]; //시작의 방
 
         // 연결된 방 출력
         if (!currentRoom.connectedRoom.empty()) {
             for (size_t i = 0; i < currentRoom.connectedRoom.size(); i++) {
-                int nextId = currentRoom.connectedRoom[i];
-                cout << i + 1 << ": room ID " << nextId << " / roomType: " << gameMap[nextId - 1].name << "\n";
+                size_t nextId = currentRoom.connectedRoom[i];
+                ui.connectMap(i + 1, gameMap[nextId - 1]);
             }
 
-            int choice = 0;
+            size_t choice = 0;
             do {
                 cout << "next room Select: ";
                 cin >> choice;
@@ -65,7 +67,7 @@ int main() {
 
         if (currentRoom.name == "rest") {
             myPlayer->restPlayer();
-            cout << "HPを回復しました。" << endl;
+            ui.restMap();
         }
         else if (currentRoom.name == "enemy") {
             enemy e; // 플레이어의 레벨과 각층에따라 달라질 적을 위해 enemy.cpp에서 구분하고 그걸 끌고 오기 위함

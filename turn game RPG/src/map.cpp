@@ -23,32 +23,51 @@ std::string assortRoom(){
     return roomDist(gen) == 0 ? "rest" : "enemy";
 }
 
-std::vector<int> connect(int roomInFloor) {
-    std::uniform_int_distribution<int> connectDistA(roomInFloor + (roomInFloor - 1), roomInFloor+1);
-    std::uniform_int_distribution<int> connectDistB(roomInFloor + (roomInFloor - 1), roomInFloor + 1);
-    return{ connectDistA(gen),connectDistB(gen) };
-}
-
-std::vector<room> upperPartCreateMap() { //room 구조체를 데이터타입으로 삼은 가변배열을 리턴하는 함수
+std::vector<room> upperPartCreateMap() {
     std::vector<room> map;
-    int idCnt = 1; //방 고유 id 카운팅
+    size_t idCnt = 1; // 고유 아이디
 
-    std::vector<int> prevFloorRooms; // 이전 층의 방 ID 저장
-    int roomsInFloor = 6; //1층이라 6
+    int roomsInFloor = 6;              // 1층 세부 층 개수(시작 층 포함)
+    std::vector<int> prevFloorRooms;   // 이전 세부 층 방들 ID 저장
+
+    {
+        map.push_back({ idCnt, "start", {}, "始まりの地点"});
+        prevFloorRooms.push_back(idCnt);
+        idCnt++;
+    }
 
     while (true) {
+        std::vector<int> currentFloorRooms; //현재 세부 층의 방 ID 저장하기 위함
+
+        // 현재 세부 층의 방 생성
         for (int i = 0; i < roomsInFloor; i++) {
             std::string roomType = (roomsInFloor == 1) ? "boss" : assortRoom();
+            if(roomType == "boss"){ map.push_back({ idCnt, roomType, {},"1stage boss"}); }
+            else if (roomType == "enemy") { map.push_back({ idCnt, roomType, {}, "elite / normal"}); }
+            else if (roomType == "rest") { map.push_back({ idCnt, roomType, {}, "HPの30%を回復します。"}); }
+            currentFloorRooms.push_back(idCnt);
+            idCnt++;
+        }
 
-            if (roomsInFloor != 1) {
-                map.push_back({ idCnt, roomType, connect(roomsInFloor) });
-            }
-            else {
-                map.push_back({ idCnt, roomType, {} });
+        // 이전 층과 연결
+        if (!prevFloorRooms.empty()) { //이전 세부 층 방의 정보가 있다면
+            for (size_t prevRoom : prevFloorRooms) { //이전 층 각방마다 다음 층 각방과 연결
+                // 각 이전 층 방에서 아래층 방으로 랜덤 연결 2~4개
+                std::uniform_int_distribution<int> numConnDist(2, 4);
+                int numConnections = std::min(numConnDist(gen), (int)currentFloorRooms.size()); //몇개의 방과 연결 됐는지
+
+                std::shuffle(currentFloorRooms.begin(), currentFloorRooms.end(), gen); // 섞어서 랜덤 선택
+                for (int j = 0; j < numConnections; j++) {
+                    map[prevRoom - 1].connectedRoom.push_back(currentFloorRooms[j]);
+                }
             }
         }
-        if (roomsInFloor == 1) { break; } // 마지막 보스층
-        roomsInFloor = std::max(1, roomsInFloor - 1); // 세부층에 따른 방 줄이기
+
+        if (roomsInFloor == 1) break; // 마지막 보스층
+
+        prevFloorRooms = currentFloorRooms;
+        roomsInFloor = std::max(1, roomsInFloor - 1); // 층마다 방 수 감소
     }
+
     return map;
 }

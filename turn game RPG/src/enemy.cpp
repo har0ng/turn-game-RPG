@@ -3,9 +3,6 @@
 #include "enemy.h"
 #include <iostream>
 
-using std::cout;
-using std::endl;
-
 enemy::enemy()
     : enemy_health(0),
     enemyCurrentHealth(0),
@@ -139,7 +136,7 @@ void enemy::setExpReward(int playerLv, int enemyLv,int mapFloor ,const std::stri
     //player total exp (maxLv.10)
     //1lv.20 , 2Lv.40, 3Lv.80, 4Lv.160, 5Lv.320, 6Lv.640, 7Lv.1280, 8Lv.2560, 9Lv.5120
     // 기본 계산식
-    int baseExp = 10 + (enemyLv - playerLv) * 2;
+    int baseExp = 11 + (enemyLv - playerLv) * 2;
     if (baseExp < 1) baseExp = 1; // 최소 1 보장
     
     float mapFloorBonus = 1.0f;
@@ -243,7 +240,7 @@ RandomMinMax enemy::randomHealth(int enemyLv, std::string enemyType, int floor) 
     }
     else if (enemyType == "boss") {
         switch (floor) {
-        case 1: min = 110, max = 110; break;
+        case 1: min = 60, max = 60; break;
         case 2: break;
         case 3: break;
         case 4: break;
@@ -279,7 +276,7 @@ RandomMinMax enemy::randomPower(int enemyLv, std::string enemyType, int floor) {
     }
     else if (enemyType == "elite") {
         switch (enemyLv) {
-        case 2: min = 9, max = 11; break;
+        case 2: min = 7, max = 9; break;
         case 3: min = 11, max = 13; break;
         case 4: min = 14, max = 17; break;
         case 5: min = 16, max = 20; break;
@@ -295,7 +292,7 @@ RandomMinMax enemy::randomPower(int enemyLv, std::string enemyType, int floor) {
     }
     else if (enemyType == "boss") {
         switch (floor) {
-        case 1: min = 14, max = 20; break;
+        case 1: min = 11, max = 15; break;
         case 2: break;
         case 3: break;
         case 4: break;

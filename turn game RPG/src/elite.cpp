@@ -3,9 +3,6 @@
 #include "enemy.h"
 #include <iostream>
 
-using std::cout;
-using std::cin;
-
 elite::elite(const enemy& e) :enemy(e), gen(rd()) {
     // 순서: 에너미타입 정하기(main에서)->레벨정하기->스텟 만들어주기
     decideLevel(e.getPlayerLevel());

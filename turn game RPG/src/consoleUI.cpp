@@ -478,4 +478,17 @@ void consoleUI::acitveYou(int finalAttack){
     cout << "enemy takes " << finalAttack << " damage." << endl;
 }
 
+void consoleUI::connectMap(int optionNumber, const room& nextRoom) {
+    std::cout << optionNumber << ": room ID " << nextRoom.id
+        << " / roomType: " << nextRoom.name
+        << " / 説明: " << nextRoom.describe << "\n";
+    cout << endl;
+    cout << endl;
+}
 
+void consoleUI::restMap(){
+    cout << "HPを回復しました。" << endl;
+    cout << "Press Enter to continue..." << endl; //사용자 임의대로 화면 넘기기
+    cin.ignore();//ignore과 get으로 enter을 쳤을 때 넘어갈 수 있게 조절.
+    cin.get();
+}

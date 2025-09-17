@@ -4,7 +4,7 @@
 #pragma once
 #include "enemy.h"
 #include "player.h"
-
+#include "map.h"
 
 /*ConsoleUI의 각 함수에 인자를 넘기는 이유
 * 
@@ -63,4 +63,8 @@ public:
     void activeIm();
     void activeSlash();
     void acitveYou(int finalAttack);
+
+    //main
+    void connectMap(int optionNumber, const room& nextRoom); //연결 되는 맵 설명
+    void restMap();
 };  
