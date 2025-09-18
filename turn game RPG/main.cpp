@@ -3,8 +3,10 @@
 #include "battle.h"
 #include "map.h"
 #include "consoleUI.h"
-#include <iostream>
+#include "sfmlUI.h"
+#include "sfmlLog.h"
 
+#include <iostream>
 #include <SFML/Graphics.hpp>
 
 using std::cout;
@@ -12,13 +14,65 @@ using std::endl;
 using std::cin;
 
 int main() {
-    sf::RenderWindow window(sf::VideoMode(800, 600), "SFML Window");
+    sf::RenderWindow window(sf::VideoMode(1440, 1080), "SFML Window"); //창
+    sfmlLog log(window); //매개변수가 있는 생성자
+    sf::Font font;//폰트
+    sf::Texture texture; //이미지
 
-    sf::Font font;
-    if (!font.loadFromFile("assets/fonts/smartfont.otf")) {
-       cout << "failed!" << endl;
-        return -1;
+    try {
+        if (!font.loadFromFile("assets/fonts/smartfont.otf")) {
+            throw std::runtime_error("Font load failed"); //예외처리
+        }
     }
+    catch (const std::runtime_error& err) {
+        cout << "フォントエーラー" << err.what() << endl;
+    }
+
+
+    button startBtn("start", 50.0f, 780.0f, font);
+    button endBtn("end", 50.0f, 850.0f, font);
+    sf::Event event;
+
+    bool gameStart = false;
+
+    while (window.isOpen()) { // 창이 열려 있는 동안 반복 , 이벤트니깐 거의 UI
+        while (window.pollEvent(event)) {//이벤트가 있다면 계속 반복
+            if (event.type == sf::Event::Closed) { //만약 event 타입으로써 닫기 event가 일어나면
+                window.close();//창이 닫힌다
+            }
+            if (event.type == sf::Event::MouseButtonPressed) {
+                sf::Vector2i mousePos = sf::Mouse::getPosition(window); //window 안넣으면 모니터 해상도 기준임
+                if (startBtn.isClicked(mousePos) && sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+                    gameStart = true;
+                }
+                if (endBtn.isClicked(mousePos) && sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+                    window.close(); // 종료
+                }
+            }
+        }
+        window.clear(sf::Color::Black); // 화면 지우기 , 안하면 새하얀 화면 (시작이라 보면 편함)
+        //draw 내용
+        if (!gameStart) {
+            try {
+                if (!texture.loadFromFile("assets/images/1.png")) {
+                    throw std::runtime_error("Font load failed"); //예외처리
+                }
+            }
+            catch (const std::runtime_error& err) {
+                cout << "イメージエーラー" << err.what() << endl;
+            }
+            log.title("Title", 600, 220);
+            log.draw();
+            log.clear();
+            startBtn.draw(window);
+            endBtn.draw(window);
+        }
+        else { //gameStart
+
+        }
+        window.display(); // 화면 업데이트
+    }
+    return 0; // 임시
 
 
     cout << "(1)start  " << "(2)end" << endl; // menu

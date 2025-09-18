@@ -27,6 +27,8 @@
     <ClCompile Include="src\map.cpp" />
     <ClCompile Include="src\normal.cpp" />
     <ClCompile Include="src\boss.cpp" />
+    <ClCompile Include="src\sfmlLog.cpp" />
+    <ClCompile Include="src\sfmlUI.cpp" />
     <ClCompile Include="src\yesod.cpp" />
     <ClCompile Include="src\battle.cpp" />
     <ClCompile Include="src\consoleUI.cpp" />
@@ -49,6 +51,8 @@
     <ClInclude Include="include\enemySkillDisable.h" />
     <ClInclude Include="include\map.h" />
     <ClInclude Include="include\player.h" />
+    <ClInclude Include="include\sfmlLog.h" />
+    <ClInclude Include="include\sfmlUI.h" />
     <ClInclude Include="include\skillDisable.h" />
     <ClInclude Include="include\skillEnum.h" />
     <ClInclude Include="include\skillReferenceStatus.h" />
