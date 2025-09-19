@@ -9,6 +9,7 @@
 class scene {
 protected:
 	bool finished = false;
+	bool back = false;
 public:
 	virtual ~scene() = default;
 	//입력(키보드/마우스/창 이벤트)을 처리.
@@ -30,6 +31,9 @@ public:
 
 	//씬이 끝났는지 여부
 	virtual bool isFinished() { return finished; }
+
+	//뒤로 돌아가기
+	virtual bool isBack() { return back; }
 };
 
 class menuScene : public scene {
@@ -37,9 +41,9 @@ private:
 	sf::RenderWindow& window; // 빈 도화지 받아오기
 	sf::Texture texture; //이미지
 	sf::Sprite sprite;   // 이미지를 표시할 스프라이트
-	sfmlLog log; // 빈 도화지가 없으면 로그를 못 뽑아냄
-	button startBtn; //버튼 이라는 부품 들고옴
-	button endBtn; //이하동문
+	sfmlLog log; // 빈 도화지가 없으면 로그를 못 뽑아냄(타이틀)
+	menuButton startBtn; //버튼 이라는 부품 들고옴
+	menuButton endBtn; //이하동문
 
 public:
 	menuScene(sf::RenderWindow& win, sf::Font& font); //빈 도화지와 폰트를 받아와야함
@@ -47,10 +51,45 @@ public:
 	void render(sf::RenderWindow& window) override; //화면 사용자에게 보이게 하기
 };
 
-class battleScene : public scene {
+class classSelectScene : public scene {
+private:
+	sf::RenderWindow& window; // 빈 도화지 받아오기
+	sf::Texture texture; //이미지
+	sf::Sprite sprite;   // 이미지를 표시할 스프라이트
+	sfmlLog log; // 직업 설명
+	classSelectButton selectClassBtn; // 직업 버튼
+	backButton backBtn; // 뒤로가기 버튼
+
+public:
+	classSelectScene(sf::RenderWindow& win, sf::Font& font);//빈 도화지와 폰트
+	void update(sf::RenderWindow& window) override; //메뉴 화면으로 상태갱신
+	void render(sf::RenderWindow& window) override; //화면 사용자에게 보이게 하기
 
 };
 
 class mapScene : public scene {
+private:
+	sf::RenderWindow& window; // 빈 도화지 받아오기
+	sf::Texture texture; //이미지
+	sf::Sprite sprite;   // 이미지를 표시할 스프라이트
+	//mapButton selectFloorBtn; //세부 층 버튼
+
+
+public:
+};
+
+class battleScene : public scene {
+private:
+	sf::RenderWindow& window; // 빈 도화지 받아오기
+	sf::Texture texture; //이미지
+	sf::Sprite sprite;   // 이미지를 표시할 스프라이트
+	sfmlLog log; // 빈 도화지가 없으면 로그를 못 뽑아냄
+	//battleButton attackBtn; //버튼 이라는 부품 들고옴
+	//battleButton defenseBtn; //이하동문
+	//battleButton skillBtn;
+	// 이하 세부 스킬 버튼 만들어야함
+
+public:
 
 };
+

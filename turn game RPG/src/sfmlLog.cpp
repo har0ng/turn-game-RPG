@@ -1,7 +1,7 @@
 ﻿//sfmlLog.cpp
 
 #include "sfmlLog.h"
-
+#include "scene.h"
 #include <iostream>
 
 using std::cin;
@@ -21,12 +21,42 @@ sfmlLog::sfmlLog(sf::RenderWindow& win, float x, float y, unsigned int Size)
 	}
 }
 
-void sfmlLog::title(const std::string& title, float x, float y) {
-	sf::Text text(title, font, 100); //로그, 폰트, 사이즈
-	text.setFillColor(sf::Color::White); //글자 컬러
+sf::Text sfmlLog::title(const std::string& title, sf::Sprite sprite) {
+	// 중앙 정렬된 텍스트
+	sf::Text text;
+	text.setFont(font);
+	text.setString(title);
+	text.setCharacterSize(100);
+	text.setFillColor(sf::Color::White);
 
-	text.setPosition(x, y);
-	window.draw(text);
+	// 배경(sprite)을 기준으로 중앙 정렬
+	sf::FloatRect bgBounds = sprite.getGlobalBounds();
+	sf::FloatRect txtBounds = text.getLocalBounds();
+
+	text.setPosition(
+		bgBounds.left + (bgBounds.width - txtBounds.width) / 2.f,
+		bgBounds.top + 250.f - txtBounds.top  // 원하는 y 위치 조절
+	);
+	return text;
+}
+
+sf::Text sfmlLog::tiferetDescription(const std::string& description, sf::FloatRect BtnGlobalBounds){
+	// 중앙 정렬된 텍스트
+	sf::Text text;
+	text.setFont(font);
+	text.setString(description);
+	text.setCharacterSize(26);
+	text.setFillColor(sf::Color::White);
+
+	// 배경(sprite)을 기준으로 중앙 정렬
+	sf::FloatRect btnBounds = BtnGlobalBounds;
+	sf::FloatRect txtBounds = text.getLocalBounds();
+
+	text.setPosition(
+		btnBounds.left + (btnBounds.width - txtBounds.width) / 2.f,
+		btnBounds.top + 200.f - txtBounds.top  // 원하는 y 위치 조절
+	);
+	return text;
 }
 
 void sfmlLog::addlog(const std::string& log, sf::Color color) {

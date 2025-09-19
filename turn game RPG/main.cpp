@@ -31,9 +31,26 @@ int main() {
         currentScene->render(window);   // 화면 렌더링 (부품들을 불러옴)
         window.display(); // 화면 업데이트
 
+        // 씬 전환 처리
         if (currentScene->isFinished()) {
-            //게임 시작
-            break;
+            // 메뉴 씬이 끝나면 직업 선택 씬으로
+            if (dynamic_cast<menuScene*>(currentScene.get())) { //부모클래스의 객체를 통해 .get()함수를 이용해 실체 객체가 뭔지 확인, dynamic_cast는 이게 옳바른지 확인(true,false)
+                currentScene = std::make_unique<classSelectScene>(window, font);
+            }
+            //// 직업 선택 씬 끝나면 게임 맵 씬으로
+            //else if (dynamic_cast<classSelectScene*>(currentScene.get())) {
+            //    currentScene = std::make_unique<mapScene>(window, font);
+            //}
+            //// 맵 씬 끝나면 배틀 씬으로
+            //else if (dynamic_cast<mapScene*>(currentScene.get())) {
+            //    currentScene = std::make_unique<battleScene>(window, font);
+            //}
+        }
+        if (currentScene->isBack()) {
+            //직업 씬에서 메뉴 씬으로
+            if (dynamic_cast<classSelectScene*>(currentScene.get())) { //부모클래스의 객체를 통해 .get()함수를 이용해 실체 객체가 뭔지 확인, dynamic_cast는 이게 옳바른지 확인(true,false)
+                currentScene = std::make_unique<menuScene>(window, font);
+            }
         }
     }
     return 0; // 임시
