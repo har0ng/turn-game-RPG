@@ -5,6 +5,7 @@
 #include "consoleUI.h"
 #include "sfmlUI.h"
 #include "sfmlLog.h"
+#include "scene.h"
 
 #include <iostream>
 #include <SFML/Graphics.hpp>
@@ -14,63 +15,26 @@ using std::endl;
 using std::cin;
 
 int main() {
-    sf::RenderWindow window(sf::VideoMode(1440, 1080), "SFML Window"); //창
+    sf::RenderWindow window(sf::VideoMode(1820, 960), "test"); //창
     sfmlLog log(window); //매개변수가 있는 생성자
     sf::Font font;//폰트
-    sf::Texture texture; //이미지
-
-    try {
-        if (!font.loadFromFile("assets/fonts/smartfont.otf")) {
-            throw std::runtime_error("Font load failed"); //예외처리
-        }
+  
+    if (!font.loadFromFile("assets/fonts/smartfont.otf")) {
+        throw std::runtime_error("Font load failed");
     }
-    catch (const std::runtime_error& err) {
-        cout << "フォントエーラー" << err.what() << endl;
-    }
+    //업캐스팅 , 부모 포인터에서 재정의된 함수를 통해 재정의 한 자식 클래스에게 하청을 내려 수행 시키고 부모가 결과 값을 받는 형식
+    std::unique_ptr<scene> currentScene = std::make_unique<menuScene>(window, font);
 
-
-    button startBtn("start", 50.0f, 780.0f, font);
-    button endBtn("end", 50.0f, 850.0f, font);
-    sf::Event event;
-
-    bool gameStart = false;
-
-    while (window.isOpen()) { // 창이 열려 있는 동안 반복 , 이벤트니깐 거의 UI
-        while (window.pollEvent(event)) {//이벤트가 있다면 계속 반복
-            if (event.type == sf::Event::Closed) { //만약 event 타입으로써 닫기 event가 일어나면
-                window.close();//창이 닫힌다
-            }
-            if (event.type == sf::Event::MouseButtonPressed) {
-                sf::Vector2i mousePos = sf::Mouse::getPosition(window); //window 안넣으면 모니터 해상도 기준임
-                if (startBtn.isClicked(mousePos) && sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-                    gameStart = true;
-                }
-                if (endBtn.isClicked(mousePos) && sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-                    window.close(); // 종료
-                }
-            }
-        }
+    while (window.isOpen()) {// 창이 열려 있는 동안 반복 , 이벤트니깐 거의 UI
         window.clear(sf::Color::Black); // 화면 지우기 , 안하면 새하얀 화면 (시작이라 보면 편함)
-        //draw 내용
-        if (!gameStart) {
-            try {
-                if (!texture.loadFromFile("assets/images/1.png")) {
-                    throw std::runtime_error("Font load failed"); //예외처리
-                }
-            }
-            catch (const std::runtime_error& err) {
-                cout << "イメージエーラー" << err.what() << endl;
-            }
-            log.title("Title", 600, 220);
-            log.draw();
-            log.clear();
-            startBtn.draw(window);
-            endBtn.draw(window);
-        }
-        else { //gameStart
-
-        }
+        currentScene->update(window); // 입력 처리, 상태 업데이트 (이벤트를 만들어내야 렌더링이 가능)
+        currentScene->render(window);   // 화면 렌더링 (부품들을 불러옴)
         window.display(); // 화면 업데이트
+
+        if (currentScene->isFinished()) {
+            //게임 시작
+            break;
+        }
     }
     return 0; // 임시
 

@@ -12,7 +12,7 @@ private:
 	std::vector <sf::Text> logLines; //로그 담는 배열
 	float startX; // 로그 창 위치
 	float startY; //로그 창 위치
-	unsigned int charSize;
+	unsigned int charSize; //글자 크기
 public:
 	sfmlLog(sf::RenderWindow& win, float x = 10, float y = 10, unsigned int charSize = 40);
 	void title(const std::string& title, float x, float y);
