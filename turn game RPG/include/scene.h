@@ -57,7 +57,8 @@ private:
 	sf::Texture texture; //이미지
 	sf::Sprite sprite;   // 이미지를 표시할 스프라이트
 	sfmlLog log; // 직업 설명
-	classSelectButton selectClassBtn; // 직업 버튼
+	classSelectButton tiferetBtn; // 티페리트 버튼
+	classSelectButton malkuthBtn; // 말쿠트(아도나이) 버튼
 	backButton backBtn; // 뒤로가기 버튼
 
 public:

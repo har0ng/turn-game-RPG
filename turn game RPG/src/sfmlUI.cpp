@@ -20,7 +20,11 @@ menuButton::menuButton(const std::string& label, float x, float y, sf::Font& fon
 {
 	text.setString(label); // 글자
 	text.setFont(font); // 글자 폰트
-	text.setCharacterSize(60); // 글자크기
+	text.setCharacterSize(70); // 글자크기
+	sf::Color color(64, 64, 64);
+	text.setOutlineThickness(2.f);
+	text.setOutlineColor(color);
+	
 	// 버튼 크기는 텍스트 크기 + 여백
 	sf::FloatRect bounds = text.getLocalBounds();//멤버 변수 text의 경계 혹은 테두리 저장 
 	background.setSize(sf::Vector2f(bounds.width + 80, bounds.height + 20));//버튼 배경 사이즈를 text에 맞춰 조절
@@ -33,9 +37,8 @@ menuButton::menuButton(const std::string& label, float x, float y, sf::Font& fon
 void menuButton::draw(sf::RenderWindow& win){ //화면에 그리기
 	sf::Color black(0, 0, 0, 0);
 	background.setFillColor(black); //내부 색
-	background.setOutlineColor(sf::Color::White); //테두리 색
-	background.setOutlineThickness(2.f); //테두리 두께
-
+	//background.setOutlineColor(sf::Color::White); //테두리 색
+	//background.setOutlineThickness(2.f); //테두리 두께
 	win.draw(background); //버튼 배경 그리기, 무조건 순서 생각해서 draw하기
 	win.draw(text); //텍스트 그리기
 }
@@ -55,11 +58,11 @@ classSelectButton::classSelectButton(const std::string& label, float x, float y,
 	text.setString(label); //직업 이름
 	text.setFont(font); // 폰트
 	text.setCharacterSize(50); //글자 크기
-	sf::Color tiferet(0, 153, 153); //tiferet 글자 색
-	text.setFillColor(tiferet); //글자 색
+	sf::Color charactorClass(0, 153, 153); //직업 글자 색
+	text.setFillColor(charactorClass); //글자 색
 	//버튼 크기
 	sf::FloatRect bounds = text.getLocalBounds();//멤버 변수 text의 경계 혹은 테두리 저장 
-	background.setSize(sf::Vector2f(bounds.width + 250, bounds.height + 600));//버튼 배경 사이즈를 text에 맞춰 조절
+	background.setSize(sf::Vector2f(400, bounds.height + 600));//버튼 배경 사이즈를 text에 맞춰 조절
 	//위치 설정
 	background.setPosition(x, y); // 버튼 배경 위치를 먼저 조절, 배경 먼저 해야 글자가 아래로 안감
 	text.setPosition(x + (background.getSize().x - text.getLocalBounds().width) / 2.f,
