@@ -14,6 +14,23 @@ using std::endl;
 sf::FloatRect button::getBackgroundGlobalBounds() const{
 	return background.getGlobalBounds();
 }
+void button::startFade() { //장면 전환 시작
+	fading = true;
+	clock.restart();// 0초로 초기화 하고 다시 경과 시간 반환
+}
+void button::updateFade() { //프레임 매초 갱신
+	if (fading == false) {
+		return;
+	}
+	float elapsed = clock.getElapsedTime().asSeconds();
+	alpha = 255 - (elapsed / 3.0f) * 255; // 3초에 걸쳐 감소
+	if (alpha < 0) {
+		alpha = 0;
+		fading = false; // 완료되면 멈춤
+	}
+	text.setFillColor(sf::Color(255, 255, 255, (sf::Uint8)alpha));
+}
+
 
 //menuButton
 menuButton::menuButton(const std::string& label, float x, float y, sf::Font& font)
@@ -106,7 +123,7 @@ void backButton::draw(sf::RenderWindow& win) {
 	sf::Color outline(51, 0, 0, 155);
 	background.setFillColor(color); //내부 색
 	background.setOutlineColor(outline); //테두리 색
-	background.setOutlineThickness(1.0f); //테두리 두께
+	background.setOutlineThickness(2.0f); //테두리 두께
 
 	win.draw(background); //버튼 배경 그리기, 무조건 순서 생각해서 draw하기
 	win.draw(text); //텍스트 그리기
@@ -120,4 +137,15 @@ bool backButton::isClicked(sf::Vector2i mousePos) {
 	return false;
 }
 
+//assortMapSelectButton(미완성)
+assortMapSelectButton::assortMapSelectButton(sf::Texture texture, float x, float y) {
+	//texture.loadFromFile();
+	sf::Sprite sprite;
+	sprite.setTexture(texture);
+}
+void assortMapSelectButton::draw(sf::RenderWindow& win){
 
+}
+bool assortMapSelectButton::isClicked(sf::Vector2i mousePos){
+	return false;
+}

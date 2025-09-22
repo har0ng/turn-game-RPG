@@ -5,8 +5,9 @@
 //menuScene
 menuScene::menuScene(sf::RenderWindow& win, sf::Font& font) :
 	window(win), log(win)
-	,startBtn("start", 70.0f, 700.0f, font) //스타트와 엔드 버튼 화면상 위치
+    ,startBtn("start", 70.0f, 700.0f, font) //스타트와 엔드 버튼 화면상 위치
 	,endBtn("end", 70.0f, 800.0f, font) 
+
 {
     if (!texture.loadFromFile("assets/images/1.png")) { //이니셜라이저로 초기화 불가능이라 여기서 넣어 초기화
         throw std::runtime_error("image load failed");
@@ -22,12 +23,19 @@ void menuScene::update(sf::RenderWindow& window) {
         if (event.type == sf::Event::MouseButtonPressed) {
             sf::Vector2i mousePos = sf::Mouse::getPosition(window); //window 안넣으면 모니터 해상도 기준임
             if (startBtn.isClicked(mousePos) && sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-                finished = true; //start 버튼 누를시 시작하게끔
+                startBtn.startFade();
             }
             if (endBtn.isClicked(mousePos) && sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
                 window.close(); // end 버튼 누를 시 종료
             }
         }
+    }
+    // 매 프레임 업데이트
+    startBtn.updateFade();
+
+    // 페이드가 끝났으면 씬 전환
+    if (UI.fading == false) { //고쳐야함
+        finished = true; //start 버튼 누를시 시작하게끔
     }
 }
 void menuScene::render(sf::RenderWindow& window) { //draw
@@ -95,7 +103,20 @@ void classSelectScene::render(sf::RenderWindow& window){
 
 
 //mapScene
-
+mapScene::mapScene(sf::RenderWindow& win, sf::Font& font)
+    :window(win), log(win)
+{
+    if (!texture.loadFromFile("assets/images/map2.png")) { // 맵 이미지 임의. 떠오른게 없어서.
+        throw std::runtime_error("image load failed");
+    }
+    sprite.setTexture(texture);
+}
+void mapScene::update(sf::RenderWindow& window){
+    return;
+}
+void mapScene::render(sf::RenderWindow& window){
+    window.draw(sprite); //배경
+}
 
 //battleScene
 

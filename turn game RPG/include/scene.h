@@ -3,6 +3,7 @@
 
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include <vector>
 #include "sfmlLog.h"
 #include "sfmlUI.h"
 
@@ -36,7 +37,7 @@ public:
 	virtual bool isBack() { return back; }
 };
 
-class menuScene : public scene {
+class menuScene : public scene { //초기 화면
 private:
 	sf::RenderWindow& window; // 빈 도화지 받아오기
 	sf::Texture texture; //이미지
@@ -51,7 +52,7 @@ public:
 	void render(sf::RenderWindow& window) override; //화면 사용자에게 보이게 하기
 };
 
-class classSelectScene : public scene {
+class classSelectScene : public scene {// 직업 선택
 private:
 	sf::RenderWindow& window; // 빈 도화지 받아오기
 	sf::Texture texture; //이미지
@@ -68,15 +69,21 @@ public:
 
 };
 
-class mapScene : public scene {
+class mapScene : public scene { //전체 맵 보여주기
 private:
 	sf::RenderWindow& window; // 빈 도화지 받아오기
 	sf::Texture texture; //이미지
 	sf::Sprite sprite;   // 이미지를 표시할 스프라이트
-	//mapButton selectFloorBtn; //세부 층 버튼
-
-
+	sfmlLog log; // 오른쪽 설명
+	
 public:
+	mapScene(sf::RenderWindow& win, sf::Font& font);
+	void update(sf::RenderWindow& window) override; //메뉴 화면으로 상태갱신
+	void render(sf::RenderWindow& window) override; //화면 사용자에게 보이게 하기
+};
+
+class floorScene : public scene {
+	//std::vector<assortMapSelectButton> assortBtn; // 세부 층 버튼
 };
 
 class battleScene : public scene {

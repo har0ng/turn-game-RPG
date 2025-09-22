@@ -38,12 +38,12 @@ int main() {
         if (currentScene->isFinished()) {
             // 메뉴 씬이 끝나면 직업 선택 씬으로
             if (dynamic_cast<menuScene*>(currentScene.get())) { //부모클래스의 객체를 통해 .get()함수를 이용해 실체 객체가 뭔지 확인, dynamic_cast는 이게 옳바른지 확인(true,false)
-                currentScene = std::make_unique<classSelectScene>(window, normalFont);
+                currentScene = std::make_unique<classSelectScene>(window, fantasyFont);
             }
-            //// 직업 선택 씬 끝나면 게임 맵 씬으로
-            //else if (dynamic_cast<classSelectScene*>(currentScene.get())) {
-            //    currentScene = std::make_unique<mapScene>(window, font);
-            //}
+            // 직업 선택 씬 끝나면 게임 맵 씬으로
+            else if (dynamic_cast<classSelectScene*>(currentScene.get())) {
+                currentScene = std::make_unique<mapScene>(window, fantasyFont);
+            }
             //// 맵 씬 끝나면 배틀 씬으로
             //else if (dynamic_cast<mapScene*>(currentScene.get())) {
             //    currentScene = std::make_unique<battleScene>(window, font);
@@ -59,6 +59,7 @@ int main() {
     return 0; // 임시
 
 
+    //backlog
     cout << "(1)start  " << "(2)end" << endl; // menu
     int start = 0;
     do {
