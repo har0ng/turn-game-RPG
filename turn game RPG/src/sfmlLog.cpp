@@ -8,8 +8,7 @@ using std::cin;
 using std::cout;
 using std::endl;
 
-sfmlLog::sfmlLog(sf::RenderWindow& win, float x, float y, unsigned int Size)
-				:window(win),startX(x),startY(y),charSize(Size)	
+sfmlLog::sfmlLog(sf::RenderWindow& win):window(win)
 {
 	try {
 		if (!normalFont.loadFromFile("assets/fonts/smartfont.otf")) {
@@ -24,79 +23,102 @@ sfmlLog::sfmlLog(sf::RenderWindow& win, float x, float y, unsigned int Size)
 	}
 }
 
-sf::Text sfmlLog::title(const std::string& title, sf::Sprite sprite) {
-	// 중앙 정렬된 텍스트
-	sf::Text text;
-	text.setFont(fantasyFont);
-	text.setString(title);
-	text.setCharacterSize(100);
-	text.setFillColor(sf::Color::White);
+//공용
 
-	// 배경(sprite)을 기준으로 중앙 정렬
-	sf::FloatRect bgBounds = sprite.getGlobalBounds();
-	sf::FloatRect txtBounds = text.getLocalBounds();
-
-	text.setPosition(
-		bgBounds.left + (bgBounds.width - txtBounds.width) / 2.f,
-		bgBounds.top + 250.f - txtBounds.top  // 원하는 y 위치 조절
-	);
-	return text;
+//void sfmlLog::addlog(const std::wstring& log, sf::Color color) {
+//	sf::Text text(log, normalFont, 30); //로그, 폰트, 크기
+//	text.setFillColor(color); //글자 컬러
+//
+//	float offsetX = 50.0f;
+//	float offsetY = 780.0f;
+//	text.setPosition(offsetX, offsetY + (charSize * logLines.size()));
+//	logLines.push_back(text);
+//}
+void sfmlLog::draw(sf::RenderWindow & win) {
+	return;
 }
-
-sf::Text sfmlLog::tiferetDescription(const std::wstring& description, sf::FloatRect BtnGlobalBounds){
-	// 중앙 정렬된 텍스트
-	sf::Text text;
-	text.setString(description);
-	text.setFont(normalFont);
-	text.setCharacterSize(26);
-	text.setFillColor(sf::Color::White);
-
-	// 배경(sprite)을 기준으로 중앙 정렬
-	sf::FloatRect btnBounds = BtnGlobalBounds;
-	sf::FloatRect txtBounds = text.getLocalBounds();
-
-	text.setPosition(
-		btnBounds.left + (btnBounds.width - txtBounds.width) / 2.f,
-		btnBounds.top + 200.f - txtBounds.top  // 원하는 y 위치 조절
-	);
-	return text;
-}
-
-sf::Text sfmlLog::malkuthDescription(const std::wstring& description, sf::FloatRect BtnGlobalBounds){
-	// 중앙 정렬된 텍스트
-	sf::Text text;
-	text.setString(description);
-	text.setFont(normalFont);
-	text.setCharacterSize(26);
-	text.setFillColor(sf::Color::White);
-
-	// 배경(sprite)을 기준으로 중앙 정렬
-	sf::FloatRect btnBounds = BtnGlobalBounds;
-	sf::FloatRect txtBounds = text.getLocalBounds();
-
-	text.setPosition(
-		btnBounds.left + (btnBounds.width - txtBounds.width) / 2.f,
-		btnBounds.top + 200.f - txtBounds.top  // 원하는 y 위치 조절
-	);
-	return text;
-}
-
-void sfmlLog::addlog(const std::string& log, sf::Color color) {
-	sf::Text text(log, normalFont, 30); //로그, 폰트, 크기
-	text.setFillColor(color); //글자 컬러
-
-	float offsetX = 50.0f;
-	float offsetY = 780.0f;
-	text.setPosition(offsetX, offsetY + (charSize * logLines.size()));
-	logLines.push_back(text);
-}
-
-void sfmlLog::draw() {
-	for (auto& line : logLines)
-		window.draw(line);
-}
-
 void sfmlLog::clear() {
-	logLines.clear();
+	return;
+}
+void sfmlLog::startFade() {
+	fading = true;
+	clock.restart();// 0초로 초기화 하고 다시 경과 시간 반환
+}
+void sfmlLog::updateFade() {
+	sf::Color textColor = log.getFillColor();
+	if (fading == false) {
+		return;
+	}
+	float elapsed = clock.getElapsedTime().asSeconds();
+	alpha = 255 - (elapsed / 0.5f) * 255; // 0.5초에 걸쳐 감소
+	if (alpha < 0) {
+		alpha = 0;
+		fading = false; // 완료되면 멈춤
+	}
+	textColor.a = static_cast<sf::Uint8>(alpha);
+	log.setFillColor(textColor); // 다시 적용
+}
+void sfmlLog::startAppear() {
+	appear = true;
+	clock.restart();// 0초로 초기화 하고 다시 경과 시간 반환
+}
+void sfmlLog::updateAppear() {
+	sf::Color textColor = log.getFillColor();
+	if (appear == false) {
+		return;
+	}
+	float elapsed = clock.getElapsedTime().asSeconds();
+	alpha = 0 + (elapsed / 0.5f) * 255; // 0.5초에 걸쳐 증가
+	if (alpha > 255) {
+		alpha = 255;
+		appear = false; // 완료되면 멈춤
+	}
+	textColor.a = static_cast<sf::Uint8>(alpha);
+	log.setFillColor(textColor); // 다시 적용
+}
+
+
+//tiferet
+tiferetDescription::tiferetDescription(const std::wstring& description, sf::FloatRect BtnGlobalBounds, sf::RenderWindow& win)
+	:sfmlLog(win)
+{
+	// 중앙 정렬된 텍스트
+	log.setString(description);
+	log.setFont(normalFont);
+	log.setCharacterSize(26);
+	log.setFillColor(sf::Color(255, 255, 255, 0)); // 처음엔 투명
+
+	// 텍스트 크기와 오프셋 가져오기
+	sf::FloatRect btnBounds = BtnGlobalBounds;
+	sf::FloatRect txtBounds = log.getLocalBounds(); // 로그 텍스트 로컬 바운드
+	log.setPosition(txtBounds.left+275, txtBounds.top+300); //원래 숫자로 하면 안됨
+}
+void tiferetDescription::draw(sf::RenderWindow& win) {
+	win.draw(log);
+}
+void tiferetDescription::clear() {
+	return;
+}
+//malkuth
+malkuthDescription::malkuthDescription(const std::wstring& description, sf::FloatRect BtnGlobalBounds, sf::RenderWindow& win)
+	:sfmlLog(win)
+{
+	// 중앙 정렬된 텍스트
+	log.setString(description);
+	log.setFont(normalFont);
+	log.setCharacterSize(26);
+	sf::Color color(255, 255, 255, 0);
+	log.setFillColor(color);
+	// 배경(sprite)을 기준으로 중앙 정렬
+	sf::FloatRect btnBounds = BtnGlobalBounds;
+	sf::FloatRect txtBounds = log.getLocalBounds();
+
+	log.setPosition(txtBounds.left + 870, txtBounds.top + 300); //원래 숫자로 하면 안됨
+}
+void malkuthDescription::draw(sf::RenderWindow& win) {
+	win.draw(log);
+}
+void malkuthDescription::clear() {
+	return;
 }
 

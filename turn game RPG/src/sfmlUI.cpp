@@ -10,28 +10,131 @@ using std::endl;
 //text 중앙 잡기 : x + (background.getSize().x - text.getLocalBounds().width) / 2.f,
 //y + (background.getSize().y - text.getLocalBounds().height) / 2.f - text.getLocalBounds().top
 
-//공용
-sf::FloatRect button::getBackgroundGlobalBounds() const{
-	return background.getGlobalBounds();
+//title
+title::title(const std::string& title, sf::Font& font)
+{
+	if (!texture.loadFromFile("assets/images/1.png")) { //이니셜라이저로 초기화 불가능이라 여기서 넣어 초기화
+		throw std::runtime_error("image load failed");
+	}
+	sprite.setTexture(texture); // 텍스처를 스프라이트에 연결
+	text.setString(title); // 글자
+	text.setFont(font); // 글자 폰트
+	text.setCharacterSize(100); // 글자크기
+	sf::Color color(255, 255, 255, 0);
+	text.setFillColor(color);
+	sf::FloatRect bgBounds = sprite.getGlobalBounds();
+	sf::FloatRect txtBounds = text.getLocalBounds();
+	text.setPosition(
+		bgBounds.left + (bgBounds.width - txtBounds.width) / 2.f,
+		bgBounds.top + 250.f - txtBounds.top  // 원하는 y 위치 조절
+	);
 }
-void button::startFade() { //장면 전환 시작
+void title::draw(sf::RenderWindow& win) {
+	win.draw(text);
+}
+void title::startFade() { //장면 전환 시작
 	fading = true;
 	clock.restart();// 0초로 초기화 하고 다시 경과 시간 반환
 }
-void button::updateFade() { //프레임 매초 갱신
+void title::updateFade() { //프레임 매초 갱신
 	if (fading == false) {
 		return;
 	}
 	float elapsed = clock.getElapsedTime().asSeconds();
-	alpha = 255 - (elapsed / 3.0f) * 255; // 3초에 걸쳐 감소
+	alpha = 255 - (elapsed / 0.5f) * 255; // 0.5초에 걸쳐 감소
 	if (alpha < 0) {
 		alpha = 0;
 		fading = false; // 완료되면 멈춤
 	}
 	text.setFillColor(sf::Color(255, 255, 255, (sf::Uint8)alpha));
 }
+void title::startAppear() {
+	appear = true;
+	clock.restart();// 0초로 초기화 하고 다시 경과 시간 반환
+}
+void title::updateAppear() {
+	if (appear == false) {
+		return;
+	}
+	float elapsed = clock.getElapsedTime().asSeconds();
+	alpha = 0 + (elapsed / 0.5f) * 255; // 0.5초에 걸쳐 증가
+	if (alpha > 255) {
+		alpha = 255;
+		appear = false; // 완료되면 멈춤
+	}
+	text.setFillColor(sf::Color(255, 255, 255, (sf::Uint8)alpha));
+}
+bool title::getAppear() {
+	return appear;
+}
 
-
+//button 공용
+void button::startFade() {
+	fading = true;
+	clock.restart();// 0초로 초기화 하고 다시 경과 시간 반환
+}
+void button::updateFade() {
+	sf::Color textOutline = text.getOutlineColor(); // 현재 색상
+	sf::Color textIn = text.getFillColor();
+	sf::Color bgOutline = background.getOutlineColor();
+	sf::Color bgIn = background.getFillColor();
+	if (fading == false) {
+		return;
+	}
+	float elapsed = clock.getElapsedTime().asSeconds();
+	alpha = 255 - (elapsed / 0.5f) * 255; // 0.5초에 걸쳐 감소
+	if (alpha < 0) {
+		alpha = 0;
+		fading = false; // 완료되면 멈춤
+	}
+	textIn.a = static_cast<sf::Uint8>(alpha);
+	textOutline.a = static_cast<sf::Uint8>(alpha);  // 알파값만 변경
+	bgIn.a = static_cast<sf::Uint8>(alpha);
+	bgOutline.a = static_cast<sf::Uint8>(alpha);
+	text.setFillColor(textIn); // 다시 적용
+	text.setOutlineColor(textOutline); // 다시 적용              
+	background.setFillColor(bgIn); // 다시 적용
+	background.setOutlineColor(bgOutline); // 다시 적용
+}
+void button::startAppear() {
+	appear = true;
+	clock.restart();// 0초로 초기화 하고 다시 경과 시간 반환
+}
+void button::updateAppear() {
+	sf::Color textOutline = text.getOutlineColor(); // 현재 색상
+	sf::Color textIn = text.getFillColor();
+	sf::Color bgOutline = background.getOutlineColor();
+	sf::Color bgIn = background.getFillColor();
+	if (appear == false) {
+		return;
+	}
+	float elapsed = clock.getElapsedTime().asSeconds();
+	alpha = 0 + (elapsed / 0.5f) * 255; // 0.5초에 걸쳐 증가
+	if (alpha > 255) {
+		alpha = 255;
+		appear = false; // 완료되면 멈춤
+	}
+	textIn.a = static_cast<sf::Uint8>(alpha);
+	textOutline.a = static_cast<sf::Uint8>(alpha);  // 알파값만 변경
+	bgIn.a = static_cast<sf::Uint8>(alpha);
+	bgOutline.a = static_cast<sf::Uint8>(alpha);
+	text.setFillColor(textIn); // 다시 적용
+	text.setOutlineColor(textOutline); // 다시 적용              
+	background.setFillColor(bgIn); // 다시 적용
+	background.setOutlineColor(bgOutline); // 다시 적용
+}
+bool button::getAppear() {
+	return appear;
+}
+bool button::getFading() {
+	return fading;
+}
+float button::getAlpha() {
+	return alpha;
+}
+sf::FloatRect button::getBackgroundGlobalBounds() const {
+	return background.getGlobalBounds();
+}
 //menuButton
 menuButton::menuButton(const std::string& label, float x, float y, sf::Font& font)
 {
@@ -41,12 +144,12 @@ menuButton::menuButton(const std::string& label, float x, float y, sf::Font& fon
 	sf::Color color(64, 64, 64);
 	text.setOutlineThickness(2.f);
 	text.setOutlineColor(color);
-	
+
 	// 버튼 크기는 텍스트 크기 + 여백
 	sf::FloatRect bounds = text.getLocalBounds();//멤버 변수 text의 경계 혹은 테두리 저장 
 	background.setSize(sf::Vector2f(bounds.width + 80, bounds.height + 20));//버튼 배경 사이즈를 text에 맞춰 조절
 
-	// 위치 설정
+	// 버튼 텍스트 위치 설정
 	background.setPosition(x, y); // 버튼 배경 위치를 먼저 조절, 배경 먼저 해야 글자가 아래로 안감
 	text.setPosition(x + (background.getSize().x - text.getLocalBounds().width) / 2.f,
 		y + (background.getSize().y - text.getLocalBounds().height) / 2.f - text.getLocalBounds().top); //이후에 배경에 맞춰 위치를 조절 
@@ -68,15 +171,23 @@ bool menuButton::isClicked(sf::Vector2i mousePos){ //마우스 위치를 알려�
 	return false;
 }
 
-//classSelectButton
+//classSelectButton(미완성)
 classSelectButton::classSelectButton(const std::string& label, float x, float y, sf::Font& font) 
 {	
+	//직업 배경
+	sf::Color color(0, 0, 51, 155);
+	background.setFillColor(color); //내부 색
+	background.setOutlineColor(sf::Color::White); //테두리 색
+	background.setOutlineThickness(3.f); //테두리 두께
+
 	//직업 이름
 	text.setString(label); //직업 이름
 	text.setFont(font); // 폰트
 	text.setCharacterSize(50); //글자 크기
 	sf::Color charactorClass(0, 153, 153); //직업 글자 색
 	text.setFillColor(charactorClass); //글자 색
+	
+
 	//버튼 크기
 	sf::FloatRect bounds = text.getLocalBounds();//멤버 변수 text의 경계 혹은 테두리 저장 
 	background.setSize(sf::Vector2f(400, bounds.height + 600));//버튼 배경 사이즈를 text에 맞춰 조절
@@ -86,11 +197,6 @@ classSelectButton::classSelectButton(const std::string& label, float x, float y,
 		y + (background.getSize().y - text.getLocalBounds().height) / 10.f - text.getLocalBounds().top); //이후에 배경에 맞춰 위치를 조절 
 }
 void classSelectButton::draw(sf::RenderWindow& win){
-	sf::Color color(0, 0, 51, 155);
-	background.setFillColor(color); //내부 색
-	background.setOutlineColor(sf::Color::White); //테두리 색
-	background.setOutlineThickness(3.f); //테두리 두께
-
 	win.draw(background); //버튼 배경 그리기, 무조건 순서 생각해서 draw하기
 	win.draw(text); //텍스트 그리기
 }
@@ -103,11 +209,19 @@ bool classSelectButton::isClicked(sf::Vector2i mousePos){
 	return false;
 }
 
-//backButton
+//backButton(미완성)
 backButton::backButton(const std::string& label, float x, float y, sf::Font& font){
+	//text
 	text.setString(label); // 글자
 	text.setFont(font); // 글자 폰트
 	text.setCharacterSize(30); // 글자크기
+	//background
+	sf::Color color(204, 0, 0, 200);
+	sf::Color outline(51, 0, 0, 155);
+	background.setFillColor(color); //내부 색
+	background.setOutlineColor(outline); //테두리 색
+	background.setOutlineThickness(2.0f); //테두리 두께
+
 	// 버튼 크기는 텍스트 크기 + 여백
 	sf::FloatRect bounds = text.getLocalBounds();//멤버 변수 text의 경계 혹은 테두리 저장 
 	background.setSize(sf::Vector2f(bounds.width + 80, bounds.height + 20));//버튼 배경 사이즈를 text에 맞춰 조절
@@ -119,12 +233,6 @@ backButton::backButton(const std::string& label, float x, float y, sf::Font& fon
 
 }
 void backButton::draw(sf::RenderWindow& win) {
-	sf::Color color(204, 0, 0, 200);
-	sf::Color outline(51, 0, 0, 155);
-	background.setFillColor(color); //내부 색
-	background.setOutlineColor(outline); //테두리 색
-	background.setOutlineThickness(2.0f); //테두리 두께
-
 	win.draw(background); //버튼 배경 그리기, 무조건 순서 생각해서 draw하기
 	win.draw(text); //텍스트 그리기
 }

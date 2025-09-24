@@ -45,6 +45,7 @@ private:
 	sfmlLog log; // 빈 도화지가 없으면 로그를 못 뽑아냄(타이틀)
 	menuButton startBtn; //버튼 이라는 부품 들고옴
 	menuButton endBtn; //이하동문
+	title titleText; //타이틀
 
 public:
 	menuScene(sf::RenderWindow& win, sf::Font& font); //빈 도화지와 폰트를 받아와야함
@@ -57,10 +58,12 @@ private:
 	sf::RenderWindow& window; // 빈 도화지 받아오기
 	sf::Texture texture; //이미지
 	sf::Sprite sprite;   // 이미지를 표시할 스프라이트
-	sfmlLog log; // 직업 설명
+	tiferetDescription tiferetDc; // tiferet직업 설명
+	malkuthDescription malkuthDc; // malkuth직업 설명
 	classSelectButton tiferetBtn; // 티페리트 버튼
 	classSelectButton malkuthBtn; // 말쿠트(아도나이) 버튼
 	backButton backBtn; // 뒤로가기 버튼
+	bool selectBtn; //back 눌렸는지 직업 눌렸는지 확인
 
 public:
 	classSelectScene(sf::RenderWindow& win, sf::Font& font);//빈 도화지와 폰트
@@ -91,7 +94,7 @@ private:
 	sf::RenderWindow& window; // 빈 도화지 받아오기
 	sf::Texture texture; //이미지
 	sf::Sprite sprite;   // 이미지를 표시할 스프라이트
-	sfmlLog log; // 빈 도화지가 없으면 로그를 못 뽑아냄
+	//sfmlLog log; // 빈 도화지가 없으면 로그를 못 뽑아냄
 	//battleButton attackBtn; //버튼 이라는 부품 들고옴
 	//battleButton defenseBtn; //이하동문
 	//battleButton skillBtn;
