@@ -12,7 +12,12 @@ class scene {
 protected:
 	bool finished = false;
 	bool back = false;
-	bool transition = false;
+	bool transition = false; //씬 바뀌고 있는데 클릭 금지
+	float alpha = 255.0f;   // 현재 알파값
+	bool appear = false;	// 불러낼지 상태 여부
+	bool fading = false;    // 페이드인 상태 여부
+	sf::Clock clock;        // 버튼마다 시간 관리
+	float deltaTime = 0.f;
 public:
 	virtual ~scene() = default;
 	//입력(키보드/마우스/창 이벤트)을 처리.
@@ -37,7 +42,13 @@ public:
 
 	//뒤로 돌아가기
 	virtual bool isBack() { return back; }
-	void isTransition();
+
+	//공용
+	void isTransition(); //씬 바뀌고 있는데 클릭 금지
+	virtual void startFade(); // 페이드 시작 
+	virtual void updateFade(sf::Sprite& sprite); // 페이드 계속 업데이트
+	virtual void startAppear(); // 불러내는 타이머 가동
+	virtual void updateAppear(sf::Sprite& sprite); // 타이머 시간 계산
 };
 
 class menuScene : public scene { //초기 화면
@@ -79,11 +90,13 @@ private:
 	sf::Sprite sprite;   // 이미지를 표시할 스프라이트
 	sfmlLog log; // 필요할수도 있으니.
 	
+	
 public:
 	mapScene(sf::RenderWindow& win, sf::Font& font, sf::Texture& tex);
 	void update(sf::RenderWindow& window) override; //메뉴 화면으로 상태갱신
 	void render(sf::RenderWindow& window) override; //화면 사용자에게 보이게 하기
-
+	void updateFade(sf::Sprite& sprite) override;
+	void updateAppear(sf::Sprite& sprite) override;
 };
 
 class floorScene : public scene {

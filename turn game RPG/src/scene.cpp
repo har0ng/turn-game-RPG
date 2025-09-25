@@ -7,6 +7,50 @@ void scene::isTransition() { //반복 클릭 막기
     if (transition) { return; }
     transition = true;
 }
+void scene::startFade() {
+    fading = true;
+    clock.restart();// 0초로 초기화 하고 다시 경과 시간 반환
+}
+void scene::updateFade(sf::Sprite& sprite) {
+    if (fading == false) {
+        return;
+    }
+    sf::Color color = sprite.getColor();//스프라이트라 색상값 알아서 불러오게끔
+    float appearDuration = 0.5f; // 0.5초 동안 나타나게
+    float alphaStep = 255.0f / appearDuration; // 초당 증가량
+    alpha -= alphaStep * deltaTime; // deltaTime 곱해서 프레임 독립적 처리
+
+    if (alpha <= 0.f) {
+        alpha = 0.f;
+        fading = false;
+    }
+
+    color.a = static_cast<sf::Uint8>(alpha);
+    sprite.setColor(color);
+}
+void scene::startAppear() {
+    appear = true;
+    alpha = 0.0f;
+    clock.restart();// 0초로 초기화 하고 다시 경과 시간 반환
+}
+void scene::updateAppear(sf::Sprite& sprite) {
+    if (appear == false) {
+        return;
+    }
+    sf::Color color = sprite.getColor();//스프라이트라 색상값 알아서 불러오게끔
+    float appearDuration = 10.0f; // 10초 동안 나타나게
+    float alphaStep = 255.0f / appearDuration; // 초당 증가량
+    alpha += alphaStep * deltaTime; // deltaTime 곱해서 프레임 독립적 처리
+
+    if (alpha >= 255.f) {
+        alpha = 255.f;
+        appear = false;
+    }
+
+    color.a = static_cast<sf::Uint8>(alpha);
+    sprite.setColor(color);
+}
+
 
 //menuScene
 menuScene::menuScene(sf::RenderWindow& win, sf::Font& font, sf::Texture& tex) :
@@ -106,6 +150,7 @@ void classSelectScene::update(sf::RenderWindow& window){
         if (event.type == sf::Event::MouseButtonPressed && !transition) { // 앞으로
             if (tiferetBtn.isClicked(worldPos) && sf::Mouse::isButtonPressed(sf::Mouse::Left) && !tiferetBtn.getAppear()) {
                 isTransition();
+                startFade();
                 tiferetBtn.startFade();
                 malkuthBtn.startFade();
                 backBtn.startFade();
@@ -138,6 +183,7 @@ void classSelectScene::update(sf::RenderWindow& window){
     backBtn.updateFade();
     tiferetDc.updateFade();
     malkuthDc.updateFade();
+    updateFade(sprite);
 
     tiferetBtn.updateAppear();
     malkuthBtn.updateAppear();
@@ -169,19 +215,57 @@ mapScene::mapScene(sf::RenderWindow& win, sf::Font& font, sf::Texture& tex)
     :window(win), log(win)
 {
     sprite.setTexture(tex);
+    sf::Color color = sprite.getColor();
+    color.a = static_cast<sf::Uint8>(0);
+    sprite.setColor(color);
     sf::View view(sf::Vector2f(910.f, 1024.f), sf::Vector2f(1440.f, 960.f));
-    view.zoom(2.1f);
+    view.zoom(2.13f);
     win.setView(view);
+    startAppear();
 }
 void mapScene::update(sf::RenderWindow& window){
+    deltaTime = clock.restart().asSeconds(); // 이전 프레임과 현재 프레임 사이 시간
     sf::Event event;
     while (window.pollEvent(event)) {
-        
+        updateAppear(sprite);
     }
 }
-void mapScene::render(sf::RenderWindow& window){
-
+void mapScene::render(sf::RenderWindow& window) {
     window.draw(sprite); //배경
+}
+void mapScene::updateFade(sf::Sprite& sprite) {
+    if (fading == false) {
+        return;
+    }
+    sf::Color color = sprite.getColor();//스프라이트라 색상값 알아서 불러오게끔
+    float appearDuration = 2.0f; // 2초 동안 없어지게
+    float alphaStep = 255.0f / appearDuration; // 초당 증가량
+    alpha -= alphaStep * deltaTime; // deltaTime 곱해서 프레임 독립적 처리
+
+    if (alpha >= 0.f) {
+        alpha = 0.f;
+        fading = false;
+    }
+
+    color.a = static_cast<sf::Uint8>(alpha);
+    sprite.setColor(color);
+}
+void mapScene::updateAppear(sf::Sprite& sprite) {
+    if (appear == false) {
+        return;
+    }
+    sf::Color color = sprite.getColor();//스프라이트라 색상값 알아서 불러오게끔
+    float appearDuration = 0.5f; // 2초 동안 나타나게
+    float alphaStep = 170.0f / appearDuration; // 초당 증가량
+    alpha += alphaStep * deltaTime; // deltaTime 곱해서 프레임 독립적 처리
+
+    if (alpha >= 180.f) {
+        alpha = 180.f;
+        appear = false;
+    }
+
+    color.a = static_cast<sf::Uint8>(alpha);
+    sprite.setColor(color);
 }
 
 //battleScene
