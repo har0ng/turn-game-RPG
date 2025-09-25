@@ -6,6 +6,7 @@
 #include <vector>
 #include "sfmlLog.h"
 #include "sfmlUI.h"
+#include "resourceManager.h"
 
 class scene {
 protected:
@@ -40,7 +41,6 @@ public:
 class menuScene : public scene { //초기 화면
 private:
 	sf::RenderWindow& window; // 빈 도화지 받아오기
-	sf::Texture texture; //이미지
 	sf::Sprite sprite;   // 이미지를 표시할 스프라이트
 	sfmlLog log; // 빈 도화지가 없으면 로그를 못 뽑아냄(타이틀)
 	menuButton startBtn; //버튼 이라는 부품 들고옴
@@ -48,7 +48,7 @@ private:
 	title titleText; //타이틀
 
 public:
-	menuScene(sf::RenderWindow& win, sf::Font& font); //빈 도화지와 폰트를 받아와야함
+	menuScene(sf::RenderWindow& win, sf::Font& font, sf::Texture& tex); //빈 도화지와 폰트를 받아와야함
 	void update(sf::RenderWindow& window) override; //메뉴 화면으로 상태갱신
 	void render(sf::RenderWindow& window) override; //화면 사용자에게 보이게 하기
 };
@@ -56,7 +56,6 @@ public:
 class classSelectScene : public scene {// 직업 선택
 private:
 	sf::RenderWindow& window; // 빈 도화지 받아오기
-	sf::Texture texture; //이미지
 	sf::Sprite sprite;   // 이미지를 표시할 스프라이트
 	tiferetDescription tiferetDc; // tiferet직업 설명
 	malkuthDescription malkuthDc; // malkuth직업 설명
@@ -66,7 +65,7 @@ private:
 	bool selectBtn; //back 눌렸는지 직업 눌렸는지 확인
 
 public:
-	classSelectScene(sf::RenderWindow& win, sf::Font& font);//빈 도화지와 폰트
+	classSelectScene(sf::RenderWindow& win, sf::Font& font, sf::Texture& tex);//빈 도화지와 폰트
 	void update(sf::RenderWindow& window) override; //메뉴 화면으로 상태갱신
 	void render(sf::RenderWindow& window) override; //화면 사용자에게 보이게 하기
 
@@ -77,12 +76,13 @@ private:
 	sf::RenderWindow& window; // 빈 도화지 받아오기
 	sf::Texture texture; //이미지
 	sf::Sprite sprite;   // 이미지를 표시할 스프라이트
-	sfmlLog log; // 오른쪽 설명
+	sfmlLog log; // 필요할수도 있으니.
 	
 public:
-	mapScene(sf::RenderWindow& win, sf::Font& font);
+	mapScene(sf::RenderWindow& win, sf::Font& font, sf::Texture& tex);
 	void update(sf::RenderWindow& window) override; //메뉴 화면으로 상태갱신
 	void render(sf::RenderWindow& window) override; //화면 사용자에게 보이게 하기
+
 };
 
 class floorScene : public scene {

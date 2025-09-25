@@ -6,6 +6,7 @@
 #include "sfmlUI.h"
 #include "sfmlLog.h"
 #include "scene.h"
+#include "resourceManager.h"
 
 #include <iostream>
 #include <SFML/Graphics.hpp>
@@ -17,32 +18,41 @@ using std::cin;
 int main() {
     sf::RenderWindow window(sf::VideoMode(1820, 960), "test"); //창
     sfmlLog log(window); //매개변수가 있는 생성자
-    sf::Font normalFont;// 폰트 1
-    sf::Font fantasyFont; // 폰트 2
-    if (!normalFont.loadFromFile("assets/fonts/smartfont.otf")) {
-        throw std::runtime_error("Font load failed");
-    }
-    if (!fantasyFont.loadFromFile("assets/fonts/Nosutaru-dotMPlusH-10-Regular.ttf")) {
-        throw std::runtime_error("Font load failed");
-    }
-    //업캐스팅 , 부모 포인터에서 재정의된 함수를 통해 재정의 한 자식 클래스에게 하청을 내려 수행 시키고 부모가 결과 값을 받는 형식
-    std::unique_ptr<scene> currentScene = std::make_unique<menuScene>(window, fantasyFont);
+    //리소스 로드(texture, font)
+        resourceManager res;
+        res.loadAll();
+
+    //공통 마우스
+    mouse cursor(window, res.getTexture("cursor"));
+
+    //초기 씬
+    std::unique_ptr<scene> currentScene = std::make_unique<menuScene>(window,
+        res.getFont("fantasy"), res.getTexture("menuBg"));
 
     while (window.isOpen()) {// 창이 열려 있는 동안 반복 , 이벤트니깐 거의 UI
         window.clear(sf::Color::Black); // 화면 지우기 , 안하면 새하얀 화면 (시작이라 보면 편함)
         currentScene->update(window); // 입력 처리, 상태 업데이트 (이벤트를 만들어내야 렌더링이 가능)
         currentScene->render(window);   // 화면 렌더링 (부품들을 불러옴)
+        
+        // 공통 마우스 업데이트 & 렌더
+        sf::Vector2i pixelPos = sf::Mouse::getPosition(window);
+        sf::Vector2f worldPos = window.mapPixelToCoords(pixelPos);
+        cursor.position(worldPos);
+        cursor.draw(window);
+        
         window.display(); // 화면 업데이트
 
         // 씬 전환 처리
         if (currentScene->isFinished()) {
             // 메뉴 씬이 끝나면 직업 선택 씬으로
             if (dynamic_cast<menuScene*>(currentScene.get())) { //부모클래스의 객체를 통해 .get()함수를 이용해 실체 객체가 뭔지 확인, dynamic_cast는 이게 옳바른지 확인(true,false)
-                currentScene = std::make_unique<classSelectScene>(window, fantasyFont);
+                currentScene = std::make_unique<classSelectScene>(window, res.getFont("fantasy"),res.getTexture("menuBg"));
+                cursor.updatePositionFromWindow(window);
             }
             // 직업 선택 씬 끝나면 게임 맵 씬으로
             else if (dynamic_cast<classSelectScene*>(currentScene.get())) {
-                currentScene = std::make_unique<mapScene>(window, fantasyFont);
+                currentScene = std::make_unique<mapScene>(window, res.getFont("fantasy"),res.getTexture("map.Bg"));
+                cursor.updatePositionFromWindow(window);
             }
             //// 맵 씬 끝나면 배틀 씬으로
             //else if (dynamic_cast<mapScene*>(currentScene.get())) {
@@ -52,7 +62,8 @@ int main() {
         if (currentScene->isBack()) {
             //직업 씬에서 메뉴 씬으로
             if (dynamic_cast<classSelectScene*>(currentScene.get())) { //부모클래스의 객체를 통해 .get()함수를 이용해 실체 객체가 뭔지 확인, dynamic_cast는 이게 옳바른지 확인(true,false)
-                currentScene = std::make_unique<menuScene>(window, fantasyFont);
+                currentScene = std::make_unique<menuScene>(window, res.getFont("fantasy"), res.getTexture("menuBg"));
+                cursor.updatePositionFromWindow(window);
             }
         }
     }

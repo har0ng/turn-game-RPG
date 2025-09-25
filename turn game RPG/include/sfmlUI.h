@@ -40,7 +40,8 @@ public:
 	virtual ~button() = default;
 	//virtual
 	virtual void draw(sf::RenderWindow& win) = 0; // 가상
-	virtual bool isClicked(sf::Vector2i mousePos) = 0;//가상
+	virtual bool isClicked(sf::Vector2f mousePos) = 0;//가상
+	virtual void outlineColormanager(sf::Vector2f mousePos) = 0; //가상
 	
 	//공용
 	void startFade(); // 페이드 시작 
@@ -53,33 +54,51 @@ public:
 	bool getFading(); //페이드 상태 알아보는 함수
 	float getAlpha(); //페이딩이 됐는지 확인 위함
 	sf::FloatRect getBackgroundGlobalBounds() const; //배경 크기를 알기 위함
-	
+	//set
+	void setOutlineColor(sf::Color color);
 };
 
 class menuButton : public button { //부품 - 버튼
 public:
 	menuButton(const std::string& label, float x, float y, sf::Font& font);
 	void draw(sf::RenderWindow& win) override; // 모든버튼 그리기
-	bool isClicked(sf::Vector2i mousePos) override;//클릭 이벤트
+	bool isClicked(sf::Vector2f mousePos) override;//클릭 이벤트
+	void outlineColormanager(sf::Vector2f mousePos) override; //버튼 호버시 아웃라인 색 변경
 };
 
 class classSelectButton : public button { //부품 - 버튼
 public:
 	classSelectButton(const std::string& label, float x, float y, sf::Font& font);
 	void draw(sf::RenderWindow& win) override; // 모든버튼 그리기
-	bool isClicked(sf::Vector2i mousePos) override;//클릭 이벤트
+	bool isClicked(sf::Vector2f mousePos) override;//클릭 이벤트
+	void outlineColormanager(sf::Vector2f mousePos) override; //버튼 호버시 아웃라인 색 변경
 };
 
 class backButton : public button { //부품 - 버튼
 public:
 	backButton(const std::string& label, float x, float y, sf::Font& font);
 	void draw(sf::RenderWindow& win) override; // 모든버튼 그리기
-	bool isClicked(sf::Vector2i mousePos) override;//클릭 이벤트
+	bool isClicked(sf::Vector2f mousePos) override;//클릭 이벤트
+	void outlineColormanager(sf::Vector2f mousePos) override; //버튼 호버시 아웃라인 색 변경
 };
 
 class assortMapSelectButton : public button {
 public:
 	assortMapSelectButton(sf::Texture texture, float x, float y);
 	void draw(sf::RenderWindow& win) override; // 모든버튼 그리기
-	bool isClicked(sf::Vector2i mousePos) override;//클릭 이벤트
+	bool isClicked(sf::Vector2f mousePos) override;//클릭 이벤트
+	void outlineColormanager(sf::Vector2f mousePos) override; //버튼 호버시 아웃라인 색 변경
+};
+
+class mouse { //마우스
+private:
+	sf::Texture texture;
+	sf::Sprite sprite;
+public:
+	mouse(sf::RenderWindow& win, sf::Texture& tex);
+	float getSizeX();
+	float getSizeY();
+	void draw(sf::RenderWindow& window);
+	void position(sf::Vector2f worldPos);
+	void updatePositionFromWindow(sf::RenderWindow& window); //
 };

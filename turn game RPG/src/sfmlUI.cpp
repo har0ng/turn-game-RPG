@@ -135,15 +135,18 @@ float button::getAlpha() {
 sf::FloatRect button::getBackgroundGlobalBounds() const {
 	return background.getGlobalBounds();
 }
+
+void button::setOutlineColor(sf::Color color){
+	text.setOutlineColor(color);
+}
+
 //menuButton
 menuButton::menuButton(const std::string& label, float x, float y, sf::Font& font)
 {
 	text.setString(label); // 글자
 	text.setFont(font); // 글자 폰트
 	text.setCharacterSize(70); // 글자크기
-	sf::Color color(64, 64, 64);
 	text.setOutlineThickness(2.f);
-	text.setOutlineColor(color);
 
 	// 버튼 크기는 텍스트 크기 + 여백
 	sf::FloatRect bounds = text.getLocalBounds();//멤버 변수 text의 경계 혹은 테두리 저장 
@@ -162,7 +165,7 @@ void menuButton::draw(sf::RenderWindow& win){ //화면에 그리기
 	win.draw(background); //버튼 배경 그리기, 무조건 순서 생각해서 draw하기
 	win.draw(text); //텍스트 그리기
 }
-bool menuButton::isClicked(sf::Vector2i mousePos){ //마우스 위치를 알려주는 int 형의 x,y
+bool menuButton::isClicked(sf::Vector2f mousePos){ //마우스 위치를 알려주는 int 형의 x,y
 	sf::FloatRect bound = background.getGlobalBounds();//버튼 배경의 전체를 기준으로 잡아버림
 	if (bound.contains(static_cast<float>(mousePos.x),static_cast<float>(mousePos.y))) {
 		//버튼 배경 전체가 기준이니 버튼배경 안에서 마우스의 움직임이나 이벤트를 인정해준다는 의미
@@ -170,14 +173,22 @@ bool menuButton::isClicked(sf::Vector2i mousePos){ //마우스 위치를 알려�
 	}
 	return false;
 }
+void menuButton::outlineColormanager(sf::Vector2f mousePos){
+	if (background.getGlobalBounds().contains(mousePos)) {
+		sf::Color color(224, 224, 224);
+		text.setOutlineColor(color); //버튼 컬러
+	}
+	else {
+		text.setOutlineColor(sf::Color::Black);//버튼 컬러
+	}
+}
 
-//classSelectButton(미완성)
+//classSelectButton
 classSelectButton::classSelectButton(const std::string& label, float x, float y, sf::Font& font) 
 {	
 	//직업 배경
 	sf::Color color(0, 0, 51, 155);
 	background.setFillColor(color); //내부 색
-	background.setOutlineColor(sf::Color::White); //테두리 색
 	background.setOutlineThickness(3.f); //테두리 두께
 
 	//직업 이름
@@ -200,16 +211,26 @@ void classSelectButton::draw(sf::RenderWindow& win){
 	win.draw(background); //버튼 배경 그리기, 무조건 순서 생각해서 draw하기
 	win.draw(text); //텍스트 그리기
 }
-bool classSelectButton::isClicked(sf::Vector2i mousePos){
+bool classSelectButton::isClicked(sf::Vector2f mousePos){
 	sf::FloatRect bound = background.getGlobalBounds();//버튼 배경의 전체를 기준으로 잡아버림
 	if (bound.contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))) {
 		//버튼 배경 전체가 기준이니 버튼배경 안에서 마우스의 움직임이나 이벤트를 인정해준다는 의미
 		return true; //버튼 배경안에 마우스 좌표가 있으면 true
 	}
-	return false;
+	return false; 
+}
+void classSelectButton::outlineColormanager(sf::Vector2f mousePos){
+	if (background.getGlobalBounds().contains(mousePos)) {
+		sf::Color color(224, 224, 224);
+		background.setOutlineColor(color); //버튼 컬러
+	}
+	else {
+		sf::Color color(128, 128, 128);
+		background.setOutlineColor(color);//버튼 컬러
+	}
 }
 
-//backButton(미완성)
+//backButton
 backButton::backButton(const std::string& label, float x, float y, sf::Font& font){
 	//text
 	text.setString(label); // 글자
@@ -217,9 +238,7 @@ backButton::backButton(const std::string& label, float x, float y, sf::Font& fon
 	text.setCharacterSize(30); // 글자크기
 	//background
 	sf::Color color(204, 0, 0, 200);
-	sf::Color outline(51, 0, 0, 155);
 	background.setFillColor(color); //내부 색
-	background.setOutlineColor(outline); //테두리 색
 	background.setOutlineThickness(2.0f); //테두리 두께
 
 	// 버튼 크기는 텍스트 크기 + 여백
@@ -236,13 +255,23 @@ void backButton::draw(sf::RenderWindow& win) {
 	win.draw(background); //버튼 배경 그리기, 무조건 순서 생각해서 draw하기
 	win.draw(text); //텍스트 그리기
 }
-bool backButton::isClicked(sf::Vector2i mousePos) {
+bool backButton::isClicked(sf::Vector2f mousePos) {
 	sf::FloatRect bound = background.getGlobalBounds();//버튼 배경의 전체를 기준으로 잡아버림
 	if (bound.contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))) {
 		//버튼 배경 전체가 기준이니 버튼배경 안에서 마우스의 움직임이나 이벤트를 인정해준다는 의미
 		return true; //버튼 배경안에 마우스 좌표가 있으면 true
 	}
 	return false;
+}
+void backButton::outlineColormanager(sf::Vector2f mousePos){
+	if (background.getGlobalBounds().contains(mousePos)) {
+		sf::Color color(224, 224, 224);
+		background.setOutlineColor(color); //버튼 컬러
+	}
+	else {
+		sf::Color outline(51, 0, 0, 155);
+		background.setOutlineColor(outline);//버튼 컬러
+	}
 }
 
 //assortMapSelectButton(미완성)
@@ -254,6 +283,33 @@ assortMapSelectButton::assortMapSelectButton(sf::Texture texture, float x, float
 void assortMapSelectButton::draw(sf::RenderWindow& win){
 
 }
-bool assortMapSelectButton::isClicked(sf::Vector2i mousePos){
+bool assortMapSelectButton::isClicked(sf::Vector2f mousePos){
 	return false;
+}
+void assortMapSelectButton::outlineColormanager(sf::Vector2f mousePos){
+
+}
+
+mouse::mouse(sf::RenderWindow& window, sf::Texture& tex)
+{
+	sprite.setTexture(tex);// 마우스
+	window.setMouseCursorVisible(false);
+	sprite.setOrigin( getSizeX()/3.0f, getSizeY()/4.0f);
+}
+float mouse::getSizeX() {
+	return sprite.getLocalBounds().width;
+}
+float mouse::getSizeY() {
+	return sprite.getLocalBounds().height;
+}
+void mouse::draw(sf::RenderWindow& window) {
+	window.draw(sprite);
+}
+void mouse::position(sf::Vector2f worldPos) {
+	sprite.setPosition(worldPos);
+}
+void mouse::updatePositionFromWindow(sf::RenderWindow& window){
+	sf::Vector2i pixelPos = sf::Mouse::getPosition(window);
+	sf::Vector2f worldPos = window.mapPixelToCoords(pixelPos);
+	position(worldPos);
 }
