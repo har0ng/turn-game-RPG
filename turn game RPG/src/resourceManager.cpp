@@ -25,7 +25,7 @@ sf::Font& resourceManager::getFont(const std::string& key) {
 
 void resourceManager::loadAll() {
     loadTexture("menuBg", "assets/images/1.png");
-    loadTexture("mapBg", "assets/images/map2.png");
+    loadTexture("mapBg", "assets/images/map.png");
     loadTexture("cursor", "assets/images/mouse.png");
 
     loadFont("normal", "assets/fonts/smartfont.otf");

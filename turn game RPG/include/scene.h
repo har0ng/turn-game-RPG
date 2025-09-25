@@ -12,6 +12,7 @@ class scene {
 protected:
 	bool finished = false;
 	bool back = false;
+	bool transition = false;
 public:
 	virtual ~scene() = default;
 	//입력(키보드/마우스/창 이벤트)을 처리.
@@ -36,6 +37,7 @@ public:
 
 	//뒤로 돌아가기
 	virtual bool isBack() { return back; }
+	void isTransition();
 };
 
 class menuScene : public scene { //초기 화면
@@ -74,7 +76,6 @@ public:
 class mapScene : public scene { //전체 맵 보여주기
 private:
 	sf::RenderWindow& window; // 빈 도화지 받아오기
-	sf::Texture texture; //이미지
 	sf::Sprite sprite;   // 이미지를 표시할 스프라이트
 	sfmlLog log; // 필요할수도 있으니.
 	

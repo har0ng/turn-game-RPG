@@ -30,6 +30,7 @@ int main() {
         res.getFont("fantasy"), res.getTexture("menuBg"));
 
     while (window.isOpen()) {// 창이 열려 있는 동안 반복 , 이벤트니깐 거의 UI
+        window.setFramerateLimit(240);
         window.clear(sf::Color::Black); // 화면 지우기 , 안하면 새하얀 화면 (시작이라 보면 편함)
         currentScene->update(window); // 입력 처리, 상태 업데이트 (이벤트를 만들어내야 렌더링이 가능)
         currentScene->render(window);   // 화면 렌더링 (부품들을 불러옴)
@@ -51,7 +52,7 @@ int main() {
             }
             // 직업 선택 씬 끝나면 게임 맵 씬으로
             else if (dynamic_cast<classSelectScene*>(currentScene.get())) {
-                currentScene = std::make_unique<mapScene>(window, res.getFont("fantasy"),res.getTexture("map.Bg"));
+                currentScene = std::make_unique<mapScene>(window, res.getFont("fantasy"),res.getTexture("mapBg"));
                 cursor.updatePositionFromWindow(window);
             }
             //// 맵 씬 끝나면 배틀 씬으로

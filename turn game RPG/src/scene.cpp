@@ -2,6 +2,12 @@
 
 #include "scene.h"
 
+//공용
+void scene::isTransition() { //반복 클릭 막기
+    if (transition) { return; }
+    transition = true;
+}
+
 //menuScene
 menuScene::menuScene(sf::RenderWindow& win, sf::Font& font, sf::Texture& tex) :
     window(win), log(win)
@@ -26,8 +32,9 @@ void menuScene::update(sf::RenderWindow& window) {
         if (event.type == sf::Event::Closed) { //만약 event 타입으로써 닫기 event가 일어나면
             window.close();//창이 닫힌다
         }
-        if (event.type == sf::Event::MouseButtonPressed) {
-            if (startBtn.isClicked(worldPos) && sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+        if (event.type == sf::Event::MouseButtonPressed && !transition) {
+            if (startBtn.isClicked(worldPos) && sf::Mouse::isButtonPressed(sf::Mouse::Left) && !startBtn.getAppear()) {
+                isTransition();
                 startBtn.startFade();
                 endBtn.startFade();
                 titleText.startFade();
@@ -48,6 +55,7 @@ void menuScene::update(sf::RenderWindow& window) {
 
     // 페이드가 끝났으면 씬 전환
     if (startBtn.getFading() == false && startBtn.getAlpha() <= 0) {
+        transition = false;
         finished = true; //start 버튼 누를시 시작하게끔
     }
 }
@@ -95,8 +103,9 @@ void classSelectScene::update(sf::RenderWindow& window){
         if (event.type == sf::Event::Closed) { //만약 event 타입으로써 닫기 event가 일어나면
             window.close();//창이 닫힌다
         }
-        if (event.type == sf::Event::MouseButtonPressed) { // 앞으로
-            if (tiferetBtn.isClicked(worldPos) && sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+        if (event.type == sf::Event::MouseButtonPressed && !transition) { // 앞으로
+            if (tiferetBtn.isClicked(worldPos) && sf::Mouse::isButtonPressed(sf::Mouse::Left) && !tiferetBtn.getAppear()) {
+                isTransition();
                 tiferetBtn.startFade();
                 malkuthBtn.startFade();
                 backBtn.startFade();
@@ -105,14 +114,16 @@ void classSelectScene::update(sf::RenderWindow& window){
                 selectBtn = true;
             }
         }
-        if (event.type == sf::Event::MouseButtonPressed) { // 앞으로
-            if (malkuthBtn.isClicked(worldPos) && sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+        if (event.type == sf::Event::MouseButtonPressed && !transition) { // 앞으로
+            if (malkuthBtn.isClicked(worldPos) && sf::Mouse::isButtonPressed(sf::Mouse::Left) && !malkuthBtn.getAppear()) {
+                //isTransition();
                 //말쿠트 직업 개발중
                 finished = false; //tiferet 버튼 누를시 직업 선택 되게끔
             }
         }
-        if (event.type == sf::Event::MouseButtonPressed) { // 돌아오기
-            if (backBtn.isClicked(worldPos) && sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+        if (event.type == sf::Event::MouseButtonPressed && !transition) { // 돌아오기
+            if (backBtn.isClicked(worldPos) && sf::Mouse::isButtonPressed(sf::Mouse::Left) && !backBtn.getAppear()) {
+                isTransition();
                 tiferetBtn.startFade();
                 malkuthBtn.startFade();
                 backBtn.startFade();
@@ -135,9 +146,11 @@ void classSelectScene::update(sf::RenderWindow& window){
     malkuthDc.updateAppear();
     // 페이드가 끝났으면 씬 전환
     if (tiferetBtn.getFading() == false && tiferetBtn.getAlpha() <= 0 && selectBtn == true) {
+        transition = false;
         finished = true; //start 버튼 누를시 시작하게끔
     }
     else if (backBtn.getFading() == false && backBtn.getAlpha() <= 0) {
+        transition = false;
         back = true; //start 버튼 누를시 시작하게끔
     }
 }
@@ -156,11 +169,18 @@ mapScene::mapScene(sf::RenderWindow& win, sf::Font& font, sf::Texture& tex)
     :window(win), log(win)
 {
     sprite.setTexture(tex);
+    sf::View view(sf::Vector2f(910.f, 1024.f), sf::Vector2f(1440.f, 960.f));
+    view.zoom(2.1f);
+    win.setView(view);
 }
 void mapScene::update(sf::RenderWindow& window){
-    return;
+    sf::Event event;
+    while (window.pollEvent(event)) {
+        
+    }
 }
 void mapScene::render(sf::RenderWindow& window){
+
     window.draw(sprite); //배경
 }
 
