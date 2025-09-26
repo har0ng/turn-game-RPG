@@ -94,11 +94,15 @@ class mouse { //마우스
 private:
 	sf::Texture texture;
 	sf::Sprite sprite;
+	bool visible = false;
 public:
 	mouse(sf::RenderWindow& win, sf::Texture& tex);
 	float getSizeX();
 	float getSizeY();
+	bool getVisible();
 	void draw(sf::RenderWindow& window);
 	void position(sf::Vector2f worldPos);
 	void updatePositionFromWindow(sf::RenderWindow& window); //
+	void mapSceneVisible();//전체 맵땐 마우스 안보이게
+	void mapSceneUnvisible(); //세부 맵일땐 마우스 보이게
 };

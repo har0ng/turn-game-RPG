@@ -192,11 +192,11 @@ void classSelectScene::update(sf::RenderWindow& window){
     malkuthDc.updateAppear();
     // 페이드가 끝났으면 씬 전환
     if (tiferetBtn.getFading() == false && tiferetBtn.getAlpha() <= 0 && selectBtn == true) {
-        transition = false;
+        transition = false; //씬 바뀌고 있는데 클릭 금지
         finished = true; //start 버튼 누를시 시작하게끔
     }
     else if (backBtn.getFading() == false && backBtn.getAlpha() <= 0) {
-        transition = false;
+        transition = false; //씬 바뀌고 있는데 클릭 금지
         back = true; //start 버튼 누를시 시작하게끔
     }
 }
@@ -208,7 +208,6 @@ void classSelectScene::render(sf::RenderWindow& window){
     tiferetDc.draw(window);
     malkuthDc.draw(window);
 }
-
 
 //mapScene
 mapScene::mapScene(sf::RenderWindow& win, sf::Font& font, sf::Texture& tex)
@@ -225,10 +224,15 @@ mapScene::mapScene(sf::RenderWindow& win, sf::Font& font, sf::Texture& tex)
 }
 void mapScene::update(sf::RenderWindow& window){
     deltaTime = clock.restart().asSeconds(); // 이전 프레임과 현재 프레임 사이 시간
-    sf::Event event;
-    while (window.pollEvent(event)) {
-        updateAppear(sprite);
+    elapsed += deltaTime;
+    if (elapsed >= 13.f) {
+        finished = true;
     }
+    if (sprite.getColor().a == static_cast<sf::Uint8>(180.f) && elapsed >= 7.f) {
+        startFade();
+    }
+    updateAppear(sprite); //while 밖인 이유는 event(마우스 키보드등)이 없다면 while이 실행이 안됨.
+    updateFade(sprite);
 }
 void mapScene::render(sf::RenderWindow& window) {
     window.draw(sprite); //배경
@@ -238,11 +242,11 @@ void mapScene::updateFade(sf::Sprite& sprite) {
         return;
     }
     sf::Color color = sprite.getColor();//스프라이트라 색상값 알아서 불러오게끔
-    float appearDuration = 2.0f; // 2초 동안 없어지게
-    float alphaStep = 255.0f / appearDuration; // 초당 증가량
+    float appearDuration = 4.0f; // 4초 동안 없어지게
+    float alphaStep = 180.0f / appearDuration; // 초당 증가량
     alpha -= alphaStep * deltaTime; // deltaTime 곱해서 프레임 독립적 처리
 
-    if (alpha >= 0.f) {
+    if (alpha <= 0.f) {
         alpha = 0.f;
         fading = false;
     }
@@ -255,8 +259,8 @@ void mapScene::updateAppear(sf::Sprite& sprite) {
         return;
     }
     sf::Color color = sprite.getColor();//스프라이트라 색상값 알아서 불러오게끔
-    float appearDuration = 0.5f; // 2초 동안 나타나게
-    float alphaStep = 170.0f / appearDuration; // 초당 증가량
+    float appearDuration = 4.f; // 4초 동안 나타나게
+    float alphaStep = 180.0f / appearDuration; // 초당 증가량
     alpha += alphaStep * deltaTime; // deltaTime 곱해서 프레임 독립적 처리
 
     if (alpha >= 180.f) {
@@ -266,6 +270,34 @@ void mapScene::updateAppear(sf::Sprite& sprite) {
 
     color.a = static_cast<sf::Uint8>(alpha);
     sprite.setColor(color);
+}
+
+//floorScene
+floorScene::floorScene(sf::RenderWindow& win, sf::Font& font, sf::Texture& tex) :
+    window(win), log(win), view(sf::Vector2f(860.f, 480.f), sf::Vector2f(0.f, 0.f))
+{
+    window.setView(window.getDefaultView()); //mapScene에서의 zoom 풀기
+    sprite.setTexture(tex);
+    view.setSize(sf::Vector2f(sprite.getGlobalBounds().width, 960.f));
+    win.setView(view);
+}
+void floorScene::update(sf::RenderWindow& window){
+    deltaTime = clock.restart().asSeconds(); // 이전 프레임과 현재 프레임 사이 시간
+    sf::Event event;
+    while (window.pollEvent(event)) {
+        
+    }
+}
+
+void floorScene::render(sf::RenderWindow& window){
+    window.draw(sprite);
+}
+void floorScene::moveStart() {
+    move = true;
+}
+void floorScene::cameraMove(sf::Sprite& sprite) {
+   //마우스 휠로 움직일 수 있게끔 하기. (세피리아 방식)
+
 }
 
 //battleScene

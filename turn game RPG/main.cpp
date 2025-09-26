@@ -30,18 +30,20 @@ int main() {
         res.getFont("fantasy"), res.getTexture("menuBg"));
 
     while (window.isOpen()) {// 창이 열려 있는 동안 반복 , 이벤트니깐 거의 UI
-        window.setFramerateLimit(240);
+        window.setFramerateLimit(60);
         window.clear(sf::Color::Black); // 화면 지우기 , 안하면 새하얀 화면 (시작이라 보면 편함)
         currentScene->update(window); // 입력 처리, 상태 업데이트 (이벤트를 만들어내야 렌더링이 가능)
         currentScene->render(window);   // 화면 렌더링 (부품들을 불러옴)
-        
+
         // 공통 마우스 업데이트 & 렌더
-        sf::Vector2i pixelPos = sf::Mouse::getPosition(window);
-        sf::Vector2f worldPos = window.mapPixelToCoords(pixelPos);
-        cursor.position(worldPos);
-        cursor.draw(window);
-        
+        if (!cursor.getVisible()) {
+            sf::Vector2i pixelPos = sf::Mouse::getPosition(window);
+            sf::Vector2f worldPos = window.mapPixelToCoords(pixelPos);
+            cursor.position(worldPos);
+            cursor.draw(window);
+        }
         window.display(); // 화면 업데이트
+        
 
         // 씬 전환 처리
         if (currentScene->isFinished()) {
@@ -54,11 +56,14 @@ int main() {
             else if (dynamic_cast<classSelectScene*>(currentScene.get())) {
                 currentScene = std::make_unique<mapScene>(window, res.getFont("fantasy"),res.getTexture("mapBg"));
                 cursor.updatePositionFromWindow(window);
+                cursor.mapSceneVisible(); //전체 맵땐 마우스 안보이게
             }
-            //// 맵 씬 끝나면 배틀 씬으로
-            //else if (dynamic_cast<mapScene*>(currentScene.get())) {
-            //    currentScene = std::make_unique<battleScene>(window, font);
-            //}
+            // 맵 씬 끝나면 층 씬으로
+            else if (dynamic_cast<mapScene*>(currentScene.get())) {
+                currentScene = std::make_unique<floorScene>(window, res.getFont("fantasy"),res.getTexture("floorBg"));
+                cursor.updatePositionFromWindow(window);
+                cursor.mapSceneUnvisible();//이젠 마우스 보이게
+            }
         }
         if (currentScene->isBack()) {
             //직업 씬에서 메뉴 씬으로

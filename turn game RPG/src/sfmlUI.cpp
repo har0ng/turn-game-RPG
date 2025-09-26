@@ -302,6 +302,9 @@ float mouse::getSizeX() {
 float mouse::getSizeY() {
 	return sprite.getLocalBounds().height;
 }
+bool mouse::getVisible() {
+	return visible;
+}
 void mouse::draw(sf::RenderWindow& window) {
 	window.draw(sprite);
 }
@@ -312,4 +315,10 @@ void mouse::updatePositionFromWindow(sf::RenderWindow& window){
 	sf::Vector2i pixelPos = sf::Mouse::getPosition(window);
 	sf::Vector2f worldPos = window.mapPixelToCoords(pixelPos);
 	position(worldPos);
+}
+void mouse::mapSceneVisible() {
+	visible = true;
+}
+void mouse::mapSceneUnvisible() {
+	visible = false;
 }

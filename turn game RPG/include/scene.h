@@ -89,7 +89,7 @@ private:
 	sf::RenderWindow& window; // 빈 도화지 받아오기
 	sf::Sprite sprite;   // 이미지를 표시할 스프라이트
 	sfmlLog log; // 필요할수도 있으니.
-	
+	float elapsed = 0.f;
 	
 public:
 	mapScene(sf::RenderWindow& win, sf::Font& font, sf::Texture& tex);
@@ -100,7 +100,20 @@ public:
 };
 
 class floorScene : public scene {
+private:
+	sf::RenderWindow& window; // 빈 도화지 받아오기
+	sf::Sprite sprite;   // 이미지를 표시할 스프라이트
+	sf::View view;
+	sfmlLog log; // 필요할수도 있으니.
 	//std::vector<assortMapSelectButton> assortBtn; // 세부 층 버튼
+	bool move = false; // 카메라 멈춤 상태
+	float moveY = 480.f; //카메라 첫 Y위치
+public:
+	floorScene(sf::RenderWindow& win, sf::Font& font, sf::Texture& tex);
+	void update(sf::RenderWindow& window) override; //메뉴 화면으로 상태갱신
+	void render(sf::RenderWindow& window) override; //화면 사용자에게 보이게 하기
+	void moveStart();
+	void cameraMove(sf::Sprite& sprite);
 };
 
 class battleScene : public scene {
