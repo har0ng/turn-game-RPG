@@ -278,16 +278,28 @@ floorScene::floorScene(sf::RenderWindow& win, sf::Font& font, sf::Texture& tex) 
 {
     window.setView(window.getDefaultView()); //mapScene에서의 zoom 풀기
     sprite.setTexture(tex);
-    view.setCenter(sf::Vector2f(sprite.getGlobalBounds().width / 2, 480.f));
-    view.setSize(sf::Vector2f(sprite.getGlobalBounds().width, 960.f));
+    view.setCenter(sf::Vector2f(sprite.getGlobalBounds().width / 2, 800.f));
+    view.setSize(sf::Vector2f(sprite.getGlobalBounds().width, 1280.f));
     win.setView(view);
 }
 void floorScene::update(sf::RenderWindow& window){
     deltaTime = clock.restart().asSeconds(); // 이전 프레임과 현재 프레임 사이 시간
     sf::Event event;
+    float scrollSpeed = 50.f; //스크롤 +1-1에 얼마나 움직이는지
+    sf::Vector2f center = view.getCenter(); //보이는 화면 중심값
     while (window.pollEvent(event)) {
-        //event.MouseWheelScrolled(1);
+        if (event.type == sf::Event::MouseWheelScrolled) {
+            if (event.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel && event.mouseWheelScroll.delta > 0) {
+                center.y -= scrollSpeed; // 위로 이동
+            }
+                
+            else if(event.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel && event.mouseWheelScroll.delta < 0) {
+                    center.y += scrollSpeed; // 아래로 이동
+            }
+        }
     }
+    view.setCenter(center); // 중심값 재설정
+    window.setView(view); // 뷰 이동.
 }
 
 void floorScene::render(sf::RenderWindow& window){
@@ -298,7 +310,7 @@ void floorScene::moveStart() {
 }
 void floorScene::cameraMove(sf::Sprite& sprite) {
    //마우스 휠로 움직일 수 있게끔 하기. (세피리아 방식)
-
+    
 }
 
 //battleScene
