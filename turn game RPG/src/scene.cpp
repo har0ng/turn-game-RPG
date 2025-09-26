@@ -274,10 +274,11 @@ void mapScene::updateAppear(sf::Sprite& sprite) {
 
 //floorScene
 floorScene::floorScene(sf::RenderWindow& win, sf::Font& font, sf::Texture& tex) :
-    window(win), log(win), view(sf::Vector2f(860.f, 480.f), sf::Vector2f(0.f, 0.f))
+    window(win), log(win), view(sf::Vector2f(0.f, 0.f), sf::Vector2f(0.f, 0.f))
 {
     window.setView(window.getDefaultView()); //mapScene에서의 zoom 풀기
     sprite.setTexture(tex);
+    view.setCenter(sf::Vector2f(sprite.getGlobalBounds().width / 2, 480.f));
     view.setSize(sf::Vector2f(sprite.getGlobalBounds().width, 960.f));
     win.setView(view);
 }
@@ -285,7 +286,7 @@ void floorScene::update(sf::RenderWindow& window){
     deltaTime = clock.restart().asSeconds(); // 이전 프레임과 현재 프레임 사이 시간
     sf::Event event;
     while (window.pollEvent(event)) {
-        
+        //event.MouseWheelScrolled(1);
     }
 }
 
