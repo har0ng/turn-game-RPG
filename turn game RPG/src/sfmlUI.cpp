@@ -306,7 +306,13 @@ bool mouse::getVisible() {
 	return visible;
 }
 void mouse::draw(sf::RenderWindow& window) {
+	sf::View currentView = window.getView(); //마우스를 위해 현재 view를 저장
+	sf::View uiView(sf::FloatRect(0, 0, window.getSize().x, window.getSize().y)); //마우스를 위해 view가 아닌 게임 창크기 저장
+	window.setView(uiView);
+	sf::Vector2i pixelPos = sf::Mouse::getPosition(window);// 마우스 좌표: 픽셀 그대로 사용 
+	sprite.setPosition(sf::Vector2f(pixelPos)); // worldPos 아님! 
 	window.draw(sprite);
+	window.setView(currentView); // 화면 업데이트전 창크기 기준에서 view 기준으로 그려질 화면 크기 돌리기
 }
 void mouse::position(sf::Vector2f worldPos) {
 	sprite.setPosition(worldPos);

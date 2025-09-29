@@ -94,7 +94,7 @@ class mouse { //마우스
 private:
 	sf::Texture texture;
 	sf::Sprite sprite;
-	bool visible = false;
+	bool visible = false; //마우스 스프라이트 감출지 안감출지
 public:
 	mouse(sf::RenderWindow& win, sf::Texture& tex);
 	float getSizeX();

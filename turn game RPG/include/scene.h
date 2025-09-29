@@ -17,7 +17,9 @@ protected:
 	bool appear = false;	// 불러낼지 상태 여부
 	bool fading = false;    // 페이드인 상태 여부
 	sf::Clock clock;        // 버튼마다 시간 관리
-	float deltaTime = 0.f;
+	float deltaTime = 0.f; //딜레이 계산
+	float mainViewX = 0.f; //마우스를 위한 메인 화면 기준 x
+	float mainViewY = 0.f; //마우스를 위한 메인 화면 기준 y
 public:
 	virtual ~scene() = default;
 	//입력(키보드/마우스/창 이벤트)을 처리.
@@ -64,6 +66,7 @@ public:
 	menuScene(sf::RenderWindow& win, sf::Font& font, sf::Texture& tex); //빈 도화지와 폰트를 받아와야함
 	void update(sf::RenderWindow& window) override; //메뉴 화면으로 상태갱신
 	void render(sf::RenderWindow& window) override; //화면 사용자에게 보이게 하기
+	void setMainView(); //마우스의 스프라이트 크기 유지를 위함
 };
 
 class classSelectScene : public scene {// 직업 선택
@@ -81,7 +84,7 @@ public:
 	classSelectScene(sf::RenderWindow& win, sf::Font& font, sf::Texture& tex);//빈 도화지와 폰트
 	void update(sf::RenderWindow& window) override; //메뉴 화면으로 상태갱신
 	void render(sf::RenderWindow& window) override; //화면 사용자에게 보이게 하기
-
+	
 };
 
 class mapScene : public scene { //전체 맵 보여주기
@@ -102,18 +105,15 @@ public:
 class floorScene : public scene {
 private:
 	sf::RenderWindow& window; // 빈 도화지 받아오기
-	sf::Sprite sprite;   // 이미지를 표시할 스프라이트
+	sf::Sprite background;   // 이미지를 표시할 스프라이트
 	sf::View view;
 	sfmlLog log; // 필요할수도 있으니.
-	//std::vector<assortMapSelectButton> assortBtn; // 세부 층 버튼
-	bool move = false; // 카메라 멈춤 상태
-	float moveY = 480.f; //카메라 첫 Y위치
+	std::vector<assortMapSelectButton> assortBtn; // 세부 층 버튼
 public:
 	floorScene(sf::RenderWindow& win, sf::Font& font, sf::Texture& tex);
 	void update(sf::RenderWindow& window) override; //메뉴 화면으로 상태갱신
 	void render(sf::RenderWindow& window) override; //화면 사용자에게 보이게 하기
-	void moveStart();
-	void cameraMove(sf::Sprite& sprite);
+	
 };
 
 class battleScene : public scene {

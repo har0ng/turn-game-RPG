@@ -110,6 +110,10 @@ void menuScene::render(sf::RenderWindow& window) { //draw
     startBtn.draw(window); //부품인 버튼
     endBtn.draw(window); //부품인 버튼
 }
+void menuScene::setMainView() {
+    mainViewX = sprite.getGlobalBounds().width;
+    mainViewY = sprite.getGlobalBounds().height;
+}
 
 //classSelectScene
 classSelectScene::classSelectScene(sf::RenderWindow& win, sf::Font& font, sf::Texture& tex)
@@ -277,12 +281,12 @@ floorScene::floorScene(sf::RenderWindow& win, sf::Font& font, sf::Texture& tex) 
     window(win), log(win), view(sf::Vector2f(0.f, 0.f), sf::Vector2f(0.f, 0.f))
 {
     window.setView(window.getDefaultView()); //mapScene에서의 zoom 풀기
-    sprite.setTexture(tex);
-    view.setCenter(sf::Vector2f(sprite.getGlobalBounds().width / 2, 800.f));
-    view.setSize(sf::Vector2f(sprite.getGlobalBounds().width, 1280.f));
+    background.setTexture(tex); //sprite는 이미지
+    view.setCenter(sf::Vector2f(background.getGlobalBounds().width / 2, 640.f)); //sprite라는 이미지에서 view를 통해 볼 일부분의 center 설정.
+    view.setSize(sf::Vector2f(background.getGlobalBounds().width, 1280.f)); // 1438/1280
     win.setView(view);
 }
-void floorScene::update(sf::RenderWindow& window){
+void floorScene::update(sf::RenderWindow& window) {
     deltaTime = clock.restart().asSeconds(); // 이전 프레임과 현재 프레임 사이 시간
     sf::Event event;
     float scrollSpeed = 50.f; //스크롤 +1-1에 얼마나 움직이는지
@@ -292,26 +296,30 @@ void floorScene::update(sf::RenderWindow& window){
             if (event.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel && event.mouseWheelScroll.delta > 0) {
                 center.y -= scrollSpeed; // 위로 이동
             }
-                
-            else if(event.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel && event.mouseWheelScroll.delta < 0) {
-                    center.y += scrollSpeed; // 아래로 이동
+
+            else if (event.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel && event.mouseWheelScroll.delta < 0) {
+                center.y += scrollSpeed; // 아래로 이동
             }
         }
     }
+    //center.y == 640 , halfSize.y == 640.
+    std::cout << center.y << std::endl;
+    sf::Vector2f halfSize = view.getSize() / 2.0f;//화면(직사각형)의 중심. x,y의 절반이 중심값이 됨.
+    if (center.y < halfSize.y) { center.y = halfSize.y; } //만약 중심값의 y보다 플레이어가 보는 화면의 y값이 작다면 이미지를 나가버림
+    if (center.y > background.getGlobalBounds().height - halfSize.y) {
+        center.y = background.getGlobalBounds().height - halfSize.y;
+    } //반대로 화면을 내렸을 때 총크기의 y - 중심값 y를 넘으면 화면 나가버림
+    //640.f
     view.setCenter(center); // 중심값 재설정
     window.setView(view); // 뷰 이동.
 }
+//0928 오면 스크롤 위아래 갈수 있는곳 제한 걸고 마우스 크기 바꾸고 아이콘 설치하고 클릭되게해서 화면 넘기기..
 
 void floorScene::render(sf::RenderWindow& window){
-    window.draw(sprite);
+    window.draw(background);
 }
-void floorScene::moveStart() {
-    move = true;
-}
-void floorScene::cameraMove(sf::Sprite& sprite) {
-   //마우스 휠로 움직일 수 있게끔 하기. (세피리아 방식)
-    
-}
+
+
 
 //battleScene
 
