@@ -105,15 +105,19 @@ public:
 class floorScene : public scene {
 private:
 	sf::RenderWindow& window; // 빈 도화지 받아오기
-	sf::Sprite background;   // 이미지를 표시할 스프라이트
+	sf::Sprite background; // 이미지를 표시할 스프라이트
 	sf::View view;
 	sfmlLog log; // 필요할수도 있으니.
 	std::vector<assortMapSelectButton> assortBtn; // 세부 층 버튼
+	std::vector <std::vector<assortMapSelectButton>> assortBtns; //세부층 버튼들의 집합 나누기
+	int firstAssortMapCnt;//층별 처음 만들어지는 맵 개수, 이후 맵 개수
+	int floorCnt = 1;// 몇층인지 세기 위함, default == 1
 public:
 	floorScene(sf::RenderWindow& win, sf::Font& font, sf::Texture& tex);
 	void update(sf::RenderWindow& window) override; //메뉴 화면으로 상태갱신
 	void render(sf::RenderWindow& window) override; //화면 사용자에게 보이게 하기
-	
+	void setFirstAssortMapCnt(int floor); //첫번째 만들어질 맵 개수 저장시키기
+	void pushAssortMap(int assortMapCnt, assortMapSelectButton button);
 };
 
 class battleScene : public scene {

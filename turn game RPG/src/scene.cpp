@@ -285,6 +285,7 @@ floorScene::floorScene(sf::RenderWindow& win, sf::Font& font, sf::Texture& tex) 
     view.setCenter(sf::Vector2f(background.getGlobalBounds().width / 2, 640.f)); //sprite라는 이미지에서 view를 통해 볼 일부분의 center 설정.
     view.setSize(sf::Vector2f(background.getGlobalBounds().width, 1280.f)); // 1438/1280
     win.setView(view);
+    setFirstAssortMapCnt(floorCnt);
 }
 void floorScene::update(sf::RenderWindow& window) {
     deltaTime = clock.restart().asSeconds(); // 이전 프레임과 현재 프레임 사이 시간
@@ -303,7 +304,6 @@ void floorScene::update(sf::RenderWindow& window) {
         }
     }
     //center.y == 640 , halfSize.y == 640.
-    std::cout << center.y << std::endl;
     sf::Vector2f halfSize = view.getSize() / 2.0f;//화면(직사각형)의 중심. x,y의 절반이 중심값이 됨.
     if (center.y < halfSize.y) { center.y = halfSize.y; } //만약 중심값의 y보다 플레이어가 보는 화면의 y값이 작다면 이미지를 나가버림
     if (center.y > background.getGlobalBounds().height - halfSize.y) {
@@ -313,13 +313,45 @@ void floorScene::update(sf::RenderWindow& window) {
     view.setCenter(center); // 중심값 재설정
     window.setView(view); // 뷰 이동.
 }
-//0928 오면 스크롤 위아래 갈수 있는곳 제한 걸고 마우스 크기 바꾸고 아이콘 설치하고 클릭되게해서 화면 넘기기..
-
 void floorScene::render(sf::RenderWindow& window){
     window.draw(background);
 }
-
-
+void floorScene::setFirstAssortMapCnt(int floor) {
+    switch (floor){
+    case 1:
+        firstAssortMapCnt = 6;
+        break;
+    case 2:
+        firstAssortMapCnt = 6;
+        break;
+    case 3:
+        firstAssortMapCnt = 5;
+        break;
+    case 4:
+        firstAssortMapCnt = 4;
+        break;
+    case 5:
+        firstAssortMapCnt = 4;
+        break;
+    case 6:
+        firstAssortMapCnt = 4;
+        break;
+    case 7:
+        firstAssortMapCnt = 2;
+        break;
+    default:
+        break;
+    }
+}
+void floorScene::pushAssortMap(int assortMapCnt, assortMapSelectButton button) { //button 정의 필요, map과 연결 필요
+    while (assortMapCnt > 0) {
+        for (int i = 0; i < assortMapCnt; i++) {
+            assortBtn.push_back(button);
+        }
+        assortBtns.push_back(assortBtn);
+        assortMapCnt -= 1;
+    }
+}
 
 //battleScene
 

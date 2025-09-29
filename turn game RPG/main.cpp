@@ -85,8 +85,8 @@ int main() {
     } while (start != 1 && start != 2);
 
     std::unique_ptr<player> myPlayer = std::make_unique<player>(); // 객체 만들어짐 ,한번만
-
-    std::vector<room> gameMap = upperPartCreateMap();
+    mapRoom map;
+    std::vector<room> gameMap = map.upperPartCreateMap();
      
     {// 시작하자마자 직업 선택
         std::unique_ptr<enemy> dummyEnemy = std::make_unique<enemy>(); //에너미 객체가없으면 못만들어서 더미로 만들어둠

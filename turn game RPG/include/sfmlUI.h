@@ -1,5 +1,6 @@
 ﻿//sfmlUI.h
 #pragma once
+#include "resourceManager.h"
 
 #include <SFML/Graphics.hpp>
 
@@ -83,8 +84,14 @@ public:
 };
 
 class assortMapSelectButton : public button {
+private:
+	resourceManager res;
+	sf::Sprite button;
+	sf::Texture& rest;
+	sf::Texture& monster;
+	sf::Texture& boss;
 public:
-	assortMapSelectButton(sf::Texture texture, float x, float y);
+	assortMapSelectButton();
 	void draw(sf::RenderWindow& win) override; // 모든버튼 그리기
 	bool isClicked(sf::Vector2f mousePos) override;//클릭 이벤트
 	void outlineColormanager(sf::Vector2f mousePos) override; //버튼 호버시 아웃라인 색 변경
@@ -92,7 +99,6 @@ public:
 
 class mouse { //마우스
 private:
-	sf::Texture texture;
 	sf::Sprite sprite;
 	bool visible = false; //마우스 스프라이트 감출지 안감출지
 public:

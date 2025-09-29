@@ -275,13 +275,16 @@ void backButton::outlineColormanager(sf::Vector2f mousePos){
 }
 
 //assortMapSelectButton(미완성)
-assortMapSelectButton::assortMapSelectButton(sf::Texture texture, float x, float y) {
-	//texture.loadFromFile();
-	sf::Sprite sprite;
-	sprite.setTexture(texture);
+assortMapSelectButton::assortMapSelectButton(): 
+	rest(res.getTexture("heal")),
+	monster(res.getTexture("heal")), //바꿔야함
+	boss(res.getTexture("heal")) //바꿔야함
+
+{
+	button.setTexture(rest); //texture를 sprite화 시킴
 }
 void assortMapSelectButton::draw(sf::RenderWindow& win){
-
+	win.draw(button);
 }
 bool assortMapSelectButton::isClicked(sf::Vector2f mousePos){
 	return false;
@@ -290,6 +293,7 @@ void assortMapSelectButton::outlineColormanager(sf::Vector2f mousePos){
 
 }
 
+//mouse
 mouse::mouse(sf::RenderWindow& window, sf::Texture& tex)
 {
 	sprite.setTexture(tex);// 마우스
