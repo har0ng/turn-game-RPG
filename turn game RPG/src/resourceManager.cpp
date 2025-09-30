@@ -28,7 +28,9 @@ void resourceManager::loadAll() {
     loadTexture("mapBg", "assets/images/map1.png");
     loadTexture("floorBg", "assets/images/1Floor.png");
     loadTexture("cursor", "assets/images/mouse.png");
-    loadTexture("heal", "assets/images/heal.jpeg");
+    loadTexture("heal", "assets/images/heal.png");
+    loadTexture("boss", "assets/images/boss.png");
+    loadTexture("enemy", "assets/images/enemy.png");
 
     loadFont("normal", "assets/fonts/smartfont.otf");
     loadFont("fantasy", "assets/fonts/Nosutaru-dotMPlusH-10-Regular.ttf");

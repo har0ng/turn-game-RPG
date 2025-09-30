@@ -88,13 +88,17 @@ private:
 	resourceManager res;
 	sf::Sprite button;
 	sf::Texture& rest;
-	sf::Texture& monster;
+	sf::Texture& enemy;
 	sf::Texture& boss;
+	std::string descripted;
 public:
-	assortMapSelectButton();
+	assortMapSelectButton(std::string roomName,resourceManager& res);
 	void draw(sf::RenderWindow& win) override; // 모든버튼 그리기
 	bool isClicked(sf::Vector2f mousePos) override;//클릭 이벤트
 	void outlineColormanager(sf::Vector2f mousePos) override; //버튼 호버시 아웃라인 색 변경
+	void setPosition(sf::Vector2f pos); //맵 하나하나 위치
+	std::string getDescripted();
+	
 };
 
 class mouse { //마우스

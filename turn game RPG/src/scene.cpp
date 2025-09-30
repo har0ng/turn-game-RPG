@@ -277,17 +277,19 @@ void mapScene::updateAppear(sf::Sprite& sprite) {
 }
 
 //floorScene
-floorScene::floorScene(sf::RenderWindow& win, sf::Font& font, sf::Texture& tex) :
+floorScene::floorScene(sf::RenderWindow& win, resourceManager& res):
     window(win), log(win), view(sf::Vector2f(0.f, 0.f), sf::Vector2f(0.f, 0.f))
 {
     window.setView(window.getDefaultView()); //mapScene에서의 zoom 풀기
-    background.setTexture(tex); //sprite는 이미지
+    background.setTexture(res.getTexture("floorBg")); //sprite는 이미지
     view.setCenter(sf::Vector2f(background.getGlobalBounds().width / 2, 640.f)); //sprite라는 이미지에서 view를 통해 볼 일부분의 center 설정.
     view.setSize(sf::Vector2f(background.getGlobalBounds().width, 1280.f)); // 1438/1280
     win.setView(view);
-    setFirstAssortMapCnt(floorCnt);
+    setFirstAssortMapCnt(floorCnt); //층수에 알맞은 첫 세부층의 방 개수 구하기
+    pushAssortMap(firstAssortMapCnt, res); //세부방의 개수를 이용한 세부의 세부층 구분
 }
 void floorScene::update(sf::RenderWindow& window) {
+    
     deltaTime = clock.restart().asSeconds(); // 이전 프레임과 현재 프레임 사이 시간
     sf::Event event;
     float scrollSpeed = 50.f; //스크롤 +1-1에 얼마나 움직이는지
@@ -313,8 +315,44 @@ void floorScene::update(sf::RenderWindow& window) {
     view.setCenter(center); // 중심값 재설정
     window.setView(view); // 뷰 이동.
 }
-void floorScene::render(sf::RenderWindow& window){
+void floorScene::render(sf::RenderWindow& window) {
     window.draw(background);
+    sf::FloatRect test = background.getGlobalBounds();//  1438/2560
+    // --- 버튼 그리기 --- //bg GlobalBounds 에 따른 좌표 설정 필요 아래 다 뜯어 고칠 것.
+    float startY = 480.f;      // 제일 위 Y 좌표
+    float gapY = 300.f;        // 층 간격
+    float centerX = window.getSize().x / 2.45f; //x좌표 기준 어디서 시작할지
+    float buttonWidth = 120.f;  // 버튼 폭 (실제 스프라이트 기준)
+    float gapX;
+
+    for (int floor = 0; floor < assortBtns.size(); floor++) {
+        int numButtons = assortBtns[floor].size();
+
+        if (numButtons > 1)
+            gapX = 200.f / (numButtons - 1);
+        else
+            gapX = 0.f;
+
+        float totalWidth = buttonWidth * numButtons + gapX * (numButtons - 1);
+        float startX = centerX - totalWidth / 2.f;
+
+        float posY = startY + floor * gapY;
+
+        for (int i = 0; i < numButtons; i++) {
+            if (assortBtns[floor][i].getDescripted() == "enemy") {
+                assortBtns[floor][i].setPosition(sf::Vector2f(startX + i * (buttonWidth + gapX), posY));
+                assortBtns[floor][i].draw(window);
+            }
+            else if (assortBtns[floor][i].getDescripted() == "rest") {
+                assortBtns[floor][i].setPosition(sf::Vector2f(startX + i * (buttonWidth + gapX + 10), posY + 10));
+                assortBtns[floor][i].draw(window);
+            }
+            else if (assortBtns[floor][i].getDescripted() == "boss") {
+                assortBtns[floor][i].setPosition(sf::Vector2f(startX + i * (buttonWidth + gapX - 10), posY));
+                assortBtns[floor][i].draw(window);
+            }
+        }
+    }
 }
 void floorScene::setFirstAssortMapCnt(int floor) {
     switch (floor){
@@ -343,16 +381,25 @@ void floorScene::setFirstAssortMapCnt(int floor) {
         break;
     }
 }
-void floorScene::pushAssortMap(int assortMapCnt, assortMapSelectButton button) { //button 정의 필요, map과 연결 필요
-    while (assortMapCnt > 0) {
-        for (int i = 0; i < assortMapCnt; i++) {
-            assortBtn.push_back(button);
+void floorScene::pushAssortMap(int assortMapCnt, resourceManager& res) { //각 방 무슨 이벤트 발생하는지 map과 연결해 정의
+    std::vector<room> gameMap = map.upperPartCreateMap(); //맵 만들어놓기.
+    std::vector<std::string> roomName;
+    for (auto it = gameMap.begin(); it != gameMap.end(); ++it) { //무슨 방인지 이름만 불러옴
+        if (it->name != "start") {
+            roomName.push_back(it->name);
         }
-        assortBtns.push_back(assortBtn);
+    }
+    int roomCnt = 0;
+    while (assortMapCnt > 0) {
+        for (int i = 0; i < assortMapCnt && roomCnt < (int)roomName.size(); i++) { //이름에 맞춰 아이콘 설정. 에너미와 보스는 아이콘 새로 만들필요 있음
+            assortBtn.push_back(assortMapSelectButton(roomName[roomCnt], res));
+            roomCnt++;
+        }
+        assortBtns.push_back(assortBtn); //1-1,1-2,1-3 등 구분을 위해 clear()까지 써가며 구분.
+        assortBtn.clear();
         assortMapCnt -= 1;
     }
 }
-
 //battleScene
 
 
