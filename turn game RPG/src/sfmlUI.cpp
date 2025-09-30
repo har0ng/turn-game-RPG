@@ -309,6 +309,9 @@ void assortMapSelectButton::setPosition(sf::Vector2f pos) {
 std::string assortMapSelectButton::getDescripted() {
 	return descripted;
 }
+sf::Sprite assortMapSelectButton::getButton() {
+	return button;
+}
 
 //mouse
 mouse::mouse(sf::RenderWindow& window, sf::Texture& tex)

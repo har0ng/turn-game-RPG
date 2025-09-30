@@ -98,7 +98,7 @@ public:
 	void outlineColormanager(sf::Vector2f mousePos) override; //버튼 호버시 아웃라인 색 변경
 	void setPosition(sf::Vector2f pos); //맵 하나하나 위치
 	std::string getDescripted();
-	
+	sf::Sprite getButton();
 };
 
 class mouse { //마우스

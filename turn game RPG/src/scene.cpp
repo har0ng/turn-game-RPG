@@ -229,12 +229,19 @@ mapScene::mapScene(sf::RenderWindow& win, sf::Font& font, sf::Texture& tex)
 void mapScene::update(sf::RenderWindow& window){
     deltaTime = clock.restart().asSeconds(); // 이전 프레임과 현재 프레임 사이 시간
     elapsed += deltaTime;
+    sf::Event event;
     if (elapsed >= 13.f) {
         finished = true;
     }
     if (sprite.getColor().a == static_cast<sf::Uint8>(180.f) && elapsed >= 7.f) {
         startFade();
     }
+    while (window.pollEvent(event)) {//이벤트가 있다면 계속 반복
+        if (event.type == sf::Event::Closed) { //만약 event 타입으로써 닫기 event가 일어나면
+            window.close();//창이 닫힌다
+        }
+    }
+
     updateAppear(sprite); //while 밖인 이유는 event(마우스 키보드등)이 없다면 while이 실행이 안됨.
     updateFade(sprite);
 }
@@ -289,12 +296,14 @@ floorScene::floorScene(sf::RenderWindow& win, resourceManager& res):
     pushAssortMap(firstAssortMapCnt, res); //세부방의 개수를 이용한 세부의 세부층 구분
 }
 void floorScene::update(sf::RenderWindow& window) {
-    
     deltaTime = clock.restart().asSeconds(); // 이전 프레임과 현재 프레임 사이 시간
     sf::Event event;
     float scrollSpeed = 50.f; //스크롤 +1-1에 얼마나 움직이는지
     sf::Vector2f center = view.getCenter(); //보이는 화면 중심값
     while (window.pollEvent(event)) {
+        if (event.type == sf::Event::Closed) { //만약 event 타입으로써 닫기 event가 일어나면
+            window.close();//창이 닫힌다
+        }
         if (event.type == sf::Event::MouseWheelScrolled) {
             if (event.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel && event.mouseWheelScroll.delta > 0) {
                 center.y -= scrollSpeed; // 위로 이동
@@ -317,19 +326,28 @@ void floorScene::update(sf::RenderWindow& window) {
 }
 void floorScene::render(sf::RenderWindow& window) {
     window.draw(background);
-    sf::FloatRect test = background.getGlobalBounds();//  1438/2560
-    // --- 버튼 그리기 --- //bg GlobalBounds 에 따른 좌표 설정 필요 아래 다 뜯어 고칠 것.
-    float startY = 480.f;      // 제일 위 Y 좌표
-    float gapY = 300.f;        // 층 간격
-    float centerX = window.getSize().x / 2.45f; //x좌표 기준 어디서 시작할지
-    float buttonWidth = 120.f;  // 버튼 폭 (실제 스프라이트 기준)
+
+    float bgWidth = background.getGlobalBounds().width;
+    float bgHeight = background.getGlobalBounds().height;
+
+    // 버튼 초기 Y 위치: 배경 높이의 50% 정도로 중앙 근처에서 시작
+    float startY = bgHeight * 0.16;
+    // 층 간격: 배경 높이 기준 10~12% 정도
+    float gapY = bgHeight * 0.12f;
+
+    float centerX = bgWidth / 2.0f;
+
+    float buttonWidthRatio = 0.08f; // 버튼 폭 = 배경 너비의 8%
+    float buttonWidth;
     float gapX;
 
     for (int floor = 0; floor < assortBtns.size(); floor++) {
         int numButtons = assortBtns[floor].size();
 
+        buttonWidth = bgWidth * buttonWidthRatio;
+
         if (numButtons > 1)
-            gapX = 200.f / (numButtons - 1);
+            gapX = (bgWidth * 0.12f) / (numButtons - 1); // 버튼 사이 간격
         else
             gapX = 0.f;
 
@@ -339,18 +357,17 @@ void floorScene::render(sf::RenderWindow& window) {
         float posY = startY + floor * gapY;
 
         for (int i = 0; i < numButtons; i++) {
-            if (assortBtns[floor][i].getDescripted() == "enemy") {
-                assortBtns[floor][i].setPosition(sf::Vector2f(startX + i * (buttonWidth + gapX), posY));
-                assortBtns[floor][i].draw(window);
-            }
-            else if (assortBtns[floor][i].getDescripted() == "rest") {
-                assortBtns[floor][i].setPosition(sf::Vector2f(startX + i * (buttonWidth + gapX + 10), posY + 10));
-                assortBtns[floor][i].draw(window);
+            sf::Vector2f pos(startX + i * (buttonWidth + gapX), posY);
+
+            if (assortBtns[floor][i].getDescripted() == "rest") {
+                pos += sf::Vector2f(buttonWidth * 0.1f, buttonWidth * 0.1f);
             }
             else if (assortBtns[floor][i].getDescripted() == "boss") {
-                assortBtns[floor][i].setPosition(sf::Vector2f(startX + i * (buttonWidth + gapX - 10), posY));
-                assortBtns[floor][i].draw(window);
+                pos += sf::Vector2f(-buttonWidth * 2.0f, -100.f);
             }
+
+            assortBtns[floor][i].setPosition(pos);
+            assortBtns[floor][i].draw(window);
         }
     }
 }
