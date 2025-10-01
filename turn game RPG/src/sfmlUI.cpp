@@ -306,9 +306,13 @@ void assortMapSelectButton::outlineColormanager(sf::Vector2f mousePos) {
 }
 void assortMapSelectButton::spriteScaleManager(sf::Vector2f mousePos){
 	bounds = button.getLocalBounds();
-    if (button.getGlobalBounds().contains(mousePos)) {
-        button.setScale(1.1f, 1.1f);  // 절대값
-    } else {
+    if (button.getGlobalBounds().contains(mousePos) && roomInformation.name != "boss") {
+        button.setScale(1.05f, 1.05f);  // 절대값
+	}
+	else if (button.getGlobalBounds().contains(mousePos) && roomInformation.name == "boss") {
+		button.setScale(1.02f, 1.02f);
+	}
+	else {
         button.setScale(1.f, 1.f);  // 원래 크기
     }
 }
