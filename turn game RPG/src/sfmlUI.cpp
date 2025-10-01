@@ -301,8 +301,16 @@ void assortMapSelectButton::draw(sf::RenderWindow& win){
 bool assortMapSelectButton::isClicked(sf::Vector2f mousePos){
 	return false;
 }
-void assortMapSelectButton::outlineColormanager(sf::Vector2f mousePos){
-
+void assortMapSelectButton::outlineColormanager(sf::Vector2f mousePos) {
+	return;
+}
+void assortMapSelectButton::spriteScaleManager(sf::Vector2f mousePos){
+	bounds = button.getLocalBounds();
+    if (button.getGlobalBounds().contains(mousePos)) {
+        button.setScale(1.1f, 1.1f);  // 절대값
+    } else {
+        button.setScale(1.f, 1.f);  // 원래 크기
+    }
 }
 void assortMapSelectButton::setPosition(sf::Vector2f pos) {
 	button.setPosition(pos);
@@ -316,6 +324,7 @@ sf::Sprite assortMapSelectButton::getButton() {
 room assortMapSelectButton::getRoomInformation() {
 	return roomInformation;
 }
+
 //mouse
 mouse::mouse(sf::RenderWindow& window, sf::Texture& tex)
 {

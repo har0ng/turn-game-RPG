@@ -481,7 +481,7 @@ void consoleUI::acitveYou(int finalAttack){
 void consoleUI::connectMap(int optionNumber, const room& nextRoom) {
     std::cout << optionNumber << ": room ID " << nextRoom.id
         << " / roomType: " << nextRoom.name
-        << " / 説明: " << nextRoom.describe << "\n";
+        << " / 説明: " << nextRoom.description << "\n";
     cout << endl;
     cout << endl;
 }

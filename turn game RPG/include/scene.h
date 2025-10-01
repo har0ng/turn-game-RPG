@@ -115,6 +115,7 @@ private:
 	std::vector<std::vector<assortMapSelectButton>> assortBtns;  //세부층 버튼들의 집합 나누기
 	int firstAssortMapCnt;//층별 처음 만들어지는 맵 개수, 이후 맵 개수
 	int floorCnt = 1;// 몇층인지 세기 위함, default == 1
+	bool focusRoom = false;
 public:
 	floorScene(sf::RenderWindow& win, resourceManager& res);
 	void update(sf::RenderWindow& window) override; //메뉴 화면으로 상태갱신

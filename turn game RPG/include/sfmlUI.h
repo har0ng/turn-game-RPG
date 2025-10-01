@@ -87,6 +87,7 @@ public:
 class assortMapSelectButton : public button {
 private:
 	sf::Sprite button;
+	sf::FloatRect bounds;
 	sf::Texture& rest;
 	sf::Texture& enemy;
 	sf::Texture& boss;
@@ -96,6 +97,7 @@ public:
 	void draw(sf::RenderWindow& win) override; // 모든버튼 그리기
 	bool isClicked(sf::Vector2f mousePos) override;//클릭 이벤트
 	void outlineColormanager(sf::Vector2f mousePos) override; //버튼 호버시 아웃라인 색 변경
+	void spriteScaleManager(sf::Vector2f mousePos);
 	void setPosition(sf::Vector2f pos); //맵 하나하나 위치
 	sf::Vector2f getPosition();
 	sf::Sprite getButton();
