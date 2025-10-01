@@ -1,6 +1,7 @@
 ﻿//sfmlUI.h
 #pragma once
 #include "resourceManager.h"
+#include "map.h"
 
 #include <SFML/Graphics.hpp>
 
@@ -85,20 +86,20 @@ public:
 
 class assortMapSelectButton : public button {
 private:
-	resourceManager res;
 	sf::Sprite button;
 	sf::Texture& rest;
 	sf::Texture& enemy;
 	sf::Texture& boss;
-	std::string descripted;
+	room roomInformation;
 public:
-	assortMapSelectButton(std::string roomName,resourceManager& res);
+	assortMapSelectButton(room roomInfo,resourceManager& res);
 	void draw(sf::RenderWindow& win) override; // 모든버튼 그리기
 	bool isClicked(sf::Vector2f mousePos) override;//클릭 이벤트
 	void outlineColormanager(sf::Vector2f mousePos) override; //버튼 호버시 아웃라인 색 변경
 	void setPosition(sf::Vector2f pos); //맵 하나하나 위치
-	std::string getDescripted();
+	sf::Vector2f getPosition();
 	sf::Sprite getButton();
+	room getRoomInformation();
 };
 
 class mouse { //마우스

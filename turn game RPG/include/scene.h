@@ -119,6 +119,8 @@ public:
 	floorScene(sf::RenderWindow& win, resourceManager& res);
 	void update(sf::RenderWindow& window) override; //메뉴 화면으로 상태갱신
 	void render(sf::RenderWindow& window) override; //화면 사용자에게 보이게 하기
+	void imageDraw(float bgWidth, float bgHeight); //이미지 그리기
+	void lineDraw(sf::RenderWindow& window); //이미지 to 이미지 선 그리기
 	void setFirstAssortMapCnt(int floor); //첫번째 만들어질 맵 개수 저장시키기
 	void pushAssortMap(int assortMapCnt, resourceManager& res);
 };

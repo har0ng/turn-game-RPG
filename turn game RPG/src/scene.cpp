@@ -298,7 +298,7 @@ floorScene::floorScene(sf::RenderWindow& win, resourceManager& res):
 void floorScene::update(sf::RenderWindow& window) {
     deltaTime = clock.restart().asSeconds(); // 이전 프레임과 현재 프레임 사이 시간
     sf::Event event;
-    float scrollSpeed = 50.f; //스크롤 +1-1에 얼마나 움직이는지
+    float scrollSpeed = 90.f; //스크롤 +1-1에 얼마나 움직이는지
     sf::Vector2f center = view.getCenter(); //보이는 화면 중심값
     while (window.pollEvent(event)) {
         if (event.type == sf::Event::Closed) { //만약 event 타입으로써 닫기 event가 일어나면
@@ -326,10 +326,10 @@ void floorScene::update(sf::RenderWindow& window) {
 }
 void floorScene::render(sf::RenderWindow& window) {
     window.draw(background);
-
-    float bgWidth = background.getGlobalBounds().width;
-    float bgHeight = background.getGlobalBounds().height;
-
+    imageDraw(background.getGlobalBounds().width, background.getGlobalBounds().height);
+    lineDraw(window);
+}
+void floorScene::imageDraw(float bgWidth, float bgHeight) {
     // 버튼 초기 Y 위치: 배경 높이의 50% 정도로 중앙 근처에서 시작
     float startY = bgHeight * 0.16;
     // 층 간격: 배경 높이 기준 10~12% 정도
@@ -346,11 +346,12 @@ void floorScene::render(sf::RenderWindow& window) {
 
         buttonWidth = bgWidth * buttonWidthRatio;
 
-        if (numButtons > 1)
-            gapX = (bgWidth * 0.12f) / (numButtons - 1); // 버튼 사이 간격
-        else
+        if (numButtons > 1) {
+            gapX = (bgWidth * 0.12f) / (numButtons - 1);
+        }// 버튼 사이 간격
+        else {
             gapX = 0.f;
-
+        }
         float totalWidth = buttonWidth * numButtons + gapX * (numButtons - 1);
         float startX = centerX - totalWidth / 2.f;
 
@@ -359,10 +360,10 @@ void floorScene::render(sf::RenderWindow& window) {
         for (int i = 0; i < numButtons; i++) {
             sf::Vector2f pos(startX + i * (buttonWidth + gapX), posY);
 
-            if (assortBtns[floor][i].getDescripted() == "rest") {
+            if (assortBtns[floor][i].getRoomInformation().name == "rest") {
                 pos += sf::Vector2f(buttonWidth * 0.1f, buttonWidth * 0.1f);
             }
-            else if (assortBtns[floor][i].getDescripted() == "boss") {
+            else if (assortBtns[floor][i].getRoomInformation().name == "boss") {
                 pos += sf::Vector2f(-buttonWidth * 2.0f, -100.f);
             }
 
@@ -400,23 +401,61 @@ void floorScene::setFirstAssortMapCnt(int floor) {
 }
 void floorScene::pushAssortMap(int assortMapCnt, resourceManager& res) { //각 방 무슨 이벤트 발생하는지 map과 연결해 정의
     std::vector<room> gameMap = map.upperPartCreateMap(); //맵 만들어놓기.
-    std::vector<std::string> roomName;
-    for (auto it = gameMap.begin(); it != gameMap.end(); ++it) { //무슨 방인지 이름만 불러옴
-        if (it->name != "start") {
-            roomName.push_back(it->name);
-        }
-    }
-    int roomCnt = 0;
+    auto mapIndex = 1;
     while (assortMapCnt > 0) {
-        for (int i = 0; i < assortMapCnt && roomCnt < (int)roomName.size(); i++) { //이름에 맞춰 아이콘 설정. 에너미와 보스는 아이콘 새로 만들필요 있음
-            assortBtn.push_back(assortMapSelectButton(roomName[roomCnt], res));
-            roomCnt++;
+        for (int i = 0; i < assortMapCnt && mapIndex < gameMap.size(); i++) {
+            assortBtn.push_back(assortMapSelectButton(gameMap[mapIndex],res));
+            mapIndex++;
         }
-        assortBtns.push_back(assortBtn); //1-1,1-2,1-3 등 구분을 위해 clear()까지 써가며 구분.
-        assortBtn.clear();
         assortMapCnt -= 1;
+        assortBtns.push_back(assortBtn);
+        assortBtn.clear();
     }
 }
+void floorScene::lineDraw(sf::RenderWindow& window) {
+    for (auto it = assortBtns.begin(); it != assortBtns.end(); ++it) {
+        for (auto& roomInfo : *it) { //roomInfo == assortMapSelectButton
+            sf::Vector2f start( //메인 sprite 의 중앙 아래
+                roomInfo.getPosition().x + roomInfo.getButton().getGlobalBounds().width / 2,
+                roomInfo.getPosition().y + roomInfo.getButton().getGlobalBounds().height
+            );
+            // 다음 층 찾기
+            auto nextIt = std::next(it); // 다음층 정보
+            if (nextIt == assortBtns.end()) continue;
+
+            for (int targetId : roomInfo.getRoomInformation().connectedRoom) {
+                for (auto& nextRoom : *nextIt) {
+                    if (nextRoom.getRoomInformation().id == targetId) {
+                        sf::Vector2f end( //이어지는 sprite의 중앙 위
+                            nextRoom.getPosition().x + nextRoom.getButton().getGlobalBounds().width / 2,
+                            nextRoom.getPosition().y
+                        );
+
+                        // 두 점 사이의 벡터
+                        sf::Vector2f direction = end - start;
+                        float length = std::sqrt(direction.x * direction.x + direction.y * direction.y);
+                        float angle = std::atan2(direction.y, direction.x) * 180.f / 3.14159f;
+
+                        // 굵은 직사각형으로 선 그리기
+                        sf::RectangleShape thickLine(sf::Vector2f(length, 2.f * 1.f)); // 2배 굵기
+                        thickLine.setPosition(start);
+                        thickLine.setRotation(angle);
+                        thickLine.setFillColor(sf::Color::Black);
+
+                        window.draw(thickLine);
+                    }
+                }
+            }
+        }
+    }
+}
+
 //battleScene
 
-
+/*정리
+애초에 assorBtn을 room 데이터 타입의 vector로 만들어서 거기서 정보를 뽑아와서
+room의 방 타입에 따라 이미지를 구분했어야했음.
+upperPartCreateMap()을 통해 vector<room> map을 그대로 반환 받고
+거기서 room의 roomType을 뽑아내서 그로 구분만하고 그대로 id까지 써서 별 connectedRoom을
+직사각형 검은색 으로써 표현해주는 거임.
+*/

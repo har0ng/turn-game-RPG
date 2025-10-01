@@ -275,23 +275,24 @@ void backButton::outlineColormanager(sf::Vector2f mousePos){
 }
 
 //assortMapSelectButton(미완성)
-assortMapSelectButton::assortMapSelectButton(std::string roomName, resourceManager& res) :
+assortMapSelectButton::assortMapSelectButton(room roomInfo, resourceManager& res) :
 	rest(res.getTexture("heal")),
-	enemy(res.getTexture("enemy")), //바꿔야함
-	boss(res.getTexture("boss"))
+	enemy(res.getTexture("enemy")), 
+	boss(res.getTexture("boss")),
+	roomInformation(roomInfo)
 
 {
-	if (roomName == "rest") {
+	if (roomInfo.name == "rest") {
 		button.setTexture(rest); //texture를 sprite화 시킴
-		descripted = "rest";
+		
 	}
-	else if (roomName == "boss") {
+	else if (roomInfo.name == "boss") {
 		button.setTexture(boss); //texture를 sprite화 시킴
-		descripted = "boss";
+		
 	}
-	else if (roomName == "enemy") {
+	else if (roomInfo.name == "enemy") {
 		button.setTexture(enemy); //texture를 sprite화 시킴
-		descripted = "enemy";
+		
 	}
 }
 void assortMapSelectButton::draw(sf::RenderWindow& win){
@@ -306,13 +307,15 @@ void assortMapSelectButton::outlineColormanager(sf::Vector2f mousePos){
 void assortMapSelectButton::setPosition(sf::Vector2f pos) {
 	button.setPosition(pos);
 }
-std::string assortMapSelectButton::getDescripted() {
-	return descripted;
+sf::Vector2f assortMapSelectButton::getPosition() {
+	return button.getPosition();
 }
 sf::Sprite assortMapSelectButton::getButton() {
 	return button;
 }
-
+room assortMapSelectButton::getRoomInformation() {
+	return roomInformation;
+}
 //mouse
 mouse::mouse(sf::RenderWindow& window, sf::Texture& tex)
 {
