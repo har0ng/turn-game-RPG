@@ -111,7 +111,7 @@ private:
 	sf::View view;
 	sfmlLog log; // 필요할수도 있으니.
 	mapRoom map; //맵 정보를 만들 리소스 미리 불러오기
-	
+	assortMapLine line;
 	std::vector < assortMapSelectButton > assortBtn; // 세부 층 버튼
 	std::vector<std::vector<assortMapSelectButton>> assortBtns;  //세부층 버튼들의 집합 나누기
 	int firstAssortMapCnt;//층별 처음 만들어지는 맵 개수, 이후 맵 개수
@@ -121,8 +121,16 @@ public:
 	void update(sf::RenderWindow& window) override; //메뉴 화면으로 상태갱신
 	void render(sf::RenderWindow& window) override; //화면 사용자에게 보이게 하기
 	void imageDraw(float bgWidth, float bgHeight); //이미지 그리기
-	void setFirstAssortMapCnt(int floor); //첫번째 만들어질 맵 개수 저장시키기
 	void pushAssortMap(int assortMapCnt, resourceManager& res);
+	
+	//get
+	std::vector<std::vector<assortMapSelectButton>> getAssortBtns(); //line 갱신 목적
+	
+	//set
+	void setFirstAssortMapCnt(int floor); //첫번째 만들어질 맵 개수 저장시키기
+	void setLine(std::vector<std::vector<assortMapSelectButton>> assortBtns); //line 갱신 목적
+	
+	
 };
 
 class battleScene : public scene {

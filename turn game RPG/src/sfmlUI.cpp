@@ -304,10 +304,10 @@ bool assortMapSelectButton::isClicked(sf::Vector2f mousePos){
 void assortMapSelectButton::outlineColormanager(sf::Vector2f mousePos) {
 	return;
 }
-void assortMapSelectButton::spriteScaleManager(sf::Vector2f mousePos){
+void assortMapSelectButton::spriteScaleManager(const sf::Vector2f& mousePos){
 	bounds = button.getLocalBounds();
     if (button.getGlobalBounds().contains(mousePos) && roomInformation.name != "boss") {
-        button.setScale(1.05f, 1.05f);  // 절대값
+		button.setScale(1.05f, 1.05f);  // 절대값
 	}
 	else if (button.getGlobalBounds().contains(mousePos) && roomInformation.name == "boss") {
 		button.setScale(1.02f, 1.02f);
@@ -378,7 +378,16 @@ void assortMapLine::setFillColor(sf::Vector2f& mousePos) {
 		thickLine.setFillColor(sf::Color(122, 122, 122, 130));//버튼 컬러
 	}
 }
-
+void assortMapLine::setAssortBtns(const std::vector<std::vector<assortMapSelectButton>>& srcBtns) {
+	assortBtns.clear();
+	for (auto& assortBtn : srcBtns) {
+		std::vector<assortMapSelectButton> test;
+		for (auto& roomInfo : assortBtn) {
+			test.push_back(roomInfo);
+		}
+		assortBtns.push_back(test);
+	}
+}
 //mouse
 mouse::mouse(sf::RenderWindow& window, sf::Texture& tex)
 {

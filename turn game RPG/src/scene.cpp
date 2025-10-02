@@ -285,6 +285,7 @@ void mapScene::updateAppear(sf::Sprite& sprite) {
 //floorScene
 floorScene::floorScene(sf::RenderWindow& win, resourceManager& res) :
     window(win), log(win), view(sf::Vector2f(0.f, 0.f), sf::Vector2f(0.f, 0.f))
+    , line(assortBtns)
 {
     window.setView(window.getDefaultView()); //mapScene에서의 zoom 풀기
     background.setTexture(res.getTexture("floorBg")); //sprite는 이미지
@@ -293,7 +294,7 @@ floorScene::floorScene(sf::RenderWindow& win, resourceManager& res) :
     win.setView(view);
     setFirstAssortMapCnt(floorCnt); //층수에 알맞은 첫 세부층의 방 개수 구하기
     pushAssortMap(firstAssortMapCnt, res); //세부방의 개수를 이용한 세부의 세부층 구분
-
+    setLine(assortBtns);
 }
 void floorScene::update(sf::RenderWindow& window) {
     deltaTime = clock.restart().asSeconds(); // 이전 프레임과 현재 프레임 사이 시간
@@ -303,8 +304,12 @@ void floorScene::update(sf::RenderWindow& window) {
     while (window.pollEvent(event)) {
         sf::Vector2i pixelPos = sf::Mouse::getPosition(window); //설정 해놓은 창 기준 마우스
         sf::Vector2f worldPos = window.mapPixelToCoords(pixelPos);//창 크기가 바뀌더라도 마우스의 위치를 제대로 찾게끔
-        
-
+        for (auto& assortFloor : assortBtns) { //room에 마우스 갖다대면 scale 변화
+            for (auto& roomInfo : assortFloor) {
+                roomInfo.spriteScaleManager(worldPos);
+                //line.setFillColor(worldPos);
+            }
+        }
         if (event.type == sf::Event::Closed) { //만약 event 타입으로써 닫기 event가 일어나면
             window.close();//창이 닫힌다
         }
@@ -330,7 +335,6 @@ void floorScene::update(sf::RenderWindow& window) {
 }
 void floorScene::render(sf::RenderWindow& window) {
     window.draw(background);
-    assortMapLine line(assortBtns);
     line.draw(window);
     imageDraw(background.getGlobalBounds().width, background.getGlobalBounds().height);
 }
@@ -377,6 +381,22 @@ void floorScene::imageDraw(float bgWidth, float bgHeight) {
         }
     }
 }
+void floorScene::pushAssortMap(int assortMapCnt, resourceManager& res) { //각 방 무슨 이벤트 발생하는지 map과 연결해 정의
+    std::vector<room> gameMap = map.upperPartCreateMap(); //맵 만들어놓기.
+    auto mapIndex = 1;
+    while (assortMapCnt > 0) {
+        for (int i = 0; i < assortMapCnt && mapIndex < gameMap.size(); i++) {
+            assortBtn.push_back(assortMapSelectButton(gameMap[mapIndex], res));
+            mapIndex++;
+        }
+        assortMapCnt -= 1;
+        assortBtns.push_back(assortBtn);
+        assortBtn.clear();
+    }
+}
+std::vector<std::vector<assortMapSelectButton>> floorScene::getAssortBtns() {
+    return assortBtns;
+}
 void floorScene::setFirstAssortMapCnt(int floor) {
     switch (floor){
     case 1:
@@ -404,18 +424,8 @@ void floorScene::setFirstAssortMapCnt(int floor) {
         break;
     }
 }
-void floorScene::pushAssortMap(int assortMapCnt, resourceManager& res) { //각 방 무슨 이벤트 발생하는지 map과 연결해 정의
-    std::vector<room> gameMap = map.upperPartCreateMap(); //맵 만들어놓기.
-    auto mapIndex = 1;
-    while (assortMapCnt > 0) {
-        for (int i = 0; i < assortMapCnt && mapIndex < gameMap.size(); i++) {
-            assortBtn.push_back(assortMapSelectButton(gameMap[mapIndex],res));
-            mapIndex++;
-        }
-        assortMapCnt -= 1;
-        assortBtns.push_back(assortBtn);
-        assortBtn.clear();
-    }
+void floorScene::setLine(std::vector<std::vector<assortMapSelectButton>> assortBtns) {
+    line.setAssortBtns(assortBtns);
 }
 
 //battleScene
