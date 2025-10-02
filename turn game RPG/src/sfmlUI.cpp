@@ -329,6 +329,56 @@ room assortMapSelectButton::getRoomInformation() {
 	return roomInformation;
 }
 
+//assortMapLine
+assortMapLine::assortMapLine(std::vector<std::vector<assortMapSelectButton>>& assortBtns)
+	:thickLine(sf::Vector2f(0.f, 0.f)), assortBtns(assortBtns){}
+void assortMapLine::draw(sf::RenderWindow& win) {
+	for (auto it = assortBtns.begin(); it != assortBtns.end(); ++it) {
+		for (auto& roomInfo : *it) { //roomInfo == assortMapSelectButton
+			sf::Vector2f start( //메인 sprite 의 중앙 아래, 이어짐에 있어서 시작부분
+				roomInfo.getPosition().x + roomInfo.getButton().getGlobalBounds().width / 2,
+				roomInfo.getPosition().y + roomInfo.getButton().getGlobalBounds().height / 2
+			);
+			// 다음 층 찾기
+			auto nextIt = std::next(it); // 다음층 정보
+			if (nextIt == assortBtns.end()) continue;
+
+			for (int targetId : roomInfo.getRoomInformation().connectedRoom) {
+				for (auto& nextRoom : *nextIt) {
+					if (nextRoom.getRoomInformation().id == targetId) {
+						sf::Vector2f end( //이어지는 sprite의 중앙 위
+							nextRoom.getPosition().x + nextRoom.getButton().getGlobalBounds().width / 2,
+							nextRoom.getPosition().y + nextRoom.getButton().getGlobalBounds().height / 2
+						);
+
+						// 두 점 사이의 벡터
+						sf::Vector2f direction = end - start;
+						float length = std::sqrt(direction.x * direction.x + direction.y * direction.y);
+						float angle = std::atan2(direction.y, direction.x) * 180.f / 3.14159f;
+
+						// 굵은 직사각형으로 선 그리기
+						thickLine.setSize(sf::Vector2f(length, 2.5f * 1.f)); // 2배 굵기
+						thickLine.setPosition(start);
+						thickLine.setRotation(angle);
+						thickLine.setFillColor(sf::Color(122, 122, 122, 130));
+
+						win.draw(thickLine);
+					}
+				}
+			}
+		}
+	}
+}
+void assortMapLine::setFillColor(sf::Vector2f& mousePos) {
+	if (thickLine.getGlobalBounds().contains(mousePos)) {
+		sf::Color color(255, 102, 102);
+		thickLine.setFillColor(color);//버튼 컬러
+	}
+	else {
+		thickLine.setFillColor(sf::Color(122, 122, 122, 130));//버튼 컬러
+	}
+}
+
 //mouse
 mouse::mouse(sf::RenderWindow& window, sf::Texture& tex)
 {

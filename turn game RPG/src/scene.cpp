@@ -283,7 +283,7 @@ void mapScene::updateAppear(sf::Sprite& sprite) {
 }
 
 //floorScene
-floorScene::floorScene(sf::RenderWindow& win, resourceManager& res):
+floorScene::floorScene(sf::RenderWindow& win, resourceManager& res) :
     window(win), log(win), view(sf::Vector2f(0.f, 0.f), sf::Vector2f(0.f, 0.f))
 {
     window.setView(window.getDefaultView()); //mapScene에서의 zoom 풀기
@@ -293,21 +293,18 @@ floorScene::floorScene(sf::RenderWindow& win, resourceManager& res):
     win.setView(view);
     setFirstAssortMapCnt(floorCnt); //층수에 알맞은 첫 세부층의 방 개수 구하기
     pushAssortMap(firstAssortMapCnt, res); //세부방의 개수를 이용한 세부의 세부층 구분
+
 }
 void floorScene::update(sf::RenderWindow& window) {
     deltaTime = clock.restart().asSeconds(); // 이전 프레임과 현재 프레임 사이 시간
     sf::Event event;
     float scrollSpeed = 90.f; //스크롤 +1-1에 얼마나 움직이는지
     sf::Vector2f center = view.getCenter(); //보이는 화면 중심값
-
     while (window.pollEvent(event)) {
         sf::Vector2i pixelPos = sf::Mouse::getPosition(window); //설정 해놓은 창 기준 마우스
         sf::Vector2f worldPos = window.mapPixelToCoords(pixelPos);//창 크기가 바뀌더라도 마우스의 위치를 제대로 찾게끔
-        for (auto& assortFloor : assortBtns) {
-            for (auto& roomInfo : assortFloor) {
-               roomInfo.spriteScaleManager(worldPos);
-            }
-        }
+        
+
         if (event.type == sf::Event::Closed) { //만약 event 타입으로써 닫기 event가 일어나면
             window.close();//창이 닫힌다
         }
@@ -333,7 +330,8 @@ void floorScene::update(sf::RenderWindow& window) {
 }
 void floorScene::render(sf::RenderWindow& window) {
     window.draw(background);
-    lineDraw(window);
+    assortMapLine line(assortBtns);
+    line.draw(window);
     imageDraw(background.getGlobalBounds().width, background.getGlobalBounds().height);
 }
 void floorScene::imageDraw(float bgWidth, float bgHeight) {
@@ -376,43 +374,6 @@ void floorScene::imageDraw(float bgWidth, float bgHeight) {
 
             assortBtns[floor][i].setPosition(pos);
             assortBtns[floor][i].draw(window);
-        }
-    }
-}
-void floorScene::lineDraw(sf::RenderWindow& window) {
-    for (auto it = assortBtns.begin(); it != assortBtns.end(); ++it) {
-        for (auto& roomInfo : *it) { //roomInfo == assortMapSelectButton
-            sf::Vector2f start( //메인 sprite 의 중앙 아래
-                roomInfo.getPosition().x + roomInfo.getButton().getGlobalBounds().width / 2,
-                roomInfo.getPosition().y + roomInfo.getButton().getGlobalBounds().height / 2
-            );
-            // 다음 층 찾기
-            auto nextIt = std::next(it); // 다음층 정보
-            if (nextIt == assortBtns.end()) continue;
-
-            for (int targetId : roomInfo.getRoomInformation().connectedRoom) {
-                for (auto& nextRoom : *nextIt) {
-                    if (nextRoom.getRoomInformation().id == targetId) {
-                        sf::Vector2f end( //이어지는 sprite의 중앙 위
-                            nextRoom.getPosition().x + nextRoom.getButton().getGlobalBounds().width / 2,
-                            nextRoom.getPosition().y + nextRoom.getButton().getGlobalBounds().height / 2
-                        );
-
-                        // 두 점 사이의 벡터
-                        sf::Vector2f direction = end - start;
-                        float length = std::sqrt(direction.x * direction.x + direction.y * direction.y);
-                        float angle = std::atan2(direction.y, direction.x) * 180.f / 3.14159f;
-
-                        // 굵은 직사각형으로 선 그리기
-                        sf::RectangleShape thickLine(sf::Vector2f(length, 2.5f * 1.f)); // 2배 굵기
-                        thickLine.setPosition(start);
-                        thickLine.setRotation(angle);      
-                        thickLine.setFillColor(sf::Color(122, 122, 122, 130));
-                     
-                        window.draw(thickLine);
-                    }
-                }
-            }
         }
     }
 }

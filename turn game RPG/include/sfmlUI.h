@@ -104,6 +104,16 @@ public:
 	room getRoomInformation();
 };
 
+class assortMapLine { //세부층과 세부층을 잇는 라인
+private:
+	sf::RectangleShape thickLine; // 선으로써 직사각형 사용
+	std::vector<std::vector<assortMapSelectButton>>& assortBtns;
+public:
+	assortMapLine(std::vector<std::vector<assortMapSelectButton>>& assortBtns);
+	void draw(sf::RenderWindow& win);
+	void setFillColor(sf::Vector2f& mousePos);
+};
+
 class mouse { //마우스
 private:
 	sf::Sprite sprite;
