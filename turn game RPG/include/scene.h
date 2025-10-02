@@ -9,7 +9,7 @@
 #include "sfmlLog.h"
 #include "sfmlUI.h"
 #include "resourceManager.h"
-
+//1
 class scene {
 protected:
 	bool finished = false;
