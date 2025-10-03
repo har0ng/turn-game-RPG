@@ -288,7 +288,7 @@ floorScene::floorScene(sf::RenderWindow& win, resourceManager& res)
     , log(win)
     , view(sf::Vector2f(0.f, 0.f), sf::Vector2f(0.f, 0.f)) // 일단 비어 있는 상태로 초기화
     , line(assortBtns) // 일단 비어 있는 상태로 초기화
-    ,floorName(L"1F: 裏側の入口",res.getFont("fantasy"),view,floorCnt)
+    ,floorName(L"裏側の入口",res.getFont("fantasy"),view,floorCnt)
 {
     // 1.기본 뷰 초기화
     window.setView(window.getDefaultView()); //mapScene view에서의 누적 초기화
@@ -309,34 +309,38 @@ floorScene::floorScene(sf::RenderWindow& win, resourceManager& res)
     // 7.버튼 위치가 세팅된 후 라인 생성
     line.createLine();
   
+    floorName.startAppear();
 }
 void floorScene::update(sf::RenderWindow& window) {
     deltaTime = clock.restart().asSeconds(); // 이전 프레임과 현재 프레임 사이 시간
     elapsed += deltaTime;
     sf::Event event;
     sf::Vector2f center = view.getCenter(); //보이는 화면 중심값
-    if (!animationYN && elapsed >= 2.0f) {
+    if (!animationYN && elapsed >= 1.5f) {
         animation(center, elapsed);
+        floorName.startFade();
     }
     
     while (window.pollEvent(event)) {
         sf::Vector2i pixelPos = sf::Mouse::getPosition(window); //설정 해놓은 창 기준 마우스
         sf::Vector2f worldPos = window.mapPixelToCoords(pixelPos);//창 크기가 바뀌더라도 마우스의 위치를 제대로 찾게끔
-        for (auto& assortFloor : assortBtns) { //room에 마우스 갖다대면 scale 변화
-            for (auto& roomInfo : assortFloor) { //버튼 호버시 변화
-                roomInfo.spriteScaleManager(worldPos);
-                line.setFillColor(worldPos,roomInfo);
+        if (animationYN) {
+            for (auto& assortFloor : assortBtns) { //room에 마우스 갖다대면 scale 변화
+                for (auto& roomInfo : assortFloor) { //버튼 호버시 변화
+                    roomInfo.spriteScaleManager(worldPos);
+                    line.setFillColor(worldPos, roomInfo);
+                }
             }
         }
         if (event.type == sf::Event::Closed) { //만약 event 타입으로써 닫기 event가 일어나면
             window.close();//창이 닫힌다
         }
         if (event.type == sf::Event::MouseWheelScrolled) {
-            if (event.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel && event.mouseWheelScroll.delta > 0) {
+            if (animationYN && event.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel && event.mouseWheelScroll.delta > 0) {
                 center.y -= scrollSpeed; // 위로 이동
             }
 
-            else if (event.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel && event.mouseWheelScroll.delta < 0) {
+            else if (animationYN && event.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel && event.mouseWheelScroll.delta < 0) {
                 center.y += scrollSpeed; // 아래로 이동
             }
         }
@@ -348,8 +352,15 @@ void floorScene::update(sf::RenderWindow& window) {
         center.y = background.getGlobalBounds().height - halfSize.y;
     } //반대로 화면을 내렸을 때 총크기의 y - 중심값 y를 넘으면 화면 나가버림
     //640.f
+
+    //set
     view.setCenter(center); // 중심값 재설정
     window.setView(view); // 뷰 이동.
+    floorName.setView(view); //층 이름 이동.
+
+    //fade,appear
+    floorName.updateFade();
+    floorName.updateAppear();
 }
 void floorScene::render(sf::RenderWindow& window) {
     window.draw(background);

@@ -70,9 +70,8 @@ floorTitle::floorTitle(const std::wstring& floorTitle, sf::Font& font,sf::View& 
 {
 	setTitle(floor, floorTitle);
 	text.setFont(font); // 글자 폰트
-	text.setCharacterSize(100); // 글자크기
-	sf::Color color(255, 255, 255, 255);
-	text.setFillColor(color);
+	text.setCharacterSize(150); // 글자크기
+	text.setOutlineThickness(2.f);
 	setView(view);
 }
 void floorTitle::draw(sf::RenderWindow& win) {
@@ -87,12 +86,13 @@ void floorTitle::updateFade() { //프레임 매초 갱신
 		return;
 	}
 	float elapsed = clock.getElapsedTime().asSeconds();
-	alpha = 255 - (elapsed / 0.5f) * 255; // 0.5초에 걸쳐 감소
+	alpha = 255 - (elapsed / 1.f) * 255; // 1초에 걸쳐 감소
 	if (alpha < 0) {
 		alpha = 0;
 		fading = false; // 완료되면 멈춤
 	}
-	text.setFillColor(sf::Color(255, 255, 255, (sf::Uint8)alpha));
+	text.setFillColor(sf::Color(51, 0, 102, (sf::Uint8)alpha));
+	text.setOutlineColor(sf::Color(240, 240, 240, (sf::Uint8)alpha));
 }
 void floorTitle::startAppear() {
 	appear = true;
@@ -103,20 +103,23 @@ void floorTitle::updateAppear() {
 		return;
 	}
 	float elapsed = clock.getElapsedTime().asSeconds();
-	alpha = 0 + (elapsed / 0.5f) * 255; // 0.5초에 걸쳐 증가
+	alpha = 0 + (elapsed / 1.0f) * 255; // 1초에 걸쳐 증가
 	if (alpha > 255) {
 		alpha = 255;
 		appear = false; // 완료되면 멈춤
 	}
-	text.setFillColor(sf::Color(255, 255, 255, (sf::Uint8)alpha));
+	text.setFillColor(sf::Color(51, 0, 102, (sf::Uint8)alpha));
+	text.setOutlineColor(sf::Color(240, 240, 240, (sf::Uint8)alpha));
 }
 bool floorTitle::getAppear() {
 	return appear;
 }
 void floorTitle::setTitle(const int& floor, const std::wstring& title) { //floorScene 층 이름 수정
-	switch (floor){
+	switch (floor){ //여기서 테마에 맞게 글자 색 조정도 이뤄짐
 	case 1:
 		text.setString(title); // 글자
+		text.setFillColor(sf::Color(51, 0, 102, 0));
+		text.setOutlineColor(sf::Color(240, 240, 240,0));
 		break;
 	case 2:
 		text.setString(L"2F: 赤い砂漠");
@@ -138,10 +141,8 @@ void floorTitle::setTitle(const int& floor, const std::wstring& title) { //floor
 void floorTitle::setView(sf::View& view) { // floorTitle 위치 설정
 	sf::FloatRect viewBounds(view.getCenter(), view.getSize());
 	sf::FloatRect txtBounds = text.getLocalBounds();
-	text.setPosition(
-		(viewBounds.width - txtBounds.width) /2.f,
-		viewBounds.top - (txtBounds.height / 2.f)
-	);
+	text.setPosition((viewBounds.width - txtBounds.width) /2.f,
+					  viewBounds.top - (txtBounds.height / 2.f));
 }
 
 //button 공용
