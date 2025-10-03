@@ -7,8 +7,8 @@
 using std::cout;
 using std::endl;
 
-//text 중앙 잡기 : x + (background.getSize().x - text.getLocalBounds().width) / 2.f,
-//y + (background.getSize().y - text.getLocalBounds().height) / 2.f - text.getLocalBounds().top
+/* 중앙 잡기 : x + (background.getSize().x - text.getLocalBounds().width) / 2.f,
+y + (background.getSize().y - text.getLocalBounds().height) / 2.f - text.getLocalBounds().top */
 
 //title
 title::title(const std::string& title, sf::Font& font, sf::Texture& tex)
@@ -66,11 +66,11 @@ bool title::getAppear() {
 }
 
 //floorTitle
-floorTitle::floorTitle(const std::string& floorTitle, sf::Font& font,sf::View& view, const int& floor)
+floorTitle::floorTitle(const std::wstring& floorTitle, sf::Font& font,sf::View& view, const int& floor)
 {
 	setTitle(floor, floorTitle);
 	text.setFont(font); // 글자 폰트
-	text.setCharacterSize(200); // 글자크기
+	text.setCharacterSize(100); // 글자크기
 	sf::Color color(255, 255, 255, 255);
 	text.setFillColor(color);
 	setView(view);
@@ -113,13 +113,13 @@ void floorTitle::updateAppear() {
 bool floorTitle::getAppear() {
 	return appear;
 }
-void floorTitle::setTitle(const int& floor, const std::string& title) { //floorScene 층 이름 수정
+void floorTitle::setTitle(const int& floor, const std::wstring& title) { //floorScene 층 이름 수정
 	switch (floor){
 	case 1:
 		text.setString(title); // 글자
 		break;
 	case 2:
-		text.setString("2F: 赤い砂漠");
+		text.setString(L"2F: 赤い砂漠");
 		break;
 	case 3:
 		break;
@@ -135,12 +135,12 @@ void floorTitle::setTitle(const int& floor, const std::string& title) { //floorS
 		break;
 	}
 }
-void floorTitle::setView(sf::View& view) {
-	sf::FloatRect bgBounds(view.getCenter(), view.getSize());
+void floorTitle::setView(sf::View& view) { // floorTitle 위치 설정
+	sf::FloatRect viewBounds(view.getCenter(), view.getSize());
 	sf::FloatRect txtBounds = text.getLocalBounds();
 	text.setPosition(
-		bgBounds.left + (bgBounds.width - txtBounds.width) / 2.f,
-		bgBounds.top + 250.f - txtBounds.top  // 원하는 y 위치 조절
+		(viewBounds.width - txtBounds.width) /2.f,
+		viewBounds.top - (txtBounds.height / 2.f)
 	);
 }
 
@@ -211,7 +211,6 @@ float button::getAlpha() {
 sf::FloatRect button::getBackgroundGlobalBounds() const {
 	return background.getGlobalBounds();
 }
-
 void button::setOutlineColor(sf::Color color){
 	text.setOutlineColor(color);
 }

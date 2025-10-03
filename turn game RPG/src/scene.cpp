@@ -288,7 +288,7 @@ floorScene::floorScene(sf::RenderWindow& win, resourceManager& res)
     , log(win)
     , view(sf::Vector2f(0.f, 0.f), sf::Vector2f(0.f, 0.f)) // 일단 비어 있는 상태로 초기화
     , line(assortBtns) // 일단 비어 있는 상태로 초기화
-    ,floorName("1F: 裏側の入口",res.getFont("fantasy"),view,floorCnt)
+    ,floorName(L"1F: 裏側の入口",res.getFont("fantasy"),view,floorCnt)
 {
     // 1.기본 뷰 초기화
     window.setView(window.getDefaultView()); //mapScene view에서의 누적 초기화

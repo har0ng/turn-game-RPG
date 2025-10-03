@@ -38,14 +38,14 @@ private:
 	sf::Sprite sprite;
 	sf::Texture texture;
 public:
-	floorTitle(const std::string& title, sf::Font& font, sf::View& view, const int& floor);
+	floorTitle(const std::wstring& title, sf::Font& font, sf::View& view, const int& floor);
 	void draw(sf::RenderWindow& win);
 	void startFade();
 	void updateFade();
 	void startAppear();
 	void updateAppear();
 	bool getAppear();
-	void setTitle(const int& floor, const std::string& title);
+	void setTitle(const int& floor, const std::wstring& title);
 	void setView(sf::View& view);
 };
 
