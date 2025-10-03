@@ -18,7 +18,7 @@ private:
 	sf::Sprite sprite;
 	sf::Texture texture;
 public:
-	title(const std::string& title, sf::Font& font);
+	title(const std::string& title, sf::Font& font, sf::Texture& tex);
 
 	void draw(sf::RenderWindow& win);
 	void startFade();
@@ -26,6 +26,27 @@ public:
 	void startAppear();
 	void updateAppear();
 	bool getAppear();
+};
+
+class floorTitle{
+private:
+	sf::Text text;
+	float alpha = 255.0f;
+	bool fading = false;
+	bool appear = false;
+	sf::Clock clock;
+	sf::Sprite sprite;
+	sf::Texture texture;
+public:
+	floorTitle(const std::string& title, sf::Font& font, sf::View& view, const int& floor);
+	void draw(sf::RenderWindow& win);
+	void startFade();
+	void updateFade();
+	void startAppear();
+	void updateAppear();
+	bool getAppear();
+	void setTitle(const int& floor, const std::string& title);
+	void setView(sf::View& view);
 };
 
 class button {
@@ -100,19 +121,29 @@ public:
 	void spriteScaleManager(const sf::Vector2f& mousePos);
 	void setPosition(sf::Vector2f pos); //맵 하나하나 위치
 	sf::Vector2f getPosition();
-	sf::Sprite getButton();
-	room getRoomInformation();
+	sf::Sprite& getButton(); // 버튼 정보
+	const room& getRoomInformation() const; //struct room의 정보 불러오기
 };
 
 class assortMapLine { //세부층과 세부층을 잇는 라인
 private:
+	struct lineInfo {
+		size_t id;
+		std::vector<sf::RectangleShape> thickLineClone;
+		/*id 와 id에 종속된 thickLine을 vector 혹은 map에 넣어서
+		button sprite에 마우스를 올렸을 떄 그 sprite의 id왜 해당되는
+		id가 map 혹은 vector에 있다면 거기에 종속된 thickLine을 모두 색 변환.
+		*/
+	};
 	sf::RectangleShape thickLine; // 선으로써 직사각형 사용
-	std::vector<std::vector<assortMapSelectButton>>& assortBtns;
+	std::map<size_t, lineInfo> lineGroup; //아이디당 라인(선) 저장소
+	std::vector<std::vector<assortMapSelectButton>> assortBtns;
 public:
 	assortMapLine(std::vector<std::vector<assortMapSelectButton>>& assortBtns);
 	void draw(sf::RenderWindow& win);
-	void setFillColor(sf::Vector2f& mousePos);
-	void setAssortBtns(const std::vector<std::vector<assortMapSelectButton>>& srcBtns);
+	void createLine();
+	void setFillColor(sf::Vector2f& mousePos, assortMapSelectButton& roomInfo); //선 색 바꾸기
+	void setAssortBtns(const std::vector<std::vector<assortMapSelectButton>>& srcBtns); //버튼 초기화 할때 문제되서 우회 경로
 };
 
 class mouse { //마우스

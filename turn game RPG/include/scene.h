@@ -9,7 +9,7 @@
 #include "sfmlLog.h"
 #include "sfmlUI.h"
 #include "resourceManager.h"
-//1
+
 class scene {
 protected:
 	bool finished = false;
@@ -116,19 +116,24 @@ private:
 	std::vector<std::vector<assortMapSelectButton>> assortBtns;  //세부층 버튼들의 집합 나누기
 	int firstAssortMapCnt;//층별 처음 만들어지는 맵 개수, 이후 맵 개수
 	int floorCnt = 1;// 몇층인지 세기 위함, default == 1
+	floorTitle floorName;
+	float scrollSpeed = 90.f; //스크롤 +1-1에 얼마나 움직이는지
+	float elapsed = 0.f; // 화면 스크롤 애니메이션을 위함
+	bool animationYN = false;
 public:
 	floorScene(sf::RenderWindow& win, resourceManager& res);
 	void update(sf::RenderWindow& window) override; //메뉴 화면으로 상태갱신
 	void render(sf::RenderWindow& window) override; //화면 사용자에게 보이게 하기
 	void imageDraw(float bgWidth, float bgHeight); //이미지 그리기
 	void pushAssortMap(int assortMapCnt, resourceManager& res);
+	void animation(sf::Vector2f& center, float& elapsed);
 	
 	//get
-	std::vector<std::vector<assortMapSelectButton>> getAssortBtns(); //line 갱신 목적
+	std::vector<std::vector<assortMapSelectButton>>& getAssortBtns(); //line 갱신 목적
 	
 	//set
-	void setFirstAssortMapCnt(int floor); //첫번째 만들어질 맵 개수 저장시키기
-	void setLine(std::vector<std::vector<assortMapSelectButton>> assortBtns); //line 갱신 목적
+	void setFirstAssortMapCnt(int &floor); //첫번째 만들어질 맵 개수 저장시키기
+	void setLine(std::vector<std::vector<assortMapSelectButton>>& assortBtns); //line 갱신 목적
 	
 	
 };

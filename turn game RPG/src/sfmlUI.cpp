@@ -11,12 +11,9 @@ using std::endl;
 //y + (background.getSize().y - text.getLocalBounds().height) / 2.f - text.getLocalBounds().top
 
 //title
-title::title(const std::string& title, sf::Font& font)
+title::title(const std::string& title, sf::Font& font, sf::Texture& tex)
 {
-	if (!texture.loadFromFile("assets/images/1.png")) { //이니셜라이저로 초기화 불가능이라 여기서 넣어 초기화
-		throw std::runtime_error("image load failed");
-	}
-	sprite.setTexture(texture); // 텍스처를 스프라이트에 연결
+	sprite.setTexture(tex); // 텍스처를 스프라이트에 연결
 	text.setString(title); // 글자
 	text.setFont(font); // 글자 폰트
 	text.setCharacterSize(100); // 글자크기
@@ -66,6 +63,85 @@ void title::updateAppear() {
 }
 bool title::getAppear() {
 	return appear;
+}
+
+//floorTitle
+floorTitle::floorTitle(const std::string& floorTitle, sf::Font& font,sf::View& view, const int& floor)
+{
+	setTitle(floor, floorTitle);
+	text.setFont(font); // 글자 폰트
+	text.setCharacterSize(200); // 글자크기
+	sf::Color color(255, 255, 255, 255);
+	text.setFillColor(color);
+	setView(view);
+}
+void floorTitle::draw(sf::RenderWindow& win) {
+	win.draw(text);
+}
+void floorTitle::startFade() { //장면 전환 시작
+	fading = true;
+	clock.restart();// 0초로 초기화 하고 다시 경과 시간 반환
+}
+void floorTitle::updateFade() { //프레임 매초 갱신
+	if (fading == false) {
+		return;
+	}
+	float elapsed = clock.getElapsedTime().asSeconds();
+	alpha = 255 - (elapsed / 0.5f) * 255; // 0.5초에 걸쳐 감소
+	if (alpha < 0) {
+		alpha = 0;
+		fading = false; // 완료되면 멈춤
+	}
+	text.setFillColor(sf::Color(255, 255, 255, (sf::Uint8)alpha));
+}
+void floorTitle::startAppear() {
+	appear = true;
+	clock.restart();// 0초로 초기화 하고 다시 경과 시간 반환
+}
+void floorTitle::updateAppear() {
+	if (appear == false) {
+		return;
+	}
+	float elapsed = clock.getElapsedTime().asSeconds();
+	alpha = 0 + (elapsed / 0.5f) * 255; // 0.5초에 걸쳐 증가
+	if (alpha > 255) {
+		alpha = 255;
+		appear = false; // 완료되면 멈춤
+	}
+	text.setFillColor(sf::Color(255, 255, 255, (sf::Uint8)alpha));
+}
+bool floorTitle::getAppear() {
+	return appear;
+}
+void floorTitle::setTitle(const int& floor, const std::string& title) { //floorScene 층 이름 수정
+	switch (floor){
+	case 1:
+		text.setString(title); // 글자
+		break;
+	case 2:
+		text.setString("2F: 赤い砂漠");
+		break;
+	case 3:
+		break;
+	case 4:
+		break;
+	case 5:
+		break;
+	case 6:
+		break;
+	case 7:
+		break;
+	default:
+		break;
+	}
+}
+void floorTitle::setView(sf::View& view) {
+	sf::FloatRect bgBounds(view.getCenter(), view.getSize());
+	sf::FloatRect txtBounds = text.getLocalBounds();
+	text.setPosition(
+		bgBounds.left + (bgBounds.width - txtBounds.width) / 2.f,
+		bgBounds.top + 250.f - txtBounds.top  // 원하는 y 위치 조절
+	);
 }
 
 //button 공용
@@ -322,33 +398,41 @@ void assortMapSelectButton::setPosition(sf::Vector2f pos) {
 sf::Vector2f assortMapSelectButton::getPosition() {
 	return button.getPosition();
 }
-sf::Sprite assortMapSelectButton::getButton() {
+sf::Sprite& assortMapSelectButton::getButton() {
 	return button;
 }
-room assortMapSelectButton::getRoomInformation() {
+const room& assortMapSelectButton::getRoomInformation() const {
 	return roomInformation;
 }
 
 //assortMapLine
 assortMapLine::assortMapLine(std::vector<std::vector<assortMapSelectButton>>& assortBtns)
-	:thickLine(sf::Vector2f(0.f, 0.f)), assortBtns(assortBtns){}
+	:thickLine(sf::Vector2f(0.f, 0.f)), assortBtns(assortBtns)
+{
+}
 void assortMapLine::draw(sf::RenderWindow& win) {
+	for (auto& pair : lineGroup) {
+		for (auto& line : pair.second.thickLineClone) {
+			win.draw(line);
+		}
+	}
+}
+void assortMapLine::createLine() {
 	for (auto it = assortBtns.begin(); it != assortBtns.end(); ++it) {
 		for (auto& roomInfo : *it) { //roomInfo == assortMapSelectButton
-			sf::Vector2f start( //메인 sprite 의 중앙 아래, 이어짐에 있어서 시작부분
-				roomInfo.getPosition().x + roomInfo.getButton().getGlobalBounds().width / 2,
-				roomInfo.getPosition().y + roomInfo.getButton().getGlobalBounds().height / 2
+			sf::Vector2f start = roomInfo.getButton().getPosition() + sf::Vector2f(
+				roomInfo.getButton().getGlobalBounds().width / 2.f,
+				roomInfo.getButton().getGlobalBounds().height / 2.f
 			);
-			// 다음 층 찾기
 			auto nextIt = std::next(it); // 다음층 정보
-			if (nextIt == assortBtns.end()) continue;
+			if (nextIt == assortBtns.end()) { continue; }
 
 			for (int targetId : roomInfo.getRoomInformation().connectedRoom) {
 				for (auto& nextRoom : *nextIt) {
 					if (nextRoom.getRoomInformation().id == targetId) {
-						sf::Vector2f end( //이어지는 sprite의 중앙 위
-							nextRoom.getPosition().x + nextRoom.getButton().getGlobalBounds().width / 2,
-							nextRoom.getPosition().y + nextRoom.getButton().getGlobalBounds().height / 2
+						sf::Vector2f end = nextRoom.getButton().getPosition() + sf::Vector2f(
+							nextRoom.getButton().getGlobalBounds().width / 2.f,
+							nextRoom.getButton().getGlobalBounds().height / 2.f
 						);
 
 						// 두 점 사이의 벡터
@@ -361,25 +445,36 @@ void assortMapLine::draw(sf::RenderWindow& win) {
 						thickLine.setPosition(start);
 						thickLine.setRotation(angle);
 						thickLine.setFillColor(sf::Color(122, 122, 122, 130));
-
-						win.draw(thickLine);
+						if (lineGroup.count(roomInfo.getRoomInformation().id) > 0) {
+							sf::RectangleShape lineRect(thickLine); // 현재 thickLine 복사
+							lineGroup[roomInfo.getRoomInformation().id].thickLineClone.push_back(lineRect);
+						}
+						else {
+							lineGroup.insert({ roomInfo.getRoomInformation().id,
+											lineInfo({roomInfo.getRoomInformation().id,
+												{thickLine} }) });
+						}
 					}
 				}
 			}
 		}
 	}
 }
-void assortMapLine::setFillColor(sf::Vector2f& mousePos) {
-	if (thickLine.getGlobalBounds().contains(mousePos)) {
-		sf::Color color(255, 102, 102);
-		thickLine.setFillColor(color);//버튼 컬러
+void assortMapLine::setFillColor(sf::Vector2f& mousePos, assortMapSelectButton& roomInfo) {
+	if (roomInfo.getButton().getGlobalBounds().contains(mousePos)) {
+		sf::Color color(255, 102, 70);
+		for (auto& line : lineGroup[roomInfo.getRoomInformation().id].thickLineClone) { // 선 컬러
+			line.setFillColor(color);
+		}
 	}
 	else {
-		thickLine.setFillColor(sf::Color(122, 122, 122, 130));//버튼 컬러
+		sf::Color color(122, 122, 122, 130);
+		for (auto& line : lineGroup[roomInfo.getRoomInformation().id].thickLineClone) { // 선 컬러
+			line.setFillColor(color);
+		}
 	}
 }
-void assortMapLine::setAssortBtns(const std::vector<std::vector<assortMapSelectButton>>& srcBtns) {
-	assortBtns.clear();
+void assortMapLine::setAssortBtns(const std::vector<std::vector<assortMapSelectButton>>& srcBtns) {//버튼 초기화 할때 문제되서 우회 경로
 	for (auto& assortBtn : srcBtns) {
 		std::vector<assortMapSelectButton> test;
 		for (auto& roomInfo : assortBtn) {
@@ -388,6 +483,7 @@ void assortMapLine::setAssortBtns(const std::vector<std::vector<assortMapSelectB
 		assortBtns.push_back(test);
 	}
 }
+
 //mouse
 mouse::mouse(sf::RenderWindow& window, sf::Texture& tex)
 {
