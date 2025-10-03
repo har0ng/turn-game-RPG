@@ -7,7 +7,7 @@
 using std::cout;
 using std::endl;
 
-/* 중앙 잡기 : x + (background.getSize().x - text.getLocalBounds().width) / 2.f,
+/* middle point : x + (background.getSize().x - text.getLocalBounds().width) / 2.f,
 y + (background.getSize().y - text.getLocalBounds().height) / 2.f - text.getLocalBounds().top */
 
 //title
