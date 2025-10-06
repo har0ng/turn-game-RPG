@@ -109,7 +109,7 @@ void floorTitle::updateAppear() {
 		return;
 	}
 	float elapsed = clock.getElapsedTime().asSeconds();
-	alpha = 0 + (elapsed / 2.0f) * 255; //21초에 걸쳐 증가
+	alpha = 0 + (elapsed / 2.0f) * 255; //2초에 걸쳐 증가
 	if (alpha > 255) {
 		alpha = 255;
 		appear = false; // 완료되면 멈춤

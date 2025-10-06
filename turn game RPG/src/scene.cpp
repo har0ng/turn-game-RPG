@@ -54,7 +54,6 @@ void scene::setFinishBackDefault(){
     finished = false;
     back = false;
 }
-
 void scene::allStartAppear(){
     return;
 }
@@ -143,11 +142,7 @@ classSelectScene::classSelectScene(sf::RenderWindow& win, sf::Font& font, sf::Te
     ,selectBtn(false)
 {
     sprite.setTexture(tex); // 텍스처를 스프라이트에 연결
-    tiferetBtn.startAppear(); //천천히 타이틀이 나오게 타이머 활성화
-    malkuthBtn.startAppear();
-    backBtn.startAppear();
-    tiferetDc.startAppear();
-    malkuthDc.startAppear();
+    allStartAppear();
 }
 void classSelectScene::update(sf::RenderWindow& window){
     sf::Event event;
@@ -223,6 +218,13 @@ void classSelectScene::render(sf::RenderWindow& window){
     tiferetDc.draw(window);
     malkuthDc.draw(window);
 }
+void classSelectScene::allStartAppear() {
+    tiferetBtn.startAppear(); //천천히 타이틀이 나오게 타이머 활성화
+    malkuthBtn.startAppear();
+    backBtn.startAppear();
+    tiferetDc.startAppear();
+    malkuthDc.startAppear();
+}
 
 //mapScene
 mapScene::mapScene(sf::RenderWindow& win, sf::Font& font, sf::Texture& tex)
@@ -235,7 +237,7 @@ mapScene::mapScene(sf::RenderWindow& win, sf::Font& font, sf::Texture& tex)
     sf::View view(sf::Vector2f(910.f, 1024.f), sf::Vector2f(1440.f, 960.f));
     view.zoom(2.13f);
     win.setView(view);
-    startAppear();
+    allStartAppear();
 }
 void mapScene::update(sf::RenderWindow& window){
     deltaTime = clock.restart().asSeconds(); // 이전 프레임과 현재 프레임 사이 시간
@@ -293,6 +295,9 @@ void mapScene::updateAppear(sf::Sprite& sprite) {
     color.a = static_cast<sf::Uint8>(alpha);
     sprite.setColor(color);
 }
+void mapScene::allStartAppear() {
+    startAppear();
+}
 
 //floorScene
 floorScene::floorScene(sf::RenderWindow& win, resourceManager& res)
@@ -324,14 +329,7 @@ floorScene::floorScene(sf::RenderWindow& win, resourceManager& res)
     // 7.버튼 위치가 세팅된 후 라인 생성
     line.createLine();
     // 8. 천천히 이미지 밝아지기
-    startAppear();
-    floorName.startAppear();
-    for (auto& assortBtnInfo: assortBtns) {
-        for (auto& roomInfo : assortBtnInfo) {
-            roomInfo.startAppear();
-        }
-    }
-    line.startAppear();
+    allStartAppear();
 }
 void floorScene::update(sf::RenderWindow& window) {
     deltaTime = clock.restart().asSeconds(); // 이전 프레임과 현재 프레임 사이 시간
@@ -512,7 +510,7 @@ void floorScene::updateAppear(sf::Sprite& sprite) {
         return;
     }
     sf::Color color = sprite.getColor();//스프라이트라 색상값 알아서 불러오게끔
-    float appearDuration = 2.f; // 3초 동안 나타나게
+    float appearDuration = 2.f; // 2초 동안 나타나게
     float alphaStep = 255.0f / appearDuration; // 초당 증가량
     alpha += alphaStep * deltaTime; // deltaTime 곱해서 프레임 독립적 처리
 
@@ -523,6 +521,16 @@ void floorScene::updateAppear(sf::Sprite& sprite) {
 
     color.a = static_cast<sf::Uint8>(std::min(alpha, 255.f));
     sprite.setColor(color);
+}
+void floorScene::allStartAppear() {
+    startAppear();
+    floorName.startAppear();
+    for (auto& assortBtnInfo : assortBtns) {
+        for (auto& roomInfo : assortBtnInfo) {
+            roomInfo.startAppear();
+        }
+    }
+    line.startAppear();
 }
 
 //battleScene
@@ -548,4 +556,7 @@ void battleScene::update(sf::RenderWindow& window) {
 }
 void battleScene::render(sf::RenderWindow& window) {
     backBtn.draw(window); //돌아가기 버튼 (임시용)
+}
+void battleScene::allStartAppear() {
+    return;
 }

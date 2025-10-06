@@ -89,7 +89,7 @@ public:
 	classSelectScene(sf::RenderWindow& win, sf::Font& font, sf::Texture& tex);//빈 도화지와 폰트
 	void update(sf::RenderWindow& window) override; //메뉴 화면으로 상태갱신
 	void render(sf::RenderWindow& window) override; //화면 사용자에게 보이게 하기
-	
+	void allStartAppear() override;
 };
 
 class mapScene : public scene { //전체 맵 보여주기
@@ -105,6 +105,8 @@ public:
 	void render(sf::RenderWindow& window) override; //화면 사용자에게 보이게 하기
 	void updateFade(sf::Sprite& sprite) override;
 	void updateAppear(sf::Sprite& sprite) override;
+	void allStartAppear() override;
+
 };
 
 class floorScene : public scene {
@@ -131,6 +133,8 @@ public:
 	void pushAssortMap(int assortMapCnt, resourceManager& res);
 	void animation(sf::Vector2f& center, float& elapsed);
 	void updateAppear(sf::Sprite& sprite) override;
+	void allStartAppear() override;
+
 
 	//get
 	std::vector<std::vector<assortMapSelectButton>>& getAssortBtns(); //line 갱신 목적
@@ -157,6 +161,7 @@ public:
 	battleScene(sf::RenderWindow& win, resourceManager& res);
 	void update(sf::RenderWindow& window) override; //메뉴 화면으로 상태갱신
 	void render(sf::RenderWindow& window) override; //화면 사용자에게 보이게 하기
+	void allStartAppear() override;
 
 };
 
