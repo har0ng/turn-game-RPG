@@ -26,6 +26,8 @@ public:
 	void startAppear();
 	void updateAppear();
 	bool getAppear();
+	bool getFading();
+	float getAlpha();
 };
 
 class floorTitle{
@@ -63,8 +65,8 @@ public:
 	virtual ~button() = default;
 	//virtual
 	virtual void draw(sf::RenderWindow& win) = 0; // 가상
-	virtual bool isClicked(sf::Vector2f mousePos) = 0;//가상
-	virtual void outlineColormanager(sf::Vector2f mousePos) = 0; //가상
+	virtual bool isClicked(sf::Vector2f& mousePos) = 0;//가상
+	virtual void outlineColormanager(sf::Vector2f& mousePos) = 0; //가상
 	
 	//공용
 	void startFade(); // 페이드 시작 
@@ -85,24 +87,24 @@ class menuButton : public button { //부품 - 버튼
 public:
 	menuButton(const std::string& label, float x, float y, sf::Font& font);
 	void draw(sf::RenderWindow& win) override; // 모든버튼 그리기
-	bool isClicked(sf::Vector2f mousePos) override;//클릭 이벤트
-	void outlineColormanager(sf::Vector2f mousePos) override; //버튼 호버시 아웃라인 색 변경
+	bool isClicked(sf::Vector2f& mousePos) override;//클릭 이벤트
+	void outlineColormanager(sf::Vector2f& mousePos) override; //버튼 호버시 아웃라인 색 변경
 };
 
 class classSelectButton : public button { //부품 - 버튼
 public:
 	classSelectButton(const std::string& label, float x, float y, sf::Font& font);
 	void draw(sf::RenderWindow& win) override; // 모든버튼 그리기
-	bool isClicked(sf::Vector2f mousePos) override;//클릭 이벤트
-	void outlineColormanager(sf::Vector2f mousePos) override; //버튼 호버시 아웃라인 색 변경
+	bool isClicked(sf::Vector2f& mousePos) override;//클릭 이벤트
+	void outlineColormanager(sf::Vector2f& mousePos) override; //버튼 호버시 아웃라인 색 변경
 };
 
 class backButton : public button { //부품 - 버튼
 public:
 	backButton(const std::string& label, float x, float y, sf::Font& font);
 	void draw(sf::RenderWindow& win) override; // 모든버튼 그리기
-	bool isClicked(sf::Vector2f mousePos) override;//클릭 이벤트
-	void outlineColormanager(sf::Vector2f mousePos) override; //버튼 호버시 아웃라인 색 변경
+	bool isClicked(sf::Vector2f& mousePos) override;//클릭 이벤트
+	void outlineColormanager(sf::Vector2f& mousePos) override; //버튼 호버시 아웃라인 색 변경
 };
 
 class assortMapSelectButton : public button {
@@ -116,9 +118,11 @@ private:
 public:
 	assortMapSelectButton(room roomInfo,resourceManager& res);
 	void draw(sf::RenderWindow& win) override; // 모든버튼 그리기
-	bool isClicked(sf::Vector2f mousePos) override;//클릭 이벤트
-	void outlineColormanager(sf::Vector2f mousePos) override; //버튼 호버시 아웃라인 색 변경
+	bool isClicked(sf::Vector2f& mousePos) override;//클릭 이벤트
+	void outlineColormanager(sf::Vector2f& mousePos) override; //버튼 호버시 아웃라인 색 변경
 	void spriteScaleManager(const sf::Vector2f& mousePos);
+	void startAppear();
+	void updateAppear();
 	void setPosition(sf::Vector2f pos); //맵 하나하나 위치
 	sf::Vector2f getPosition();
 	sf::Sprite& getButton(); // 버튼 정보
@@ -138,10 +142,16 @@ private:
 	sf::RectangleShape thickLine; // 선으로써 직사각형 사용
 	std::map<size_t, lineInfo> lineGroup; //아이디당 라인(선) 저장소
 	std::vector<std::vector<assortMapSelectButton>> assortBtns;
+	float alpha = 255.0f;   // 현재 알파값
+	bool appear = false;	// 불러낼지 상태 여부
+	bool fading = false;    // 페이드인 상태 여부
+	sf::Clock clock;        // 버튼마다 시간 관리
 public:
 	assortMapLine(std::vector<std::vector<assortMapSelectButton>>& assortBtns);
 	void draw(sf::RenderWindow& win);
 	void createLine();
+	void startAppear();
+	void updateAppear();
 	void setFillColor(sf::Vector2f& mousePos, assortMapSelectButton& roomInfo); //선 색 바꾸기
 	void setAssortBtns(const std::vector<std::vector<assortMapSelectButton>>& srcBtns); //버튼 초기화 할때 문제되서 우회 경로
 };

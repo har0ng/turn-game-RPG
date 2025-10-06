@@ -29,6 +29,9 @@ int main() {
     std::unique_ptr<scene> currentScene = std::make_unique<menuScene>(window,
         res.getFont("fantasy"), res.getTexture("menuBg"));
 
+    // 씬 히스토리 스택
+    std::vector<std::unique_ptr<scene>> history; 
+
     while (window.isOpen()) {// 창이 열려 있는 동안 반복 , 이벤트니깐 거의 UI
         window.setFramerateLimit(60);
         window.clear(sf::Color::Black); // 화면 지우기 , 안하면 새하얀 화면 (시작이라 보면 편함)
@@ -38,36 +41,54 @@ int main() {
         //마우스
         cursor.draw(window);
         window.display(); // 화면 업데이트
-        
+
         // 씬 전환 처리
         if (currentScene->isFinished()) {
-            // 메뉴 씬이 끝나면 직업 선택 씬으로
-            if (dynamic_cast<menuScene*>(currentScene.get())) { //부모클래스의 객체를 통해 .get()함수를 이용해 실체 객체가 뭔지 확인, dynamic_cast는 이게 옳바른지 확인(true,false)
-                currentScene = std::make_unique<classSelectScene>(window, res.getFont("fantasy"),res.getTexture("menuBg"));
-                cursor.updatePositionFromWindow(window); //마우스 위치 업데이트
+            currentScene->setFinishBackDefault();
+            // 메뉴 -> 직업 선택
+            if (dynamic_cast<menuScene*>(currentScene.get())) {
+                history.push_back(std::move(currentScene));
+                currentScene = std::make_unique<classSelectScene>(window, res.getFont("fantasy"), res.getTexture("menuBg"));
+                cursor.updatePositionFromWindow(window);
+                continue; // 한 프레임에 한 번만 전환
             }
-            // 직업 선택 씬 끝나면 게임 맵 씬으로
+            // 직업 -> 맵
             else if (dynamic_cast<classSelectScene*>(currentScene.get())) {
-                currentScene = std::make_unique<mapScene>(window, res.getFont("fantasy"),res.getTexture("mapBg"));
-                cursor.updatePositionFromWindow(window);        
+                history.push_back(std::move(currentScene));
+                currentScene = std::make_unique<mapScene>(window, res.getFont("fantasy"), res.getTexture("mapBg"));
+                cursor.updatePositionFromWindow(window);
+                continue;
             }
-            // 맵 씬 끝나면 층 씬으로
+            // 맵 -> 층
             else if (dynamic_cast<mapScene*>(currentScene.get())) {
+                history.push_back(std::move(currentScene));
                 currentScene = std::make_unique<floorScene>(window, res);
                 cursor.updatePositionFromWindow(window);
+                continue;
+            }
+            // 층 -> 전투
+            else if (dynamic_cast<floorScene*>(currentScene.get())) {
+                history.push_back(std::move(currentScene));
+                currentScene = std::make_unique<battleScene>(window, res);
+                cursor.updatePositionFromWindow(window);
+                continue;
             }
         }
+
         if (currentScene->isBack()) {
-            //직업 씬에서 메뉴 씬으로
-            if (dynamic_cast<classSelectScene*>(currentScene.get())) { //부모클래스의 객체를 통해 .get()함수를 이용해 실체 객체가 뭔지 확인, dynamic_cast는 이게 옳바른지 확인(true,false)
-                currentScene = std::make_unique<menuScene>(window, res.getFont("fantasy"), res.getTexture("menuBg"));
+            if (!history.empty()) {
+                // Back flag를 먼저 체크하고 씬 전환부터 처리
+                auto prevScene = std::move(history.back());
+                history.pop_back();
+                currentScene = nullptr;
+                currentScene = std::move(prevScene);
+                currentScene->setFinishBackDefault(); // ← 전환 후에 초기화
                 cursor.updatePositionFromWindow(window);
             }
+            std::cout << "Current Scene after back: " << typeid(*currentScene).name() << std::endl;
         }
     }
     return 0;
-
-
     //backlog
     //cout << "(1)start  " << "(2)end" << endl; // menu
     //int start = 0;

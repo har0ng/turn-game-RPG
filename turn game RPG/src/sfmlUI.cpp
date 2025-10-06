@@ -64,6 +64,12 @@ void title::updateAppear() {
 bool title::getAppear() {
 	return appear;
 }
+bool title::getFading() {
+	return fading;
+}
+float title::getAlpha() {
+	return alpha;
+}
 
 //floorTitle
 floorTitle::floorTitle(const std::wstring& floorTitle, sf::Font& font,sf::View& view, const int& floor)
@@ -103,7 +109,7 @@ void floorTitle::updateAppear() {
 		return;
 	}
 	float elapsed = clock.getElapsedTime().asSeconds();
-	alpha = 0 + (elapsed / 1.0f) * 255; // 1초에 걸쳐 증가
+	alpha = 0 + (elapsed / 2.0f) * 255; //21초에 걸쳐 증가
 	if (alpha > 255) {
 		alpha = 255;
 		appear = false; // 완료되면 멈춤
@@ -241,7 +247,7 @@ void menuButton::draw(sf::RenderWindow& win){ //화면에 그리기
 	win.draw(background); //버튼 배경 그리기, 무조건 순서 생각해서 draw하기
 	win.draw(text); //텍스트 그리기
 }
-bool menuButton::isClicked(sf::Vector2f mousePos){ //마우스 위치를 알려주는 int 형의 x,y
+bool menuButton::isClicked(sf::Vector2f& mousePos){ //마우스 위치를 알려주는 int 형의 x,y
 	sf::FloatRect bound = background.getGlobalBounds();//버튼 배경의 전체를 기준으로 잡아버림
 	if (bound.contains(static_cast<float>(mousePos.x),static_cast<float>(mousePos.y))) {
 		//버튼 배경 전체가 기준이니 버튼배경 안에서 마우스의 움직임이나 이벤트를 인정해준다는 의미
@@ -249,7 +255,7 @@ bool menuButton::isClicked(sf::Vector2f mousePos){ //마우스 위치를 알려�
 	}
 	return false;
 }
-void menuButton::outlineColormanager(sf::Vector2f mousePos){
+void menuButton::outlineColormanager(sf::Vector2f& mousePos){
 	if (background.getGlobalBounds().contains(mousePos)) {
 		sf::Color color(224, 224, 224);
 		text.setOutlineColor(color); //버튼 컬러
@@ -287,7 +293,7 @@ void classSelectButton::draw(sf::RenderWindow& win){
 	win.draw(background); //버튼 배경 그리기, 무조건 순서 생각해서 draw하기
 	win.draw(text); //텍스트 그리기
 }
-bool classSelectButton::isClicked(sf::Vector2f mousePos){
+bool classSelectButton::isClicked(sf::Vector2f& mousePos){
 	sf::FloatRect bound = background.getGlobalBounds();//버튼 배경의 전체를 기준으로 잡아버림
 	if (bound.contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))) {
 		//버튼 배경 전체가 기준이니 버튼배경 안에서 마우스의 움직임이나 이벤트를 인정해준다는 의미
@@ -295,7 +301,7 @@ bool classSelectButton::isClicked(sf::Vector2f mousePos){
 	}
 	return false; 
 }
-void classSelectButton::outlineColormanager(sf::Vector2f mousePos){
+void classSelectButton::outlineColormanager(sf::Vector2f& mousePos){
 	if (background.getGlobalBounds().contains(mousePos)) {
 		sf::Color color(224, 224, 224);
 		background.setOutlineColor(color); //버튼 컬러
@@ -331,7 +337,7 @@ void backButton::draw(sf::RenderWindow& win) {
 	win.draw(background); //버튼 배경 그리기, 무조건 순서 생각해서 draw하기
 	win.draw(text); //텍스트 그리기
 }
-bool backButton::isClicked(sf::Vector2f mousePos) {
+bool backButton::isClicked(sf::Vector2f& mousePos) {
 	sf::FloatRect bound = background.getGlobalBounds();//버튼 배경의 전체를 기준으로 잡아버림
 	if (bound.contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))) {
 		//버튼 배경 전체가 기준이니 버튼배경 안에서 마우스의 움직임이나 이벤트를 인정해준다는 의미
@@ -339,7 +345,7 @@ bool backButton::isClicked(sf::Vector2f mousePos) {
 	}
 	return false;
 }
-void backButton::outlineColormanager(sf::Vector2f mousePos){
+void backButton::outlineColormanager(sf::Vector2f& mousePos){
 	if (background.getGlobalBounds().contains(mousePos)) {
 		sf::Color color(224, 224, 224);
 		background.setOutlineColor(color); //버튼 컬러
@@ -350,7 +356,7 @@ void backButton::outlineColormanager(sf::Vector2f mousePos){
 	}
 }
 
-//assortMapSelectButton(미완성)
+//assortMapSelectButton
 assortMapSelectButton::assortMapSelectButton(room roomInfo, resourceManager& res) :
 	rest(res.getTexture("heal")),
 	enemy(res.getTexture("enemy")), 
@@ -360,24 +366,29 @@ assortMapSelectButton::assortMapSelectButton(room roomInfo, resourceManager& res
 {
 	if (roomInfo.name == "rest") {
 		button.setTexture(rest); //texture를 sprite화 시킴
-		
 	}
 	else if (roomInfo.name == "boss") {
 		button.setTexture(boss); //texture를 sprite화 시킴
-		
 	}
 	else if (roomInfo.name == "enemy") {
 		button.setTexture(enemy); //texture를 sprite화 시킴
-		
 	}
+	sf::Color buttonColor = button.getColor();
+	buttonColor.a = ((sf::Uint8)0);
+	button.setColor(buttonColor);
 }
 void assortMapSelectButton::draw(sf::RenderWindow& win){
 	win.draw(button);
 }
-bool assortMapSelectButton::isClicked(sf::Vector2f mousePos){
+bool assortMapSelectButton::isClicked(sf::Vector2f& mousePos){
+	sf::FloatRect bound = button.getGlobalBounds();
+	if (bound.contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))) {
+		//버튼 배경 전체가 기준이니 버튼배경 안에서 마우스의 움직임이나 이벤트를 인정해준다는 의미
+		return true; //버튼 배경안에 마우스 좌표가 있으면 true
+	}
 	return false;
 }
-void assortMapSelectButton::outlineColormanager(sf::Vector2f mousePos) {
+void assortMapSelectButton::outlineColormanager(sf::Vector2f& mousePos) {
 	return;
 }
 void assortMapSelectButton::spriteScaleManager(const sf::Vector2f& mousePos){
@@ -391,6 +402,24 @@ void assortMapSelectButton::spriteScaleManager(const sf::Vector2f& mousePos){
 	else {
         button.setScale(1.f, 1.f);  // 원래 크기
     }
+}
+void assortMapSelectButton::startAppear() {
+	appear = true;
+	clock.restart();// 0초로 초기화 하고 다시 경과 시간 반환
+}
+void assortMapSelectButton::updateAppear() {
+	if (appear == false) {
+		return;
+	}
+	float elapsed = clock.getElapsedTime().asSeconds();
+	alpha = 0 + (elapsed / 2.0f) * 255; // 2초에 걸쳐 증가
+	if (alpha > 255) {
+		alpha = 255;
+		appear = false; // 완료되면 멈춤
+	}
+	sf::Color buttonColor = button.getColor();
+	buttonColor.a = ((sf::Uint8)alpha);
+	button.setColor(buttonColor);
 }
 void assortMapSelectButton::setPosition(sf::Vector2f pos) {
 	button.setPosition(pos);
@@ -444,7 +473,7 @@ void assortMapLine::createLine() {
 						thickLine.setSize(sf::Vector2f(length, 2.5f * 1.f)); // 2배 굵기
 						thickLine.setPosition(start);
 						thickLine.setRotation(angle);
-						thickLine.setFillColor(sf::Color(122, 122, 122, 130));
+						thickLine.setFillColor(sf::Color(122, 122, 122, 0));
 						if (lineGroup.count(roomInfo.getRoomInformation().id) > 0) {
 							sf::RectangleShape lineRect(thickLine); // 현재 thickLine 복사
 							lineGroup[roomInfo.getRoomInformation().id].thickLineClone.push_back(lineRect);
@@ -457,6 +486,28 @@ void assortMapLine::createLine() {
 					}
 				}
 			}
+		}
+	}
+}
+void assortMapLine::startAppear() {
+	appear = true;
+	clock.restart();// 0초로 초기화 하고 다시 경과 시간 반환
+}
+void assortMapLine::updateAppear() {
+	if (appear == false) {
+		return;
+	}
+	float elapsed = clock.getElapsedTime().asSeconds();
+	alpha = 0 + (elapsed / 2.0f) * 130; // 2초에 걸쳐 증가
+	if (alpha > 130) {
+		alpha = 130;
+		appear = false; // 완료되면 멈춤
+	}
+	sf::Color thickLineColor = thickLine.getFillColor();
+	thickLineColor.a = ((sf::Uint8)alpha);
+	for (auto& pair : lineGroup) {
+		for (auto& line : pair.second.thickLineClone) {
+			line.setFillColor(thickLineColor);
 		}
 	}
 }
@@ -483,6 +534,7 @@ void assortMapLine::setAssortBtns(const std::vector<std::vector<assortMapSelectB
 		assortBtns.push_back(test);
 	}
 }
+
 
 //mouse
 mouse::mouse(sf::RenderWindow& window, sf::Texture& tex)

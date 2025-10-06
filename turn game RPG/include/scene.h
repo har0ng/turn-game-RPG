@@ -12,7 +12,8 @@
 
 class scene {
 protected:
-	bool finished = false;
+	bool finished = false; //씬이 끝났는지 여부
+	bool finishedManager = false;
 	bool back = false;
 	bool transition = false; //씬 바뀌고 있는데 클릭 금지
 	float alpha = 255.0f;   // 현재 알파값
@@ -41,7 +42,7 @@ public:
 	그리기만 하도록 유지하는 게 좋음(디버깅 쉬움).*/
 	virtual void render(sf::RenderWindow& window) = 0;// 순수 가상함수
 
-	//씬이 끝났는지 여부
+	//씬이 끝났는지 여부 , main에서 유니크 포인터 옮길 때 조건식으로 쓰임
 	virtual bool isFinished() { return finished; }
 
 	//뒤로 돌아가기
@@ -53,17 +54,17 @@ public:
 	virtual void updateFade(sf::Sprite& sprite); // 페이드 계속 업데이트
 	virtual void startAppear(); // 불러내는 타이머 가동
 	virtual void updateAppear(sf::Sprite& sprite); // 타이머 시간 계산
+	virtual void setFinishBackDefault(); //finish랑 Back을 false로 되돌리기
 };
 
 class menuScene : public scene { //초기 화면
 private:
 	sf::RenderWindow& window; // 빈 도화지 받아오기
 	sf::Sprite sprite;   // 이미지를 표시할 스프라이트
-	sfmlLog log; // 빈 도화지가 없으면 로그를 못 뽑아냄(타이틀)
 	menuButton startBtn; //버튼 이라는 부품 들고옴
 	menuButton endBtn; //이하동문
 	title titleText; //타이틀
-
+	
 public:
 	menuScene(sf::RenderWindow& win, sf::Font& font, sf::Texture& tex); //빈 도화지와 폰트를 받아와야함
 	void update(sf::RenderWindow& window) override; //메뉴 화면으로 상태갱신
@@ -92,7 +93,7 @@ public:
 class mapScene : public scene { //전체 맵 보여주기
 private:
 	sf::RenderWindow& window; // 빈 도화지 받아오기
-	sf::Sprite sprite;   // 이미지를 표시할 스프라이트
+	sf::Sprite background;   // 이미지를 표시할 스프라이트
 	sfmlLog log; // 필요할수도 있으니.
 	float elapsed = 0.f;
 	
@@ -127,7 +128,8 @@ public:
 	void imageDraw(float bgWidth, float bgHeight); //이미지 그리기
 	void pushAssortMap(int assortMapCnt, resourceManager& res);
 	void animation(sf::Vector2f& center, float& elapsed);
-	
+	void updateAppear(sf::Sprite& sprite) override;
+
 	//get
 	std::vector<std::vector<assortMapSelectButton>>& getAssortBtns(); //line 갱신 목적
 	
@@ -141,15 +143,18 @@ public:
 class battleScene : public scene {
 private:
 	sf::RenderWindow& window; // 빈 도화지 받아오기
-	sf::Texture texture; //이미지
-	sf::Sprite sprite;   // 이미지를 표시할 스프라이트
-	//sfmlLog log; // 빈 도화지가 없으면 로그를 못 뽑아냄
+	sf::Sprite background;   // 배경화면
+	sfmlLog log; // 싸울땐 로그 필수
 	//battleButton attackBtn; //버튼 이라는 부품 들고옴
 	//battleButton defenseBtn; //이하동문
 	//battleButton skillBtn;
 	// 이하 세부 스킬 버튼 만들어야함
+	backButton backBtn; // 뒤로가기 버튼 (세부층이 문제 없으면 지울 것. 디버깅용임.)
 
 public:
+	battleScene(sf::RenderWindow& win, resourceManager& res);
+	void update(sf::RenderWindow& window) override; //메뉴 화면으로 상태갱신
+	void render(sf::RenderWindow& window) override; //화면 사용자에게 보이게 하기
 
 };
 

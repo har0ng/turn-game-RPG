@@ -50,10 +50,14 @@ void scene::updateAppear(sf::Sprite& sprite) {
     color.a = static_cast<sf::Uint8>(alpha);
     sprite.setColor(color);
 }
+void scene::setFinishBackDefault(){
+    finished = false;
+    back = false;
+}
 
 //menuScene
 menuScene::menuScene(sf::RenderWindow& win, sf::Font& font, sf::Texture& tex) :
-    window(win), log(win)
+    window(win)
     , startBtn("start", 70.0f, 700.0f, font) //스타트와 엔드 버튼 화면상 위치
     , endBtn("end", 70.0f, 800.0f, font)
     , titleText("title", font, tex)
@@ -75,14 +79,14 @@ void menuScene::update(sf::RenderWindow& window) {
         if (event.type == sf::Event::Closed) { //만약 event 타입으로써 닫기 event가 일어나면
             window.close();//창이 닫힌다
         }
-        if (event.type == sf::Event::MouseButtonPressed && !transition) {
-            if (startBtn.isClicked(worldPos) && sf::Mouse::isButtonPressed(sf::Mouse::Left) && !startBtn.getAppear()) {
+        if (event.type == sf::Event::MouseButtonReleased && !transition && event.mouseButton.button == sf::Mouse::Left) {
+            if (startBtn.isClicked(worldPos) && !startBtn.getAppear()) {
                 isTransition();
                 startBtn.startFade();
                 endBtn.startFade();
                 titleText.startFade();
             }
-            if (endBtn.isClicked(worldPos) && sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+            if (endBtn.isClicked(worldPos)) {
                 window.close(); // end 버튼 누를 시 종료
             }
         }
@@ -113,6 +117,7 @@ void menuScene::setMainView() {
     mainViewX = sprite.getGlobalBounds().width;
     mainViewY = sprite.getGlobalBounds().height;
 }
+
 
 //classSelectScene
 classSelectScene::classSelectScene(sf::RenderWindow& win, sf::Font& font, sf::Texture& tex)
@@ -150,8 +155,8 @@ void classSelectScene::update(sf::RenderWindow& window){
         if (event.type == sf::Event::Closed) { //만약 event 타입으로써 닫기 event가 일어나면
             window.close();//창이 닫힌다
         }
-        if (event.type == sf::Event::MouseButtonPressed && !transition) { // 앞으로
-            if (tiferetBtn.isClicked(worldPos) && sf::Mouse::isButtonPressed(sf::Mouse::Left) && !tiferetBtn.getAppear()) {
+        if (event.type == sf::Event::MouseButtonReleased && !transition && event.mouseButton.button == sf::Mouse::Left) { // 앞으로
+            if (tiferetBtn.isClicked(worldPos) && !tiferetBtn.getAppear()) {
                 isTransition();
                 startFade();
                 tiferetBtn.startFade();
@@ -162,15 +167,15 @@ void classSelectScene::update(sf::RenderWindow& window){
                 selectBtn = true;
             }
         }
-        if (event.type == sf::Event::MouseButtonPressed && !transition) { // 앞으로
-            if (malkuthBtn.isClicked(worldPos) && sf::Mouse::isButtonPressed(sf::Mouse::Left) && !malkuthBtn.getAppear()) {
+        if (event.type == sf::Event::MouseButtonReleased && !transition && event.mouseButton.button == sf::Mouse::Left) { // 앞으로
+            if (malkuthBtn.isClicked(worldPos) && !malkuthBtn.getAppear()) {
                 //isTransition();
                 //말쿠트 직업 개발중
                 finished = false; //tiferet 버튼 누를시 직업 선택 되게끔
             }
         }
-        if (event.type == sf::Event::MouseButtonPressed && !transition) { // 돌아오기
-            if (backBtn.isClicked(worldPos) && sf::Mouse::isButtonPressed(sf::Mouse::Left) && !backBtn.getAppear()) {
+        if (event.type == sf::Event::MouseButtonReleased && !transition && event.mouseButton.button == sf::Mouse::Left) { // 돌아오기
+            if (backBtn.isClicked(worldPos) && !backBtn.getAppear()) {
                 isTransition();
                 tiferetBtn.startFade();
                 malkuthBtn.startFade();
@@ -200,7 +205,7 @@ void classSelectScene::update(sf::RenderWindow& window){
     }
     else if (backBtn.getFading() == false && backBtn.getAlpha() <= 0) {
         transition = false; //씬 바뀌고 있는데 클릭 금지
-        back = true; //start 버튼 누를시 시작하게끔
+        back = true; //back 버튼 누를시 시작하게끔
     }
 }
 void classSelectScene::render(sf::RenderWindow& window){
@@ -216,10 +221,10 @@ void classSelectScene::render(sf::RenderWindow& window){
 mapScene::mapScene(sf::RenderWindow& win, sf::Font& font, sf::Texture& tex)
     :window(win), log(win)
 {
-    sprite.setTexture(tex);
-    sf::Color color = sprite.getColor();
-    color.a = static_cast<sf::Uint8>(0);
-    sprite.setColor(color);
+    background.setTexture(tex); //배경화면
+    sf::Color color = background.getColor();
+    color.a = static_cast<sf::Uint8>(0); //배경화면 서서히 나오게끔 하기
+    background.setColor(color);
     sf::View view(sf::Vector2f(910.f, 1024.f), sf::Vector2f(1440.f, 960.f));
     view.zoom(2.13f);
     win.setView(view);
@@ -229,10 +234,10 @@ void mapScene::update(sf::RenderWindow& window){
     deltaTime = clock.restart().asSeconds(); // 이전 프레임과 현재 프레임 사이 시간
     elapsed += deltaTime;
     sf::Event event;
-    if (elapsed >= 13.f) {
+    if (elapsed >= 13.f) { 
         finished = true;
     }
-    if (sprite.getColor().a == static_cast<sf::Uint8>(180.f) && elapsed >= 7.f) {
+    if (background.getColor().a == static_cast<sf::Uint8>(180.f) && elapsed >= 7.f) {
         startFade();
     }
     while (window.pollEvent(event)) {//이벤트가 있다면 계속 반복
@@ -241,11 +246,11 @@ void mapScene::update(sf::RenderWindow& window){
         }
     }
 
-    updateAppear(sprite); //while 밖인 이유는 event(마우스 키보드등)이 없다면 while이 실행이 안됨.
-    updateFade(sprite);
+    updateAppear(background); //while 밖인 이유는 event(마우스 키보드등)이 없다면 while이 실행이 안됨.
+    updateFade(background);
 }
 void mapScene::render(sf::RenderWindow& window) {
-    window.draw(sprite); //배경
+    window.draw(background); //배경
 }
 void mapScene::updateFade(sf::Sprite& sprite) {
     if (fading == false) {
@@ -293,6 +298,9 @@ floorScene::floorScene(sf::RenderWindow& win, resourceManager& res)
     // 1.기본 뷰 초기화
     window.setView(window.getDefaultView()); //mapScene view에서의 누적 초기화
     background.setTexture(res.getTexture("floorBg"));
+    sf::Color color = background.getColor();
+    color.a = (static_cast<sf::Uint8>(0));
+    background.setColor(color);
     view.setCenter(sf::Vector2f(background.getGlobalBounds().width / 2, 1920.f)); // 화면의 정중앙
     view.setSize(sf::Vector2f(background.getGlobalBounds().width, 1280.f));  // 화면의 정중앙으로부터 좌우, 상하 길이
     win.setView(view);
@@ -308,19 +316,25 @@ floorScene::floorScene(sf::RenderWindow& win, resourceManager& res)
     line.setAssortBtns(assortBtns);
     // 7.버튼 위치가 세팅된 후 라인 생성
     line.createLine();
-  
+    // 8. 천천히 이미지 밝아지기
+    startAppear();
     floorName.startAppear();
+    for (auto& assortBtnInfo: assortBtns) {
+        for (auto& roomInfo : assortBtnInfo) {
+            roomInfo.startAppear();
+        }
+    }
+    line.startAppear();
 }
 void floorScene::update(sf::RenderWindow& window) {
     deltaTime = clock.restart().asSeconds(); // 이전 프레임과 현재 프레임 사이 시간
     elapsed += deltaTime;
     sf::Event event;
     sf::Vector2f center = view.getCenter(); //보이는 화면 중심값
-    if (!animationYN && elapsed >= 1.5f) {
+    if (!animationYN && !appear) {
         animation(center, elapsed);
         floorName.startFade();
     }
-    
     while (window.pollEvent(event)) {
         sf::Vector2i pixelPos = sf::Mouse::getPosition(window); //설정 해놓은 창 기준 마우스
         sf::Vector2f worldPos = window.mapPixelToCoords(pixelPos);//창 크기가 바뀌더라도 마우스의 위치를 제대로 찾게끔
@@ -329,20 +343,20 @@ void floorScene::update(sf::RenderWindow& window) {
                 for (auto& roomInfo : assortFloor) { //버튼 호버시 변화
                     roomInfo.spriteScaleManager(worldPos);
                     line.setFillColor(worldPos, roomInfo);
+                    if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left && roomInfo.isClicked(worldPos)) {
+                        finished = true;
+                    }
                 }
             }
         }
         if (event.type == sf::Event::Closed) { //만약 event 타입으로써 닫기 event가 일어나면
             window.close();//창이 닫힌다
         }
-        if (event.type == sf::Event::MouseWheelScrolled) {
-            if (animationYN && event.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel && event.mouseWheelScroll.delta > 0) {
-                center.y -= scrollSpeed; // 위로 이동
-            }
-
-            else if (animationYN && event.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel && event.mouseWheelScroll.delta < 0) {
-                center.y += scrollSpeed; // 아래로 이동
-            }
+        if (event.type == sf::Event::MouseWheelScrolled && animationYN && event.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel && event.mouseWheelScroll.delta > 0) {
+            center.y -= scrollSpeed; // 위로 이동
+        }
+        if (event.type == sf::Event::MouseWheelScrolled && animationYN && event.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel && event.mouseWheelScroll.delta < 0) {
+            center.y += scrollSpeed; // 아래로 이동
         }
     }
     //center.y == 640 , halfSize.y == 640.
@@ -361,6 +375,13 @@ void floorScene::update(sf::RenderWindow& window) {
     //fade,appear
     floorName.updateFade();
     floorName.updateAppear();
+    updateAppear(background);
+    for (auto& assortBtnInfo : assortBtns) {
+        for (auto& roomInfo : assortBtnInfo) {
+            roomInfo.updateAppear();
+        }
+    }
+    line.updateAppear();
 }
 void floorScene::render(sf::RenderWindow& window) {
     window.draw(background);
@@ -416,16 +437,18 @@ void floorScene::imageDraw(float bgWidth, float bgHeight) {
     }
 }
 void floorScene::pushAssortMap(int assortMapCnt, resourceManager& res) { //각 방 무슨 이벤트 발생하는지 map과 연결해 정의
-    std::vector<room> gameMap = map.upperPartCreateMap(); //맵 만들어놓기.
-    auto mapIndex = 1;
-    while (assortMapCnt > 0) {
-        for (int i = 0; i < assortMapCnt && mapIndex < gameMap.size(); i++) {
-            assortBtn.push_back(assortMapSelectButton(gameMap[mapIndex], res));
-            mapIndex++;
+    if (assortBtns.empty()) { //다시 맵 넘어왔을 떄 있으면 곤란.
+        std::vector<room> gameMap = map.upperPartCreateMap(); //맵 만들어놓기.
+        auto mapIndex = 1;
+        while (assortMapCnt > 0) {
+            for (int i = 0; i < assortMapCnt && mapIndex < gameMap.size(); i++) {
+                assortBtn.push_back(assortMapSelectButton(gameMap[mapIndex], res));
+                mapIndex++;
+            }
+            assortMapCnt -= 1;
+            assortBtns.push_back(assortBtn);
+            assortBtn.clear();
         }
-        assortMapCnt -= 1;
-        assortBtns.push_back(assortBtn);
-        assortBtn.clear();
     }
 }
 void floorScene::animation(sf::Vector2f& center, float& elapsed) {
@@ -434,7 +457,7 @@ void floorScene::animation(sf::Vector2f& center, float& elapsed) {
         animationYN = true;
     }
     if (center.y != 640.f) {
-        center.y = std::max(640.f, center.y - scrollSpeed / 12 * elapsed); // 위로 이동
+        center.y = std::max(640.f, center.y - ((scrollSpeed / 12) * elapsed)); // 위로 이동
     }
 }
 std::vector<std::vector<assortMapSelectButton>>& floorScene::getAssortBtns() {
@@ -477,5 +500,45 @@ void floorScene::setFirstAssortMapCnt(int &floor) {
 void floorScene::setLine(std::vector<std::vector<assortMapSelectButton>>& assortBtns) {
     line.setAssortBtns(assortBtns);
 }
+void floorScene::updateAppear(sf::Sprite& sprite) {
+    if (appear == false) {
+        return;
+    }
+    sf::Color color = sprite.getColor();//스프라이트라 색상값 알아서 불러오게끔
+    float appearDuration = 2.f; // 3초 동안 나타나게
+    float alphaStep = 255.0f / appearDuration; // 초당 증가량
+    alpha += alphaStep * deltaTime; // deltaTime 곱해서 프레임 독립적 처리
+
+    if (alpha >= 255.f) {
+        alpha = 255.f;
+        appear = false;
+    }
+
+    color.a = static_cast<sf::Uint8>(std::min(alpha, 255.f));
+    sprite.setColor(color);
+}
 
 //battleScene
+battleScene::battleScene(sf::RenderWindow& win, resourceManager& res) :
+    window(win),log(win), backBtn("back", 0.0f, 800.0f, res.getFont("fantasy"))
+{
+   
+}
+void battleScene::update(sf::RenderWindow& window) {
+    sf::Event event;
+    while (window.pollEvent(event)) {//이벤트가 있다면 계속 반복
+        sf::Vector2i pixelPos = sf::Mouse::getPosition(window); //설정 해놓은 창 기준 마우스
+        sf::Vector2f worldPos = window.mapPixelToCoords(pixelPos);//창 크기가 바뀌더라도 마우스의 위치를 제대로 찾게끔
+        //아웃라인 색상 변경
+        backBtn.outlineColormanager(worldPos);
+        if (event.type == sf::Event::Closed) { //만약 event 타입으로써 닫기 event가 일어나면
+            window.close();//창이 닫힌다
+        }
+        if (event.type == sf::Event::MouseButtonReleased && backBtn.isClicked(worldPos) && event.mouseButton.button == sf::Mouse::Left) {
+            back = true;    
+        }
+    }
+}
+void battleScene::render(sf::RenderWindow& window) {
+    backBtn.draw(window); //돌아가기 버튼 (임시용)
+}
