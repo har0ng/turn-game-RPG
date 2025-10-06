@@ -55,6 +55,7 @@ public:
 	virtual void startAppear(); // 불러내는 타이머 가동
 	virtual void updateAppear(sf::Sprite& sprite); // 타이머 시간 계산
 	virtual void setFinishBackDefault(); //finish랑 Back을 false로 되돌리기
+	virtual void allStartAppear(); // back으로 돌아가서도 천천히 나오는 듯한 이미지는 남아있어야 했기에 만들어냄
 };
 
 class menuScene : public scene { //초기 화면
@@ -70,6 +71,7 @@ public:
 	void update(sf::RenderWindow& window) override; //메뉴 화면으로 상태갱신
 	void render(sf::RenderWindow& window) override; //화면 사용자에게 보이게 하기
 	void setMainView(); //마우스의 스프라이트 크기 유지를 위함
+	void allStartAppear() override;
 };
 
 class classSelectScene : public scene {// 직업 선택

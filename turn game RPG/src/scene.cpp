@@ -55,6 +55,10 @@ void scene::setFinishBackDefault(){
     back = false;
 }
 
+void scene::allStartAppear(){
+    return;
+}
+
 //menuScene
 menuScene::menuScene(sf::RenderWindow& win, sf::Font& font, sf::Texture& tex) :
     window(win)
@@ -65,9 +69,7 @@ menuScene::menuScene(sf::RenderWindow& win, sf::Font& font, sf::Texture& tex) :
     //sprite
     sprite.setTexture(tex); // 텍스처를 스프라이트에 연결
     //timer
-    titleText.startAppear(); //천천히 타이틀이 나오게 타이머 활성화
-    startBtn.startAppear();
-    endBtn.startAppear();
+    allStartAppear();
 }
 void menuScene::update(sf::RenderWindow& window) {
     sf::Event event;
@@ -116,6 +118,11 @@ void menuScene::render(sf::RenderWindow& window) { //draw
 void menuScene::setMainView() {
     mainViewX = sprite.getGlobalBounds().width;
     mainViewY = sprite.getGlobalBounds().height;
+}
+void menuScene::allStartAppear() {
+    titleText.startAppear(); //천천히 타이틀이 나오게 타이머 활성화
+    startBtn.startAppear();
+    endBtn.startAppear();
 }
 
 

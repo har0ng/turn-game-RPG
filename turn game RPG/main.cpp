@@ -44,7 +44,7 @@ int main() {
 
         // 씬 전환 처리
         if (currentScene->isFinished()) {
-            currentScene->setFinishBackDefault();
+            currentScene->setFinishBackDefault(); //finished, back = false;
             // 메뉴 -> 직업 선택
             if (dynamic_cast<menuScene*>(currentScene.get())) {
                 history.push_back(std::move(currentScene));
@@ -76,16 +76,15 @@ int main() {
         }
 
         if (currentScene->isBack()) {
+            currentScene->setFinishBackDefault();//finished, back = false;
             if (!history.empty()) {
                 // Back flag를 먼저 체크하고 씬 전환부터 처리
-                auto prevScene = std::move(history.back());
-                history.pop_back();
-                currentScene = nullptr;
+                auto prevScene = std::move(history.back());    
                 currentScene = std::move(prevScene);
-                currentScene->setFinishBackDefault(); // ← 전환 후에 초기화
+                currentScene.get()->allStartAppear(); /* 이거 없으면 vector에서도 clock은 돌아가기에 appear 할시 
+                                                      이미 시간 다 지나서 alpha라던지 완성체로 나옴*/     
                 cursor.updatePositionFromWindow(window);
             }
-            std::cout << "Current Scene after back: " << typeid(*currentScene).name() << std::endl;
         }
     }
     return 0;
