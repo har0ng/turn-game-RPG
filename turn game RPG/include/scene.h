@@ -10,6 +10,9 @@
 #include "sfmlLog.h"
 #include "sfmlUI.h"
 #include "resourceManager.h"
+#include "player.h"
+#include "enemy.h"
+#include "battle.h"
 
 class scene {
 protected:
@@ -155,11 +158,12 @@ private:
 	sf::RenderWindow& window; // 빈 도화지 받아오기
 	sf::Sprite background;   // 배경화면
 	sfmlLog log; // 싸울땐 로그 필수
+	std::unique_ptr<player> myPlayer;
 	//battleButton attackBtn; //버튼 이라는 부품 들고옴
 	//battleButton defenseBtn; //이하동문
 	//battleButton skillBtn;
 	// 이하 세부 스킬 버튼 만들어야함
-	backButton backBtn; // 뒤로가기 버튼 (세부층이 문제 없으면 지울 것. 디버깅용임.)
+	backButton backBtn; // 뒤로가기 버튼로 되어있는데 이름만 바꿔서 배틀 끝나고 돌아가는 버튼으로 쓰기.
 
 public:
 	battleScene(sf::RenderWindow& win, resourceManager& res);

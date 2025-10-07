@@ -545,6 +545,7 @@ void floorScene::allStartAppear() {
 //battleScene
 battleScene::battleScene(sf::RenderWindow& win, resourceManager& res) :
     window(win),log(win), backBtn("back", 0.0f, 800.0f, res.getFont("fantasy"))
+    ,myPlayer()
 {
    
 }

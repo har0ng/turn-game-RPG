@@ -18,7 +18,6 @@ using std::cin;
 using std::unique_ptr;
 
 
-
 battle::battle(unique_ptr<player> _p , unique_ptr<enemy> _e)
 	: p(std::move(_p)), e(std::move(_e)), gen(rd()) { //정보 받아옴.
 	
@@ -114,7 +113,7 @@ void battle::showGetSkill(std::vector<skill> beforeSkill, std::vector<skill> aft
 	/*iterator은 참조해서 쓸 때 그 데이터값이 바뀔 염려가 있어 알고리즘에 관한 기술을 사용못함
 	그러니 이를 쓰기위해선 본래의 값을 그대로 쓸 필요가 있음. 그래서 새로운 객체를 만들어 복사본으로
 	비교하는 것으로함.*/
-	//set_difference에서 서로의 비교를 위해 operator>,operator==을 struct에 구현 필요
+	//set_difference에서 서로의 비교를 위해 operator>,operator==을 struct에 구현 필요 
 }
 
 void battle::battleStatus() {

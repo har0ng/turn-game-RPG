@@ -1,8 +1,6 @@
 ﻿//main.cpp
 
 #include "battle.h"
-#include "map.h"
-#include "consoleUI.h"
 #include "sfmlUI.h"
 #include "sfmlLog.h"
 #include "scene.h"
