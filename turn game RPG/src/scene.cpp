@@ -307,6 +307,7 @@ floorScene::floorScene(sf::RenderWindow& win, resourceManager& res)
     , line(assortBtns) // 일단 비어 있는 상태로 초기화
     ,floorName(L"裏側の入口",res.getFont("fantasy"),view,floorCnt)
 {
+    connectedRoom.reserve(5); //미리 vector크기를 지정함으로써 index늘어날 때마다 복사 비용 제거.
     // 1.기본 뷰 초기화
     window.setView(window.getDefaultView()); //mapScene view에서의 누적 초기화
     background.setTexture(res.getTexture("floorBg"));
@@ -347,9 +348,12 @@ void floorScene::update(sf::RenderWindow& window) {
         if (animationYN) {
             for (auto& assortFloor : assortBtns) { //room에 마우스 갖다대면 scale 변화
                 for (auto& roomInfo : assortFloor) { //버튼 호버시 변화
-                    roomInfo.spriteScaleManager(worldPos);
+                    roomInfo.spriteScaleManager(worldPos, visitedRoom,connectedRoom);
                     line.setFillColor(worldPos, roomInfo);     
-                    if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left && roomInfo.isClicked(worldPos) && roomInfo.getIndexRow() == assortBtnRow) {
+                    if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left && roomInfo.isClicked(worldPos) && roomInfo.getIndexRow() == assortBtnRow) {                       
+                        visitedRoom.push_back({ roomInfo.getIndexRow(), roomInfo.getIndexCol() });
+                        connectedRoom.clear();
+                        connectedRoom = roomInfo.getRoomInformation().connectedRoom;
                         assortBtnRow++;
                         finished = true;                       
                     }
@@ -366,13 +370,13 @@ void floorScene::update(sf::RenderWindow& window) {
             center.y += scrollSpeed; // 아래로 이동
         }
     }
-    //center.y == 640 , halfSize.y == 640.
+    //center.y == 640 , halfSize.y == 640.f
     sf::Vector2f halfSize = view.getSize() / 2.0f;//화면(직사각형)의 중심. x,y의 절반이 중심값이 됨.
     if (center.y < halfSize.y) { center.y = halfSize.y; } //만약 중심값의 y보다 플레이어가 보는 화면의 y값이 작다면 이미지를 나가버림
     if (center.y > background.getGlobalBounds().height - halfSize.y) {
         center.y = background.getGlobalBounds().height - halfSize.y;
     } //반대로 화면을 내렸을 때 총크기의 y - 중심값 y를 넘으면 화면 나가버림
-    //640.f
+
 
     //set
     view.setCenter(center); // 중심값 재설정
@@ -385,7 +389,7 @@ void floorScene::update(sf::RenderWindow& window) {
     updateAppear(background);
     for (auto& assortBtnInfo : assortBtns) {
         for (auto& roomInfo : assortBtnInfo) {
-            roomInfo.updateAppear();
+            roomInfo.updateAppear(visitedRoom);
         }
     }
     line.updateAppear();
@@ -446,10 +450,10 @@ void floorScene::imageDraw(float bgWidth, float bgHeight) {
 void floorScene::pushAssortMap(int assortMapCnt, resourceManager& res) { //각 방 무슨 이벤트 발생하는지 map과 연결해 정의
     if (assortBtns.empty()) { //다시 맵 넘어왔을 떄 있으면 곤란.
         std::vector<room> gameMap = map.upperPartCreateMap(); //맵 만들어놓기.
-        int row = 0;
-        int col = 0; //이 함수가 끝나면 없어질 변수라 &을 못씀
+        int row = 0;//이 함수가 끝나면 없어질 변수라 &을 못씀
         auto mapIndex = 1;
         while (assortMapCnt > 0) {
+            int col = 0; //이 함수가 끝나면 없어질 변수라 &을 못씀
             for (int i = 0; i < assortMapCnt && mapIndex < gameMap.size(); i++) {
                 assortBtn.push_back(assortMapSelectButton(gameMap[mapIndex], res, { row, col}));
                 mapIndex++;

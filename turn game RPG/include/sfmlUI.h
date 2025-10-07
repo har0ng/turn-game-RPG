@@ -124,10 +124,15 @@ public:
 	void draw(sf::RenderWindow& win) override; // 모든버튼 그리기
 	bool isClicked(sf::Vector2f& mousePos) override;//클릭 이벤트
 	void outlineColormanager(sf::Vector2f& mousePos) override; //버튼 호버시 아웃라인 색 변경
-	void spriteScaleManager(const sf::Vector2f& mousePos);
+	void spriteScaleManager(const sf::Vector2f& mousePos, 
+		const std::vector<std::pair<int, int>>& visitedRoom, const std::vector<int>& connectedRoom);
 	void startAppear();
-	void updateAppear();
+	void updateAppear(std::vector<std::pair<int, int>>& visitedRoom);
+	
+	//set
 	void setPosition(sf::Vector2f pos); //맵 하나하나 위치
+
+	//get
 	sf::Vector2f getPosition();
 	sf::Sprite& getButton(); // 버튼 정보
 	const room& getRoomInformation() const; //struct room의 정보 불러오기

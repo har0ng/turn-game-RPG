@@ -392,8 +392,19 @@ bool assortMapSelectButton::isClicked(sf::Vector2f& mousePos){
 void assortMapSelectButton::outlineColormanager(sf::Vector2f& mousePos) {
 	return;
 }
-void assortMapSelectButton::spriteScaleManager(const sf::Vector2f& mousePos){
+void assortMapSelectButton::spriteScaleManager(const sf::Vector2f& mousePos,
+	const std::vector<std::pair<int, int>>& visitedRoom, const std::vector<int>& connectedRoom) {
 	bounds = button.getLocalBounds();
+	//기저 조건
+	for (auto& visited : visitedRoom) {
+		if (visited.first == getIndexRow()) { return; }
+		for (auto& connected : connectedRoom) {
+			if (visited.first + 1 == getIndexRow() && connected != getRoomInformation().id) { return; }
+		}
+	}
+
+
+	//기저 조건에 해당 되지 않았을 경우
     if (button.getGlobalBounds().contains(mousePos) && roomInformation.name != "boss") {
 		button.setScale(1.05f, 1.05f);  // 절대값
 	}
@@ -408,7 +419,7 @@ void assortMapSelectButton::startAppear() {
 	appear = true;
 	clock.restart();// 0초로 초기화 하고 다시 경과 시간 반환
 }
-void assortMapSelectButton::updateAppear() {
+void assortMapSelectButton::updateAppear(std::vector<std::pair<int, int>>& visitedRoom) {
 	if (appear == false) {
 		return;
 	}
@@ -418,13 +429,22 @@ void assortMapSelectButton::updateAppear() {
 		alpha = 255;
 		appear = false; // 완료되면 멈춤
 	}
-	
 	sf::Uint8 buttonAlphaColor = sf::Uint8(alpha);
+	for (auto& visited : visitedRoom) {
+		if (visited.first == getIndexRow() && visited.second == getIndexCol()) {
+			button.setColor(sf::Color(255,255,153,buttonAlphaColor));
+			return;
+		}
+		if (visited.first == getIndexRow()) {
+			button.setColor(sf::Color(192, 192, 192, buttonAlphaColor));
+			return;
+		}
+	}
 	if (getRoomInformation().name == "rest") {
-		button.setColor(sf::Color(170,255,170, buttonAlphaColor));
+		button.setColor(sf::Color(170, 255, 170, buttonAlphaColor));
 	}
 	else if (getRoomInformation().name == "enemy") {
-		button.setColor(sf::Color(255, 204, 204, buttonAlphaColor));
+		button.setColor(sf::Color(255, 160, 160, buttonAlphaColor));
 	}
 	else if (getRoomInformation().name == "boss") {
 		button.setColor(sf::Color(255, 204, 204, buttonAlphaColor));
@@ -448,7 +468,6 @@ int assortMapSelectButton::getIndexRow() const {
 int assortMapSelectButton::getIndexCol() const {
 	return indexPos.col;
 }
-
 
 //assortMapLine
 assortMapLine::assortMapLine(std::vector<std::vector<assortMapSelectButton>>& assortBtns)

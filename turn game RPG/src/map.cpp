@@ -146,7 +146,7 @@ std::vector<room> mapRoom::upperPartCreateMap() {
                 }
                 if (!connected) {
                     std::uniform_int_distribution<int> pickPrev(0, (int)prevFloorRooms.size() - 1);
-                    int prevPick = prevFloorRooms[pickPrev(gen)];
+                    long long prevPick = prevFloorRooms[pickPrev(gen)];
                     map[prevPick - 1].connectedRoom.push_back(curRoom);
                 }
             }
@@ -156,7 +156,7 @@ std::vector<room> mapRoom::upperPartCreateMap() {
         if (roomsInFloor == 1) {
             // (조건 4) 보스 층에 회복이 없다면 하나 강제로 rest로 교체
             bool bossFloorHasRest = false;
-            for (int r : currentFloorRooms) {
+            for (long long r : currentFloorRooms) {
                 if (map[r - 1].name == "rest") {
                     bossFloorHasRest = true;
                     break;
@@ -164,7 +164,7 @@ std::vector<room> mapRoom::upperPartCreateMap() {
             }
             if (!bossFloorHasRest) {
                 // 보스 제외하고 하나를 rest로 교체
-                for (int r : currentFloorRooms) {
+                for (long long r : currentFloorRooms) {
                     if (map[r - 1].name != "boss") {
                         map[r - 1].name = "rest";
                         map[r - 1].description = "HPの30%を回復します。";

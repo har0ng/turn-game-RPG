@@ -16,11 +16,11 @@
     <Filter Include="ソース ファイル\src">
       <UniqueIdentifier>{8588df33-36ba-4d54-a8c6-64fe424ad303}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\include">
-      <UniqueIdentifier>{dd65e8a1-c20e-4740-8bfd-1b84577602ce}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\assets">
       <UniqueIdentifier>{62619801-d1df-425d-b83f-f87c563cf4ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\include">
+      <UniqueIdentifier>{dd65e8a1-c20e-4740-8bfd-1b84577602ce}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -110,9 +110,6 @@
     <ClInclude Include="include\attackInfo.h">
       <Filter>ソース ファイル\include</Filter>
     </ClInclude>
-    <ClInclude Include="include\skillReferenceStatus.h">
-      <Filter>ソース ファイル\include</Filter>
-    </ClInclude>
     <ClInclude Include="include\skillDisable.h">
       <Filter>ソース ファイル\include</Filter>
     </ClInclude>
@@ -142,6 +139,9 @@
     </ClInclude>
     <ClInclude Include="include\resourceManager.h">
       <Filter>ソース ファイル\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\skillReferenceStatus.h">
+      <Filter>ソース ファイル\assets</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
