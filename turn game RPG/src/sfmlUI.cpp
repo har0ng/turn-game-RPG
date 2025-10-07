@@ -381,9 +381,7 @@ assortMapSelectButton::assortMapSelectButton(room roomInfo, resourceManager& res
 void assortMapSelectButton::draw(sf::RenderWindow& win){
 	win.draw(button);
 }
-bool assortMapSelectButton::isClicked(sf::Vector2f& mousePos){
-	return false;
-}
+bool assortMapSelectButton::isClicked(sf::Vector2f& mousePos){return false;}
 bool assortMapSelectButton::isClickedExtra(sf::Vector2f& mousePos, std::vector<int>& connectedRoom){
 	sf::FloatRect bound = button.getGlobalBounds();
 	if (bound.contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))&& connectedRoom.empty()) {

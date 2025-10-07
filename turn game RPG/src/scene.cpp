@@ -124,7 +124,6 @@ void menuScene::allStartAppear() {
     endBtn.startAppear();
 }
 
-
 //classSelectScene
 classSelectScene::classSelectScene(sf::RenderWindow& win, sf::Font& font, sf::Texture& tex)
     :window(win)
