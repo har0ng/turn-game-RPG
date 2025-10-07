@@ -115,8 +115,12 @@ private:
 	sf::Texture& enemy;
 	sf::Texture& boss;
 	room roomInformation;
+	struct index {
+		int row; //가로 인덱스로 구분해서 방 정보를 찾기 위함 
+		int col; //세로
+	}indexPos;
 public:
-	assortMapSelectButton(room roomInfo,resourceManager& res);
+	assortMapSelectButton(room roomInfo,resourceManager& res, index indexPos);
 	void draw(sf::RenderWindow& win) override; // 모든버튼 그리기
 	bool isClicked(sf::Vector2f& mousePos) override;//클릭 이벤트
 	void outlineColormanager(sf::Vector2f& mousePos) override; //버튼 호버시 아웃라인 색 변경
@@ -127,6 +131,8 @@ public:
 	sf::Vector2f getPosition();
 	sf::Sprite& getButton(); // 버튼 정보
 	const room& getRoomInformation() const; //struct room의 정보 불러오기
+	int getIndexRow() const;
+	int getIndexCol() const;
 };
 
 class assortMapLine { //세부층과 세부층을 잇는 라인

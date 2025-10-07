@@ -28,7 +28,7 @@ void resourceManager::loadAll() {
     loadTexture("mapBg", "assets/images/map1.png");
     loadTexture("floorBg", "assets/images/1Floor.png");
     loadTexture("cursor", "assets/images/mouse.png");
-    loadTexture("heal", "assets/images/heal.png");
+    loadTexture("heal", "assets/images/heal1.png");
     loadTexture("boss", "assets/images/boss.png");
     loadTexture("enemy", "assets/images/enemy.png");
 

@@ -109,7 +109,7 @@ void floorTitle::updateAppear() {
 		return;
 	}
 	float elapsed = clock.getElapsedTime().asSeconds();
-	alpha = 0 + (elapsed / 2.0f) * 255; //2초에 걸쳐 증가
+	alpha = 0 + (elapsed / 1.0f) * 255; //2초에 걸쳐 증가
 	if (alpha > 255) {
 		alpha = 255;
 		appear = false; // 완료되면 멈춤
@@ -357,11 +357,12 @@ void backButton::outlineColormanager(sf::Vector2f& mousePos){
 }
 
 //assortMapSelectButton
-assortMapSelectButton::assortMapSelectButton(room roomInfo, resourceManager& res) :
+assortMapSelectButton::assortMapSelectButton(room roomInfo, resourceManager& res, index indexPos) :
 	rest(res.getTexture("heal")),
-	enemy(res.getTexture("enemy")), 
+	enemy(res.getTexture("enemy")),
 	boss(res.getTexture("boss")),
-	roomInformation(roomInfo)
+	roomInformation(roomInfo),
+	indexPos(indexPos)
 
 {
 	if (roomInfo.name == "rest") {
@@ -417,9 +418,17 @@ void assortMapSelectButton::updateAppear() {
 		alpha = 255;
 		appear = false; // 완료되면 멈춤
 	}
-	sf::Color buttonColor = button.getColor();
-	buttonColor.a = ((sf::Uint8)alpha);
-	button.setColor(buttonColor);
+	
+	sf::Uint8 buttonAlphaColor = sf::Uint8(alpha);
+	if (getRoomInformation().name == "rest") {
+		button.setColor(sf::Color(170,255,170, buttonAlphaColor));
+	}
+	else if (getRoomInformation().name == "enemy") {
+		button.setColor(sf::Color(255, 204, 204, buttonAlphaColor));
+	}
+	else if (getRoomInformation().name == "boss") {
+		button.setColor(sf::Color(255, 204, 204, buttonAlphaColor));
+	}
 }
 void assortMapSelectButton::setPosition(sf::Vector2f pos) {
 	button.setPosition(pos);
@@ -433,6 +442,13 @@ sf::Sprite& assortMapSelectButton::getButton() {
 const room& assortMapSelectButton::getRoomInformation() const {
 	return roomInformation;
 }
+int assortMapSelectButton::getIndexRow() const {
+	return indexPos.row;
+}
+int assortMapSelectButton::getIndexCol() const {
+	return indexPos.col;
+}
+
 
 //assortMapLine
 assortMapLine::assortMapLine(std::vector<std::vector<assortMapSelectButton>>& assortBtns)
@@ -534,7 +550,6 @@ void assortMapLine::setAssortBtns(const std::vector<std::vector<assortMapSelectB
 		assortBtns.push_back(test);
 	}
 }
-
 
 //mouse
 mouse::mouse(sf::RenderWindow& window, sf::Texture& tex)

@@ -329,6 +329,7 @@ floorScene::floorScene(sf::RenderWindow& win, resourceManager& res)
     // 7.버튼 위치가 세팅된 후 라인 생성
     line.createLine();
     // 8. 천천히 이미지 밝아지기
+    floorName.startAppear(); //제일 처음만 보여줄꺼라 allStartAppear()에 넣지 않음으로써 반복성 부여x
     allStartAppear();
 }
 void floorScene::update(sf::RenderWindow& window) {
@@ -347,9 +348,10 @@ void floorScene::update(sf::RenderWindow& window) {
             for (auto& assortFloor : assortBtns) { //room에 마우스 갖다대면 scale 변화
                 for (auto& roomInfo : assortFloor) { //버튼 호버시 변화
                     roomInfo.spriteScaleManager(worldPos);
-                    line.setFillColor(worldPos, roomInfo);
-                    if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left && roomInfo.isClicked(worldPos)) {
-                        finished = true;
+                    line.setFillColor(worldPos, roomInfo);     
+                    if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left && roomInfo.isClicked(worldPos) && roomInfo.getIndexRow() == assortBtnRow) {
+                        assortBtnRow++;
+                        finished = true;                       
                     }
                 }
             }
@@ -444,14 +446,18 @@ void floorScene::imageDraw(float bgWidth, float bgHeight) {
 void floorScene::pushAssortMap(int assortMapCnt, resourceManager& res) { //각 방 무슨 이벤트 발생하는지 map과 연결해 정의
     if (assortBtns.empty()) { //다시 맵 넘어왔을 떄 있으면 곤란.
         std::vector<room> gameMap = map.upperPartCreateMap(); //맵 만들어놓기.
+        int row = 0;
+        int col = 0; //이 함수가 끝나면 없어질 변수라 &을 못씀
         auto mapIndex = 1;
         while (assortMapCnt > 0) {
             for (int i = 0; i < assortMapCnt && mapIndex < gameMap.size(); i++) {
-                assortBtn.push_back(assortMapSelectButton(gameMap[mapIndex], res));
+                assortBtn.push_back(assortMapSelectButton(gameMap[mapIndex], res, { row, col}));
                 mapIndex++;
+                col++;
             }
             assortMapCnt -= 1;
             assortBtns.push_back(assortBtn);
+            row++;
             assortBtn.clear();
         }
     }
@@ -510,7 +516,7 @@ void floorScene::updateAppear(sf::Sprite& sprite) {
         return;
     }
     sf::Color color = sprite.getColor();//스프라이트라 색상값 알아서 불러오게끔
-    float appearDuration = 2.f; // 2초 동안 나타나게
+    float appearDuration = 1.f; // 2초 동안 나타나게
     float alphaStep = 255.0f / appearDuration; // 초당 증가량
     alpha += alphaStep * deltaTime; // deltaTime 곱해서 프레임 독립적 처리
 
@@ -524,7 +530,6 @@ void floorScene::updateAppear(sf::Sprite& sprite) {
 }
 void floorScene::allStartAppear() {
     startAppear();
-    floorName.startAppear();
     for (auto& assortBtnInfo : assortBtns) {
         for (auto& roomInfo : assortBtnInfo) {
             roomInfo.startAppear();

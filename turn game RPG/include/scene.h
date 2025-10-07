@@ -125,6 +125,8 @@ private:
 	float scrollSpeed = 90.f; //스크롤 +1-1에 얼마나 움직이는지
 	float elapsed = 0.f; // 화면 스크롤 애니메이션을 위함
 	bool animationYN = false;
+	int assortBtnRow = 0; //몇번째 세부층인지
+	int assortBtnCol = 0; // index라 0부터,현재 플레이어의 세부층 1-playerPos , 2-playerPos etc.
 public:
 	floorScene(sf::RenderWindow& win, resourceManager& res);
 	void update(sf::RenderWindow& window) override; //메뉴 화면으로 상태갱신
