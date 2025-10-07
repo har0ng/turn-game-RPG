@@ -307,7 +307,8 @@ floorScene::floorScene(sf::RenderWindow& win, resourceManager& res)
     , line(assortBtns) // 일단 비어 있는 상태로 초기화
     ,floorName(L"裏側の入口",res.getFont("fantasy"),view,floorCnt)
 {
-    connectedRoom.reserve(5); //미리 vector크기를 지정함으로써 index늘어날 때마다 복사 비용 제거.
+    visitedRoom.reserve(2); //미리 vector크기를 지정함으로써 index늘어날 때마다 복사 비용 제거.
+    connectedRoom.reserve(5);
     // 1.기본 뷰 초기화
     window.setView(window.getDefaultView()); //mapScene view에서의 누적 초기화
     background.setTexture(res.getTexture("floorBg"));
@@ -348,9 +349,9 @@ void floorScene::update(sf::RenderWindow& window) {
         if (animationYN) {
             for (auto& assortFloor : assortBtns) { //room에 마우스 갖다대면 scale 변화
                 for (auto& roomInfo : assortFloor) { //버튼 호버시 변화
-                    roomInfo.spriteScaleManager(worldPos, visitedRoom,connectedRoom);
+                    roomInfo.spriteScaleManager(worldPos, visitedRoom);
                     line.setFillColor(worldPos, roomInfo);     
-                    if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left && roomInfo.isClicked(worldPos) && roomInfo.getIndexRow() == assortBtnRow) {                       
+                    if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left && roomInfo.isClickedExtra(worldPos, connectedRoom) && roomInfo.getIndexRow() == assortBtnRow) {
                         visitedRoom.push_back({ roomInfo.getIndexRow(), roomInfo.getIndexCol() });
                         connectedRoom.clear();
                         connectedRoom = roomInfo.getRoomInformation().connectedRoom;

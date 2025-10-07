@@ -382,27 +382,30 @@ void assortMapSelectButton::draw(sf::RenderWindow& win){
 	win.draw(button);
 }
 bool assortMapSelectButton::isClicked(sf::Vector2f& mousePos){
+	return false;
+}
+bool assortMapSelectButton::isClickedExtra(sf::Vector2f& mousePos, std::vector<int>& connectedRoom){
 	sf::FloatRect bound = button.getGlobalBounds();
-	if (bound.contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))) {
+	if (bound.contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))&& connectedRoom.empty()) {
 		//버튼 배경 전체가 기준이니 버튼배경 안에서 마우스의 움직임이나 이벤트를 인정해준다는 의미
 		return true; //버튼 배경안에 마우스 좌표가 있으면 true
+	}
+	for (auto& connected : connectedRoom) {
+		if (getRoomInformation().id == connected && bound.contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))) {
+			return true; //버튼 배경안에 마우스 좌표가 있으면 true
+		}
 	}
 	return false;
 }
 void assortMapSelectButton::outlineColormanager(sf::Vector2f& mousePos) {
 	return;
 }
-void assortMapSelectButton::spriteScaleManager(const sf::Vector2f& mousePos,
-	const std::vector<std::pair<int, int>>& visitedRoom, const std::vector<int>& connectedRoom) {
+void assortMapSelectButton::spriteScaleManager(const sf::Vector2f& mousePos, const std::vector<std::pair<int, int>>& visitedRoom) {
 	bounds = button.getLocalBounds();
 	//기저 조건
 	for (auto& visited : visitedRoom) {
 		if (visited.first == getIndexRow()) { return; }
-		for (auto& connected : connectedRoom) {
-			if (visited.first + 1 == getIndexRow() && connected != getRoomInformation().id) { return; }
-		}
 	}
-
 
 	//기저 조건에 해당 되지 않았을 경우
     if (button.getGlobalBounds().contains(mousePos) && roomInformation.name != "boss") {

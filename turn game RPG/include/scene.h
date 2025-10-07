@@ -129,7 +129,7 @@ private:
 	int assortBtnRow = 0; //몇번째 세부층인지
 	int assortBtnCol = 0; // index라 0부터,현재 플레이어의 세부층 1-playerPos , 2-playerPos etc.
 	std::vector<std::pair<int,int>> visitedRoom; //방문한 방 모음
-	std::vector<int> connectedRoom; //갈 수 있는 방 모음 매턴 초기화. 일부러 복사
+	std::vector<int> connectedRoom; // 갈수 있는 방 모음
 public:
 	floorScene(sf::RenderWindow& win, resourceManager& res);
 	void update(sf::RenderWindow& window) override; //메뉴 화면으로 상태갱신

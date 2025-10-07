@@ -122,10 +122,10 @@ private:
 public:
 	assortMapSelectButton(room roomInfo,resourceManager& res, index indexPos);
 	void draw(sf::RenderWindow& win) override; // 모든버튼 그리기
-	bool isClicked(sf::Vector2f& mousePos) override;//클릭 이벤트
+	bool isClicked(sf::Vector2f& mousePos) override;//이 클래스에서 못씀으로 버려지는 함수
+	bool isClickedExtra(sf::Vector2f& mousePos, std::vector<int>& connectedRoom);
 	void outlineColormanager(sf::Vector2f& mousePos) override; //버튼 호버시 아웃라인 색 변경
-	void spriteScaleManager(const sf::Vector2f& mousePos, 
-		const std::vector<std::pair<int, int>>& visitedRoom, const std::vector<int>& connectedRoom);
+	void spriteScaleManager(const sf::Vector2f& mousePos, const std::vector<std::pair<int, int>>& visitedRoom);
 	void startAppear();
 	void updateAppear(std::vector<std::pair<int, int>>& visitedRoom);
 	
