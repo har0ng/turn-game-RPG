@@ -546,14 +546,13 @@ void floorScene::allStartAppear() {
 
 //battleScene
 battleScene::battleScene(sf::RenderWindow& win, resourceManager& res) :
-    window(win),log(win), backBtn("back", 0.0f, 960.0f, res.getFont("fantasy"))
-    ,myPlayer()
+    window(win), log(win), backBtn("back", 0.0f, 960.0f, res.getFont("fantasy"))
+    , charRes(win, res)
 {
     //1. 기본 뷰 초기화
     window.setView(window.getDefaultView()); //mapScene view에서의 누적 초기화
     background.setTexture(res.getTexture("1floorBattleRoomBg"));
     sf::View view(sf::Vector2f(1280.f, 720.f), sf::Vector2f(2560.f, 1440.f));
-    view.zoom(1.0f);
     win.setView(view);
 }
 void battleScene::update(sf::RenderWindow& window) {
@@ -574,6 +573,7 @@ void battleScene::update(sf::RenderWindow& window) {
 void battleScene::render(sf::RenderWindow& window) {
     window.draw(background);
     backBtn.draw(window); //돌아가기 버튼 (임시용)
+    charRes.draw(window);
 }
 void battleScene::allStartAppear() {
     return;

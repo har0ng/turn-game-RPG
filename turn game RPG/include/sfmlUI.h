@@ -182,3 +182,14 @@ public:
 	void mapSceneVisible();//전체 맵땐 마우스 안보이게
 	void mapSceneUnvisible(); //세부 맵일땐 마우스 보이게
 };
+
+class characterResource {
+private:
+	sf::Sprite hpBar; //hp
+	sf::Sprite mpBar; //mp
+	sf::Sprite tiferet; //tiferet
+public:
+	characterResource(sf::RenderWindow& win, resourceManager& res);
+	void draw(sf::RenderWindow& window);
+	void position(sf::RenderWindow& window);
+};

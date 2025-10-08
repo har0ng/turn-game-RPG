@@ -31,8 +31,9 @@ void resourceManager::loadAll() {
     loadTexture("heal", "assets/images/heal1.png");
     loadTexture("boss", "assets/images/boss.png");
     loadTexture("enemy", "assets/images/enemy.png");
-    loadTexture("tiferet", "assets/images/tiferet.jpg");
+    loadTexture("tiferet", "assets/images/tiferet.png");
     loadTexture("1floorBattleRoomBg", "assets/images/1floorBattleRoom.png");
+    loadTexture("bar", "assets/images/bar.png");
 
     loadFont("normal", "assets/fonts/smartfont.otf");
     loadFont("fantasy", "assets/fonts/Nosutaru-dotMPlusH-10-Regular.ttf");

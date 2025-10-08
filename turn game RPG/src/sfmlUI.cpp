@@ -610,3 +610,21 @@ void mouse::mapSceneVisible() {
 void mouse::mapSceneUnvisible() {
 	visible = false;
 }
+
+//characterResource
+characterResource::characterResource(sf::RenderWindow& win, resourceManager& res) 
+{
+	hpBar.setTexture(res.getTexture("bar"));
+	mpBar.setTexture(res.getTexture("bar"));
+	tiferet.setTexture(res.getTexture("tiferet"));
+}
+void characterResource::draw(sf::RenderWindow& window) {
+	window.draw(hpBar);
+	window.draw(mpBar);
+	window.draw(tiferet);
+}
+void characterResource::position(sf::RenderWindow& window) {
+	hpBar.setPosition(10.f, 10.f); //위치 임시
+	mpBar.setPosition(10.f, 80.f); //위치 임시
+	tiferet.setPosition(window.getView().getCenter());
+}
