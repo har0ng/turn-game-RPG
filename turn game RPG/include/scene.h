@@ -163,7 +163,7 @@ private:
 	//battleButton defenseBtn; //이하동문
 	//battleButton skillBtn;
 	// 이하 세부 스킬 버튼 만들어야함
-	backButton backBtn; // 뒤로가기 버튼로 되어있는데 이름만 바꿔서 배틀 끝나고 돌아가는 버튼으로 쓰기.
+	backButton backBtn; // 뒤로가기 버튼로 되어있는데 이름만 바꿔서 배틀 끝나고 돌아가는 버튼으로 하나 만들어 쓰기.
 
 public:
 	battleScene(sf::RenderWindow& win, resourceManager& res);
