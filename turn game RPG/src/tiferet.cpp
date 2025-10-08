@@ -9,6 +9,7 @@
 using std::cout;
 using std::cin;
 
+tiferet::tiferet() {};
 tiferet::tiferet(const player& p) :player(p), contract(12),amplifyActivate(false) {
 	setPlayer_health(p.getPlayer_health() + 10);
     setPlayer_current_health(p.getPlayer_current_health() + 10);

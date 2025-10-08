@@ -28,7 +28,7 @@ int main() {
         res.getFont("fantasy"), res.getTexture("menuBg"));
 
     // 씬 히스토리 스택
-    std::vector<std::unique_ptr<scene>> history; 
+    std::vector<std::unique_ptr<scene>> history;
 
     while (window.isOpen()) {// 창이 열려 있는 동안 반복 , 이벤트니깐 거의 UI
         window.setFramerateLimit(60);
@@ -102,14 +102,14 @@ int main() {
     //    }
     //} while (start != 1 && start != 2);
 
-    //std::unique_ptr<player> myPlayer = std::make_unique<player>(); // 객체 만들어짐 ,한번만
+    //std::unique_ptr<player> p = std::make_unique<player>(); // 객체 만들어짐 ,한번만
     //std::vector<room> gameMap = map.upperPartCreateMap();
     // 
     //{// 시작하자마자 직업 선택
     //    std::unique_ptr<enemy> dummyEnemy = std::make_unique<enemy>(); //에너미 객체가없으면 못만들어서 더미로 만들어둠
     //    battle tempBattle(std::move(myPlayer), std::move(dummyEnemy));
     //    tempBattle.selectClass();                  // 직업 선택 UI 호출
-    //    myPlayer = std::move(tempBattle.getPlayerPtr()); // 선택 후 myPlayer 복구
+    //    p = std::move(tempBattle.getPlayerPtr()); // 선택 후 myPlayer 복구
     //}
 
     //size_t startRoomId = 1; //시작

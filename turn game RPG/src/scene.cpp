@@ -165,7 +165,9 @@ void classSelectScene::update(sf::RenderWindow& window){
                 backBtn.startFade();
                 tiferetDc.startFade();
                 malkuthDc.startFade();
+                selectClass("tiferet"); //player 전역 함수
                 selectBtn = true;
+               
             }
         }
         if (event.type == sf::Event::MouseButtonReleased && !transition && event.mouseButton.button == sf::Mouse::Left) { // 앞으로

@@ -18,8 +18,8 @@ using std::cin;
 using std::unique_ptr;
 
 
-battle::battle(unique_ptr<player> _p , unique_ptr<enemy> _e)
-	: p(std::move(_p)), e(std::move(_e)), gen(rd()) { //정보 받아옴.
+battle::battle(std::unique_ptr<player>& _p, std::unique_ptr<enemy>& _e)
+	:p(_p), e(_e), gen(rd()) { //정보 받아옴.
 	
 	//player
 	php = p->getPlayer_health(); // user 체력 get으로 받아오기
@@ -331,41 +331,41 @@ void battle::battleEnd() {
 	}
 }
 
-void battle::selectClass() { // selectClass
-
-	ui.selectClassUI();
-	int selectClass;
-	cin >> selectClass;
-	ui.selectClass(level, selectClass);
-	
-	if (selectClass == 1) { // tiferet
-		p = std::make_unique<tiferet>(*p); // player 객체를 tiferet로 복사 생성
-	}
-	else if (selectClass == 2) { // chesed
-		p = std::make_unique<chesed>(*p);
-	}
-	else if (selectClass == 3) { // gevurah
-		p = std::make_unique<gevurah>(*p);
-	}
-	else if (selectClass == 4) { // malkuth
-		p = std::make_unique<malkuth>(*p);
-	}
-	else if (selectClass == 5) { // yesod
-		p = std::make_unique<yesod>(*p);
-	}
-	else if (selectClass == 6) { // binah
-		p = std::make_unique<binah>(*p);
-	}
-
-}
+//void battle::selectClass() { // selectClass
+//
+//	ui.selectClassUI();
+//	int selectClass;
+//	cin >> selectClass;
+//	ui.selectClass(level, selectClass);
+//	
+//	if (selectClass == 1) { // tiferet
+//		p = std::make_unique<tiferet>(*p); // player 객체를 tiferet로 복사 생성
+//	}
+//	else if (selectClass == 2) { // chesed
+//		p = std::make_unique<chesed>(*p);
+//	}
+//	else if (selectClass == 3) { // gevurah
+//		p = std::make_unique<gevurah>(*p);
+//	}
+//	else if (selectClass == 4) { // malkuth
+//		p = std::make_unique<malkuth>(*p);
+//	}
+//	else if (selectClass == 5) { // yesod
+//		p = std::make_unique<yesod>(*p);
+//	}
+//	else if (selectClass == 6) { // binah
+//		p = std::make_unique<binah>(*p);
+//	}
+//
+//}
 
 bool battle::getPlay() const { //게임이 지속 가능한지 플레이어의 체력이 남아있는지 확인
 	return play;
 }
 
-std::unique_ptr<player> battle::getPlayerPtr() { // 유니크 포인터를 넘겨야하니깐 이렇게 됨.
-	return std::move(p);
-}
+//std::unique_ptr<player> battle::getPlayerPtr() { // 유니크 포인터를 넘겨야하니깐 이렇게 됨.
+//	return std::move(p);
+//}
 
 int battle::inputCheck(int min, int max) { //battleselect, skillselect 구분 문구
 	int input;

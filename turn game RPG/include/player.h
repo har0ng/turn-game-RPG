@@ -3,6 +3,7 @@
 #pragma once
 #include <vector>
 #include <string>
+#include <memory>
 #include "skillEnum.h"
 #include "buff.h"
 #include "skillDisable.h"
@@ -26,6 +27,7 @@ struct playerStatusSnapShot { //before ,after 저장 (저장, 스테이터스 �
 struct tiferetStatusSnapShot : public playerStatusSnapShot {
 	int contract{ 0 };
 };
+
 class player {
 private:
 	int player_health; //player 체력 기본 30
@@ -77,7 +79,6 @@ public:
 	int getActiveBuffTurn() const; // 현재 버프 지속 턴
 	int getBuffAttack() const; 	// 현재 적용된 공격 버프
 	int getBuffDefense() const;	// 현재 적용된 방어 버프
-
 
 
 	//set
@@ -146,6 +147,12 @@ public:
 	virtual void pushImSlashYou(std::string name, int atk, int def, int stack, int remainTurn, bool check, bool amplity);
 	virtual void clearImSlashYou();
 };
+
+//전역 플레이어 포인터
+extern std::unique_ptr<player> p; //main에서도 쓰일 플레이어 전역 포인터
+player& getPlayerPtr(); // 또는 player* getPlayerPtr();
+void selectClass(const std::string& className);
+
 
 //전직은 get, set을 이용해 자식클래스에서 새로운 변수 안만들고 부모 활용.
 class tiferet :public player { //티페리트

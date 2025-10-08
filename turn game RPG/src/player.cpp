@@ -481,3 +481,18 @@ void player::pushImSlashYou(std::string name, int atk, int def, int stack, int r
 void player::clearImSlashYou() {
 	return;
 }
+
+//player poninter
+std::unique_ptr<player> p;
+void selectClass(const std::string& className) {
+
+	if (className == "tiferet") {
+		p = std::make_unique<tiferet>();
+	}
+	else if (className == "malkuth") {
+		p = std::make_unique<malkuth>();
+	}
+}
+player& getPlayerPtr(){// 유니크 포인터를 넘겨야하니깐 이렇게 됨.
+	return *p;
+}
