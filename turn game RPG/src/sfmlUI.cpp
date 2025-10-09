@@ -611,63 +611,73 @@ void mouse::mapSceneUnvisible() {
 	visible = false;
 }
 
+//status
+status::status(resourceManager& res) 
+{
+	statusFrame.setTexture(res.getTexture("status"));
+	statusFrame.setPosition(0.f, 0.f);
+	sf::Uint8 alpha = sf::Uint8(200);
+	sf::Color color = statusFrame.getColor();
+	color.a = alpha;
+	statusFrame.setColor(color);
+}
+void status::draw(sf::RenderWindow& win) {
+	win.draw(statusFrame);
+}
+
 //hpBar
-hpBar::hpBar(sf::RenderWindow& win, resourceManager& res)
-	:maxHp(0),hp(0)
-{
-	barBound.setTexture(res.getTexture("bar"));
-	barFill.setTexture(res.getTexture("barFill"));
-}
-void hpBar::draw(sf::RenderWindow& win) {
-	win.draw(barBound);
-	win.draw(barFill);
-}
-void hpBar::position(sf::RenderWindow& win) {
-	barBound.setPosition(10.f, 10.f);
-	barFill.setPosition(10.f, 10.f);
-}
-
-//mpBar
-mpBar::mpBar(sf::RenderWindow& win, resourceManager& res) 
-	:maxMp(0), mp(0)
-{
-	barBound.setTexture(res.getTexture("bar"));
-	barFill.setTexture(res.getTexture("barFill"));
-}
-void mpBar::draw(sf::RenderWindow& win) {
-
-}
-void mpBar::position(sf::RenderWindow& win) {
-
-}
-//expBar
-expBar::expBar(sf::RenderWindow& win, resourceManager& res) :
-	MaxExp(0), exp(0)
-{
-	barBound.setTexture(res.getTexture("bar"));
-	barFill.setTexture(res.getTexture("barFill"));
-}
-void expBar::draw(sf::RenderWindow& win) {
-
-}
-void expBar::position(sf::RenderWindow& win) {
-
-}
-
-//characterResource
-//characterResource::characterResource(sf::RenderWindow& win, resourceManager& res) 
+//hpBar::hpBar(sf::RenderWindow& win, resourceManager& res)
+//	:maxHp(0),hp(0)
 //{
-//	hpBar.setTexture(res.getTexture("bar"));
-//	mpBar.setTexture(res.getTexture("bar"));
-//	tiferet.setTexture(res.getTexture("tiferet"));
+//
 //}
-//void characterResource::draw(sf::RenderWindow& window) {
-//	window.draw(hpBar);
-//	window.draw(mpBar);
-//	window.draw(tiferet);
+//void hpBar::draw(sf::RenderWindow& win) {
+//	return;
 //}
-//void characterResource::position(sf::RenderWindow& window) {
-//	hpBar.setPosition(10.f, 10.f); //위치 임시
-//	mpBar.setPosition(10.f, 80.f); //위치 임시
-//	tiferet.setPosition(window.getView().getCenter());
+//void hpBar::position(sf::RenderWindow& win, const sf::Vector2f& charPositon) {
+//	return;
 //}
+//
+////mpBar
+//mpBar::mpBar(sf::RenderWindow& win, resourceManager& res)
+//	:maxMp(0), mp(0)
+//{
+//	
+//}
+//void mpBar::draw(sf::RenderWindow& win) {
+//	return;
+//}
+//void mpBar::position(sf::RenderWindow& win, const sf::Vector2f& charPositon) {
+//	return;
+//}
+//
+////expBar
+//expBar::expBar(sf::RenderWindow& win, resourceManager& res) :
+//	MaxExp(0), exp(0)
+//{
+//
+//}
+//void expBar::draw(sf::RenderWindow& win) {
+//	
+//}
+//void expBar::position(sf::RenderWindow& win) {
+//
+//}
+
+//character 공용
+void character::position(sf::RenderWindow& win) {
+	characterImg.setPosition(win.getSize().x / 5.f, win.getSize().y / 2.f);
+}
+sf::Vector2f character::getPosition() {
+	return characterImg.getPosition();
+}
+
+//tiferet
+tiferetImg::tiferetImg(sf::RenderWindow& win, resourceManager& res)
+{
+	characterImg.setTexture(res.getTexture("tiferet"));
+	position(win);
+}
+void tiferetImg::draw(sf::RenderWindow& win) {
+	win.draw(characterImg);
+}

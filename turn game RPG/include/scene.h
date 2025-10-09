@@ -157,16 +157,18 @@ class battleScene : public scene {
 private:
 	sf::RenderWindow& window; // 빈 도화지 받아오기
 	sf::Sprite background;   // 배경화면
+	sf::View view;
 	sfmlLog log; // 싸울땐 로그 필수
-
 	//battleButton attackBtn; //버튼 이라는 부품 들고옴
 	//battleButton defenseBtn; //이하동문
 	//battleButton skillBtn;
 	// 이하 세부 스킬 버튼 만들어야함
 	backButton backBtn; // 뒤로가기 버튼로 되어있는데 이름만 바꿔서 배틀 끝나고 돌아가는 버튼으로 하나 만들어 쓰기.
-	hpBar hpB; //struct 할까말까하다가 다 따로 구분
-	mpBar mpB;
-	expBar expB;
+	status statusFrame; //왼쪽위 체력, 마나, 경험치,레벨의 틀
+	//hpBar hpB; //struct 할까말까하다가 다 따로 구분
+	//mpBar mpB;
+	//expBar expB;
+	tiferetImg eloaImg;
 public:
 	battleScene(sf::RenderWindow& win, resourceManager& res);
 	void update(sf::RenderWindow& window) override; //메뉴 화면으로 상태갱신

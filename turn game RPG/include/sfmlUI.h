@@ -183,42 +183,70 @@ public:
 	void mapSceneUnvisible(); //세부 맵일땐 마우스 보이게
 };
 
-class barElement {
+class status {
+private:
+	sf::Sprite statusFrame;
+public:
+	status(resourceManager& res);
+	void draw(sf::RenderWindow& win);
+};
+
+//class barElement {
+//protected:
+//	sf::RectangleShape bar;
+//
+//public:
+//	barElement() = default;
+//	virtual ~barElement() = default;
+//	virtual void draw(sf::RenderWindow& win) = 0;
+//	virtual void position(sf::RenderWindow& win, const sf::Vector2f& charPositon) = 0;
+//};
+//
+//class hpBar : public barElement {
+//private:
+//	int maxHp; //player에서 값 받아올것
+//	int hp;
+//public:
+//	hpBar(sf::RenderWindow& win, resourceManager& res);
+//	void draw(sf::RenderWindow& win) override;
+//	void position(sf::RenderWindow& win, const sf::Vector2f& charPositon) override;
+//};
+//
+//class mpBar : public barElement {
+//private:
+//	int maxMp;
+//	int mp;
+//public:
+//	mpBar(sf::RenderWindow& win, resourceManager& res);
+//	void draw(sf::RenderWindow& win) override;
+//	void position(sf::RenderWindow& win, const sf::Vector2f& charPositon) override;
+//};
+//
+//class expBar{
+//private:
+//	int MaxExp;
+//	int exp;
+//public:
+//	expBar(sf::RenderWindow& win, resourceManager& res);
+//	void draw(sf::RenderWindow& win);
+//	void position(sf::RenderWindow& win);
+//};
+
+class character {
 protected:
-	sf::Sprite barBound;
-	sf::Sprite barFill;
-
+	sf::Sprite characterImg;
 public:
-	barElement() = default;
-	virtual ~barElement() = default;
-	virtual void draw(sf::RenderWindow& window) = 0;
-	virtual void position(sf::RenderWindow& window) = 0;
+	character() = default;
+	virtual ~character() = default;
+	virtual void draw(sf::RenderWindow& win) = 0;
+	virtual void position(sf::RenderWindow& win);
+	virtual sf::Vector2f getPosition();
 };
 
-class hpBar : public barElement {
-private:
-	int maxHp; //player에서 값 받아올것
-	int hp;
+
+class tiferetImg : public character{
 public:
-	hpBar(sf::RenderWindow& win, resourceManager& res);
-	void draw(sf::RenderWindow& win);
-	void position(sf::RenderWindow& win);
-};
-class mpBar : public barElement {
-private:
-	int maxMp;
-	int mp;
-public:
-	mpBar(sf::RenderWindow& win, resourceManager& res);
-	void draw(sf::RenderWindow& win);
-	void position(sf::RenderWindow& win);
-};
-class expBar : public barElement {
-private:
-	int MaxExp;
-	int exp;
-public:
-	expBar(sf::RenderWindow& win, resourceManager& res);
-	void draw(sf::RenderWindow& win);
-	void position(sf::RenderWindow& win);
+	tiferetImg(sf::RenderWindow& win, resourceManager& res);
+	void draw(sf::RenderWindow& win) override;
+	
 };

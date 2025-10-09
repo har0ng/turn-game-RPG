@@ -546,14 +546,16 @@ void floorScene::allStartAppear() {
 
 //battleScene
 battleScene::battleScene(sf::RenderWindow& win, resourceManager& res) :
-    window(win), log(win), backBtn("back", 0.0f, 960.0f, res.getFont("fantasy"))
-    , hpB(win, res), mpB(win, res), expB(win, res)
+    window(win), log(win),view(sf::Vector2f(1280.f, 720.f), sf::Vector2f(2560.f, 1440.f)),
+    backBtn("back", 0.0f, 960.0f, res.getFont("fantasy")), statusFrame(res)
+    /*hpB(win, res), mpB(win, res), expB(win, res)*/, eloaImg(win, res)
 {
     //1. 기본 뷰 초기화
-    window.setView(window.getDefaultView()); //mapScene view에서의 누적 초기화
+    window.setView(window.getDefaultView()); //main에서 하면 좋지만..늦게 알아버린,mapScene view에서의 누적 초기화
+    window.setView(view);
     background.setTexture(res.getTexture("1floorBattleRoomBg"));
-    sf::View view(sf::Vector2f(1280.f, 720.f), sf::Vector2f(2560.f, 1440.f));
-    win.setView(view);
+
+    //2. mp, hp 위치 조정
 }
 void battleScene::update(sf::RenderWindow& window) {
     sf::Event event;
@@ -573,9 +575,11 @@ void battleScene::update(sf::RenderWindow& window) {
 void battleScene::render(sf::RenderWindow& window) {
     window.draw(background);
     backBtn.draw(window); //돌아가기 버튼 (임시용)
-    hpB.draw(window);
-    mpB.draw(window);
-    expB.draw(window);
+    statusFrame.draw(window);
+    //hpB.draw(window);
+    //mpB.draw(window);
+    //expB.draw(window);
+    eloaImg.draw(window);
 }
 void battleScene::allStartAppear() {
     return;
