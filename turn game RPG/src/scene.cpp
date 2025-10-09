@@ -547,7 +547,7 @@ void floorScene::allStartAppear() {
 //battleScene
 battleScene::battleScene(sf::RenderWindow& win, resourceManager& res) :
     window(win), log(win), backBtn("back", 0.0f, 960.0f, res.getFont("fantasy"))
-    , charRes(win, res)
+    , hpB(win, res), mpB(win, res), expB(win, res)
 {
     //1. 기본 뷰 초기화
     window.setView(window.getDefaultView()); //mapScene view에서의 누적 초기화
@@ -573,7 +573,9 @@ void battleScene::update(sf::RenderWindow& window) {
 void battleScene::render(sf::RenderWindow& window) {
     window.draw(background);
     backBtn.draw(window); //돌아가기 버튼 (임시용)
-    charRes.draw(window);
+    hpB.draw(window);
+    mpB.draw(window);
+    expB.draw(window);
 }
 void battleScene::allStartAppear() {
     return;

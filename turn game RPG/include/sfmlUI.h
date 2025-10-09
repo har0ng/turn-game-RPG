@@ -11,9 +11,9 @@
 class title {
 private:
 	sf::Text text;
-	float alpha = 255.0f;
-	bool fading = false;
-	bool appear = false;
+	float alpha{ 255.0f };
+	bool fading{ false };
+	bool appear{ false };
 	sf::Clock clock;
 	sf::Sprite sprite;
 	sf::Texture texture;
@@ -33,9 +33,9 @@ public:
 class floorTitle{
 private:
 	sf::Text text;
-	float alpha = 255.0f;
-	bool fading = false;
-	bool appear = false;
+	float alpha{ 255.0f };
+	bool fading{ false };
+	bool appear{ false };
 	sf::Clock clock;
 	sf::Sprite sprite;
 	sf::Texture texture;
@@ -55,9 +55,9 @@ class button {
 protected:
 	sf::Text text; //button text
 	sf::RectangleShape background; //버튼 배경화
-	float alpha = 255.0f;   // 현재 알파값
-	bool appear = false;	// 불러낼지 상태 여부
-	bool fading = false;    // 페이드인 상태 여부
+	float alpha{ 255.0f };   // 현재 알파값
+	bool appear{ false };	// 불러낼지 상태 여부
+	bool fading{ false };    // 페이드인 상태 여부
 	sf::Clock clock;        // 버튼마다 시간 관리
 
 public:
@@ -153,9 +153,9 @@ private:
 	sf::RectangleShape thickLine; // 선으로써 직사각형 사용
 	std::map<size_t, lineInfo> lineGroup; //아이디당 라인(선) 저장소
 	std::vector<std::vector<assortMapSelectButton>> assortBtns;
-	float alpha = 255.0f;   // 현재 알파값
-	bool appear = false;	// 불러낼지 상태 여부
-	bool fading = false;    // 페이드인 상태 여부
+	float alpha{ 255.0f };   // 현재 알파값
+	bool appear{ false };	// 불러낼지 상태 여부
+	bool fading{ false };    // 페이드인 상태 여부
 	sf::Clock clock;        // 버튼마다 시간 관리
 public:
 	assortMapLine(std::vector<std::vector<assortMapSelectButton>>& assortBtns);
@@ -170,7 +170,7 @@ public:
 class mouse { //마우스
 private:
 	sf::Sprite sprite;
-	bool visible = false; //마우스 스프라이트 감출지 안감출지
+	bool visible{ false }; //마우스 스프라이트 감출지 안감출지
 public:
 	mouse(sf::RenderWindow& win, sf::Texture& tex);
 	float getSizeX();
@@ -183,13 +183,42 @@ public:
 	void mapSceneUnvisible(); //세부 맵일땐 마우스 보이게
 };
 
-class characterResource {
-private:
-	sf::Sprite hpBar; //hp
-	sf::Sprite mpBar; //mp
-	sf::Sprite tiferet; //tiferet
+class barElement {
+protected:
+	sf::Sprite barBound;
+	sf::Sprite barFill;
+
 public:
-	characterResource(sf::RenderWindow& win, resourceManager& res);
-	void draw(sf::RenderWindow& window);
-	void position(sf::RenderWindow& window);
+	barElement() = default;
+	virtual ~barElement() = default;
+	virtual void draw(sf::RenderWindow& window) = 0;
+	virtual void position(sf::RenderWindow& window) = 0;
+};
+
+class hpBar : public barElement {
+private:
+	int maxHp; //player에서 값 받아올것
+	int hp;
+public:
+	hpBar(sf::RenderWindow& win, resourceManager& res);
+	void draw(sf::RenderWindow& win);
+	void position(sf::RenderWindow& win);
+};
+class mpBar : public barElement {
+private:
+	int maxMp;
+	int mp;
+public:
+	mpBar(sf::RenderWindow& win, resourceManager& res);
+	void draw(sf::RenderWindow& win);
+	void position(sf::RenderWindow& win);
+};
+class expBar : public barElement {
+private:
+	int MaxExp;
+	int exp;
+public:
+	expBar(sf::RenderWindow& win, resourceManager& res);
+	void draw(sf::RenderWindow& win);
+	void position(sf::RenderWindow& win);
 };

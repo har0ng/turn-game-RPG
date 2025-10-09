@@ -611,20 +611,63 @@ void mouse::mapSceneUnvisible() {
 	visible = false;
 }
 
-//characterResource
-characterResource::characterResource(sf::RenderWindow& win, resourceManager& res) 
+//hpBar
+hpBar::hpBar(sf::RenderWindow& win, resourceManager& res)
+	:maxHp(0),hp(0)
 {
-	hpBar.setTexture(res.getTexture("bar"));
-	mpBar.setTexture(res.getTexture("bar"));
-	tiferet.setTexture(res.getTexture("tiferet"));
+	barBound.setTexture(res.getTexture("bar"));
+	barFill.setTexture(res.getTexture("barFill"));
 }
-void characterResource::draw(sf::RenderWindow& window) {
-	window.draw(hpBar);
-	window.draw(mpBar);
-	window.draw(tiferet);
+void hpBar::draw(sf::RenderWindow& win) {
+	win.draw(barBound);
+	win.draw(barFill);
 }
-void characterResource::position(sf::RenderWindow& window) {
-	hpBar.setPosition(10.f, 10.f); //위치 임시
-	mpBar.setPosition(10.f, 80.f); //위치 임시
-	tiferet.setPosition(window.getView().getCenter());
+void hpBar::position(sf::RenderWindow& win) {
+	barBound.setPosition(10.f, 10.f);
+	barFill.setPosition(10.f, 10.f);
 }
+
+//mpBar
+mpBar::mpBar(sf::RenderWindow& win, resourceManager& res) 
+	:maxMp(0), mp(0)
+{
+	barBound.setTexture(res.getTexture("bar"));
+	barFill.setTexture(res.getTexture("barFill"));
+}
+void mpBar::draw(sf::RenderWindow& win) {
+
+}
+void mpBar::position(sf::RenderWindow& win) {
+
+}
+//expBar
+expBar::expBar(sf::RenderWindow& win, resourceManager& res) :
+	MaxExp(0), exp(0)
+{
+	barBound.setTexture(res.getTexture("bar"));
+	barFill.setTexture(res.getTexture("barFill"));
+}
+void expBar::draw(sf::RenderWindow& win) {
+
+}
+void expBar::position(sf::RenderWindow& win) {
+
+}
+
+//characterResource
+//characterResource::characterResource(sf::RenderWindow& win, resourceManager& res) 
+//{
+//	hpBar.setTexture(res.getTexture("bar"));
+//	mpBar.setTexture(res.getTexture("bar"));
+//	tiferet.setTexture(res.getTexture("tiferet"));
+//}
+//void characterResource::draw(sf::RenderWindow& window) {
+//	window.draw(hpBar);
+//	window.draw(mpBar);
+//	window.draw(tiferet);
+//}
+//void characterResource::position(sf::RenderWindow& window) {
+//	hpBar.setPosition(10.f, 10.f); //위치 임시
+//	mpBar.setPosition(10.f, 80.f); //위치 임시
+//	tiferet.setPosition(window.getView().getCenter());
+//}

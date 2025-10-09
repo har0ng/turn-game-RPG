@@ -16,17 +16,17 @@
 
 class scene {
 protected:
-	bool finished = false; //씬이 끝났는지 여부
-	bool finishedManager = false;
-	bool back = false;
-	bool transition = false; //씬 바뀌고 있는데 클릭 금지
-	float alpha = 255.0f;   // 현재 알파값
-	bool appear = false;	// 불러낼지 상태 여부
-	bool fading = false;    // 페이드인 상태 여부
+	bool finished{ false }; //씬이 끝났는지 여부
+	bool finishedManager{ false };
+	bool back{ false };
+	bool transition{ false }; //씬 바뀌고 있는데 클릭 금지
+	float alpha{ 255.0f };   // 현재 알파값
+	bool appear{ false };	// 불러낼지 상태 여부
+	bool fading{ false };    // 페이드인 상태 여부
 	sf::Clock clock;        // 버튼마다 시간 관리
-	float deltaTime = 0.f; //딜레이 계산
-	float mainViewX = 0.f; //마우스를 위한 메인 화면 기준 x
-	float mainViewY = 0.f; //마우스를 위한 메인 화면 기준 y
+	float deltaTime{ 0.f }; //딜레이 계산
+	float mainViewX{ 0.f }; //마우스를 위한 메인 화면 기준 x
+	float mainViewY{ 0.f }; //마우스를 위한 메인 화면 기준 y
 public:
 	virtual ~scene() = default;
 	//입력(키보드/마우스/창 이벤트)을 처리.
@@ -101,7 +101,7 @@ private:
 	sf::RenderWindow& window; // 빈 도화지 받아오기
 	sf::Sprite background;   // 이미지를 표시할 스프라이트
 	sfmlLog log; // 필요할수도 있으니.
-	float elapsed = 0.f;
+	float elapsed{ 0.f };
 	
 public:
 	mapScene(sf::RenderWindow& win, sf::Font& font, sf::Texture& tex);
@@ -124,13 +124,13 @@ private:
 	std::vector < assortMapSelectButton > assortBtn; // 세부 층 버튼
 	std::vector<std::vector<assortMapSelectButton>> assortBtns;  //세부층 버튼들의 집합 나누기
 	int firstAssortMapCnt;//층별 처음 만들어지는 맵 개수, 이후 맵 개수
-	int floorCnt = 1;// 몇층인지 세기 위함, default == 1
+	int floorCnt{ 1 };// 몇층인지 세기 위함, default == 1
 	floorTitle floorName;
-	float scrollSpeed = 90.f; //스크롤 +1-1에 얼마나 움직이는지
-	float elapsed = 0.f; // 화면 스크롤 애니메이션을 위함
-	bool animationYN = false;
-	int assortBtnRow = 0; //몇번째 세부층인지
-	int assortBtnCol = 0; // index라 0부터,현재 플레이어의 세부층 1-playerPos , 2-playerPos etc.
+	float scrollSpeed{ 90.f }; //스크롤 +1-1에 얼마나 움직이는지
+	float elapsed{ 0.f }; // 화면 스크롤 애니메이션을 위함
+	bool animationYN{ false };
+	int assortBtnRow{ 0 }; //몇번째 세부층인지
+	int assortBtnCol{ 0 }; // index라 0부터,현재 플레이어의 세부층 1-playerPos , 2-playerPos etc.
 	std::vector<std::pair<int,int>> visitedRoom; //방문한 방 모음
 	std::vector<int> connectedRoom; // 갈수 있는 방 모음
 public:
@@ -164,7 +164,9 @@ private:
 	//battleButton skillBtn;
 	// 이하 세부 스킬 버튼 만들어야함
 	backButton backBtn; // 뒤로가기 버튼로 되어있는데 이름만 바꿔서 배틀 끝나고 돌아가는 버튼으로 하나 만들어 쓰기.
-	characterResource charRes;
+	hpBar hpB; //struct 할까말까하다가 다 따로 구분
+	mpBar mpB;
+	expBar expB;
 public:
 	battleScene(sf::RenderWindow& win, resourceManager& res);
 	void update(sf::RenderWindow& window) override; //메뉴 화면으로 상태갱신

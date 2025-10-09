@@ -483,7 +483,7 @@ void player::clearImSlashYou() {
 }
 
 //player poninter
-std::unique_ptr<player> p;
+std::unique_ptr<player> p = nullptr; //이런식으로 구현해줘야함
 void selectClass(const std::string& className) {
 
 	if (className == "tiferet") {

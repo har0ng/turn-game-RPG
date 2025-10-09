@@ -150,6 +150,7 @@ public:
 
 //전역 플레이어 포인터
 extern std::unique_ptr<player> p; //main에서도 쓰일 플레이어 전역 포인터
+//extern이기에 데이터타입까지 cpp에 구현해줘야함
 player& getPlayerPtr(); // 또는 player* getPlayerPtr();
 void selectClass(const std::string& className);
 
@@ -157,8 +158,8 @@ void selectClass(const std::string& className);
 //전직은 get, set을 이용해 자식클래스에서 새로운 변수 안만들고 부모 활용.
 class tiferet :public player { //티페리트
 private:
-	int contract; //계약 가능 횟수 12
-	bool amplifyActivate; //강화 중인지 판별
+	int contract{ 12 }; //계약 가능 횟수 12
+	bool amplifyActivate = false; //강화 중인지 판별
 	tiferetStatusSnapShot beforePlayer;
 	tiferetStatusSnapShot afterPlayer;
 	tiferetStatusSnapShot battlePlayer;
