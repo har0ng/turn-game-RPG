@@ -205,20 +205,20 @@ public:
 	hpBar(sf::RenderWindow& win, resourceManager& res);
 	void draw(sf::RenderWindow& win);
 	void position(const sf::Vector2f& hpmpP);
-	void setBarSize(float barSizeX);
+	void setBarValue(float barSizeX);
 };
 
-//class mpBar {
-//private:
-// sf::RectangleShape bar;
-//	int maxMp;
-//	int mp;
-//public:
-//	mpBar(sf::RenderWindow& win, resourceManager& res);
-//	void draw(sf::RenderWindow& win);
-//	void position(sf::RenderWindow& win, const sf::Sprite hpmpP);
-//};
-//
+class mpBar {
+private:
+ sf::RectangleShape bar;
+	int maxMp;
+	int mp;
+public:
+	mpBar(sf::RenderWindow& win, resourceManager& res);
+	void draw(sf::RenderWindow& win);
+	void position(const sf::Vector2f& hpmpP);
+};
+
 class expBar{
 private:
 	sf::Sprite expbar;

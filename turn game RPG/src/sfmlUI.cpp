@@ -616,6 +616,7 @@ status::status(resourceManager& res)
 {
 	//hpmp
 	hpmp.setTexture(res.getTexture("hpmp"));
+
 	//level 기본 설정
 	level.setString("Lv." + getPlayerLevel(p->getLevel())); // 글자
 	level.setFont(res.getFont("fantasy")); // 글자 폰트
@@ -681,31 +682,32 @@ hpBar::hpBar(sf::RenderWindow& win, resourceManager& res)
 	:maxHp(0), hp(0)
 {
 	//bar
-	bar.setSize(sf::Vector2f(res.getTexture("hpmp").getSize().x,
+	bar.setSize(sf::Vector2f(res.getTexture("hpmp").getSize().x, //x크기 0이 hp 0%임 현재는 100%
 		res.getTexture("hpmp").getSize().y / 2.f));
 	bar.setFillColor(sf::Color(207, 66, 62));
 }
 void hpBar::draw(sf::RenderWindow& win) {
 	win.draw(bar);
-	return;
 }
 void hpBar::position(const sf::Vector2f& hpmpP) {
 	bar.setPosition(hpmpP);
 }
 
-////mpBar
-//mpBar::mpBar(sf::RenderWindow& win, resourceManager& res)
-//	:maxMp(0), mp(0)
-//{
-//	
-//}
-//void mpBar::draw(sf::RenderWindow& win) {
-//	return;
-//}
-//void mpBar::position(sf::RenderWindow& win, const sf::Vector2f& charPositon) {
-//	return;
-//}
-//
+//mpBar
+mpBar::mpBar(sf::RenderWindow& win, resourceManager& res)
+	:maxMp(0), mp(0)
+{
+	bar.setSize(sf::Vector2f(res.getTexture("hpmp").getSize().x, //x크기 0이 mp 0%임 현재는 100%
+		res.getTexture("hpmp").getSize().y / 2.f));
+	bar.setFillColor(sf::Color(130, 130, 250));
+}
+void mpBar::draw(sf::RenderWindow& win) {
+	win.draw(bar);
+}
+void mpBar::position(const sf::Vector2f& hpmpP) {
+	bar.setPosition(hpmpP.x, hpmpP.y + bar.getSize().y);
+}
+
 //expBar
 expBar::expBar(sf::RenderWindow& win, resourceManager& res) :
 	MaxExp(0), exp(0)

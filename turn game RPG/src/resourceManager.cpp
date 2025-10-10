@@ -25,16 +25,18 @@ sf::Font& resourceManager::getFont(const std::string& key) {
 
 void resourceManager::loadAll() {
     loadTexture("menuBg", "assets/images/1.png");
-    loadTexture("mapBg", "assets/images/map1.png");
+    loadTexture("mapBg", "assets/images/map.png");
     loadTexture("floorBg", "assets/images/1Floor.png");
     loadTexture("cursor", "assets/images/mouse.png");
-    loadTexture("heal", "assets/images/heal1.png");
+    loadTexture("heal", "assets/images/heal.png");
     loadTexture("boss", "assets/images/boss.png");
     loadTexture("enemy", "assets/images/enemy.png");
     loadTexture("tiferet", "assets/images/tiferet.png");
     loadTexture("1floorBattleRoomBg", "assets/images/1floorBattleRoom.png");
     loadTexture("expbar", "assets/images/exp.png");
     loadTexture("hpmp", "assets/images/hpmp.png");
+    loadTexture("normal1", "assets/images/normal1.png");
+    loadTexture("elite1", "assets/images/elite1.png");
 
     loadFont("normal", "assets/fonts/smartfont.otf");
     loadFont("fantasy", "assets/fonts/Nosutaru-dotMPlusH-10-Regular.ttf");
