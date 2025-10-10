@@ -2,7 +2,7 @@
 #pragma once
 #include "resourceManager.h"
 #include "map.h"
-
+#include "player.h"
 #include <SFML/Graphics.hpp>
 
 //UI는 화면에서 나오는 기능들을 부품화시켜 따로 분류해놓는 곳임
@@ -183,54 +183,54 @@ public:
 	void mapSceneUnvisible(); //세부 맵일땐 마우스 보이게
 };
 
-class status {
+class status { 
 private:
-	sf::Sprite statusFrame;
+	sf::Text level; //level text
+	sf::RectangleShape background; //버튼 배경화
+	sf::Sprite hpmp;
 public:
 	status(resourceManager& res);
 	void draw(sf::RenderWindow& win);
+	const sf::Vector2f& getHpmpPosition();
+	void setPosition(const sf::Vector2f& characterP, const sf::Vector2f& expbarP, resourceManager& res);
+	std::string getPlayerLevel(const int& level);
 };
 
-//class barElement {
-//protected:
-//	sf::RectangleShape bar;
-//
-//public:
-//	barElement() = default;
-//	virtual ~barElement() = default;
-//	virtual void draw(sf::RenderWindow& win) = 0;
-//	virtual void position(sf::RenderWindow& win, const sf::Vector2f& charPositon) = 0;
-//};
-//
-//class hpBar : public barElement {
+class hpBar {
+private:
+	sf::RectangleShape bar;
+	int maxHp; //player에서 값 받아올것
+	int hp;
+public:
+	hpBar(sf::RenderWindow& win, resourceManager& res);
+	void draw(sf::RenderWindow& win);
+	void position(const sf::Vector2f& hpmpP);
+	void setBarSize(float barSizeX);
+};
+
+//class mpBar {
 //private:
-//	int maxHp; //player에서 값 받아올것
-//	int hp;
-//public:
-//	hpBar(sf::RenderWindow& win, resourceManager& res);
-//	void draw(sf::RenderWindow& win) override;
-//	void position(sf::RenderWindow& win, const sf::Vector2f& charPositon) override;
-//};
-//
-//class mpBar : public barElement {
-//private:
+// sf::RectangleShape bar;
 //	int maxMp;
 //	int mp;
 //public:
 //	mpBar(sf::RenderWindow& win, resourceManager& res);
-//	void draw(sf::RenderWindow& win) override;
-//	void position(sf::RenderWindow& win, const sf::Vector2f& charPositon) override;
+//	void draw(sf::RenderWindow& win);
+//	void position(sf::RenderWindow& win, const sf::Sprite hpmpP);
 //};
 //
-//class expBar{
-//private:
-//	int MaxExp;
-//	int exp;
-//public:
-//	expBar(sf::RenderWindow& win, resourceManager& res);
-//	void draw(sf::RenderWindow& win);
-//	void position(sf::RenderWindow& win);
-//};
+class expBar{
+private:
+	sf::Sprite expbar;
+	sf::RectangleShape greenBar;
+	int MaxExp;
+	int exp;
+public:
+	expBar(sf::RenderWindow& win, resourceManager& res);
+	void draw(sf::RenderWindow& win);
+	void position(sf::RenderWindow& win);
+	const sf::Vector2f& getPosition();
+};
 
 class character {
 protected:
@@ -240,7 +240,8 @@ public:
 	virtual ~character() = default;
 	virtual void draw(sf::RenderWindow& win) = 0;
 	virtual void position(sf::RenderWindow& win);
-	virtual sf::Vector2f getPosition();
+	const sf::Vector2f& getPosition();
+
 };
 
 

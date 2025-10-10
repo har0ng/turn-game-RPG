@@ -33,7 +33,8 @@ void resourceManager::loadAll() {
     loadTexture("enemy", "assets/images/enemy.png");
     loadTexture("tiferet", "assets/images/tiferet.png");
     loadTexture("1floorBattleRoomBg", "assets/images/1floorBattleRoom.png");
-    loadTexture("status", "assets/images/status.png");
+    loadTexture("expbar", "assets/images/exp.png");
+    loadTexture("hpmp", "assets/images/hpmp.png");
 
     loadFont("normal", "assets/fonts/smartfont.otf");
     loadFont("fantasy", "assets/fonts/Nosutaru-dotMPlusH-10-Regular.ttf");

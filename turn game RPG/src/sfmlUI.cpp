@@ -612,32 +612,87 @@ void mouse::mapSceneUnvisible() {
 }
 
 //status
-status::status(resourceManager& res) 
+status::status(resourceManager& res)
 {
-	statusFrame.setTexture(res.getTexture("status"));
-	statusFrame.setPosition(0.f, 0.f);
-	sf::Uint8 alpha = sf::Uint8(200);
-	sf::Color color = statusFrame.getColor();
-	color.a = alpha;
-	statusFrame.setColor(color);
+	//hpmp
+	hpmp.setTexture(res.getTexture("hpmp"));
+	//level 기본 설정
+	level.setString("Lv." + getPlayerLevel(p->getLevel())); // 글자
+	level.setFont(res.getFont("fantasy")); // 글자 폰트
+	level.setCharacterSize(40); // 글자크기
+	level.setOutlineThickness(1.f);
+	level.setFillColor(sf::Color(192, 160, 127));
+
+	// level 배경 크기는 텍스트 크기 + 여백
+	sf::FloatRect bounds = level.getLocalBounds();//멤버 변수 text의 경계 혹은 테두리 저장 
+	background.setSize(sf::Vector2f(bounds.width + 80, bounds.height + 20));//버튼 배경 사이즈를 text에 맞춰 조절
+	background.setFillColor(sf::Color(0, 0, 0, 0));
 }
 void status::draw(sf::RenderWindow& win) {
-	win.draw(statusFrame);
+	win.draw(hpmp);
+	win.draw(background);
+	win.draw(level);
+}
+const sf::Vector2f& status::getHpmpPosition() {
+	return hpmp.getPosition();
+}
+void status::setPosition(const sf::Vector2f& characterP,const sf::Vector2f& expbarP, resourceManager& res) {
+	//hpmp
+	hpmp.setPosition(characterP.x , characterP.y + res.getTexture("tiferet").getSize().y);
+
+	// level 텍스트 위치 설정
+	sf::Vector2f pos = sf::Vector2f(expbarP.x, expbarP.y - background.getSize().y);
+	background.setPosition(pos); // 버튼 배경 위치를 먼저 조절, 배경 먼저 해야 글자가 아래로 안감
+	level.setPosition(background.getPosition().x + (background.getSize().x / 4.f)
+		, background.getPosition().y - (background.getSize().y / 4.f)); //이후에 배경에 맞춰 위치를 조절 
+}
+std::string status::getPlayerLevel(const int& level) {
+	switch (level){
+	case 1:
+		return "1";
+	case 2:
+		return "2";
+	case 3:
+		return "3";
+	case 4:
+		return "4";
+	case 5:
+		return "5";
+	case 6:
+		return "6";
+	case 7:
+		return "7";
+	case 8:
+		return "8";
+	case 9:
+		return "9";
+	case 10:
+		return "10";
+	case 11:
+		return "11";
+	default:
+		break;
+	}
+	std::cout << "status getPlayerLevel() error." << std::endl;
 }
 
 //hpBar
-//hpBar::hpBar(sf::RenderWindow& win, resourceManager& res)
-//	:maxHp(0),hp(0)
-//{
-//
-//}
-//void hpBar::draw(sf::RenderWindow& win) {
-//	return;
-//}
-//void hpBar::position(sf::RenderWindow& win, const sf::Vector2f& charPositon) {
-//	return;
-//}
-//
+hpBar::hpBar(sf::RenderWindow& win, resourceManager& res)
+	:maxHp(0), hp(0)
+{
+	//bar
+	bar.setSize(sf::Vector2f(res.getTexture("hpmp").getSize().x,
+		res.getTexture("hpmp").getSize().y / 2.f));
+	bar.setFillColor(sf::Color(207, 66, 62));
+}
+void hpBar::draw(sf::RenderWindow& win) {
+	win.draw(bar);
+	return;
+}
+void hpBar::position(const sf::Vector2f& hpmpP) {
+	bar.setPosition(hpmpP);
+}
+
 ////mpBar
 //mpBar::mpBar(sf::RenderWindow& win, resourceManager& res)
 //	:maxMp(0), mp(0)
@@ -651,24 +706,40 @@ void status::draw(sf::RenderWindow& win) {
 //	return;
 //}
 //
-////expBar
-//expBar::expBar(sf::RenderWindow& win, resourceManager& res) :
-//	MaxExp(0), exp(0)
-//{
-//
-//}
-//void expBar::draw(sf::RenderWindow& win) {
-//	
-//}
-//void expBar::position(sf::RenderWindow& win) {
-//
-//}
+//expBar
+expBar::expBar(sf::RenderWindow& win, resourceManager& res) :
+	MaxExp(0), exp(0)
+{
+	//expbar
+	expbar.setTexture(res.getTexture("expbar"));
+	
+	//greenBar
+	greenBar.setSize(sf::Vector2f(
+		256.f, //static_cast<float>(res.getTexture("expbar").getSize().x) 까지
+		static_cast<float>(res.getTexture("expbar").getSize().y)));
+	greenBar.setFillColor(sf::Color(91, 180, 102));
+
+	//position
+	position(win);
+}
+void expBar::draw(sf::RenderWindow& win) {
+	win.draw(greenBar);
+	win.draw(expbar);
+}
+void expBar::position(sf::RenderWindow& win) {
+	expbar.setPosition(0,1440.f - expbar.getTexture()->getSize().y);
+	greenBar.setPosition(expbar.getPosition());
+	
+}
+const sf::Vector2f& expBar::getPosition() {
+	return expbar.getPosition();
+}
 
 //character 공용
 void character::position(sf::RenderWindow& win) {
 	characterImg.setPosition(win.getSize().x / 5.f, win.getSize().y / 2.f);
 }
-sf::Vector2f character::getPosition() {
+const sf::Vector2f& character::getPosition(){
 	return characterImg.getPosition();
 }
 
