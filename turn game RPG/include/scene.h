@@ -169,6 +169,7 @@ private:
 	mpBar mpB;
 	expBar expB;
 	tiferetImg eloaImg;
+	normalOne normalOneImg;
 public:
 	battleScene(sf::RenderWindow& win, resourceManager& res);
 	void update(sf::RenderWindow& window) override; //메뉴 화면으로 상태갱신

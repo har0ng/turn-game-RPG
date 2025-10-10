@@ -679,18 +679,46 @@ std::string status::getPlayerLevel(const int& level) {
 
 //hpBar
 hpBar::hpBar(sf::RenderWindow& win, resourceManager& res)
-	:maxHp(0), hp(0)
 {
 	//bar
 	bar.setSize(sf::Vector2f(res.getTexture("hpmp").getSize().x, //x크기 0이 hp 0%임 현재는 100%
 		res.getTexture("hpmp").getSize().y / 2.f));
 	bar.setFillColor(sf::Color(207, 66, 62));
+	
+	
+	//hp log
+	convertHp(p->getPlayer_current_health());
+	convertMaxHp(p->getPlayer_health());
+	hpLog.setString(hp + "/" + maxHp);
+	hpLog.setFont(res.getFont("fantasy"));
+	hpLog.setCharacterSize(40);
+	hpLog.setFillColor(sf::Color::White);
+	hpLog.setOutlineColor(sf::Color::White);
+	hpLog.setOutlineThickness(1.f);
 }
 void hpBar::draw(sf::RenderWindow& win) {
 	win.draw(bar);
+	win.draw(hpLog);
 }
 void hpBar::position(const sf::Vector2f& hpmpP) {
 	bar.setPosition(hpmpP);
+	// 텍스트 중앙 origin 설정
+	sf::FloatRect textBounds = hpLog.getLocalBounds();
+	hpLog.setOrigin(textBounds.left + textBounds.width / 2.f,
+		textBounds.top + textBounds.height / 2.f);
+
+	// bar 중앙 위치에 텍스트 배치
+	hpLog.setPosition(
+		bar.getPosition().x + bar.getSize().x / 2.f,
+		bar.getPosition().y + bar.getSize().y / 2.f);
+}
+void hpBar::convertHp(const int& hp) {
+	std::string stringHp = std::to_string(hp);
+	this->hp = stringHp;
+}
+void hpBar::convertMaxHp(const int& maxHp) {
+	std::string stringHp = std::to_string(maxHp);
+	this->maxHp = stringHp;
 }
 
 //mpBar
@@ -753,4 +781,22 @@ tiferetImg::tiferetImg(sf::RenderWindow& win, resourceManager& res)
 }
 void tiferetImg::draw(sf::RenderWindow& win) {
 	win.draw(characterImg);
+}
+
+//homunculus 공용
+void homunculus::position(sf::RenderWindow& win) {
+	enemyImg.setPosition(win.getSize().x / 5.f * 3.f, win.getSize().y / 2.f);
+}
+const sf::Vector2f& homunculus::getPosition() {
+	return enemyImg.getPosition();
+}
+
+//normalOne
+normalOne::normalOne(sf::RenderWindow& win, resourceManager& res)
+{
+	enemyImg.setTexture(res.getTexture("normal1"));
+	position(win);
+}
+void normalOne::draw(sf::RenderWindow& win) {
+	win.draw(enemyImg);
 }

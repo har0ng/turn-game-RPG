@@ -199,13 +199,15 @@ public:
 class hpBar {
 private:
 	sf::RectangleShape bar;
-	int maxHp; //player에서 값 받아올것
-	int hp;
+	sf::Text hpLog;
+	std::string hp;
+	std::string maxHp;
 public:
 	hpBar(sf::RenderWindow& win, resourceManager& res);
 	void draw(sf::RenderWindow& win);
 	void position(const sf::Vector2f& hpmpP);
-	void setBarValue(float barSizeX);
+	void convertHp(const int& hp);
+	void convertMaxHp(const int& maxHp);
 };
 
 class mpBar {
@@ -244,10 +246,41 @@ public:
 
 };
 
-
 class tiferetImg : public character{
 public:
 	tiferetImg(sf::RenderWindow& win, resourceManager& res);
 	void draw(sf::RenderWindow& win) override;
 	
+};
+
+
+class homunculus { //방마다 힐인지 엘리트인지 노말인지 보스인지 구분하기
+protected:
+	sf::Sprite enemyImg;
+public:
+	homunculus() = default;
+	virtual ~homunculus() = default;
+	virtual void draw(sf::RenderWindow & win) = 0;
+	virtual void position(sf::RenderWindow & win);
+	const sf::Vector2f& getPosition();
+};
+
+class normalOne : public homunculus {
+public:
+	normalOne(sf::RenderWindow& win, resourceManager& res);
+	void draw(sf::RenderWindow& win) override;
+
+};
+
+class eliteOne : public homunculus {
+public:
+	eliteOne(sf::RenderWindow& win, resourceManager& res);
+	void draw(sf::RenderWindow& win) override;
+
+};
+
+class bossOne : public homunculus {
+public:
+	bossOne(sf::RenderWindow& win, resourceManager& res);
+	void draw(sf::RenderWindow& win) override;
 };
