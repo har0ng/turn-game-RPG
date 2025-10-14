@@ -547,7 +547,7 @@ void floorScene::allStartAppear() {
 //battleScene
 battleScene::battleScene(sf::RenderWindow& win, resourceManager& res) :
     window(win), log(win),view(sf::Vector2f(1280.f, 720.f), sf::Vector2f(2560.f, 1440.f)),
-    backBtn("back", 0.0f, 960.0f, res.getFont("fantasy")),
+    frameDuration(0.15f),backBtn("back", 0.0f, 960.0f, res.getFont("fantasy")),
     statusFrame(res), hpB(win,res), mpB(win,res), expB(win,res), eloaImg(win, res)
     ,normalOneImg(win,res)
 {
@@ -562,6 +562,9 @@ battleScene::battleScene(sf::RenderWindow& win, resourceManager& res) :
     mpB.position(statusFrame.getHpmpPosition());
 }
 void battleScene::update(sf::RenderWindow& window) {
+    deltaTime = clock.restart().asSeconds();  // 프레임 독립적 시간
+    eloaImg.updateFrame(deltaTime);          // tiferetImg 애니메이션 갱신
+    normalOneImg.updateFrame(deltaTime);
     sf::Event event;
     while (window.pollEvent(event)) {//이벤트가 있다면 계속 반복
         sf::Vector2i pixelPos = sf::Mouse::getPosition(window); //설정 해놓은 창 기준 마우스

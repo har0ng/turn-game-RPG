@@ -776,16 +776,33 @@ const sf::Vector2f& character::getPosition(){
 //tiferet
 tiferetImg::tiferetImg(sf::RenderWindow& win, resourceManager& res)
 {
-	characterImg.setTexture(res.getTexture("tiferet"));
+	frameWidth = res.getTexture("tiferet").getSize().x;
+	frameHeight = res.getTexture("tiferet").getSize().y;
+	characterImg.setTexture(res.getTexture("tiferetSprite"));
+	characterImg.setTextureRect(sf::IntRect(0, 0, frameWidth, frameHeight));
 	position(win);
 }
 void tiferetImg::draw(sf::RenderWindow& win) {
 	win.draw(characterImg);
 }
+void tiferetImg::updateFrame(float dt) { //장면 변화
+	elapsed += dt;
+	if (elapsed >= frameDuration) { //elapsed가 0.15f 보다 커지면 초기화 시키고 장면 변화
+		elapsed = 0.f;
+		currentFrame++;
+		int framesPerAction = 2; // 마지막 액션 + 1이 몇인지. 장면변화 index를 제일 처음으로 초기화
+		if (currentFrame >= framesPerAction)
+			currentFrame = 0;
+
+		characterImg.setTextureRect(
+			sf::IntRect(frameWidth * currentFrame, 0, frameWidth, frameHeight)
+		);
+	}
+}
 
 //homunculus 공용
 void homunculus::position(sf::RenderWindow& win) {
-	enemyImg.setPosition(win.getSize().x / 5.f * 3.f, win.getSize().y / 2.f);
+	enemyImg.setPosition(win.getSize().x - (win.getSize().x / 7.f) , win.getSize().y / 2.f);
 }
 const sf::Vector2f& homunculus::getPosition() {
 	return enemyImg.getPosition();
@@ -794,9 +811,26 @@ const sf::Vector2f& homunculus::getPosition() {
 //normalOne
 normalOne::normalOne(sf::RenderWindow& win, resourceManager& res)
 {
-	enemyImg.setTexture(res.getTexture("normal1"));
+	frameWidth = res.getTexture("normal").getSize().x;
+	frameHeight = res.getTexture("normal").getSize().y;
+	enemyImg.setTexture(res.getTexture("normalSprite"));
+	enemyImg.setTextureRect(sf::IntRect(0, 0, frameWidth, frameHeight));
 	position(win);
 }
 void normalOne::draw(sf::RenderWindow& win) {
 	win.draw(enemyImg);
+}
+void normalOne::updateFrame(float dt) {
+	elapsed += dt;
+	if (elapsed >= frameDuration) { //elapsed가 0.15f 보다 커지면 초기화 시키고 장면 변화
+		elapsed = 0.f;
+		currentFrame++;
+		int framesPerAction = 2; // 마지막 액션 + 1이 몇인지. 장면변화 index를 제일 처음으로 초기화
+		if (currentFrame >= framesPerAction)
+			currentFrame = 0;
+
+		enemyImg.setTextureRect(
+			sf::IntRect(frameWidth * currentFrame, 0, frameWidth, frameHeight)
+		);
+	}
 }

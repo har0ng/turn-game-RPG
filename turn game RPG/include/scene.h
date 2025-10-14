@@ -158,7 +158,9 @@ private:
 	sf::RenderWindow& window; // 빈 도화지 받아오기
 	sf::Sprite background;   // 배경화면
 	sf::View view;
+	sf::Clock clock;
 	sfmlLog log; // 싸울땐 로그 필수
+	float frameDuration;
 	//battleButton attackBtn; //버튼 이라는 부품 들고옴
 	//battleButton defenseBtn; //이하동문
 	//battleButton skillBtn;

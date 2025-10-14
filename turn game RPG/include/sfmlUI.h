@@ -236,7 +236,13 @@ public:
 
 class character {
 protected:
-	sf::Sprite characterImg;
+	sf::Sprite characterImg; //전체시트에 의존한 분할 시트
+	int frameWidth;	 // 직사각형 시작 위치 (intRect)
+	int frameHeight;  //직사각형 시작 위치 (intRect)
+	int currentFrame{ 0 };
+	int currentAction{ 0 }; // 0: 숨 내쉬기, 1: 숨 쉬기
+	float elapsed{ 0.f };
+	float frameDuration{ 0.45f };
 public:
 	character() = default;
 	virtual ~character() = default;
@@ -250,13 +256,19 @@ class tiferetImg : public character{
 public:
 	tiferetImg(sf::RenderWindow& win, resourceManager& res);
 	void draw(sf::RenderWindow& win) override;
-	
+	void updateFrame(float dt);
 };
 
 
 class homunculus { //방마다 힐인지 엘리트인지 노말인지 보스인지 구분하기
 protected:
-	sf::Sprite enemyImg;
+	sf::Sprite enemyImg; //frameWidth와 frameHeight의 기준이 될 이미지
+	int frameWidth{ 0 }; // 직사각형 시작 위치 (intRect)
+	int frameHeight{ 0 }; //직사각형 시작 위치 (intRect)
+	int currentFrame{ 0 };
+	int currentAction{ 0 }; // 0: 숨 내쉬기, 1: 숨 쉬기
+	float elapsed{ 0.f };
+	float frameDuration{ 0.45f };
 public:
 	homunculus() = default;
 	virtual ~homunculus() = default;
@@ -269,6 +281,7 @@ class normalOne : public homunculus {
 public:
 	normalOne(sf::RenderWindow& win, resourceManager& res);
 	void draw(sf::RenderWindow& win) override;
+	void updateFrame(float dt);
 
 };
 
