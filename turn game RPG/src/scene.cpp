@@ -7,6 +7,9 @@ void scene::isTransition() { //반복 클릭 막기
     if (transition) { return; }
     transition = true;
 }
+int scene::getRoomNum() {
+    return roomNum;
+}
 void scene::startFade() {
     fading = true;
     clock.restart();// 0초로 초기화 하고 다시 경과 시간 반환
@@ -352,11 +355,13 @@ void floorScene::update(sf::RenderWindow& window) {
                 for (auto& roomInfo : assortFloor) { //버튼 호버시 변화
                     roomInfo.spriteScaleManager(worldPos, visitedRoom);
                     line.setFillColor(worldPos, roomInfo);     
-                    if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left && roomInfo.isClickedExtra(worldPos, connectedRoom) && roomInfo.getIndexRow() == assortBtnRow) {
+                    if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left 
+                        && roomInfo.isClickedExtra(worldPos, connectedRoom) && roomInfo.getIndexRow() == assortBtnRow) {
                         visitedRoom.push_back({ roomInfo.getIndexRow(), roomInfo.getIndexCol() });
                         connectedRoom.clear();
                         connectedRoom = roomInfo.getRoomInformation().connectedRoom;
                         assortBtnRow++;
+                        setRoomNum(roomInfo.getRoomInformation().name);
                         finished = true;                       
                     }
                 }
@@ -543,13 +548,26 @@ void floorScene::allStartAppear() {
     }
     line.startAppear();
 }
+void floorScene::setRoomNum(std::string roomName) {
+    if (roomName == "rest") {
+        roomNum = 1;
+    }
+    else if (roomName == "enemy") {
+        roomNum = 2;
+    }
+    else if (roomName == "boss") {
+        roomNum = 3;
+    }
+    return;
+}
+
 
 //battleScene
-battleScene::battleScene(sf::RenderWindow& win, resourceManager& res) :
+battleScene::battleScene(sf::RenderWindow& win, resourceManager& res, const int& roomNum) :
     window(win), log(win),view(sf::Vector2f(1280.f, 720.f), sf::Vector2f(2560.f, 1440.f)),
     frameDuration(0.15f),backBtn("back", 0.0f, 960.0f, res.getFont("fantasy")),
     statusFrame(res), hpB(win,res), mpB(win,res), expB(win,res), eloaImg(win, res)
-    ,normalOneImg(win,res)
+    ,normalOneImg(win,res), eliteOneImg(win, res), bossOneImg(win, res),enemyType("none")
 {
     //1. 기본 뷰 초기화
     window.setView(window.getDefaultView()); //main에서 하면 좋지만..늦게 알아버린,mapScene view에서의 누적 초기화
@@ -560,11 +578,16 @@ battleScene::battleScene(sf::RenderWindow& win, resourceManager& res) :
     statusFrame.setPosition(eloaImg.getPosition(), expB.getPosition(), res);
     hpB.position(statusFrame.getHpmpPosition());
     mpB.position(statusFrame.getHpmpPosition());
+
+    //3. 무슨 방인지 구분 rest, enemy , boss
+    roomType = roomNum;
+    enemy e;
+    enemyType = (roomType == 2)? e.randomEnemyType() : "none";
 }
 void battleScene::update(sf::RenderWindow& window) {
     deltaTime = clock.restart().asSeconds();  // 프레임 독립적 시간
     eloaImg.updateFrame(deltaTime);          // tiferetImg 애니메이션 갱신
-    normalOneImg.updateFrame(deltaTime);
+    selectRoomType(roomType, enemyType);   //무슨 방인지 구분
     sf::Event event;
     while (window.pollEvent(event)) {//이벤트가 있다면 계속 반복
         sf::Vector2i pixelPos = sf::Mouse::getPosition(window); //설정 해놓은 창 기준 마우스
@@ -587,8 +610,43 @@ void battleScene::render(sf::RenderWindow& window) {
     statusFrame.draw(window);
     expB.draw(window);
     eloaImg.draw(window);
-    normalOneImg.draw(window);
+    if (roomType == 1) { //rest인데 아직 없어서 노멀로 떼움
+        normalOneImg.draw(window);
+    }
+    else if (roomType == 2 && enemyType == "normal") {
+        eliteOneImg.draw(window);
+    }
+    else if (roomType == 2 && enemyType == "elite") {
+        eliteOneImg.draw(window);
+    }
+    else if(roomType == 3){
+        bossOneImg.draw(window);
+    }
 }
 void battleScene::allStartAppear() {
     return;
+}
+void battleScene::selectRoomType(int& roomType, std::string& enemyT) { //적인지 휴식인지 구분과 적의 종류 구분.
+    switch (roomType) {//rest 이지만 아직 이미지가 없음으로 몬스터로 해놓기
+    case 1: //rest 인데 아직 rest 가 없으니깐 임시
+        if (enemyT == "normal") {
+            normalOneImg.updateFrame(deltaTime);
+        }else if (enemyT == "elite") {
+            eliteOneImg.updateFrame(deltaTime);
+        }
+        break;
+    case 2:
+        if (enemyT == "normal") {
+            eliteOneImg.updateFrame(deltaTime);
+        }
+        else if (enemyT == "elite") {
+            eliteOneImg.updateFrame(deltaTime);
+        }
+        break;
+    case 3:
+        bossOneImg.updateFrame(deltaTime);
+        break;
+    default:
+        break;
+    }
 }

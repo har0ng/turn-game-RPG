@@ -55,22 +55,6 @@ void mapRoom::setRoomsInFloor(int floor) {
     }
 }
 
-/* map -> button -> scene
-1.map에서 한번에 층의 모든방의 정보를 만들어내기 (끝)
-2.그 정보를 button의 assortMapSelectbutton에 정보로 보내기 (끝)
-3.button에서 그 정보를 하나하나 읽어서 roomType에 따라 방의 이미지를 버튼화 시켜서 그 버튼을 scene으로 넘겨주기 (끝)
-4.층에 따라 세부 층에 있을 방의 개수별로 vector로 나눠 차곡차곡 저장 (끝)
-5.저장된 방을 x,y 좌표로 통해 클릭하기 쉽게 맵에 매핑 (끝)
-5-2. 방에서 방으로 갈 수 있는 방끼리 선으로 연결 해놓기(아마 map.cpp 뜯어 고쳐야할거 같음) (끝)
-6.클릭 이벤트 만들어내기 (끝)
-7.호버시 변화 만들어내기 (끝)
-8.클릭 시 배틀로 넘어가게 해주기 단, 화면 전환이 아닌 화면 위로 덧씌우는 방식이 될꺼임
-  아니면 화면 전환하게 하되, 원래 floorScene을 따로 저장해놓고 새롭게 만드는게 아닌 저장해놓은 scene을 불러올꺼임
-(이유는 전환하면 scene이 바뀌면서 원래 층의 scene이 개박살남 그래서 정보를 남겨놓을꺼임)
-포인터 옮길 땐 옮기기전에 미리 현재 세부층 클릭 못하게 막아두고 넘어가기
-9,배틀 끝나면 다음 세부층으로 이동하고 이전 세부층(vector)의 이미지는 좀 어둡게만들고 클릭 이벤트 비활성화
-*/
-
 std::vector<room> mapRoom::upperPartCreateMap() {
     std::vector<room> map;
     size_t idCnt = 1; // 고유 아이디

@@ -27,6 +27,7 @@ protected:
 	float deltaTime{ 0.f }; //딜레이 계산
 	float mainViewX{ 0.f }; //마우스를 위한 메인 화면 기준 x
 	float mainViewY{ 0.f }; //마우스를 위한 메인 화면 기준 y
+	int roomNum{ 0 }; // floorScene에서 battleScene으로 main을 통해 넘겨주기 위함
 public:
 	virtual ~scene() = default;
 	//입력(키보드/마우스/창 이벤트)을 처리.
@@ -54,6 +55,7 @@ public:
 
 	//공용
 	void isTransition(); //씬 바뀌고 있는데 클릭 금지
+	int getRoomNum();
 	virtual void startFade(); // 페이드 시작 
 	virtual void updateFade(sf::Sprite& sprite); // 페이드 계속 업데이트
 	virtual void startAppear(); // 불러내는 타이머 가동
@@ -142,6 +144,7 @@ public:
 	void animation(sf::Vector2f& center, float& elapsed);
 	void updateAppear(sf::Sprite& sprite) override;
 	void allStartAppear() override;
+	void setRoomNum(std::string roomName); //부모 scene의 RoomName을 위한 함수
 
 	//get
 	std::vector<std::vector<assortMapSelectButton>>& getAssortBtns(); //line 갱신 목적
@@ -172,11 +175,16 @@ private:
 	expBar expB;
 	tiferetImg eloaImg;
 	normalOne normalOneImg;
+	eliteOne eliteOneImg;
+	bossOne bossOneImg;
+	int roomType{ 0 }; // 1 == rest, 2 == enemy, 3 == boss
+	std::string enemyType;
 public:
-	battleScene(sf::RenderWindow& win, resourceManager& res);
+	battleScene(sf::RenderWindow& win, resourceManager& res , const int& roomNum);
 	void update(sf::RenderWindow& window) override; //메뉴 화면으로 상태갱신
 	void render(sf::RenderWindow& window) override; //화면 사용자에게 보이게 하기
 	void allStartAppear() override;
+	void selectRoomType(int& roomType, std::string& enemyType);  //적인지 휴식인지 구분과 적의 종류 구분
 
 };
 

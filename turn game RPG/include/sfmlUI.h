@@ -256,7 +256,7 @@ class tiferetImg : public character{
 public:
 	tiferetImg(sf::RenderWindow& win, resourceManager& res);
 	void draw(sf::RenderWindow& win) override;
-	void updateFrame(float dt);
+	void updateFrame(float& dt);
 };
 
 
@@ -281,7 +281,7 @@ class normalOne : public homunculus {
 public:
 	normalOne(sf::RenderWindow& win, resourceManager& res);
 	void draw(sf::RenderWindow& win) override;
-	void updateFrame(float dt);
+	void updateFrame(float& dt);
 
 };
 
@@ -289,11 +289,31 @@ class eliteOne : public homunculus {
 public:
 	eliteOne(sf::RenderWindow& win, resourceManager& res);
 	void draw(sf::RenderWindow& win) override;
-
+	void updateFrame(float& dt);
+	void position(sf::RenderWindow& win) override;
 };
 
 class bossOne : public homunculus {
 public:
 	bossOne(sf::RenderWindow& win, resourceManager& res);
 	void draw(sf::RenderWindow& win) override;
+	void updateFrame(float& dt);
+	void position(sf::RenderWindow& win) override;
+
 };
+
+//class homunculusHpbar { // 이거 하기전에 모든 에너미 사진들이 구부되서 나오게끔 해줘야함 그래야 중앙 위치를 잡지.
+//private:
+//	sf::Sprite hp;
+//	sf::RectangleShape bar;
+//	sf::Text hpLog;
+//	std::string hp;
+//	std::string maxHp;
+//public:
+//	homunculusHpbar(sf::RenderWindow& win, resourceManager& res);
+//	void draw(sf::RenderWindow& win);
+//	void position(const sf::Vector2f& hpmpP);
+//	void convertHp(const int& hp);
+//	void convertMaxHp(const int& maxHp);
+//
+//};

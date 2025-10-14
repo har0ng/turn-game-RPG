@@ -35,12 +35,12 @@ void resourceManager::loadAll() {
     loadTexture("1floorBattleRoomBg", "assets/images/1floorBattleRoom.png");
     loadTexture("expbar", "assets/images/exp.png");
     loadTexture("hpmp", "assets/images/hpmp.png");
-    loadTexture("normal", "assets/images/normal.png");
-    loadTexture("normalSprite", "assets/images/normalSheet.png");
+    loadTexture("normal1", "assets/images/normal1.png");
+    loadTexture("normal1Sprite", "assets/images/normal1Sheet.png");
     loadTexture("elite1", "assets/images/elite1.png");
     loadTexture("tiferet", "assets/images/tiferet.png");
     loadTexture("tiferetSprite", "assets/images/tiferetSheet.png");
-    
+    loadTexture("boss1", "assets/images/boss1.png");
     //font
     loadFont("normal", "assets/fonts/smartfont.otf");
     loadFont("fantasy", "assets/fonts/Nosutaru-dotMPlusH-10-Regular.ttf");
