@@ -38,9 +38,13 @@ void resourceManager::loadAll() {
     loadTexture("normal1", "assets/images/normal1.png");
     loadTexture("normal1Sprite", "assets/images/normal1Sheet.png");
     loadTexture("elite1", "assets/images/elite1.png");
+    loadTexture("elite1Sprite", "assets/images/elite1Sheet.png");
     loadTexture("tiferet", "assets/images/tiferet.png");
     loadTexture("tiferetSprite", "assets/images/tiferetSheet.png");
     loadTexture("boss1", "assets/images/boss1.png");
+    loadTexture("boss1Sprite", "assets/images/boss1Sheet.png");
+    loadTexture("enemyHp", "assets/images/enemyHp.png");
+
     //font
     loadFont("normal", "assets/fonts/smartfont.otf");
     loadFont("fantasy", "assets/fonts/Nosutaru-dotMPlusH-10-Regular.ttf");

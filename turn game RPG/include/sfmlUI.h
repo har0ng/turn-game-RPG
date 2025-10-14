@@ -3,6 +3,8 @@
 #include "resourceManager.h"
 #include "map.h"
 #include "player.h"
+#include "enemy.h"
+
 #include <SFML/Graphics.hpp>
 
 //UI는 화면에서 나오는 기능들을 부품화시켜 따로 분류해놓는 곳임
@@ -302,18 +304,19 @@ public:
 
 };
 
-//class homunculusHpbar { // 이거 하기전에 모든 에너미 사진들이 구부되서 나오게끔 해줘야함 그래야 중앙 위치를 잡지.
-//private:
-//	sf::Sprite hp;
-//	sf::RectangleShape bar;
-//	sf::Text hpLog;
-//	std::string hp;
-//	std::string maxHp;
-//public:
-//	homunculusHpbar(sf::RenderWindow& win, resourceManager& res);
-//	void draw(sf::RenderWindow& win);
-//	void position(const sf::Vector2f& hpmpP);
-//	void convertHp(const int& hp);
-//	void convertMaxHp(const int& maxHp);
-//
-//};
+class homunculusHpbar { // 이거 하기전에 모든 에너미 사진들이 구부되서 나오게끔 해줘야함 그래야 중앙 위치를 잡지.
+private:
+	sf::Sprite enemyHp;
+	sf::RectangleShape bar;
+	sf::Text hpLog;
+	std::string hp;
+	std::string maxHp;
+public:
+	homunculusHpbar(sf::RenderWindow& win, resourceManager& res);
+	void draw(sf::RenderWindow& win);
+	const sf::Vector2f& getenemyHpPosition();
+	void position(const sf::Vector2f& hpmpP);
+	void convertHp(const int& hp);
+	void convertMaxHp(const int& maxHp);
+
+};

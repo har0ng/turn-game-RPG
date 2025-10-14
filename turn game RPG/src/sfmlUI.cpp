@@ -840,7 +840,7 @@ eliteOne::eliteOne(sf::RenderWindow& win, resourceManager& res)
 {
 	frameWidth = res.getTexture("elite1").getSize().x;
 	frameHeight = res.getTexture("elite1").getSize().y;
-	enemyImg.setTexture(res.getTexture("elite1"));
+	enemyImg.setTexture(res.getTexture("elite1Sprite"));
 	enemyImg.setTextureRect(sf::IntRect(0, 0, frameWidth, frameHeight));
 	position(win);
 }
@@ -852,12 +852,12 @@ void eliteOne::updateFrame(float& dt) {
 	if (elapsed >= frameDuration) { //elapsed가 0.15f 보다 커지면 초기화 시키고 장면 변화
 		elapsed = 0.f;
 		currentFrame++;
-		int framesPerAction = 1; // 마지막 액션 + 1이 몇인지. 장면변화 index를 제일 처음으로 초기화
+		int framesPerAction = 2; // 마지막 액션 + 1이 몇인지. 장면변화 index를 제일 처음으로 초기화
 		if (currentFrame >= framesPerAction)
 			currentFrame = 0;
 
 		enemyImg.setTextureRect(
-			sf::IntRect(frameWidth * currentFrame, 0, frameWidth, frameHeight)
+			sf::IntRect(0,frameHeight * currentFrame, frameWidth, frameHeight)
 		);
 	}
 }
@@ -870,7 +870,7 @@ bossOne::bossOne(sf::RenderWindow& win, resourceManager& res)
 {
 	frameWidth = res.getTexture("boss1").getSize().x;
 	frameHeight = res.getTexture("boss1").getSize().y;
-	enemyImg.setTexture(res.getTexture("boss1"));
+	enemyImg.setTexture(res.getTexture("boss1Sprite"));
 	enemyImg.setTextureRect(sf::IntRect(0, 0, frameWidth, frameHeight));
 	position(win);
 }
@@ -882,7 +882,7 @@ void bossOne::updateFrame(float& dt) {
 	if (elapsed >= frameDuration) { //elapsed가 0.15f 보다 커지면 초기화 시키고 장면 변화
 		elapsed = 0.f;
 		currentFrame++;
-		int framesPerAction = 1; // 마지막 액션 + 1이 몇인지. 장면변화 index를 제일 처음으로 초기화
+		int framesPerAction = 2; // 마지막 액션 + 1이 몇인지. 장면변화 index를 제일 처음으로 초기화
 		if (currentFrame >= framesPerAction)
 			currentFrame = 0;
 
@@ -892,5 +892,57 @@ void bossOne::updateFrame(float& dt) {
 	}
 }
 void bossOne::position(sf::RenderWindow& win) {
-	enemyImg.setPosition(win.getSize().x - (win.getSize().x / 7.f), win.getSize().y / 2.5f);
+	enemyImg.setPosition(win.getSize().x - (win.getSize().x / 5.f), win.getSize().y / 2.9f);
+}
+
+//homunculusHpbar
+homunculusHpbar::homunculusHpbar(sf::RenderWindow& win, resourceManager& res)
+{
+	//enemyHp
+	enemyHp.setTexture(res.getTexture("enemyHp"));
+	//enemyHp.setPosition(enemyP.x, enemyP.y + res.getTexture("tiferet").getSize().y);
+	// 이미지 enemyhp를 어디에 어떻게 놓아야할지.
+	// 그리고 그에 따른 bar와 hplog를 어떻게 놓을지 생각할것
+	//bar
+	bar.setSize(sf::Vector2f(res.getTexture("enemyHp").getSize().x, //x크기 0이 hp 0%임 현재는 100%
+		res.getTexture("enemyHp").getSize().y / 2.f));
+	bar.setFillColor(sf::Color(207, 66, 62));
+
+	//hp log
+	convertHp(e->getEnemyCurrentHealth());
+	convertMaxHp(e->getEnemy_health());
+	hpLog.setString(hp + "/" + maxHp);
+	hpLog.setFont(res.getFont("fantasy"));
+	hpLog.setCharacterSize(40);
+	hpLog.setFillColor(sf::Color::White);
+	hpLog.setOutlineColor(sf::Color::White);
+	hpLog.setOutlineThickness(1.f);
+}
+void homunculusHpbar::draw(sf::RenderWindow& win) {
+	win.draw(enemyHp);
+	win.draw(bar);
+	win.draw(hpLog);
+}
+const sf::Vector2f& homunculusHpbar::getenemyHpPosition() {
+	return enemyHp.getPosition();
+}
+void homunculusHpbar::position(const sf::Vector2f& hpP) {
+	bar.setPosition(hpP);
+	// 텍스트 중앙 origin 설정
+	sf::FloatRect textBounds = hpLog.getLocalBounds();
+	hpLog.setOrigin(textBounds.left + textBounds.width / 2.f,
+		textBounds.top + textBounds.height / 2.f);
+
+	// bar 중앙 위치에 텍스트 배치
+	hpLog.setPosition(
+		bar.getPosition().x + bar.getSize().x / 2.f,
+		bar.getPosition().y + bar.getSize().y / 2.f);
+}
+void homunculusHpbar::convertHp(const int& hp) {
+	std::string stringHp = std::to_string(hp);
+	this->hp = stringHp;
+}
+void homunculusHpbar::convertMaxHp(const int& maxHp) {
+	std::string stringHp = std::to_string(maxHp);
+	this->maxHp = stringHp;
 }

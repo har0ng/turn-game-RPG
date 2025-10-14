@@ -582,7 +582,21 @@ battleScene::battleScene(sf::RenderWindow& win, resourceManager& res, const int&
     //3. 무슨 방인지 구분 rest, enemy , boss
     roomType = roomNum;
     enemy e;
-    enemyType = (roomType == 2)? e.randomEnemyType() : "none";
+    enemyType = (roomType == 2)? e.randomEnemyType() : "none"; //elite , normal
+    if (enemyType == "none") {
+        enemyType = (roomType == 3) ? "boss" : "none"; //elite , normal
+    }
+
+    //4. enemy 포인터 만들어주기
+    if (roomType == 1 && roomType == 2) {
+        getEnemyT(enemyType); // 원래 1은 rest라 적이 안생김
+    }
+    else if (roomType == 3) {
+        getEnemyT(enemyType);
+    }
+
+    //5. enemy hp 위치 조정
+    hoHpB.position(normalOneImg.getPosition());
 }
 void battleScene::update(sf::RenderWindow& window) {
     deltaTime = clock.restart().asSeconds();  // 프레임 독립적 시간
@@ -610,11 +624,12 @@ void battleScene::render(sf::RenderWindow& window) {
     statusFrame.draw(window);
     expB.draw(window);
     eloaImg.draw(window);
+    hoHpB.draw(window);
     if (roomType == 1) { //rest인데 아직 없어서 노멀로 떼움
         normalOneImg.draw(window);
     }
     else if (roomType == 2 && enemyType == "normal") {
-        eliteOneImg.draw(window);
+        normalOneImg.draw(window);
     }
     else if (roomType == 2 && enemyType == "elite") {
         eliteOneImg.draw(window);
@@ -637,7 +652,7 @@ void battleScene::selectRoomType(int& roomType, std::string& enemyT) { //적인�
         break;
     case 2:
         if (enemyT == "normal") {
-            eliteOneImg.updateFrame(deltaTime);
+            normalOneImg.updateFrame(deltaTime);
         }
         else if (enemyT == "elite") {
             eliteOneImg.updateFrame(deltaTime);

@@ -321,5 +321,25 @@ int enemy::enemyAction() {
     return 0;
 }
 
+//enemy poninter
+std::unique_ptr<enemy> e = nullptr; //이런식으로 구현해줘야함
+void getEnemyT(const std::string& enemyT) {
+
+    if (enemyT == "normal") {
+        e = std::make_unique<normal>();
+    }
+    else if (enemyT == "elite") {
+        e = std::make_unique<elite>();
+    }
+    else if (enemyT == "boss") {
+        e = std::make_unique<boss>();
+    }
+    else {
+        e = std::make_unique<normal>();
+    }
+}
+enemy& getEnemyPtr() {// 유니크 포인터를 넘겨야하니깐 이렇게 됨.
+    return *e;
+}
 
 

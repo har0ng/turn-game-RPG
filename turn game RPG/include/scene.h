@@ -179,6 +179,7 @@ private:
 	bossOne bossOneImg;
 	int roomType{ 0 }; // 1 == rest, 2 == enemy, 3 == boss
 	std::string enemyType;
+	homunculusHpbar hoHpB;
 public:
 	battleScene(sf::RenderWindow& win, resourceManager& res , const int& roomNum);
 	void update(sf::RenderWindow& window) override; //메뉴 화면으로 상태갱신
