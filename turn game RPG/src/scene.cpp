@@ -635,7 +635,7 @@ void battleScene::render(sf::RenderWindow& window) {
     eloaImg.draw(window);
     hoHpB.draw(window);
     //if (enemyType == 1) { //rest인데 아직 없어서 노멀로 떼움
-    //    normalOneImg.draw(window);
+    // 
     //}
     if (enemyType == "normal") {
         normalOneImg.draw(window);
@@ -643,8 +643,11 @@ void battleScene::render(sf::RenderWindow& window) {
     else if (enemyType == "elite") {
         eliteOneImg.draw(window);
     }
-    else if(enemyType == "boss"){
+    else if(enemyType == "boss") {
         bossOneImg.draw(window);
+    }
+    else {
+        return;
     }
 }
 void battleScene::allStartAppear() {
@@ -652,12 +655,7 @@ void battleScene::allStartAppear() {
 }
 void battleScene::selectRoomType(const int& roomType, const std::string& enemyT) { //적인지 휴식인지 구분과 적의 종류 구분.
     switch (roomType) {//rest 이지만 아직 이미지가 없음으로 몬스터로 해놓기
-    case 1: //rest 인데 아직 rest 가 없으니깐 임시
-        //if (enemyT == "normal") {
-        //    normalOneImg.updateFrame(deltaTime);
-        //}else if (enemyT == "elite") {
-        //    eliteOneImg.updateFrame(deltaTime);
-        //}
+    case 1: //rest
         break;
     case 2:
         if (enemyT == "normal") {

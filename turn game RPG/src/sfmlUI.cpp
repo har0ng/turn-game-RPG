@@ -937,10 +937,8 @@ void homunculusHpbar::position(const sf::Vector2f& enemyP, const sf::FloatRect& 
 		textBounds.top + textBounds.height / 2.f
 	);
 	hpLog.setPosition(
-		enemyHp.getPosition().x + enemyHp.getLocalBounds().width / 2.f,
-		enemyHp.getPosition().y + enemyHp.getLocalBounds().height
-	);
-
+		enemyHp.getPosition().x + (enemyHp.getLocalBounds().width / 2.5f),
+		enemyHp.getPosition().y - 7.f);
 }
 void homunculusHpbar::setTextHp() {
 	convertHp(e->getEnemyCurrentHealth());
