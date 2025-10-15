@@ -595,13 +595,13 @@ battleScene::battleScene(sf::RenderWindow& win, resourceManager& res, const int&
 
     //5. enemy hp 위치 조정
     if (enemyType == "normal") {
-        hoHpB.position(normalOneImg.getPosition(), normalOneImg.getEnemyImg(), res);
+        hoHpB.position(normalOneImg.getPosition(), normalOneImg.getEnemyImg());
     }
     else if (enemyType == "elite") {
-        hoHpB.position(eliteOneImg.getPosition(), eliteOneImg.getEnemyImg(), res);
+        hoHpB.position(eliteOneImg.getPosition(), eliteOneImg.getEnemyImg());
     }
     else if (enemyType == "boss") {
-        hoHpB.position(bossOneImg.getPosition(), bossOneImg.getEnemyImg() ,res);
+        hoHpB.position(bossOneImg.getPosition(), bossOneImg.getEnemyImg());
     }
 
     //6. enemy hp text 위치 조정 , 포인터가 정해지는게 4번이라 그 이후에 해야 enemyType에 맞는 hp를 들고옴

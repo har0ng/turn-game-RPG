@@ -308,9 +308,6 @@ public:
 class homunculusHpbar { // 이거 하기전에 모든 에너미 사진들이 구부되서 나오게끔 해줘야함 그래야 중앙 위치를 잡지.
 private:
 	sf::Sprite enemyHp;
-	sf::Sprite leftSprite;
-	sf::Sprite midSprite;
-	sf::Sprite rightSprite;
 
 	sf::RectangleShape bar;
 	sf::Text hpLog;
@@ -320,7 +317,7 @@ public:
 	homunculusHpbar(sf::RenderWindow& win, resourceManager& res);
 	void draw(sf::RenderWindow& win);
 	const sf::Vector2f& getEnemyHpPosition();
-	void position(const sf::Vector2f& enemyP, const sf::FloatRect& enemyImg, resourceManager& res);
+	void position(const sf::Vector2f& enemyP, const sf::FloatRect& enemyImg);
 	void setTextHp();
 	void convertHp(const int& hp);
 	void convertMaxHp(const int& maxHp);
