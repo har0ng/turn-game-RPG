@@ -66,11 +66,11 @@ int main() {
             }
             // 층 -> 전투
             else if (dynamic_cast<floorScene*>(currentScene.get())) {
-               int roomNum = currentScene->getRoomNum();
-               history.push_back(std::move(currentScene));      
+                const int& roomNum = currentScene->getRoomNum();
+               history.push_back(std::move(currentScene));
                currentScene = std::make_unique<battleScene>(window, res, roomNum);
-                cursor.updatePositionFromWindow(window);
-                continue;
+               cursor.updatePositionFromWindow(window);
+               continue;
             }
         }
 

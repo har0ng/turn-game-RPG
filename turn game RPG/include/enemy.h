@@ -2,6 +2,8 @@
 
 #pragma once
 #include <random> // random 
+#include <memory>
+
 #include "enemySkill.h"
 #include "enemySkillDisable.h"
 #include "enemyBuff.h"
@@ -85,7 +87,7 @@ public:
 extern std::unique_ptr<enemy> e; //main에서도 쓰일 플레이어 전역 포인터
 //extern이기에 데이터타입까지 cpp에 구현해줘야함
 enemy& getEnemyPtr(); // 또는 player* getPlayerPtr();
-void getEnemyT(const std::string& EnemyT);
+void setEnemyT(const std::string& EnemyT);
 
 
 //normal
@@ -94,6 +96,7 @@ private:
 	std::random_device rd; //seed create
 	std::mt19937 gen; //seed random
 public:
+	normal();
 	normal(const enemy& e);
 
 	//override
@@ -110,6 +113,7 @@ private:
 	std::random_device rd; //seed create
 	std::mt19937 gen; //seed random
 public:
+	elite();
 	elite(const enemy& e);
 
 	//override
@@ -125,6 +129,7 @@ private:
 	std::random_device rd; //seed create
 	std::mt19937 gen; //seed random
 public:
+	boss();
 	boss(const enemy& e);
 	// override
 	void decideHealth(RandomMinMax minMax) override;

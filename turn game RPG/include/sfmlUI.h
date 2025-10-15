@@ -276,7 +276,8 @@ public:
 	virtual ~homunculus() = default;
 	virtual void draw(sf::RenderWindow & win) = 0;
 	virtual void position(sf::RenderWindow & win);
-	const sf::Vector2f& getPosition();
+	const sf::Vector2f& getPosition(); //enemyImg.getPositon
+	const sf::FloatRect& getEnemyImg();
 };
 
 class normalOne : public homunculus {
@@ -307,6 +308,10 @@ public:
 class homunculusHpbar { // 이거 하기전에 모든 에너미 사진들이 구부되서 나오게끔 해줘야함 그래야 중앙 위치를 잡지.
 private:
 	sf::Sprite enemyHp;
+	sf::Sprite leftSprite;
+	sf::Sprite midSprite;
+	sf::Sprite rightSprite;
+
 	sf::RectangleShape bar;
 	sf::Text hpLog;
 	std::string hp;
@@ -314,8 +319,9 @@ private:
 public:
 	homunculusHpbar(sf::RenderWindow& win, resourceManager& res);
 	void draw(sf::RenderWindow& win);
-	const sf::Vector2f& getenemyHpPosition();
-	void position(const sf::Vector2f& hpmpP);
+	const sf::Vector2f& getEnemyHpPosition();
+	void position(const sf::Vector2f& enemyP, const sf::FloatRect& enemyImg, resourceManager& res);
+	void setTextHp();
 	void convertHp(const int& hp);
 	void convertMaxHp(const int& maxHp);
 

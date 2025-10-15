@@ -807,6 +807,9 @@ void homunculus::position(sf::RenderWindow& win) {
 const sf::Vector2f& homunculus::getPosition() {
 	return enemyImg.getPosition();
 }
+const sf::FloatRect& homunculus::getEnemyImg() {
+	return enemyImg.getLocalBounds();
+}
 
 //normalOne
 normalOne::normalOne(sf::RenderWindow& win, resourceManager& res)
@@ -899,19 +902,12 @@ void bossOne::position(sf::RenderWindow& win) {
 homunculusHpbar::homunculusHpbar(sf::RenderWindow& win, resourceManager& res)
 {
 	//enemyHp
-	enemyHp.setTexture(res.getTexture("enemyHp"));
-	//enemyHp.setPosition(enemyP.x, enemyP.y + res.getTexture("tiferet").getSize().y);
-	// 이미지 enemyhp를 어디에 어떻게 놓아야할지.
-	// 그리고 그에 따른 bar와 hplog를 어떻게 놓을지 생각할것
+	enemyHp.setTexture(res.getTexture("bar"));
+
 	//bar
-	bar.setSize(sf::Vector2f(res.getTexture("enemyHp").getSize().x, //x크기 0이 hp 0%임 현재는 100%
-		res.getTexture("enemyHp").getSize().y / 2.f));
 	bar.setFillColor(sf::Color(207, 66, 62));
 
 	//hp log
-	convertHp(e->getEnemyCurrentHealth());
-	convertMaxHp(e->getEnemy_health());
-	hpLog.setString(hp + "/" + maxHp);
 	hpLog.setFont(res.getFont("fantasy"));
 	hpLog.setCharacterSize(40);
 	hpLog.setFillColor(sf::Color::White);
@@ -919,15 +915,43 @@ homunculusHpbar::homunculusHpbar(sf::RenderWindow& win, resourceManager& res)
 	hpLog.setOutlineThickness(1.f);
 }
 void homunculusHpbar::draw(sf::RenderWindow& win) {
-	win.draw(enemyHp);
 	win.draw(bar);
+	win.draw(enemyHp);
 	win.draw(hpLog);
 }
-const sf::Vector2f& homunculusHpbar::getenemyHpPosition() {
+const sf::Vector2f& homunculusHpbar::getEnemyHpPosition() {
 	return enemyHp.getPosition();
 }
-void homunculusHpbar::position(const sf::Vector2f& hpP) {
-	bar.setPosition(hpP);
+void homunculusHpbar::position(const sf::Vector2f& enemyP , const sf::FloatRect& enemyImg, resourceManager& res) {
+	/*if (enemyImg.width != enemyHp.getGlobalBounds().width) {
+		int newWidth = static_cast<int>(enemyImg.width * 1.2f);
+		sf::IntRect rect(0, 0, newWidth, enemyHp.getGlobalBounds().height);
+		enemyHp.setTextureRect(rect);
+	}*/
+
+	//enemyHp resize, setRePosition
+	int rightWidth = 8;
+	int leftWidth = 8;
+	int midWidth = enemyHp.getGlobalBounds().width - rightWidth - leftWidth;
+	sf::Sprite leftSprite(res.getTexture("bar"), sf::IntRect(0, 0, leftWidth, res.getTexture("bar").getSize().y));
+	sf::Sprite midSprite(res.getTexture("bar"), sf::IntRect(leftWidth, 0, midWidth, res.getTexture("bar").getSize().y));
+	sf::Sprite rightSprite(res.getTexture("bar"), sf::IntRect(leftWidth + midWidth, 0, rightWidth, res.getTexture("bar").getSize().y));
+
+	float enemyImgResizeWidth = enemyImg.width - rightWidth - leftWidth;
+	float midScale = enemyImgResizeWidth / midWidth;
+	midSprite.setScale(enemyImgResizeWidth, 1.f);
+
+	leftSprite.setPosition(enemyP.x, enemyP.y + enemyImg.height);
+	midSprite.setPosition(enemyP.x + leftWidth, enemyP.y + enemyImg.height);
+	rightSprite.setPosition(enemyP.x + leftWidth + enemyImgResizeWidth, enemyImg.height);
+
+	//bar size를 left mid right에 맞추기
+	bar.setSize(sf::Vector2f(leftSprite.getLocalBounds().width + midSprite.getLocalBounds().width + rightSprite.getLocalBounds().width,
+		res.getTexture("bar").getSize().y));
+
+
+	//색상 바 위치 설정
+	bar.setPosition(leftSprite.getPosition());
 	// 텍스트 중앙 origin 설정
 	sf::FloatRect textBounds = hpLog.getLocalBounds();
 	hpLog.setOrigin(textBounds.left + textBounds.width / 2.f,
@@ -937,6 +961,11 @@ void homunculusHpbar::position(const sf::Vector2f& hpP) {
 	hpLog.setPosition(
 		bar.getPosition().x + bar.getSize().x / 2.f,
 		bar.getPosition().y + bar.getSize().y / 2.f);
+}
+void homunculusHpbar::setTextHp() {
+	convertHp(e->getEnemyCurrentHealth());
+	convertMaxHp(e->getEnemy_health());
+	hpLog.setString(hp + "/" + maxHp);
 }
 void homunculusHpbar::convertHp(const int& hp) {
 	std::string stringHp = std::to_string(hp);

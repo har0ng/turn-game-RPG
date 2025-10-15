@@ -6,11 +6,12 @@
 using std::cout;
 using std::cin;
 
+normal::normal() {}
 normal::normal(const enemy& e) :enemy(e), gen(rd()) {
     //순서: 에너미타입 정하기(main에서) -> 레벨정하기 -> 스텟 만들어주기 
     decideLevel(e.getPlayerLevel());
     setEnemyType("normal");
-    decideHealth(randomHealth(getLevel(), getEnemyType(), 1)); //1층은 아직 맵을 안만들어서 임시
+    decideHealth(randomHealth(getLevel(), getEnemyType(), 1)); //demo라 1층 밖에 없음
     //현재 체력 설정 전에 전체 체력 설정을 먼저
     setEnemyCurrentHealth(getEnemy_health());
     decidePower(randomPower(getLevel(), getEnemyType(), 1));

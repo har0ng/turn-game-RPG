@@ -7,7 +7,7 @@ void scene::isTransition() { //반복 클릭 막기
     if (transition) { return; }
     transition = true;
 }
-int scene::getRoomNum() {
+const int& scene::getRoomNum() {
     return roomNum;
 }
 void scene::startFade() {
@@ -564,10 +564,11 @@ void floorScene::setRoomNum(std::string roomName) {
 
 //battleScene
 battleScene::battleScene(sf::RenderWindow& win, resourceManager& res, const int& roomNum) :
-    window(win), log(win),view(sf::Vector2f(1280.f, 720.f), sf::Vector2f(2560.f, 1440.f)),
-    frameDuration(0.15f),backBtn("back", 0.0f, 960.0f, res.getFont("fantasy")),
-    statusFrame(res), hpB(win,res), mpB(win,res), expB(win,res), eloaImg(win, res)
-    ,normalOneImg(win,res), eliteOneImg(win, res), bossOneImg(win, res),enemyType("none")
+    window(win), log(win), view(sf::Vector2f(1280.f, 720.f), sf::Vector2f(2560.f, 1440.f)),
+    frameDuration(0.15f), backBtn("back", 0.0f, 960.0f, res.getFont("fantasy")),
+    statusFrame(res), hpB(win, res), mpB(win, res), expB(win, res), eloaImg(win, res)
+    , normalOneImg(win, res), eliteOneImg(win, res), bossOneImg(win, res), enemyType("none"),
+    hoHpB(win, res)
 {
     //1. 기본 뷰 초기화
     window.setView(window.getDefaultView()); //main에서 하면 좋지만..늦게 알아버린,mapScene view에서의 누적 초기화
@@ -582,21 +583,29 @@ battleScene::battleScene(sf::RenderWindow& win, resourceManager& res, const int&
     //3. 무슨 방인지 구분 rest, enemy , boss
     roomType = roomNum;
     enemy e;
-    enemyType = (roomType == 2)? e.randomEnemyType() : "none"; //elite , normal
+    enemyType = (roomNum == 2)? e.randomEnemyType() : "none"; //elite , normal
     if (enemyType == "none") {
-        enemyType = (roomType == 3) ? "boss" : "none"; //elite , normal
+        enemyType = (roomNum == 3) ? "boss" : "none"; //elite , normal
     }
 
     //4. enemy 포인터 만들어주기
-    if (roomType == 1 && roomType == 2) {
-        getEnemyT(enemyType); // 원래 1은 rest라 적이 안생김
-    }
-    else if (roomType == 3) {
-        getEnemyT(enemyType);
+    if (roomNum == 2 || roomNum == 3) {
+        setEnemyT(enemyType);
     }
 
     //5. enemy hp 위치 조정
-    hoHpB.position(normalOneImg.getPosition());
+    if (enemyType == "normal") {
+        hoHpB.position(normalOneImg.getPosition(), normalOneImg.getEnemyImg(), res);
+    }
+    else if (enemyType == "elite") {
+        hoHpB.position(eliteOneImg.getPosition(), eliteOneImg.getEnemyImg(), res);
+    }
+    else if (enemyType == "boss") {
+        hoHpB.position(bossOneImg.getPosition(), bossOneImg.getEnemyImg() ,res);
+    }
+
+    //6. enemy hp text 위치 조정 , 포인터가 정해지는게 4번이라 그 이후에 해야 enemyType에 맞는 hp를 들고옴
+    hoHpB.setTextHp();
 }
 void battleScene::update(sf::RenderWindow& window) {
     deltaTime = clock.restart().asSeconds();  // 프레임 독립적 시간
@@ -625,30 +634,30 @@ void battleScene::render(sf::RenderWindow& window) {
     expB.draw(window);
     eloaImg.draw(window);
     hoHpB.draw(window);
-    if (roomType == 1) { //rest인데 아직 없어서 노멀로 떼움
+    //if (enemyType == 1) { //rest인데 아직 없어서 노멀로 떼움
+    //    normalOneImg.draw(window);
+    //}
+    if (enemyType == "normal") {
         normalOneImg.draw(window);
     }
-    else if (roomType == 2 && enemyType == "normal") {
-        normalOneImg.draw(window);
-    }
-    else if (roomType == 2 && enemyType == "elite") {
+    else if (enemyType == "elite") {
         eliteOneImg.draw(window);
     }
-    else if(roomType == 3){
+    else if(enemyType == "boss"){
         bossOneImg.draw(window);
     }
 }
 void battleScene::allStartAppear() {
     return;
 }
-void battleScene::selectRoomType(int& roomType, std::string& enemyT) { //적인지 휴식인지 구분과 적의 종류 구분.
+void battleScene::selectRoomType(const int& roomType, const std::string& enemyT) { //적인지 휴식인지 구분과 적의 종류 구분.
     switch (roomType) {//rest 이지만 아직 이미지가 없음으로 몬스터로 해놓기
     case 1: //rest 인데 아직 rest 가 없으니깐 임시
-        if (enemyT == "normal") {
-            normalOneImg.updateFrame(deltaTime);
-        }else if (enemyT == "elite") {
-            eliteOneImg.updateFrame(deltaTime);
-        }
+        //if (enemyT == "normal") {
+        //    normalOneImg.updateFrame(deltaTime);
+        //}else if (enemyT == "elite") {
+        //    eliteOneImg.updateFrame(deltaTime);
+        //}
         break;
     case 2:
         if (enemyT == "normal") {

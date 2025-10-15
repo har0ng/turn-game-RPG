@@ -55,7 +55,7 @@ public:
 
 	//공용
 	void isTransition(); //씬 바뀌고 있는데 클릭 금지
-	int getRoomNum();
+	const int& getRoomNum();
 	virtual void startFade(); // 페이드 시작 
 	virtual void updateFade(sf::Sprite& sprite); // 페이드 계속 업데이트
 	virtual void startAppear(); // 불러내는 타이머 가동
@@ -185,7 +185,7 @@ public:
 	void update(sf::RenderWindow& window) override; //메뉴 화면으로 상태갱신
 	void render(sf::RenderWindow& window) override; //화면 사용자에게 보이게 하기
 	void allStartAppear() override;
-	void selectRoomType(int& roomType, std::string& enemyType);  //적인지 휴식인지 구분과 적의 종류 구분
+	void selectRoomType(const int& roomType, const std::string& enemyType);  //적인지 휴식인지 구분과 적의 종류 구분
 
 };
 

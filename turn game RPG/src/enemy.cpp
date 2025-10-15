@@ -323,19 +323,16 @@ int enemy::enemyAction() {
 
 //enemy poninter
 std::unique_ptr<enemy> e = nullptr; //이런식으로 구현해줘야함
-void getEnemyT(const std::string& enemyT) {
-
+void setEnemyT(const std::string& enemyT) {
+    enemy emy;
     if (enemyT == "normal") {
-        e = std::make_unique<normal>();
+        e = std::make_unique<normal>(emy.getPlayerLevel());
     }
     else if (enemyT == "elite") {
-        e = std::make_unique<elite>();
+        e = std::make_unique<elite>(emy.getPlayerLevel());
     }
     else if (enemyT == "boss") {
-        e = std::make_unique<boss>();
-    }
-    else {
-        e = std::make_unique<normal>();
+        e = std::make_unique<boss>(emy.getPlayerLevel());
     }
 }
 enemy& getEnemyPtr() {// 유니크 포인터를 넘겨야하니깐 이렇게 됨.
