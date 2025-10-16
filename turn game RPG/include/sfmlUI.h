@@ -236,6 +236,8 @@ public:
 	const sf::Vector2f& getPosition();
 };
 
+//class tiferetContractBar {};
+
 class character {
 protected:
 	sf::Sprite characterImg; //전체시트에 의존한 분할 시트
@@ -260,7 +262,6 @@ public:
 	void draw(sf::RenderWindow& win) override;
 	void updateFrame(float& dt);
 };
-
 
 class homunculus { //방마다 힐인지 엘리트인지 노말인지 보스인지 구분하기
 protected:
@@ -322,4 +323,8 @@ public:
 	void convertHp(const int& hp);
 	void convertMaxHp(const int& maxHp);
 
+};
+
+class selectAction {
+	
 };

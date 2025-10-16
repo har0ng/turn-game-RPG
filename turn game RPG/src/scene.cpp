@@ -599,7 +599,7 @@ roomScene::roomScene(sf::RenderWindow& win, resourceManager& res, const int& roo
 
     //7.battle 로직
 
-   // b.startBattle();
+   // b.startBattle(); //연결은 됐는데 백엔드에서 연결되어있는거라 구조를 프론트쪽으로 바꿔줘야함 근데 어캐함?
 }
 void roomScene::update(sf::RenderWindow& window) {
     deltaTime = clock.restart().asSeconds();  // 프레임 독립적 시간
