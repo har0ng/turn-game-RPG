@@ -18,8 +18,8 @@ using std::cin;
 using std::unique_ptr;
 
 
-battle::battle(std::unique_ptr<player>& _p, std::unique_ptr<enemy>& _e)
-	:p(_p), e(_e), gen(rd()) { //정보 받아옴.
+battle::battle(std::unique_ptr<player>& playerP, std::unique_ptr<enemy>& EnemyP)
+	:p(playerP), e(EnemyP), gen(rd()) { //정보 받아옴.
 	
 	//player
 	php = p->getPlayer_health(); // user 체력 get으로 받아오기
@@ -53,6 +53,7 @@ battle::battle(std::unique_ptr<player>& _p, std::unique_ptr<enemy>& _e)
 	contract = p->getContract();
 	amplifyActivate = p->getAmplifyActivate();
 };
+
 
 void battle::startBattle() { //배틀 시작
 		p->setBeforePlayer(); //전투 시작전 상태(레벨업 비교)

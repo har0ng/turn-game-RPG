@@ -156,8 +156,9 @@ public:
 	
 };
 
-class battleScene : public scene {
+class roomScene : public scene {
 private:
+	//scene
 	sf::RenderWindow& window; // 빈 도화지 받아오기
 	sf::Sprite background;   // 배경화면
 	sf::View view;
@@ -168,6 +169,8 @@ private:
 	//battleButton defenseBtn; //이하동문
 	//battleButton skillBtn;
 	// 이하 세부 스킬 버튼 만들어야함
+	
+	//UI
 	backButton backBtn; // 뒤로가기 버튼로 되어있는데 이름만 바꿔서 배틀 끝나고 돌아가는 버튼으로 하나 만들어 쓰기.
 	status statusFrame; //왼쪽위 체력, 마나, 경험치,레벨의 틀
 	hpBar hpB; //struct 할까말까하다가 다 따로 구분
@@ -178,14 +181,16 @@ private:
 	eliteOne eliteOneImg;
 	bossOne bossOneImg;
 	int roomType{ 0 }; // 1 == rest, 2 == enemy, 3 == boss
-	std::string enemyType;
 	homunculusHpbar hoHpB;
+
+	//battle
+	battle b;
 public:
-	battleScene(sf::RenderWindow& win, resourceManager& res , const int& roomNum);
+	roomScene(sf::RenderWindow& win, resourceManager& res , const int& roomNum);
 	void update(sf::RenderWindow& window) override; //메뉴 화면으로 상태갱신
 	void render(sf::RenderWindow& window) override; //화면 사용자에게 보이게 하기
 	void allStartAppear() override;
-	void selectRoomType(const int& roomType, const std::string& enemyType);  //적인지 휴식인지 구분과 적의 종류 구분
+	void selectRoomType(const int& roomType);  //적인지 휴식인지 구분과 적의 종류 구분
 
 };
 

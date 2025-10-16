@@ -323,6 +323,15 @@ int enemy::enemyAction() {
 
 //enemy poninter
 std::unique_ptr<enemy> e = nullptr; //이런식으로 구현해줘야함
+void setEnemyTLogic(const int& roomNum, enemy& e) { //에너미 포인터를 battleScene으로 넘기기 위한 몸비틀기
+    std::string enemyType = (roomNum == 2) ? e.randomEnemyType() : "none"; //elite , normal
+    if (enemyType == "none") {
+        enemyType = (roomNum == 3) ? "boss" : "none"; //elite , normal
+    }
+    if (roomNum == 2 || roomNum == 3) {
+        setEnemyT(enemyType);
+    }
+}
 void setEnemyT(const std::string& enemyT) {
     enemy emy;
     if (enemyT == "normal") {

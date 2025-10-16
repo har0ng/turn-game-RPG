@@ -12,32 +12,32 @@ private:
 	consoleUI ui;// consoleUI.h 
 	std::unique_ptr<player>& p;  //player status, smart pointer
 	std::unique_ptr<enemy>& e; //enemy status, smart pointer
-	int php;       // player health
-	int cphp;	   // player current health
-	int pattack;   //player attack
-	int pdefense;  //player defense
-	int level; //player level
-	int battleselect; //player action select
-	int level_exp; //총 경험치
-	int now_exp; //현재 경험치
-	int mana;
-	int current_mana;
-	int agility; //AGI, 회피율
-	int critical; //CRI, 크리티컬(데미지 2배)
-	int skillSelect; // battleSelect == 3 
+	int php{ 0 };       // player health
+	int cphp{ 0 };	   // player current health
+	int pattack{ 0 };   //player attack
+	int pdefense{ 0 };  //player defense
+	int level{ 0 }; //player level
+	int battleselect{ 0 }; //player action select
+	int level_exp{ 0 }; //총 경험치
+	int now_exp{ 0 }; //현재 경험치
+	int mana{ 0 };
+	int current_mana{ 0 };
+	int agility{ 0 }; //AGI, 회피율
+	int critical{ 0 }; //CRI, 크리티컬(데미지 2배)
+	int skillSelect{ 0 }; // battleSelect == 3 
 	debuffStatus debuff; // debuff
 	attackInfo attackData; //player 공격 계수 정보
 
-	int ehp;       // enemy health
-	int echp;
-	int eattack; //enemy attack
+	int ehp{ 0 };       // enemy health
+	int echp{ 0 };
+	int eattack{ 0 }; //enemy attack
 
-	int turn;
-	bool play; //player의 hp의 상태에 따라 게임 지속 가능한지 확인
+	int turn{ 0 };
+	bool play{ false }; //player의 hp의 상태에 따라 게임 지속 가능한지 확인
 
 	//tiferet 전용
-	int contract; //tiferet 아니면 0
-	bool amplifyActivate; //계약 강화 true false
+	int contract{ 0 }; //tiferet 아니면 0
+	bool amplifyActivate{ false }; //계약 강화 true false
 
 	std::mt19937 gen; //seed random
 	std::random_device rd; //seed create
@@ -64,4 +64,5 @@ public:
 	attackInfo atkInfo();
 	void skillCost(int contractCost, int mpCost);
 	void showGetSkill(std::vector<skill> beforeTest, std::vector<skill> afterTest);
+	
 };

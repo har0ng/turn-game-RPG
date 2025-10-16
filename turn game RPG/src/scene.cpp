@@ -562,13 +562,13 @@ void floorScene::setRoomNum(std::string roomName) {
 }
 
 
-//battleScene
-battleScene::battleScene(sf::RenderWindow& win, resourceManager& res, const int& roomNum) :
+//roomScene
+roomScene::roomScene(sf::RenderWindow& win, resourceManager& res, const int& roomNum) :
     window(win), log(win), view(sf::Vector2f(1280.f, 720.f), sf::Vector2f(2560.f, 1440.f)),
     frameDuration(0.15f), backBtn("back", 0.0f, 960.0f, res.getFont("fantasy")),
     statusFrame(res), hpB(win, res), mpB(win, res), expB(win, res), eloaImg(win, res)
-    , normalOneImg(win, res), eliteOneImg(win, res), bossOneImg(win, res), enemyType("none"),
-    hoHpB(win, res)
+    , normalOneImg(win, res), eliteOneImg(win, res), bossOneImg(win, res),
+    hoHpB(win, res),b(p,e)
 {
     //1. 기본 뷰 초기화
     window.setView(window.getDefaultView()); //main에서 하면 좋지만..늦게 알아버린,mapScene view에서의 누적 초기화
@@ -582,35 +582,29 @@ battleScene::battleScene(sf::RenderWindow& win, resourceManager& res, const int&
 
     //3. 무슨 방인지 구분 rest, enemy , boss
     roomType = roomNum;
-    enemy e;
-    enemyType = (roomNum == 2)? e.randomEnemyType() : "none"; //elite , normal
-    if (enemyType == "none") {
-        enemyType = (roomNum == 3) ? "boss" : "none"; //elite , normal
-    }
-
-    //4. enemy 포인터 만들어주기
-    if (roomNum == 2 || roomNum == 3) {
-        setEnemyT(enemyType);
-    }
 
     //5. enemy hp 위치 조정
-    if (enemyType == "normal") {
+    if (getEnemyPtr().getEnemyType() == "normal") {
         hoHpB.position(normalOneImg.getPosition(), normalOneImg.getEnemyImg());
     }
-    else if (enemyType == "elite") {
+    else if (getEnemyPtr().getEnemyType() == "elite") {
         hoHpB.position(eliteOneImg.getPosition(), eliteOneImg.getEnemyImg());
     }
-    else if (enemyType == "boss") {
+    else if (getEnemyPtr().getEnemyType() == "boss") {
         hoHpB.position(bossOneImg.getPosition(), bossOneImg.getEnemyImg());
     }
 
     //6. enemy hp text 위치 조정 , 포인터가 정해지는게 4번이라 그 이후에 해야 enemyType에 맞는 hp를 들고옴
     hoHpB.setTextHp();
+
+    //7.battle 로직
+
+   // b.startBattle();
 }
-void battleScene::update(sf::RenderWindow& window) {
+void roomScene::update(sf::RenderWindow& window) {
     deltaTime = clock.restart().asSeconds();  // 프레임 독립적 시간
     eloaImg.updateFrame(deltaTime);          // tiferetImg 애니메이션 갱신
-    selectRoomType(roomType, enemyType);   //무슨 방인지 구분
+    selectRoomType(roomType);   //무슨 방인지 구분
     sf::Event event;
     while (window.pollEvent(event)) {//이벤트가 있다면 계속 반복
         sf::Vector2i pixelPos = sf::Mouse::getPosition(window); //설정 해놓은 창 기준 마우스
@@ -621,11 +615,17 @@ void battleScene::update(sf::RenderWindow& window) {
             window.close();//창이 닫힌다
         }
         if (event.type == sf::Event::MouseButtonReleased && backBtn.isClicked(worldPos) && event.mouseButton.button == sf::Mouse::Left) {
-            back = true;    
+            back = true;
         }
     }
+    if (b.getPlay() == false) {
+        // 원정 실패 화면 만들어서 거기로 넘기기.
+        //isback() 함수로 넘어가면 이기든 지든 플레이어와 에너미 포인터가 안바뀌니 주의
+    }
+    
+  
 }
-void battleScene::render(sf::RenderWindow& window) {
+void roomScene::render(sf::RenderWindow& window) {
     window.draw(background);
     backBtn.draw(window); //돌아가기 버튼 (임시용)
     hpB.draw(window);
@@ -637,31 +637,32 @@ void battleScene::render(sf::RenderWindow& window) {
     //if (enemyType == 1) { //rest인데 아직 없어서 노멀로 떼움
     // 
     //}
-    if (enemyType == "normal") {
+    
+    if (getEnemyPtr().getEnemyType() == "normal") {
         normalOneImg.draw(window);
     }
-    else if (enemyType == "elite") {
+    else if (getEnemyPtr().getEnemyType() == "elite") {
         eliteOneImg.draw(window);
     }
-    else if(enemyType == "boss") {
+    else if(getEnemyPtr().getEnemyType() == "boss") {
         bossOneImg.draw(window);
     }
     else {
         return;
     }
 }
-void battleScene::allStartAppear() {
+void roomScene::allStartAppear() {
     return;
 }
-void battleScene::selectRoomType(const int& roomType, const std::string& enemyT) { //적인지 휴식인지 구분과 적의 종류 구분.
+void roomScene::selectRoomType(const int& roomType) { //적인지 휴식인지 구분과 적의 종류 구분.
     switch (roomType) {//rest 이지만 아직 이미지가 없음으로 몬스터로 해놓기
     case 1: //rest
         break;
     case 2:
-        if (enemyT == "normal") {
+        if (getEnemyPtr().getEnemyType() == "normal") {
             normalOneImg.updateFrame(deltaTime);
         }
-        else if (enemyT == "elite") {
+        else if (getEnemyPtr().getEnemyType() == "elite") {
             eliteOneImg.updateFrame(deltaTime);
         }
         break;

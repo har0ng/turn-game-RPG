@@ -64,11 +64,13 @@ int main() {
                 cursor.updatePositionFromWindow(window);
                 continue;
             }
-            // 층 -> 전투
+            // 층 -> 방
             else if (dynamic_cast<floorScene*>(currentScene.get())) {
                 const int& roomNum = currentScene->getRoomNum();
                history.push_back(std::move(currentScene));
-               currentScene = std::make_unique<battleScene>(window, res, roomNum);
+               enemy e;
+               setEnemyTLogic(roomNum, e);//몬스터 포인터 개념 정립
+               currentScene = std::make_unique<roomScene>(window, res, roomNum);
                cursor.updatePositionFromWindow(window);
                continue;
             }
