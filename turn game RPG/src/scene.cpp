@@ -568,17 +568,18 @@ roomScene::roomScene(sf::RenderWindow& win, resourceManager& res, const int& roo
     frameDuration(0.15f), backBtn("back", 0.0f, 960.0f, res.getFont("fantasy")),
     statusFrame(res), hpB(win, res), mpB(win, res), expB(win, res), eloaImg(win, res)
     , normalOneImg(win, res), eliteOneImg(win, res), bossOneImg(win, res),
-    hoHpB(win, res),b(p,e)
+    hoHpB(win, res), action(win,res), b(p,e)
 {
     //1. 기본 뷰 초기화
     window.setView(window.getDefaultView()); //main에서 하면 좋지만..늦게 알아버린,mapScene view에서의 누적 초기화
     window.setView(view);
     background.setTexture(res.getTexture("1floorBattleRoomBg"));
 
-    //2. mp, hp 위치 조정
+    //2. mp, hp,action 위치 조정
     statusFrame.setPosition(eloaImg.getPosition(), expB.getPosition(), res);
     hpB.position(statusFrame.getHpmpPosition());
     mpB.position(statusFrame.getHpmpPosition());
+    action.setPosition(eloaImg.getPosition(), eloaImg.getSprite());
 
     //3. 무슨 방인지 구분 rest, enemy , boss
     roomType = roomNum;
@@ -611,6 +612,8 @@ void roomScene::update(sf::RenderWindow& window) {
         sf::Vector2f worldPos = window.mapPixelToCoords(pixelPos);//창 크기가 바뀌더라도 마우스의 위치를 제대로 찾게끔
         //아웃라인 색상 변경
         backBtn.outlineColormanager(worldPos);
+        //선택지 아웃라인 스프라이트
+        action.ActionManager(worldPos);
         if (event.type == sf::Event::Closed) { //만약 event 타입으로써 닫기 event가 일어나면
             window.close();//창이 닫힌다
         }
@@ -634,6 +637,7 @@ void roomScene::render(sf::RenderWindow& window) {
     expB.draw(window);
     eloaImg.draw(window);
     hoHpB.draw(window);
+    action.draw(window);
     //if (enemyType == 1) { //rest인데 아직 없어서 노멀로 떼움
     // 
     //}

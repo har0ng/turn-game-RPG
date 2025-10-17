@@ -772,6 +772,9 @@ void character::position(sf::RenderWindow& win) {
 const sf::Vector2f& character::getPosition(){
 	return characterImg.getPosition();
 }
+const sf::Sprite& character::getSprite() {
+	return characterImg;
+}
 
 //tiferet
 tiferetImg::tiferetImg(sf::RenderWindow& win, resourceManager& res)
@@ -952,4 +955,95 @@ void homunculusHpbar::convertHp(const int& hp) {
 void homunculusHpbar::convertMaxHp(const int& maxHp) {
 	std::string stringHp = std::to_string(maxHp);
 	this->maxHp = stringHp;
+}
+
+//selectAction
+selectAction::selectAction(sf::RenderWindow& win, resourceManager& res)
+{
+	frameWidth = res.getTexture("attack").getSize().x;
+	frameHeight = res.getTexture("attack").getSize().y;
+
+	attack.setTexture(res.getTexture("attackSprite"));
+	defense.setTexture(res.getTexture("defenseSprite"));
+	skill.setTexture(res.getTexture("skillSprite"));
+
+	attack.setTextureRect(sf::IntRect(0, 0, frameWidth, frameHeight));
+	defense.setTextureRect(sf::IntRect(0, 0, frameWidth, frameHeight));
+	skill.setTextureRect(sf::IntRect(0, 0, frameWidth, frameHeight));
+
+	//color
+	sf::Uint8 alpha = static_cast<sf::Uint8>(180);
+	sf::Color attackC = attack.getColor();
+	sf::Color defenseC = defense.getColor();
+	sf::Color skillC = skill.getColor();
+	attackC.a = alpha; 
+	defenseC.a = alpha; 
+	skillC.a = alpha;
+	attack.setColor(attackC);
+	defense.setColor(defenseC);
+	skill.setColor(skillC);
+
+	//background
+	background.setSize(sf::Vector2f(attack.getLocalBounds().width,
+		attack.getLocalBounds().height + defense.getLocalBounds().height + skill.getLocalBounds().height));
+	background.setFillColor(sf::Color(0, 0, 0, 100));
+
+	//text
+	attackText.setFont(res.getFont("fantasy"));
+	defenseText.setFont(res.getFont("fantasy"));
+	skillText.setFont(res.getFont("fantasy"));
+
+	attackText.setCharacterSize(50);
+	defenseText.setCharacterSize(50);
+	skillText.setCharacterSize(50);
+
+	attackText.setString("attack");
+	defenseText.setString("defense");
+	skillText.setString("skill");
+}
+void selectAction::draw(sf::RenderWindow& win) {
+	win.draw(background);
+	win.draw(attack);
+	win.draw(defense);
+	win.draw(skill);
+	win.draw(attackText);
+	win.draw(defenseText);
+	win.draw(skillText);
+}
+void selectAction::setPosition(const sf::Vector2f& characterP, const sf::Sprite& characterImg) {
+	//sprite
+	attack.setPosition(characterP.x + characterImg.getLocalBounds().width, 
+		characterP.y + 150.f);
+	defense.setPosition(characterP.x + characterImg.getLocalBounds().width,
+		attack.getPosition().y + attack.getLocalBounds().height);
+	skill.setPosition(characterP.x + characterImg.getLocalBounds().width,
+		defense.getPosition().y + defense.getLocalBounds().height);
+
+	//background
+	background.setPosition(attack.getPosition());
+
+	//text
+	attackText.setPosition(attack.getPosition().x + (attack.getLocalBounds().width - attackText.getLocalBounds().width) / 1.5f,
+		attack.getPosition().y + (attack.getLocalBounds().height - attackText.getLocalBounds().height) / 2.f - attackText.getLocalBounds().height /2.f);
+	defenseText.setPosition(defense.getPosition().x + (defense.getLocalBounds().width - defenseText.getLocalBounds().width) / 1.5f,
+		defense.getPosition().y + (defense.getLocalBounds().height - defenseText.getLocalBounds().height) / 2.f - defenseText.getLocalBounds().height / 2.f);
+	skillText.setPosition(skill.getPosition().x + (skill.getLocalBounds().width - skillText.getLocalBounds().width) / 1.5f,
+		skill.getPosition().y + (skill.getLocalBounds().height - skillText.getLocalBounds().height) / 2.f - skillText.getLocalBounds().height / 2.f);
+}
+void selectAction::ActionManager(sf::Vector2f& mousePos) {
+	int currentFrame = 0;
+	int holdFrame = 1;
+	//attack
+	attack.getGlobalBounds().contains(mousePos) ? 
+		attack.setTextureRect(sf::IntRect(0, frameHeight * holdFrame, frameWidth, frameHeight))
+	   : attack.setTextureRect(sf::IntRect(0, frameHeight * currentFrame, frameWidth, frameHeight));
+	//defense
+	defense.getGlobalBounds().contains(mousePos) ?
+		defense.setTextureRect(sf::IntRect(0, frameHeight * holdFrame, frameWidth, frameHeight))
+	   : defense.setTextureRect(sf::IntRect(0, frameHeight * currentFrame, frameWidth, frameHeight));
+	//skill
+	skill.getGlobalBounds().contains(mousePos) ?
+		skill.setTextureRect(sf::IntRect(0, frameHeight * holdFrame, frameWidth, frameHeight))
+		: skill.setTextureRect(sf::IntRect(0, frameHeight * currentFrame, frameWidth, frameHeight));
+
 }

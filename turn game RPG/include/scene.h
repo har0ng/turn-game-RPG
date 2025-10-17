@@ -182,6 +182,7 @@ private:
 	bossOne bossOneImg;
 	int roomType{ 0 }; // 1 == rest, 2 == enemy, 3 == boss
 	homunculusHpbar hoHpB;
+	selectAction action;
 
 	//battle
 	battle b;

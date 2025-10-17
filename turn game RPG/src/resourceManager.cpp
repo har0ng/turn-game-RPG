@@ -44,6 +44,12 @@ void resourceManager::loadAll() {
     loadTexture("boss1", "assets/images/boss1.png");
     loadTexture("boss1Sprite", "assets/images/boss1Sheet.png");
     loadTexture("enemyHp", "assets/images/enemyHp.png");
+    loadTexture("attack", "assets/images/attack.png"); //크기 제기 용
+    loadTexture("defense", "assets/images/defense.png");
+    loadTexture("skill", "assets/images/skill.png");
+    loadTexture("attackSprite", "assets/images/attackSheet.png");
+    loadTexture("defenseSprite", "assets/images/defenseSheet.png");
+    loadTexture("skillSprite", "assets/images/skillSheet.png");
 
     //font
     loadFont("normal", "assets/fonts/smartfont.otf");

@@ -253,7 +253,7 @@ public:
 	virtual void draw(sf::RenderWindow& win) = 0;
 	virtual void position(sf::RenderWindow& win);
 	const sf::Vector2f& getPosition();
-
+	const sf::Sprite& getSprite();
 };
 
 class tiferetImg : public character{
@@ -325,6 +325,20 @@ public:
 
 };
 
-class selectAction {
-	
+class selectAction { //플레이어 선택지
+private:
+	float frameWidth;
+	float frameHeight;
+	sf::RectangleShape background;
+	sf::Sprite attack;
+	sf::Sprite defense;
+	sf::Sprite skill;
+	sf::Text attackText;
+	sf::Text defenseText;
+	sf::Text skillText;
+public:
+	selectAction(sf::RenderWindow& win, resourceManager& res);
+	void draw(sf::RenderWindow& win);
+	void setPosition(const sf::Vector2f& characterP, const sf::Sprite& characterImg);
+	void ActionManager(sf::Vector2f& mousePos);
 };
