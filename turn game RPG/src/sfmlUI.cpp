@@ -685,7 +685,6 @@ hpBar::hpBar(sf::RenderWindow& win, resourceManager& res)
 		res.getTexture("hpmp").getSize().y / 2.f));
 	bar.setFillColor(sf::Color(207, 66, 62));
 	
-	
 	//hp log
 	hpLog.setFont(res.getFont("fantasy"));
 	hpLog.setCharacterSize(40);

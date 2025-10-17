@@ -134,7 +134,7 @@ classSelectScene::classSelectScene(sf::RenderWindow& win, sf::Font& font, sf::Te
     , malkuthBtn("malkuth", 750.0f, 100.0f, font)
     , backBtn("back", 0.0f, 800.0f, font)
     , tiferetDc(
-        L"契約って言う特別なコストを\n使って戦うクラスです。",
+        L"契約を使って戦う独特な\nキャラクターです。",
         tiferetBtn.getBackgroundGlobalBounds(),
         win)
     , malkuthDc(
