@@ -575,7 +575,10 @@ roomScene::roomScene(sf::RenderWindow& win, resourceManager& res, const int& roo
     window.setView(view);
     background.setTexture(res.getTexture("1floorBattleRoomBg"));
 
-    //2. mp, hp,action 위치 조정
+
+
+    //2. player mp, hp,action 위치 조정
+    hpB.setTextHp();
     statusFrame.setPosition(eloaImg.getPosition(), expB.getPosition(), res);
     hpB.position(statusFrame.getHpmpPosition());
     mpB.position(statusFrame.getHpmpPosition());
@@ -584,7 +587,7 @@ roomScene::roomScene(sf::RenderWindow& win, resourceManager& res, const int& roo
     //3. 무슨 방인지 구분 rest, enemy , boss
     roomType = roomNum;
 
-    //5. enemy hp 위치 조정
+    //4. enemy hp 위치 조정
     if (getEnemyPtr().getEnemyType() == "normal") {
         hoHpB.position(normalOneImg.getPosition(), normalOneImg.getEnemyImg());
     }
@@ -595,12 +598,8 @@ roomScene::roomScene(sf::RenderWindow& win, resourceManager& res, const int& roo
         hoHpB.position(bossOneImg.getPosition(), bossOneImg.getEnemyImg());
     }
 
-    //6. enemy hp text 위치 조정 , 포인터가 정해지는게 4번이라 그 이후에 해야 enemyType에 맞는 hp를 들고옴
+    //5. enemy hp text 위치 조정 , 포인터가 정해지는게 4번이라 그 이후에 해야 enemyType에 맞는 hp를 들고옴
     hoHpB.setTextHp();
-
-    //7.battle 로직
-
-   // b.startBattle(); //연결은 됐는데 백엔드에서 연결되어있는거라 구조를 프론트쪽으로 바꿔줘야함 근데 어캐함?
 }
 void roomScene::update(sf::RenderWindow& window) {
     deltaTime = clock.restart().asSeconds();  // 프레임 독립적 시간
@@ -623,21 +622,19 @@ void roomScene::update(sf::RenderWindow& window) {
             back = true;
         }
         // 플레이어 턴일 때만 클릭 처리
-        if (battleState == BattleState::PlayerTurn) {
-            if (event.type == sf::Event::MouseButtonReleased && action.isClicked(worldPos, attackAction, defenseAction, skillAction) && event.mouseButton.button == sf::Mouse::Left) {
-                isTransition();
-                if (attackAction) {
-                    b.playerTurn(1); // cmd 로그를 보면 업뎃 되어있음. 이걸 실시간으로 피가 깎인걸 그래픽적인 부분과 현재체력을 보여주게끔 해줘야함 
-                    battleState = BattleState::EnemyTurn;
-                }
-                else if (defenseAction) {
-                    b.playerTurn(2);
-                    battleState = BattleState::EnemyTurn;
-                }
-                else if (skillAction) {
-                    b.playerTurn(3);
-                    battleState = BattleState::EnemyTurn;
-                }
+        if (battleState == BattleState::PlayerTurn && event.type == sf::Event::MouseButtonReleased && action.isClicked(worldPos, attackAction, defenseAction, skillAction) && event.mouseButton.button == sf::Mouse::Left) {
+            isTransition();
+            if (attackAction) {
+                b.playerTurn(1); // cmd 로그를 보면 업뎃 되어있음. 이걸 실시간으로 피가 깎인걸 그래픽적인 부분과 현재체력을 보여주게끔 해줘야함 
+                battleState = BattleState::EnemyTurn;
+            }
+            else if (defenseAction) {
+                b.playerTurn(2);
+                battleState = BattleState::EnemyTurn;
+            }
+            else if (skillAction) {
+                b.playerTurn(3);
+                battleState = BattleState::EnemyTurn;
             }
         }
     } //End of while
@@ -661,7 +658,7 @@ void roomScene::update(sf::RenderWindow& window) {
         transition = false; //반복 클릭 해제
         b.enemyTurn();// 적 행동
         if (!b.getPlay()) {
-            battleState = BattleState::Ended;
+            window.close();//창이 닫힌다 , 진건데 gameover 안만들어서 처음으로 돌아가는거 안만듬
         }
         else {
             battleState = BattleState::PlayerTurn;
@@ -672,8 +669,14 @@ void roomScene::update(sf::RenderWindow& window) {
     case BattleState::Ended:
         b.battleEnd();// 승리/패배 처리
         b.battleEndManager();
+        back = true;
         break;
     }
+
+    //체력 계속 갱신
+    hoHpB.setTextHp();
+    hpB.setTextHp();
+
 }
 void roomScene::render(sf::RenderWindow& window) {
     window.draw(background);

@@ -208,6 +208,7 @@ public:
 	hpBar(sf::RenderWindow& win, resourceManager& res);
 	void draw(sf::RenderWindow& win);
 	void position(const sf::Vector2f& hpmpP);
+	void setTextHp();
 	void convertHp(const int& hp);
 	void convertMaxHp(const int& maxHp);
 };

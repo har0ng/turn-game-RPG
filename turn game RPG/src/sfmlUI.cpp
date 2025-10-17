@@ -687,9 +687,6 @@ hpBar::hpBar(sf::RenderWindow& win, resourceManager& res)
 	
 	
 	//hp log
-	convertHp(p->getPlayer_current_health());
-	convertMaxHp(p->getPlayer_health());
-	hpLog.setString(hp + "/" + maxHp);
 	hpLog.setFont(res.getFont("fantasy"));
 	hpLog.setCharacterSize(40);
 	hpLog.setFillColor(sf::Color::White);
@@ -711,6 +708,11 @@ void hpBar::position(const sf::Vector2f& hpmpP) {
 	hpLog.setPosition(
 		bar.getPosition().x + bar.getSize().x / 2.f,
 		bar.getPosition().y + bar.getSize().y / 2.f);
+}
+void hpBar::setTextHp() {
+	convertHp(p->getPlayer_current_health());
+	convertMaxHp(p->getPlayer_health());
+	hpLog.setString(hp + "/" + maxHp);
 }
 void hpBar::convertHp(const int& hp) {
 	std::string stringHp = std::to_string(hp);
