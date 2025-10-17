@@ -165,10 +165,9 @@ private:
 	sf::Clock clock;
 	sfmlLog log; // 싸울땐 로그 필수
 	float frameDuration;
-	//battleButton attackBtn; //버튼 이라는 부품 들고옴
-	//battleButton defenseBtn; //이하동문
-	//battleButton skillBtn;
-	// 이하 세부 스킬 버튼 만들어야함
+	bool attackAction{ false }; //true가 되면 그 선택지를 누른 것.
+	bool defenseAction{ false };
+	bool skillAction{ false };
 	
 	//UI
 	backButton backBtn; // 뒤로가기 버튼로 되어있는데 이름만 바꿔서 배틀 끝나고 돌아가는 버튼으로 하나 만들어 쓰기.
@@ -185,6 +184,8 @@ private:
 	selectAction action;
 
 	//battle
+	enum class BattleState { NotStarted, PlayerTurn, EnemyTurn, Ended };
+	BattleState battleState; // 현재 전투 상태
 	battle b;
 public:
 	roomScene(sf::RenderWindow& win, resourceManager& res , const int& roomNum);

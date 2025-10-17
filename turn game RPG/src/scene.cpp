@@ -568,7 +568,7 @@ roomScene::roomScene(sf::RenderWindow& win, resourceManager& res, const int& roo
     frameDuration(0.15f), backBtn("back", 0.0f, 960.0f, res.getFont("fantasy")),
     statusFrame(res), hpB(win, res), mpB(win, res), expB(win, res), eloaImg(win, res)
     , normalOneImg(win, res), eliteOneImg(win, res), bossOneImg(win, res),
-    hoHpB(win, res), action(win,res), b(p,e)
+    hoHpB(win, res), action(win,res),battleState(BattleState::NotStarted) ,b(p,e)
 {
     //1. 기본 뷰 초기화
     window.setView(window.getDefaultView()); //main에서 하면 좋지만..늦게 알아버린,mapScene view에서의 누적 초기화
@@ -610,23 +610,70 @@ void roomScene::update(sf::RenderWindow& window) {
     while (window.pollEvent(event)) {//이벤트가 있다면 계속 반복
         sf::Vector2i pixelPos = sf::Mouse::getPosition(window); //설정 해놓은 창 기준 마우스
         sf::Vector2f worldPos = window.mapPixelToCoords(pixelPos);//창 크기가 바뀌더라도 마우스의 위치를 제대로 찾게끔
-        //아웃라인 색상 변경
+     
+                                                                  //아웃라인 색상 변경
         backBtn.outlineColormanager(worldPos);
         //선택지 아웃라인 스프라이트
         action.ActionManager(worldPos);
+       
         if (event.type == sf::Event::Closed) { //만약 event 타입으로써 닫기 event가 일어나면
             window.close();//창이 닫힌다
         }
         if (event.type == sf::Event::MouseButtonReleased && backBtn.isClicked(worldPos) && event.mouseButton.button == sf::Mouse::Left) {
             back = true;
         }
+        // 플레이어 턴일 때만 클릭 처리
+        if (battleState == BattleState::PlayerTurn) {
+            if (event.type == sf::Event::MouseButtonReleased && action.isClicked(worldPos, attackAction, defenseAction, skillAction) && event.mouseButton.button == sf::Mouse::Left) {
+                isTransition();
+                if (attackAction) {
+                    b.playerTurn(1); // cmd 로그를 보면 업뎃 되어있음. 이걸 실시간으로 피가 깎인걸 그래픽적인 부분과 현재체력을 보여주게끔 해줘야함 
+                    battleState = BattleState::EnemyTurn;
+                }
+                else if (defenseAction) {
+                    b.playerTurn(2);
+                    battleState = BattleState::EnemyTurn;
+                }
+                else if (skillAction) {
+                    b.playerTurn(3);
+                    battleState = BattleState::EnemyTurn;
+                }
+            }
+        }
+    } //End of while
+    // 2. 게임 상태 처리 (전투 흐름)
+    switch (battleState) {
+    case BattleState::NotStarted:
+        battleState = BattleState::PlayerTurn;// 전투 시작
+        p->setBeforePlayer(); //전투 시작전 상태(레벨업 비교)
+        break;
+
+    case BattleState::PlayerTurn:
+        p->setTurnPlayer();   // (버프 적용 스텟)
+        p->setBattlePlayer(); // (버프 미적용 스텟)
+        b.battleStatus(); //유저와 적의 상황(체력 공격력 등)
+        if (e->getEnemyCurrentHealth() <= 0) {//무승부 방지
+            battleState = BattleState::Ended;
+        }
+        break;
+
+    case BattleState::EnemyTurn:
+        transition = false; //반복 클릭 해제
+        b.enemyTurn();// 적 행동
+        if (!b.getPlay()) {
+            battleState = BattleState::Ended;
+        }
+        else {
+            battleState = BattleState::PlayerTurn;
+            b.statusManager();
+        }
+        break;
+
+    case BattleState::Ended:
+        b.battleEnd();// 승리/패배 처리
+        b.battleEndManager();
+        break;
     }
-    if (b.getPlay() == false) {
-        // 원정 실패 화면 만들어서 거기로 넘기기.
-        //isback() 함수로 넘어가면 이기든 지든 플레이어와 에너미 포인터가 안바뀌니 주의
-    }
-    
-  
 }
 void roomScene::render(sf::RenderWindow& window) {
     window.draw(background);

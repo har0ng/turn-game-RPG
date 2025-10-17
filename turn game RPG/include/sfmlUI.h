@@ -339,6 +339,7 @@ private:
 public:
 	selectAction(sf::RenderWindow& win, resourceManager& res);
 	void draw(sf::RenderWindow& win);
+	bool isClicked(sf::Vector2f& mousePos, bool& attack, bool& defense, bool& skill);
 	void setPosition(const sf::Vector2f& characterP, const sf::Sprite& characterImg);
 	void ActionManager(sf::Vector2f& mousePos);
 };

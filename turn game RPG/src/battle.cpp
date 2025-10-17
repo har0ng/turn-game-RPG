@@ -54,50 +54,14 @@ battle::battle(std::unique_ptr<player>& playerP, std::unique_ptr<enemy>& EnemyP)
 	amplifyActivate = p->getAmplifyActivate();
 };
 
-
-void battle::startBattle() { //배틀 시작
-		p->setBeforePlayer(); //전투 시작전 상태(레벨업 비교)
-	while (cphp > 0 && echp > 0) { //체력이 0 이하가 되는 순간 종료
-		p->setTurnPlayer();	  // (버프 적용 스텟)
-		p->setBattlePlayer(); // (버프 미적용 스텟)
-		battleStatus(); //유저와 적의 상황(체력 공격력 등)
-		playerTurn(); //유저 턴
-		if (echp <= 0) { //무승부 방지
-			break;
-		}
-		enemyTurn(); //enemy 턴
-		p->decreaseBuffTurns(turn); //버프 삭제 카운터 다운
-		if (p->getClassName() == "tiferet"){ //턴마다 1씩 회복
-			const int MAX_CONTRACT = 12;
-			p->setContract(std::min(MAX_CONTRACT, contract + 1));
-			contract = p->getContract();
-		}
+void battle::statusManager() {
+	turn++; //몇턴 째인지 셈
+	p->decreaseBuffTurns(turn); //버프 삭제 카운터 다운
+	if (p->getClassName() == "tiferet") { //턴마다 1씩 회복
+		const int MAX_CONTRACT = 12;
+		p->setContract(std::min(MAX_CONTRACT, contract + 1));
+		contract = p->getContract();
 	}
-	
-	battleEnd(); // 전투 종료
-
-	std::vector<skill> beforeSkill; //레벨업 전 스킬
-	for (auto s : p->getSkills()) { //레벨에 따른 스킬이 아닌 직업 스킬 다 들고와서 레벨 따라 들고오게 막음
-		if (p->getBeforePlayer().level >= s.levelReq) {
-			beforeSkill.push_back(s);
-		}
-	}
-
-	p->setAfterPlayer(); //전투 후 플레이어 정보 저장
-
-	std::vector<skill> afterSkill; //레벨업 후 스킬
-	for(auto s : p->getSkills()){ //레벨에 따른 스킬이 아닌 직업 스킬 다 들고와서 레벨 따라 들고오게 막음
-		if (p->getAfterPlayer().level >= s.levelReq) {
-			afterSkill.push_back(s);
-		}
-	}
-	
-	if (p->getBeforePlayer().level != p->getAfterPlayer().level) { //레벨 업을 했다면
-		ui.showStatusChange(p->getBattlePlayer(), p->getAfterPlayer()); // 능력치 변화 보여주기
-		showGetSkill(beforeSkill, afterSkill);
-		ui.enterToContinue(); //엔터 누르면 넘어가는 기능	
-	}
-	p->clearDisable(); //전투 끝나고 쿨타임 모두 초기화
 }
 
 void battle::showGetSkill(std::vector<skill> beforeSkill, std::vector<skill> afterSkill) { // 레벨 업 후 얻은 스킬 목록
@@ -118,7 +82,6 @@ void battle::showGetSkill(std::vector<skill> beforeSkill, std::vector<skill> aft
 }
 
 void battle::battleStatus() {
-	turn++; //몇턴 째인지 셈
 	p->skillCT(); //쿨타임 백터 전체 쿨 다운
 	if (p->getClassName() == "tiferet") {
 		ui.battleStatus(turn, php, cphp, p->getTurnPlayer().attack, p->getTurnPlayer().defense,
@@ -134,7 +97,7 @@ void battle::battleStatus() {
 	}
 }
 
-void battle::playerTurn() {
+void battle::playerTurn(int input, int skillInput) {
 	attackInfo res = atkInfo();
 	int finalAttack = 0;
 	bool activeWeaponMaster = false;
@@ -147,7 +110,7 @@ void battle::playerTurn() {
 	}
 	while (true) {
 		ui.playerTurnUI();
-		battleselect = inputCheck(1, 3);
+		battleselect = input;
 		if (battleselect == 1) { // 1. 공격 2. 방어 3.스킬
 			finalAttack = attackEnemy(res.criticalYN, res.criattack, res.attack);
 			break;
@@ -183,7 +146,7 @@ void battle::playerTurn() {
 				}
 				ui.exitSkill(0);
 
-				skillSelect = inputCheck(1, skSize) - 1;
+				skillSelect = input;
 				if (skillSelect == -1) { // 0을 입력했을 때 무한 반복 깨기
 					break;
 				}
@@ -332,6 +295,29 @@ void battle::battleEnd() {
 	}
 }
 
+void battle::battleEndManager() {
+	std::vector<skill> beforeSkill; //레벨업 전 스킬
+	for (auto s : p->getSkills()) { //레벨에 따른 스킬이 아닌 직업 스킬 다 들고와서 레벨 따라 들고오게 막음
+		if (p->getBeforePlayer().level >= s.levelReq) {
+			beforeSkill.push_back(s);
+		}
+	}
+
+	p->setAfterPlayer(); //전투 후 플레이어 정보 저장
+
+	std::vector<skill> afterSkill; //레벨업 후 스킬
+	for (auto s : p->getSkills()) { //레벨에 따른 스킬이 아닌 직업 스킬 다 들고와서 레벨 따라 들고오게 막음
+		if (p->getAfterPlayer().level >= s.levelReq) {
+			afterSkill.push_back(s);
+		}
+	}
+
+	if (p->getBeforePlayer().level != p->getAfterPlayer().level) { //레벨 업을 했다면
+		ui.showStatusChange(p->getBattlePlayer(), p->getAfterPlayer()); // 능력치 변화 보여주기
+		showGetSkill(beforeSkill, afterSkill);
+	}
+	p->clearDisable(); //전투 끝나고 쿨타임 모두 초기화
+}
 //void battle::selectClass() { // selectClass
 //
 //	ui.selectClassUI();
@@ -368,25 +354,25 @@ bool battle::getPlay() const { //게임이 지속 가능한지 플레이어의 �
 //	return std::move(p);
 //}
 
-int battle::inputCheck(int min, int max) { //battleselect, skillselect 구분 문구
-	int input;
-	while (true) {
-		cin >> input;
-		if (cin.fail()) {// 숫자가 아닌 입력 감지
-			cin.clear(); // fail 상태 초기화
-			cin.ignore(1000, '\n'); // 입력 버퍼 비우기 , cin.ignore(무시할수 있는 최대 문자수,	무시를 멈출 기준이 되는 문자)
-			cout << "please input number." << endl;
-			continue; // 유효하지 않은 값으로 초기화
-		}
-		if (input == 0) {
-			return 0;
-		}
-		if (input >= min && input <= max) {
-			return input;
-		}
-		cout << "do not import. retry please" << endl;
-	}
-} 
+//int battle::inputCheck(int min, int max, int input) { //battleselect, skillselect 구분 문구
+//	int input;
+//	while (true) {
+//		cin >> input;
+//		if (cin.fail()) {// 숫자가 아닌 입력 감지
+//			cin.clear(); // fail 상태 초기화
+//			cin.ignore(1000, '\n'); // 입력 버퍼 비우기 , cin.ignore(무시할수 있는 최대 문자수,	무시를 멈출 기준이 되는 문자)
+//			cout << "please input number." << endl;
+//			continue; // 유효하지 않은 값으로 초기화
+//		}
+//		if (input == 0) {
+//			return 0;
+//		}
+//		if (input >= min && input <= max) {
+//			return input;
+//		}
+//		cout << "do not import. retry please" << endl;
+//	}
+//} 
 
 int battle::getSkillSelect(int skillSelect, std::vector<skill> const& skill, attackInfo res) {
 	if (skill[skillSelect].passiveActive == false) {

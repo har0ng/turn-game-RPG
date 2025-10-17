@@ -242,9 +242,6 @@ void consoleUI::enemyTurn(int enemyAction, int pdefense, int eattack, int battle
     cout << "\n========== enemyTurn End ==========" << endl;
     cout << endl;
     cout << endl;
-    cout << "Press Enter to continue..." << endl; //사용자 임의대로 화면 넘기기
-    cin.ignore();//ignore과 get으로 enter을 쳤을 때 넘어갈 수 있게 조절.
-    cin.get();
 }
 
 void consoleUI::battleEnd(int cphp, int exp) {
@@ -257,9 +254,6 @@ void consoleUI::battleEnd(int cphp, int exp) {
         cout << exp << "経験値を獲得した！" << endl;
         cout << endl;
         cout << endl;
-        cout << "Press Enter to continue..." << endl; //사용자 임의대로 화면 넘기기
-        cin.ignore();//ignore과 get으로 enter을 쳤을 때 넘어갈 수 있게 조절.
-        cin.get();
 	}
 }
 
@@ -406,9 +400,6 @@ void consoleUI::activeChain(int enemyTakeDamage, int remainTurn){
     cout << "鎖は" << remainTurn << "ターンになる時に消えます。" << endl;
     cout << endl;
     cout << endl;
-    cout << "Press Enter to continue..." << endl; //사용자 임의대로 화면 넘기기
-    cin.ignore();//ignore과 get으로 enter을 쳤을 때 넘어갈 수 있게 조절.
-    cin.get();
 }
 
 void consoleUI::activeLightofTruth(){
@@ -431,9 +422,6 @@ void consoleUI::executeGuardian() {
     cout << "\n========== enemyTurn End ==========" << endl;
     cout << endl;
     cout << endl;
-    cout << "Press Enter to continue..." << endl; //사용자 임의대로 화면 넘기기
-    cin.ignore();//ignore과 get으로 enter을 쳤을 때 넘어갈 수 있게 조절.
-    cin.get();
 }
 
 void consoleUI::setOverclockUI(){
@@ -458,9 +446,6 @@ void consoleUI::executeCovenantUltima(){
     cout << "\n========== enemyTurn End ==========" << endl;
     cout << endl;
     cout << endl;
-    cout << "Press Enter to continue..." << endl; //사용자 임의대로 화면 넘기기
-    cin.ignore();//ignore과 get으로 enter을 쳤을 때 넘어갈 수 있게 조절.
-    cin.get();
 }
 
 void consoleUI::activeIm(){
@@ -488,7 +473,4 @@ void consoleUI::connectMap(int optionNumber, const room& nextRoom) {
 
 void consoleUI::restMap(){
     cout << "HPを回復しました。" << endl;
-    cout << "Press Enter to continue..." << endl; //사용자 임의대로 화면 넘기기
-    cin.ignore();//ignore과 get으로 enter을 쳤을 때 넘어갈 수 있게 조절.
-    cin.get();
 }

@@ -960,6 +960,7 @@ void homunculusHpbar::convertMaxHp(const int& maxHp) {
 //selectAction
 selectAction::selectAction(sf::RenderWindow& win, resourceManager& res)
 {
+	//sprite
 	frameWidth = res.getTexture("attack").getSize().x;
 	frameHeight = res.getTexture("attack").getSize().y;
 
@@ -971,22 +972,15 @@ selectAction::selectAction(sf::RenderWindow& win, resourceManager& res)
 	defense.setTextureRect(sf::IntRect(0, 0, frameWidth, frameHeight));
 	skill.setTextureRect(sf::IntRect(0, 0, frameWidth, frameHeight));
 
-	//color
 	sf::Uint8 alpha = static_cast<sf::Uint8>(180);
-	sf::Color attackC = attack.getColor();
-	sf::Color defenseC = defense.getColor();
-	sf::Color skillC = skill.getColor();
-	attackC.a = alpha; 
-	defenseC.a = alpha; 
-	skillC.a = alpha;
-	attack.setColor(attackC);
-	defense.setColor(defenseC);
-	skill.setColor(skillC);
+	attack.setColor(sf::Color(240,240,240, alpha));
+	defense.setColor(sf::Color(240, 240, 240, alpha));
+	skill.setColor(sf::Color(240, 240, 240, alpha));
 
 	//background
 	background.setSize(sf::Vector2f(attack.getLocalBounds().width,
 		attack.getLocalBounds().height + defense.getLocalBounds().height + skill.getLocalBounds().height));
-	background.setFillColor(sf::Color(0, 0, 0, 100));
+	background.setFillColor(sf::Color(0, 0, 0, 80));
 
 	//text
 	attackText.setFont(res.getFont("fantasy"));
@@ -1000,6 +994,11 @@ selectAction::selectAction(sf::RenderWindow& win, resourceManager& res)
 	attackText.setString("attack");
 	defenseText.setString("defense");
 	skillText.setString("skill");
+	
+	attackText.setFillColor(sf::Color(232, 220, 192));
+	defenseText.setFillColor(sf::Color(232, 220, 192));
+	skillText.setFillColor(sf::Color(232, 220, 192));
+
 }
 void selectAction::draw(sf::RenderWindow& win) {
 	win.draw(background);
@@ -1010,10 +1009,29 @@ void selectAction::draw(sf::RenderWindow& win) {
 	win.draw(defenseText);
 	win.draw(skillText);
 }
+bool selectAction::isClicked(sf::Vector2f& mousePos, bool& a, bool& d, bool& s) {
+	sf::FloatRect attackBound = attack.getGlobalBounds();//버튼 배경의 전체를 기준으로 잡아버림
+	sf::FloatRect defenseBound = defense.getGlobalBounds();
+	sf::FloatRect skillBound = skill.getGlobalBounds();
+	if (attackBound.contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))){
+		//버튼 배경 전체가 기준이니 버튼배경 안에서 마우스의 움직임이나 이벤트를 인정해준다는 의미
+		a = true;
+		return true; //버튼 배경안에 마우스 좌표가 있으면 true
+	}
+	else if (defenseBound.contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))) {
+		d = true;
+		return true;
+	}
+	else if (skillBound.contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))) {
+		s = true;
+		return true;
+	}
+	return false;
+}
 void selectAction::setPosition(const sf::Vector2f& characterP, const sf::Sprite& characterImg) {
 	//sprite
 	attack.setPosition(characterP.x + characterImg.getLocalBounds().width, 
-		characterP.y + 150.f);
+		characterP.y + 100.f);
 	defense.setPosition(characterP.x + characterImg.getLocalBounds().width,
 		attack.getPosition().y + attack.getLocalBounds().height);
 	skill.setPosition(characterP.x + characterImg.getLocalBounds().width,
@@ -1045,5 +1063,4 @@ void selectAction::ActionManager(sf::Vector2f& mousePos) {
 	skill.getGlobalBounds().contains(mousePos) ?
 		skill.setTextureRect(sf::IntRect(0, frameHeight * holdFrame, frameWidth, frameHeight))
 		: skill.setTextureRect(sf::IntRect(0, frameHeight * currentFrame, frameWidth, frameHeight));
-
 }
