@@ -99,6 +99,7 @@ void tiferetDescription::draw(sf::RenderWindow& win) {
 void tiferetDescription::clear() {
 	return;
 }
+
 //malkuth
 malkuthDescription::malkuthDescription(const std::wstring& description, sf::FloatRect BtnGlobalBounds, sf::RenderWindow& win)
 	:sfmlLog(win)

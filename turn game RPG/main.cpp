@@ -8,12 +8,16 @@
 
 #include <iostream>
 #include <SFML/Graphics.hpp>
+#include <filesystem>
 
 using std::cout;
 using std::endl;
 using std::cin;
 
 int main() {
+    //어디서든 열어도 디버깅 모드로 열리게끔 해놓은건데 릴리즈땐 필요없을지도? 알아보기
+    std::filesystem::current_path(std::filesystem::path(__argv[0]).parent_path());
+
     sf::RenderWindow window(sf::VideoMode(1820, 960), "test"); //창
     sfmlLog log(window); //매개변수가 있는 생성자
     //리소스 로드(texture, font)
