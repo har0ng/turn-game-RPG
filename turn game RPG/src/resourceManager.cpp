@@ -50,6 +50,7 @@ void resourceManager::loadAll() {
     loadTexture("attackSprite", "assets/images/attackSheet.png");
     loadTexture("defenseSprite", "assets/images/defenseSheet.png");
     loadTexture("skillSprite", "assets/images/skillSheet.png");
+    loadTexture("1floorTiferetRestSprite", "assets/images/1floorTiferetRestSprite.png");
 
     //font
     loadFont("normal", "assets/fonts/smartfont.otf");

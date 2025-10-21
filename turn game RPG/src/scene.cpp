@@ -570,36 +570,56 @@ roomScene::roomScene(sf::RenderWindow& win, resourceManager& res, const int& roo
     , normalOneImg(win, res), eliteOneImg(win, res), bossOneImg(win, res),
     hoHpB(win, res), action(win,res),battleState(BattleState::NotStarted) ,b(p,e)
 {
+    //0.무슨 방인지 구분 rest, enemy , boss
+    roomType = roomNum;
+
     //1. 기본 뷰 초기화
     window.setView(window.getDefaultView()); //main에서 하면 좋지만..늦게 알아버린,mapScene view에서의 누적 초기화
     window.setView(view);
-    background.setTexture(res.getTexture("1floorBattleRoomBg"));
+    setBackground(res);
 
+    switch (roomType){
+    case 0:
+        break;
+    case 1:
+        //2. 만약 rest 방이라면 움직이게끔.
+        frameWidth = background.getLocalBounds().width;
+        frameHeight = background.getLocalBounds().height / 2.f;
+        background.setTextureRect(sf::IntRect(0, 0, frameWidth, frameHeight));
+    case 2:
+        //3. player mp, hp,action 위치 조정
+        hpB.setTextHp();
+        statusFrame.setPosition(eloaImg.getPosition(), expB.getPosition(), res);
+        hpB.position(statusFrame.getHpmpPosition());
+        mpB.position(statusFrame.getHpmpPosition());
+        action.setPosition(eloaImg.getPosition(), eloaImg.getSprite());
 
+        //4. enemy hp 위치 조정
+        if (getEnemyPtr().getEnemyType() == "normal") {
+            hoHpB.position(normalOneImg.getPosition(), normalOneImg.getEnemyImg());
+        }
+        else if (getEnemyPtr().getEnemyType() == "elite") {
+            hoHpB.position(eliteOneImg.getPosition(), eliteOneImg.getEnemyImg());
+        }
 
-    //2. player mp, hp,action 위치 조정
-    hpB.setTextHp();
-    statusFrame.setPosition(eloaImg.getPosition(), expB.getPosition(), res);
-    hpB.position(statusFrame.getHpmpPosition());
-    mpB.position(statusFrame.getHpmpPosition());
-    action.setPosition(eloaImg.getPosition(), eloaImg.getSprite());
+        //5. enemy hp text 위치 조정 , 포인터가 정해지는게 4번이라 그 이후에 해야 enemyType에 맞는 hp를 들고옴
+        hoHpB.setTextHp();
+    case 3:
+        //3. player mp, hp,action 위치 조정
+        hpB.setTextHp();
+        statusFrame.setPosition(eloaImg.getPosition(), expB.getPosition(), res);
+        hpB.position(statusFrame.getHpmpPosition());
+        mpB.position(statusFrame.getHpmpPosition());
+        action.setPosition(eloaImg.getPosition(), eloaImg.getSprite());
 
-    //3. 무슨 방인지 구분 rest, enemy , boss
-    roomType = roomNum;
-
-    //4. enemy hp 위치 조정
-    if (getEnemyPtr().getEnemyType() == "normal") {
-        hoHpB.position(normalOneImg.getPosition(), normalOneImg.getEnemyImg());
-    }
-    else if (getEnemyPtr().getEnemyType() == "elite") {
-        hoHpB.position(eliteOneImg.getPosition(), eliteOneImg.getEnemyImg());
-    }
-    else if (getEnemyPtr().getEnemyType() == "boss") {
+        //4. enemy hp 위치 조정
         hoHpB.position(bossOneImg.getPosition(), bossOneImg.getEnemyImg());
-    }
 
-    //5. enemy hp text 위치 조정 , 포인터가 정해지는게 4번이라 그 이후에 해야 enemyType에 맞는 hp를 들고옴
-    hoHpB.setTextHp();
+        //5. enemy hp text 위치 조정 , 포인터가 정해지는게 4번이라 그 이후에 해야 enemyType에 맞는 hp를 들고옴
+        hoHpB.setTextHp();
+    default:
+        break;
+    }
 }
 void roomScene::update(sf::RenderWindow& window) {
     deltaTime = clock.restart().asSeconds();  // 프레임 독립적 시간
@@ -610,95 +630,119 @@ void roomScene::update(sf::RenderWindow& window) {
         sf::Vector2i pixelPos = sf::Mouse::getPosition(window); //설정 해놓은 창 기준 마우스
         sf::Vector2f worldPos = window.mapPixelToCoords(pixelPos);//창 크기가 바뀌더라도 마우스의 위치를 제대로 찾게끔
      
-                                                                  //아웃라인 색상 변경
+        //아웃라인 색상 변경
         backBtn.outlineColormanager(worldPos);
-        //선택지 아웃라인 스프라이트
-        action.ActionManager(worldPos);
-       
+        
         if (event.type == sf::Event::Closed) { //만약 event 타입으로써 닫기 event가 일어나면
             window.close();//창이 닫힌다
         }
         if (event.type == sf::Event::MouseButtonReleased && backBtn.isClicked(worldPos) && event.mouseButton.button == sf::Mouse::Left) {
             back = true;
         }
-        // 플레이어 턴일 때만 클릭 처리
-        if (battleState == BattleState::PlayerTurn && event.type == sf::Event::MouseButtonReleased && action.isClicked(worldPos, attackAction, defenseAction, skillAction) && event.mouseButton.button == sf::Mouse::Left) {
-            isTransition();
-            if (attackAction) {
-                b.playerTurn(1); // cmd 로그를 보면 업뎃 되어있음. 이걸 실시간으로 피가 깎인걸 그래픽적인 부분과 현재체력을 보여주게끔 해줘야함 
-                battleState = BattleState::EnemyTurn;
+
+        if(roomType != 1){
+            //선택지 아웃라인 스프라이트
+            action.ActionManager(worldPos);
+
+            // 플레이어 턴일 때만 클릭 처리
+            if (battleState == BattleState::PlayerTurn && event.type == sf::Event::MouseButtonReleased && action.isClicked(worldPos, attackAction, defenseAction, skillAction) && event.mouseButton.button == sf::Mouse::Left) {
+                isTransition();
+                if (attackAction) {
+                    b.playerTurn(1); // cmd 로그를 보면 업뎃 되어있음. 이걸 실시간으로 피가 깎인걸 그래픽적인 부분과 현재체력을 보여주게끔 해줘야함 
+                    battleState = BattleState::EnemyTurn;
+                }
+                else if (defenseAction) {
+                    b.playerTurn(2);
+                    battleState = BattleState::EnemyTurn;
+                }
+                else if (skillAction) {
+                    b.playerTurn(3);
+                    battleState = BattleState::EnemyTurn;
+                }
             }
-            else if (defenseAction) {
-                b.playerTurn(2);
-                battleState = BattleState::EnemyTurn;
-            }
-            else if (skillAction) {
-                b.playerTurn(3);
-                battleState = BattleState::EnemyTurn;
-            }
+       
+            //선택지 아웃라인 스프라이트
+            action.ActionManager(worldPos);
+
+            // 플레이어 턴일 때만 클릭 처리
+            if (battleState == BattleState::PlayerTurn && event.type == sf::Event::MouseButtonReleased && action.isClicked(worldPos, attackAction, defenseAction, skillAction) && event.mouseButton.button == sf::Mouse::Left) {
+                isTransition();
+                if (attackAction) {
+                    b.playerTurn(1); // cmd 로그를 보면 업뎃 되어있음. 이걸 실시간으로 피가 깎인걸 그래픽적인 부분과 현재체력을 보여주게끔 해줘야함 
+                    battleState = BattleState::EnemyTurn;
+                }
+                else if (defenseAction) {
+                    b.playerTurn(2);
+                    battleState = BattleState::EnemyTurn;
+                }
+                else if (skillAction) {
+                    b.playerTurn(3);
+                    battleState = BattleState::EnemyTurn;
+                }
+            } 
         }
+
+       
     } //End of while
     // 2. 게임 상태 처리 (전투 흐름)
-    switch (battleState) {
-    case BattleState::NotStarted:
-        battleState = BattleState::PlayerTurn;// 전투 시작
-        p->setBeforePlayer(); //전투 시작전 상태(레벨업 비교)
-        break;
+    if (roomType != 1) {
+        switch (battleState) {
+        case BattleState::NotStarted:
+            battleState = BattleState::PlayerTurn;// 전투 시작
+            p->setBeforePlayer(); //전투 시작전 상태(레벨업 비교)
+            break;
 
-    case BattleState::PlayerTurn:
-        p->setTurnPlayer();   // (버프 적용 스텟)
-        p->setBattlePlayer(); // (버프 미적용 스텟)
-        b.battleStatus(); //유저와 적의 상황(체력 공격력 등)
-        if (e->getEnemyCurrentHealth() <= 0) {//무승부 방지
-            battleState = BattleState::Ended;
+        case BattleState::PlayerTurn:
+            p->setTurnPlayer();   // (버프 적용 스텟)
+            p->setBattlePlayer(); // (버프 미적용 스텟)
+            b.battleStatus(); //유저와 적의 상황(체력 공격력 등)
+            if (e->getEnemyCurrentHealth() <= 0) {//무승부 방지
+                battleState = BattleState::Ended;
+            }
+            break;
+
+        case BattleState::EnemyTurn:
+            transition = false; //반복 클릭 해제
+            b.enemyTurn();// 적 행동
+            if (!b.getPlay()) {
+                window.close();//창이 닫힌다 , 진건데 gameover 안만들어서 처음으로 돌아가는거 안만듬
+            }
+            else {
+                battleState = BattleState::PlayerTurn;
+                b.statusManager();
+            }
+            break;
+
+        case BattleState::Ended:
+            b.battleEnd();// 승리/패배 처리
+            b.battleEndManager();
+            back = true;
+            break;
         }
-        break;
-
-    case BattleState::EnemyTurn:
-        transition = false; //반복 클릭 해제
-        b.enemyTurn();// 적 행동
-        if (!b.getPlay()) {
-            window.close();//창이 닫힌다 , 진건데 gameover 안만들어서 처음으로 돌아가는거 안만듬
-        }
-        else {
-            battleState = BattleState::PlayerTurn;
-            b.statusManager();
-        }
-        break;
-
-    case BattleState::Ended:
-        b.battleEnd();// 승리/패배 처리
-        b.battleEndManager();
-        back = true;
-        break;
-    }
-
     //체력 계속 갱신
     hoHpB.setTextHp();
     hpB.setTextHp();
-
+    }
 }
 void roomScene::render(sf::RenderWindow& window) {
     window.draw(background);
     backBtn.draw(window); //돌아가기 버튼 (임시용)
-    hpB.draw(window);
-    mpB.draw(window);
-    statusFrame.draw(window);
     expB.draw(window);
-    eloaImg.draw(window);
-    hoHpB.draw(window);
-    action.draw(window);
-    //if (enemyType == 1) { //rest인데 아직 없어서 노멀로 떼움
-    // 
-    //}
-    
-    if (getEnemyPtr().getEnemyType() == "normal") {
+    if (roomType != 1) {
+        hpB.draw(window);
+        mpB.draw(window);
+        statusFrame.draw(window);
+        eloaImg.draw(window);
+        hoHpB.draw(window);
+        action.draw(window);
+    }
+    if (getEnemyPtr().getEnemyType() == "normal" && roomType != 1) {
         normalOneImg.draw(window);
     }
-    else if (getEnemyPtr().getEnemyType() == "elite") {
+    else if (getEnemyPtr().getEnemyType() == "elite" && roomType != 1) {
         eliteOneImg.draw(window);
     }
-    else if(getEnemyPtr().getEnemyType() == "boss") {
+    else if(getEnemyPtr().getEnemyType() == "boss" && roomType != 1) {
         bossOneImg.draw(window);
     }
     else {
@@ -711,6 +755,7 @@ void roomScene::allStartAppear() {
 void roomScene::selectRoomType(const int& roomType) { //적인지 휴식인지 구분과 적의 종류 구분.
     switch (roomType) {//rest 이지만 아직 이미지가 없음으로 몬스터로 해놓기
     case 1: //rest
+        updateFrame(deltaTime);
         break;
     case 2:
         if (getEnemyPtr().getEnemyType() == "normal") {
@@ -725,5 +770,26 @@ void roomScene::selectRoomType(const int& roomType) { //적인지 휴식인지 �
         break;
     default:
         break;
+    }
+}
+void roomScene::setBackground(resourceManager& res) {
+    if (roomType == 1) {
+        background.setTexture(res.getTexture("1floorTiferetRestSprite"));
+        return;
+    }
+    background.setTexture(res.getTexture("1floorBattleRoomBg"));
+}
+void roomScene::updateFrame(float& dt) {
+    frame += dt;
+    if (frame >= 0.8f) { //elapsed가 0.15f 보다 커지면 초기화 시키고 장면 변화
+        frame = 0.f;
+        currentFrame++;
+        int framesPerAction = 2; // 마지막 액션 + 1이 몇인지. 장면변화 index를 제일 처음으로 초기화
+        if (currentFrame >= framesPerAction)
+            currentFrame = 0;
+
+        background.setTextureRect(
+            sf::IntRect(0, frameHeight * currentFrame, frameWidth, frameHeight)
+        );
     }
 }

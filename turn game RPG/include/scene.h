@@ -168,7 +168,10 @@ private:
 	bool attackAction{ false }; //true가 되면 그 선택지를 누른 것.
 	bool defenseAction{ false };
 	bool skillAction{ false };
-	
+	int currentFrame{ 0 };
+	float frame{ 0 };
+	float frameWidth{ 0 };
+	float frameHeight{ 0 };
 	//UI
 	backButton backBtn; // 뒤로가기 버튼로 되어있는데 이름만 바꿔서 배틀 끝나고 돌아가는 버튼으로 하나 만들어 쓰기.
 	status statusFrame; //왼쪽위 체력, 마나, 경험치,레벨의 틀
@@ -193,6 +196,7 @@ public:
 	void render(sf::RenderWindow& window) override; //화면 사용자에게 보이게 하기
 	void allStartAppear() override;
 	void selectRoomType(const int& roomType);  //적인지 휴식인지 구분과 적의 종류 구분
-
+	void setBackground(resourceManager& res);
+	void updateFrame(float& dt);
 };
 
