@@ -215,13 +215,18 @@ public:
 
 class mpBar {
 private:
- sf::RectangleShape bar;
-	int maxMp;
-	int mp;
+	 sf::RectangleShape bar;
+	 sf::Text mpLog;
+	 std::string maxMp;
+	 std::string mp;
 public:
 	mpBar(sf::RenderWindow& win, resourceManager& res);
 	void draw(sf::RenderWindow& win);
 	void position(const sf::Vector2f& hpmpP);
+	void setTextMp();
+	void convertMp(const int& mp);
+	void convertMaxMp(const int& maxMp);
+
 };
 
 class expBar{

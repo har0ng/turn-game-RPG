@@ -688,9 +688,10 @@ hpBar::hpBar(sf::RenderWindow& win, resourceManager& res)
 	//hp log
 	hpLog.setFont(res.getFont("fantasy"));
 	hpLog.setCharacterSize(40);
-	hpLog.setFillColor(sf::Color::White);
-	hpLog.setOutlineColor(sf::Color::White);
+	hpLog.setFillColor(sf::Color(250, 250, 250));
+	hpLog.setOutlineColor(sf::Color(250, 250, 250));
 	hpLog.setOutlineThickness(1.f);
+	
 }
 void hpBar::draw(sf::RenderWindow& win) {
 	win.draw(bar);
@@ -724,17 +725,42 @@ void hpBar::convertMaxHp(const int& maxHp) {
 
 //mpBar
 mpBar::mpBar(sf::RenderWindow& win, resourceManager& res)
-	:maxMp(0), mp(0)
 {
 	bar.setSize(sf::Vector2f(res.getTexture("hpmp").getSize().x, //x크기 0이 mp 0%임 현재는 100%
 		res.getTexture("hpmp").getSize().y / 2.f));
 	bar.setFillColor(sf::Color(130, 130, 250));
+	mpLog.setFont(res.getFont("fantasy"));
+	mpLog.setCharacterSize(40);
+	mpLog.setFillColor(sf::Color(250, 250, 250));
+	mpLog.setOutlineColor(sf::Color(250, 250, 250));
+	mpLog.setOutlineThickness(1.f);
+
 }
 void mpBar::draw(sf::RenderWindow& win) {
 	win.draw(bar);
+	win.draw(mpLog);
 }
 void mpBar::position(const sf::Vector2f& hpmpP) {
 	bar.setPosition(hpmpP.x, hpmpP.y + bar.getSize().y);
+
+	// bar 중앙 위치에 텍스트 배치
+	mpLog.setPosition(
+		bar.getPosition().x + bar.getSize().x / 2.f,
+		bar.getPosition().y + bar.getSize().y / 2.f);
+
+}
+void mpBar::setTextMp() {
+	convertMp(p->getCurrent_mana());
+	convertMaxMp(p->getMana());
+	mpLog.setString(mp + "/" + maxMp);
+}
+void mpBar::convertMp(const int& mp) {
+	std::string stringMp = std::to_string(mp);
+	this->mp = stringMp;
+}
+void mpBar::convertMaxMp(const int& maxMp) {
+	std::string stringMp = std::to_string(maxMp);
+	this->maxMp = stringMp;
 }
 
 //expBar

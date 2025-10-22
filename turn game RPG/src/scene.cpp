@@ -791,5 +791,6 @@ void roomScene::updateGameStatus() {
         hoHpB.setTextHp();
         hoHpB.barSetSize(); //체력 바 실시간 업데이트
         hpB.setTextHp();
+        mpB.setTextMp();
     }
 }//백엔드와 연결된 직접적인 로직
