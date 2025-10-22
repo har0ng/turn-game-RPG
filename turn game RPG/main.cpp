@@ -57,7 +57,7 @@ int main() {
             // 직업 -> 맵
             else if (dynamic_cast<classSelectScene*>(currentScene.get())) {
                 history.push_back(std::move(currentScene));
-                currentScene = std::make_unique<mapScene>(window, res.getFont("fantasy"), res.getTexture("mapBg"));
+                currentScene = std::make_unique<mapScene>(window, res);
                 cursor.updatePositionFromWindow(window);
                 continue;
             }

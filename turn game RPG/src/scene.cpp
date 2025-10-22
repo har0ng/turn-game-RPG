@@ -231,10 +231,11 @@ void classSelectScene::allStartAppear() {
 }
 
 //mapScene
-mapScene::mapScene(sf::RenderWindow& win, sf::Font& font, sf::Texture& tex)
+mapScene::mapScene(sf::RenderWindow& win, resourceManager& res)
     :window(win), log(win)
 {
-    background.setTexture(tex); //배경화면
+    res.unloadTexture("menuBg");
+    background.setTexture(res.getTexture("mapBg")); //배경화면
     sf::Color color = background.getColor();
     color.a = static_cast<sf::Uint8>(0); //배경화면 서서히 나오게끔 하기
     background.setColor(color);
@@ -311,6 +312,7 @@ floorScene::floorScene(sf::RenderWindow& win, resourceManager& res)
     , line(assortBtns) // 일단 비어 있는 상태로 초기화
     ,floorName(L"裏側の入口",res.getFont("fantasy"),view,floorCnt)
 {
+    res.unloadTexture("mapBg");
     visitedRoom.reserve(2); //미리 vector크기를 지정함으로써 index늘어날 때마다 복사 비용 제거.
     connectedRoom.reserve(5);
     // 1.기본 뷰 초기화
@@ -568,7 +570,7 @@ roomScene::roomScene(sf::RenderWindow& win, resourceManager& res, const int& roo
     frameDuration(0.15f), backBtn("back", 0.0f, 960.0f, res.getFont("fantasy")),
     statusFrame(res), hpB(win, res), mpB(win, res), expB(win, res), eloaImg(win, res)
     , normalOneImg(win, res), eliteOneImg(win, res), bossOneImg(win, res),
-    hoHpB(win, res), action(win,res),battleState(BattleState::NotStarted) ,b(p,e)
+    hoHpB(win, res), action(win,res),GD(res),battleState(BattleState::NotStarted) ,b(p,e)
 {
     //0.무슨 방인지 구분 rest, enemy , boss
     roomType = roomNum;
@@ -578,15 +580,12 @@ roomScene::roomScene(sf::RenderWindow& win, resourceManager& res, const int& roo
     window.setView(view);
     setBackground(res);
 
-    switch (roomType){
-    case 0:
-        break;
-    case 1:
+    if (roomType == 1) {
         //2. 만약 rest 방이라면 움직이게끔.
         frameWidth = background.getLocalBounds().width;
         frameHeight = background.getLocalBounds().height / 2.f;
         background.setTextureRect(sf::IntRect(0, 0, frameWidth, frameHeight));
-    case 2:
+    }else{
         //3. player mp, hp,action 위치 조정
         hpB.setTextHp();
         statusFrame.setPosition(eloaImg.getPosition(), expB.getPosition(), res);
@@ -601,24 +600,12 @@ roomScene::roomScene(sf::RenderWindow& win, resourceManager& res, const int& roo
         else if (getEnemyPtr().getEnemyType() == "elite") {
             hoHpB.position(eliteOneImg.getPosition(), eliteOneImg.getEnemyImg());
         }
-
+        else if (getEnemyPtr().getEnemyType() == "boss") {
+            hoHpB.position(bossOneImg.getPosition(), bossOneImg.getEnemyImg());
+        }
         //5. enemy hp text 위치 조정 , 포인터가 정해지는게 4번이라 그 이후에 해야 enemyType에 맞는 hp를 들고옴
         hoHpB.setTextHp();
-    case 3:
-        //3. player mp, hp,action 위치 조정
-        hpB.setTextHp();
-        statusFrame.setPosition(eloaImg.getPosition(), expB.getPosition(), res);
-        hpB.position(statusFrame.getHpmpPosition());
-        mpB.position(statusFrame.getHpmpPosition());
-        action.setPosition(eloaImg.getPosition(), eloaImg.getSprite());
-
-        //4. enemy hp 위치 조정
-        hoHpB.position(bossOneImg.getPosition(), bossOneImg.getEnemyImg());
-
-        //5. enemy hp text 위치 조정 , 포인터가 정해지는게 4번이라 그 이후에 해야 enemyType에 맞는 hp를 들고옴
-        hoHpB.setTextHp();
-    default:
-        break;
+        GD.startFade();
     }
 }
 void roomScene::update(sf::RenderWindow& window) {
@@ -738,16 +725,18 @@ void roomScene::render(sf::RenderWindow& window) {
     }
     if (getEnemyPtr().getEnemyType() == "normal" && roomType != 1) {
         normalOneImg.draw(window);
+        GD.draw(window);
     }
     else if (getEnemyPtr().getEnemyType() == "elite" && roomType != 1) {
         eliteOneImg.draw(window);
+        GD.draw(window);
     }
-    else if(getEnemyPtr().getEnemyType() == "boss" && roomType != 1) {
+    else if (getEnemyPtr().getEnemyType() == "boss" && roomType != 1) {
         bossOneImg.draw(window);
+        GD.draw(window);
     }
-    else {
-        return;
-    }
+    
+    
 }
 void roomScene::allStartAppear() {
     return;
@@ -758,6 +747,7 @@ void roomScene::selectRoomType(const int& roomType) { //적인지 휴식인지 �
         updateFrame(deltaTime);
         break;
     case 2:
+        GD.updateFade(deltaTime);
         if (getEnemyPtr().getEnemyType() == "normal") {
             normalOneImg.updateFrame(deltaTime);
         }

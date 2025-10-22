@@ -106,7 +106,7 @@ private:
 	float elapsed{ 0.f };
 	
 public:
-	mapScene(sf::RenderWindow& win, sf::Font& font, sf::Texture& tex);
+	mapScene(sf::RenderWindow& win, resourceManager& res);
 	void update(sf::RenderWindow& window) override; //메뉴 화면으로 상태갱신
 	void render(sf::RenderWindow& window) override; //화면 사용자에게 보이게 하기
 	void updateFade(sf::Sprite& sprite) override;
@@ -185,6 +185,7 @@ private:
 	int roomType{ 0 }; // 1 == rest, 2 == enemy, 3 == boss
 	homunculusHpbar hoHpB;
 	selectAction action;
+	gradation GD;
 
 	//battle
 	enum class BattleState { NotStarted, PlayerTurn, EnemyTurn, Ended };

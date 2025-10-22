@@ -344,3 +344,26 @@ public:
 	void setPosition(const sf::Vector2f& characterP, const sf::Sprite& characterImg);
 	void ActionManager(sf::Vector2f& mousePos);
 };
+
+class gradation { //전투 시작시 start 배경 그라데이션
+	sf::Text start;
+	sf::VertexArray sideGrad;
+	sf::VertexArray centerGrad;
+	float width;
+	float height;
+	float centerY;
+	float barHeight;
+	bool fading{ false };
+	sf::Uint8 sideAlpha{ 100 };
+	sf::Uint8 centerAlpha{ 170 };
+	sf::Uint8 startAlpha{ 255 };
+	float elapsedTime{ 0.f };
+	
+public:
+	gradation(resourceManager& res);
+	void draw(sf::RenderWindow& win);
+	void startFade();
+	void updateFade(float& dt);
+	void setPosition();
+	void setColor();
+};

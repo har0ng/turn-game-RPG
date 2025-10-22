@@ -13,6 +13,12 @@ sf::Texture& resourceManager::getTexture(const std::string& key) {
     return textures.at(key);
 }
 
+void resourceManager::unloadTexture(const std::string& key) {
+    if (textures.count(key)) {
+        textures.erase(key);
+    }
+}
+
 void resourceManager::loadFont(const std::string& key, const std::string& file) {
     sf::Font font;
     if (!font.loadFromFile(file)) { throw std::runtime_error("Font load failed: " + file); }
