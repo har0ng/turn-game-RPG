@@ -570,7 +570,7 @@ roomScene::roomScene(sf::RenderWindow& win, resourceManager& res, const int& roo
     frameDuration(0.15f), backBtn("back", 0.0f, 960.0f, res.getFont("fantasy")),
     statusFrame(res), hpB(win, res), mpB(win, res), expB(win, res), eloaImg(win, res)
     , normalOneImg(win, res), eliteOneImg(win, res), bossOneImg(win, res),
-    hoHpB(win, res), action(win,res),GD(res),battleState(BattleState::NotStarted) ,b(p,e)
+    hoHpB(win, res), action(win,res), startGD(res),battleState(BattleState::NotStarted) ,b(p,e)
 {
     //0.무슨 방인지 구분 rest, enemy , boss
     roomType = roomNum;
@@ -605,7 +605,7 @@ roomScene::roomScene(sf::RenderWindow& win, resourceManager& res, const int& roo
         }
         //5. enemy hp text 위치 조정 , 포인터가 정해지는게 4번이라 그 이후에 해야 enemyType에 맞는 hp를 들고옴
         hoHpB.setTextHp();
-        GD.startFade();
+        startGD.startFade();
     }
 }
 void roomScene::update(sf::RenderWindow& window) {
@@ -668,10 +668,91 @@ void roomScene::update(sf::RenderWindow& window) {
                 }
             } 
         }
-
-       
     } //End of while
     // 2. 게임 상태 처리 (전투 흐름)
+    updateGameStatus();
+}
+void roomScene::render(sf::RenderWindow& window) {
+    window.draw(background);
+    backBtn.draw(window); //돌아가기 버튼 (임시용)
+    expB.draw(window);
+    if (roomType != 1) {
+        hpB.draw(window);
+        mpB.draw(window);
+        statusFrame.draw(window);
+        eloaImg.draw(window);
+        hoHpB.draw(window);
+        action.draw(window);
+    }
+    if (getEnemyPtr().getEnemyType() == "normal" && roomType != 1) {
+        normalOneImg.draw(window);
+        startGD.draw(window);
+    }
+    else if (getEnemyPtr().getEnemyType() == "elite" && roomType != 1) {
+        eliteOneImg.draw(window);
+        startGD.draw(window);
+    }
+    else if (getEnemyPtr().getEnemyType() == "boss" && roomType != 1) {
+        bossOneImg.draw(window);
+        startGD.draw(window);
+    }
+    
+    
+}
+void roomScene::allStartAppear() {
+    return;
+}
+void roomScene::selectRoomType(const int& roomType) { //적인지 휴식인지 구분과 적의 종류 구분.
+    switch (roomType) {//rest 이지만 아직 이미지가 없음으로 몬스터로 해놓기
+    case 1: //rest
+        updateFrame(deltaTime);
+        break;
+    case 2:
+        if (frame > 0.2f) {
+            startGD.updateFade(deltaTime); //시작 할떄 start 그라데이션
+        }
+        if (getEnemyPtr().getEnemyType() == "normal") {
+            frame += deltaTime;
+            normalOneImg.updateFrame(deltaTime);
+        }
+        else if (getEnemyPtr().getEnemyType() == "elite") {
+            frame += deltaTime;
+            eliteOneImg.updateFrame(deltaTime);
+        }
+        break;
+    case 3:
+        frame += deltaTime;
+        if (frame > 0.2f) {
+            startGD.updateFade(deltaTime); //시작 할떄 start 그라데이션
+        }
+        bossOneImg.updateFrame(deltaTime);
+        break;
+    default:
+        break;
+    }
+}
+void roomScene::setBackground(resourceManager& res) {
+    if (roomType == 1) {
+        background.setTexture(res.getTexture("1floorTiferetRestSprite"));
+        return;
+    }
+    background.setTexture(res.getTexture("1floorBattleRoomBg"));
+}
+void roomScene::updateFrame(float& dt) {
+    frame += dt;
+    if (frame >= 0.8f) { //elapsed가 0.15f 보다 커지면 초기화 시키고 장면 변화
+        frame = 0.f;
+        currentFrame++;
+        int framesPerAction = 2; // 마지막 액션 + 1이 몇인지. 장면변화 index를 제일 처음으로 초기화
+        if (currentFrame >= framesPerAction)
+            currentFrame = 0;
+
+        background.setTextureRect(
+            sf::IntRect(0, frameHeight * currentFrame, frameWidth, frameHeight)
+        );
+    }
+}
+void roomScene::updateGameStatus() {
     if (roomType != 1) {
         switch (battleState) {
         case BattleState::NotStarted:
@@ -706,80 +787,8 @@ void roomScene::update(sf::RenderWindow& window) {
             back = true;
             break;
         }
-    //체력 계속 갱신
-    hoHpB.setTextHp();
-    hpB.setTextHp();
+        //체력 계속 갱신
+        hoHpB.setTextHp();
+        hpB.setTextHp();
     }
-}
-void roomScene::render(sf::RenderWindow& window) {
-    window.draw(background);
-    backBtn.draw(window); //돌아가기 버튼 (임시용)
-    expB.draw(window);
-    if (roomType != 1) {
-        hpB.draw(window);
-        mpB.draw(window);
-        statusFrame.draw(window);
-        eloaImg.draw(window);
-        hoHpB.draw(window);
-        action.draw(window);
-    }
-    if (getEnemyPtr().getEnemyType() == "normal" && roomType != 1) {
-        normalOneImg.draw(window);
-        GD.draw(window);
-    }
-    else if (getEnemyPtr().getEnemyType() == "elite" && roomType != 1) {
-        eliteOneImg.draw(window);
-        GD.draw(window);
-    }
-    else if (getEnemyPtr().getEnemyType() == "boss" && roomType != 1) {
-        bossOneImg.draw(window);
-        GD.draw(window);
-    }
-    
-    
-}
-void roomScene::allStartAppear() {
-    return;
-}
-void roomScene::selectRoomType(const int& roomType) { //적인지 휴식인지 구분과 적의 종류 구분.
-    switch (roomType) {//rest 이지만 아직 이미지가 없음으로 몬스터로 해놓기
-    case 1: //rest
-        updateFrame(deltaTime);
-        break;
-    case 2:
-        GD.updateFade(deltaTime);
-        if (getEnemyPtr().getEnemyType() == "normal") {
-            normalOneImg.updateFrame(deltaTime);
-        }
-        else if (getEnemyPtr().getEnemyType() == "elite") {
-            eliteOneImg.updateFrame(deltaTime);
-        }
-        break;
-    case 3:
-        bossOneImg.updateFrame(deltaTime);
-        break;
-    default:
-        break;
-    }
-}
-void roomScene::setBackground(resourceManager& res) {
-    if (roomType == 1) {
-        background.setTexture(res.getTexture("1floorTiferetRestSprite"));
-        return;
-    }
-    background.setTexture(res.getTexture("1floorBattleRoomBg"));
-}
-void roomScene::updateFrame(float& dt) {
-    frame += dt;
-    if (frame >= 0.8f) { //elapsed가 0.15f 보다 커지면 초기화 시키고 장면 변화
-        frame = 0.f;
-        currentFrame++;
-        int framesPerAction = 2; // 마지막 액션 + 1이 몇인지. 장면변화 index를 제일 처음으로 초기화
-        if (currentFrame >= framesPerAction)
-            currentFrame = 0;
-
-        background.setTextureRect(
-            sf::IntRect(0, frameHeight * currentFrame, frameWidth, frameHeight)
-        );
-    }
-}
+}//백엔드와 연결된 직접적인 로직

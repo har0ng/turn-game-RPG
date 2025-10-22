@@ -1066,16 +1066,50 @@ void selectAction::ActionManager(sf::Vector2f& mousePos) {
 		: skill.setTextureRect(sf::IntRect(0, frameHeight * currentFrame, frameWidth, frameHeight));
 }
 
-gradation::gradation(resourceManager& res) {
+//gradation 공용
+void gradation::startFade() {
+	fading = true;
+}
+void gradation::updateFade(float& dt) {
+	sf::Color textColor = text.getFillColor();
+	if (fading == false) {
+		return;
+	}
+	elapsedTime += dt;
+	float t = elapsedTime / 1.0f; // 1.0초 동안 페이드
+	if (t > 1.f) {
+		t = 1.f;
+	}
+
+	sideAlpha = std::max(0.f, 100.f * (1.f - t));
+	centerAlpha = std::max(0.f, 170.f * (1.f - t));
+	startAlpha = std::max(0.f, 255.f * (1.f - t));
+
+	for (int i = 0; i < 4; i++) {
+		sideGrad[i].color.a = static_cast<sf::Uint8>(sideAlpha);
+		centerGrad[i].color.a = static_cast<sf::Uint8>(centerAlpha);
+	}
+
+	textColor.a = static_cast<sf::Uint8>(startAlpha);
+	text.setFillColor(textColor);
+
+	if (t >= 1.f) {
+		fading = false;
+		elapsedTime = 0.f;
+	}
+}
+
+//startGradtion
+startGradation::startGradation(resourceManager& res) {
 	width = static_cast<float>(res.getTexture("1floorBattleRoomBg").getSize().x);
 	height = static_cast<float>(res.getTexture("1floorBattleRoomBg").getSize().y);
 	centerY = height / 2.f;
 	barHeight = 200.f; // 띠의 높이
 
 	//text입력
-	start.setString("START");
-	start.setFont(res.getFont("fantasy"));
-	start.setCharacterSize(130);
+	text.setString("START");
+	text.setFont(res.getFont("fantasy"));
+	text.setCharacterSize(130);
 
 	//사이드 그라데이션 정의
 	sideGrad.setPrimitiveType(sf::Quads);
@@ -1087,43 +1121,12 @@ gradation::gradation(resourceManager& res) {
 	setPosition();
 	setColor();
 }
-void gradation::draw(sf::RenderWindow& win) {
+void startGradation::draw(sf::RenderWindow& win) {
 	win.draw(sideGrad);
 	win.draw(centerGrad);
-	win.draw(start);
+	win.draw(text);
 }
-void gradation::startFade() {
-	fading = true;
-}
-void gradation::updateFade(float& dt) {
-	sf::Color text = start.getFillColor();
-	if (fading == false) {
-		return;
-	}
-	elapsedTime += dt;
-	float t = elapsedTime / 1.0f; // 1.0초 동안 페이드
-	if (t > 1.f) { t = 1.f; }
-
-	sideAlpha = std::max(0.f, 100.f * (1.f - t));
-	centerAlpha = std::max(0.f, 170.f * (1.f - t));
-	startAlpha = std::max(0.f, 255.f * (1.f - t));
-
-	for (int i = 0; i < 4; i++) {
-		sideGrad[i].color.a = static_cast<sf::Uint8>(sideAlpha);
-		centerGrad[i].color.a = static_cast<sf::Uint8>(centerAlpha);
-	}
-
-	sf::Color textColor = start.getFillColor();
-	textColor.a = static_cast<sf::Uint8>(startAlpha);
-	start.setFillColor(textColor);
-
-	if (t >= 1.f) {
-		fading = false;
-		elapsedTime = 0.f;
-	}
-}
-
-void gradation::setPosition() {
+void startGradation::setPosition() {
 	//sideGrad
 	sideGrad[0].position = sf::Vector2f(0.f, centerY - barHeight / 2.f);     // 왼쪽 위
 	sideGrad[1].position = sf::Vector2f(width, centerY - barHeight / 2.f);   // 오른쪽 위
@@ -1135,10 +1138,10 @@ void gradation::setPosition() {
 	centerGrad[2].position = sf::Vector2f(width / 4.f * 3.f, centerY + barHeight / 2.f); // 오른쪽 아래
 	centerGrad[3].position = sf::Vector2f(width / 4.f, centerY + barHeight / 2.f);		 // 왼쪽 아래
 	//start
-	start.setPosition(sf::Vector2f(centerGrad.getBounds().width - start.getLocalBounds().width / 2.f,
+	text.setPosition(sf::Vector2f(centerGrad.getBounds().width - text.getLocalBounds().width / 2.f,
 		centerY - barHeight / 2.f + 20.f));
 }		//620 + 248 = 868
-void gradation::setColor() {
+void startGradation::setColor() {
 	//sideGrad
 	sideGrad[0].color = sf::Color(0, 0, 0, sideAlpha);   // 왼쪽 위
 	sideGrad[3].color = sf::Color(0, 0, 0, sideAlpha);   // 왼쪽 아래
@@ -1150,5 +1153,5 @@ void gradation::setColor() {
 	centerGrad[1].color = sf::Color(0, 0, 0, centerAlpha); // 오른쪽 위
 	centerGrad[2].color = sf::Color(0, 0, 0, centerAlpha); // 오른쪽 아래
 	//start
-	start.setFillColor(sf::Color(97, 0, 0, 255));
+	text.setFillColor(sf::Color(97, 0, 0, 255));
 }

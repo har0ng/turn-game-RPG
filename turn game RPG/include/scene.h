@@ -185,7 +185,7 @@ private:
 	int roomType{ 0 }; // 1 == rest, 2 == enemy, 3 == boss
 	homunculusHpbar hoHpB;
 	selectAction action;
-	gradation GD;
+	startGradation startGD;
 
 	//battle
 	enum class BattleState { NotStarted, PlayerTurn, EnemyTurn, Ended };
@@ -199,5 +199,6 @@ public:
 	void selectRoomType(const int& roomType);  //적인지 휴식인지 구분과 적의 종류 구분
 	void setBackground(resourceManager& res);
 	void updateFrame(float& dt);
+	void updateGameStatus();
 };
 

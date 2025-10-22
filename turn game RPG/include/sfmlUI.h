@@ -345,8 +345,9 @@ public:
 	void ActionManager(sf::Vector2f& mousePos);
 };
 
-class gradation { //전투 시작시 start 배경 그라데이션
-	sf::Text start;
+class gradation { //그라데이션
+protected:
+	sf::Text text;
 	sf::VertexArray sideGrad;
 	sf::VertexArray centerGrad;
 	float width;
@@ -360,10 +361,19 @@ class gradation { //전투 시작시 start 배경 그라데이션
 	float elapsedTime{ 0.f };
 	
 public:
-	gradation(resourceManager& res);
-	void draw(sf::RenderWindow& win);
-	void startFade();
-	void updateFade(float& dt);
-	void setPosition();
-	void setColor();
+	gradation() = default;
+	virtual ~gradation() = default;
+	virtual void draw(sf::RenderWindow& win) = 0;
+	virtual void setPosition() = 0;
+	virtual void setColor() = 0;
+	virtual void startFade();
+	virtual void updateFade(float& dt);
+};
+
+class startGradation : public gradation{ //전투 시작시 start 배경 그라데이션
+public:
+	startGradation(resourceManager& res);
+	void draw(sf::RenderWindow& win) override;
+	void setPosition() override;
+	void setColor() override;
 };
