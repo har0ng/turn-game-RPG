@@ -310,7 +310,6 @@ public:
 class homunculusHpbar { // 이거 하기전에 모든 에너미 사진들이 구부되서 나오게끔 해줘야함 그래야 중앙 위치를 잡지.
 private:
 	sf::Sprite enemyHp;
-
 	sf::RectangleShape bar;
 	sf::Text hpLog;
 	std::string hp;
@@ -323,7 +322,7 @@ public:
 	void setTextHp();
 	void convertHp(const int& hp);
 	void convertMaxHp(const int& maxHp);
-
+	void barSetSize(); //남은 체력에 따른 바 크기
 };
 
 class selectAction { //플레이어 선택지

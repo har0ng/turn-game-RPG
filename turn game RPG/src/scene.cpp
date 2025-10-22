@@ -789,6 +789,7 @@ void roomScene::updateGameStatus() {
         }
         //체력 계속 갱신
         hoHpB.setTextHp();
+        hoHpB.barSetSize(); //체력 바 실시간 업데이트
         hpB.setTextHp();
     }
 }//백엔드와 연결된 직접적인 로직

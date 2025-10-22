@@ -930,8 +930,7 @@ void homunculusHpbar::position(const sf::Vector2f& enemyP, const sf::FloatRect& 
 	// HP바 배경 위치: 적 이미지 아래
 	enemyHp.setPosition(enemyP.x, enemyP.y + enemyImg.height);
 
-	// bar 위치와 크기
-	bar.setSize(sf::Vector2f(enemyHp.getLocalBounds().width, enemyHp.getLocalBounds().height));
+	// bar 위치
 	bar.setPosition(enemyHp.getPosition());
 
 	// 텍스트 중앙 정렬
@@ -956,6 +955,11 @@ void homunculusHpbar::convertHp(const int& hp) {
 void homunculusHpbar::convertMaxHp(const int& maxHp) {
 	std::string stringHp = std::to_string(maxHp);
 	this->maxHp = stringHp;
+}
+void homunculusHpbar::barSetSize() {
+	float maxWidth = enemyHp.getLocalBounds().width; // HP 바 최대 길이
+	float newWidth = (static_cast<float>(e->getEnemyCurrentHealth()) / e->getEnemy_health()) * maxWidth;
+	bar.setSize(sf::Vector2f(newWidth, enemyHp.getLocalBounds().height));
 }
 
 //selectAction
