@@ -247,8 +247,8 @@ public:
 class character {
 protected:
 	sf::Sprite characterImg; //전체시트에 의존한 분할 시트
-	int frameWidth;	 // 직사각형 시작 위치 (intRect)
-	int frameHeight;  //직사각형 시작 위치 (intRect)
+	int frameWidth{ 0 };	 // 직사각형 시작 위치 (intRect)
+	int frameHeight{ 0 };  //직사각형 시작 위치 (intRect)
 	int currentFrame{ 0 };
 	int currentAction{ 0 }; // 0: 숨 내쉬기, 1: 숨 쉬기
 	float elapsed{ 0.f };

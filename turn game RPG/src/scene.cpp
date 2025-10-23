@@ -637,36 +637,21 @@ void roomScene::update(sf::RenderWindow& window) {
                 if (attackAction) {
                     b.playerTurn(1); // cmd 로그를 보면 업뎃 되어있음. 이걸 실시간으로 피가 깎인걸 그래픽적인 부분과 현재체력을 보여주게끔 해줘야함 
                     battleState = BattleState::EnemyTurn;
+                    attackAction = false;
                 }
                 else if (defenseAction) {
                     b.playerTurn(2);
                     battleState = BattleState::EnemyTurn;
+                    defenseAction = false;
                 }
                 else if (skillAction) {
                     b.playerTurn(3);
                     battleState = BattleState::EnemyTurn;
+                    skillAction = false;
                 }
             }
-       
             //선택지 아웃라인 스프라이트
-            action.ActionManager(worldPos);
-
-            // 플레이어 턴일 때만 클릭 처리
-            if (battleState == BattleState::PlayerTurn && event.type == sf::Event::MouseButtonReleased && action.isClicked(worldPos, attackAction, defenseAction, skillAction) && event.mouseButton.button == sf::Mouse::Left) {
-                isTransition();
-                if (attackAction) {
-                    b.playerTurn(1); // cmd 로그를 보면 업뎃 되어있음. 이걸 실시간으로 피가 깎인걸 그래픽적인 부분과 현재체력을 보여주게끔 해줘야함 
-                    battleState = BattleState::EnemyTurn;
-                }
-                else if (defenseAction) {
-                    b.playerTurn(2);
-                    battleState = BattleState::EnemyTurn;
-                }
-                else if (skillAction) {
-                    b.playerTurn(3);
-                    battleState = BattleState::EnemyTurn;
-                }
-            } 
+            action.ActionManager(worldPos); 
         }
     } //End of while
     // 2. 게임 상태 처리 (전투 흐름)

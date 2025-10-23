@@ -1106,14 +1106,14 @@ void gradation::updateFade(float& dt) {
 		return;
 	}
 	elapsedTime += dt;
-	float t = elapsedTime / 1.0f; // 1.0초 동안 페이드
-	if (t > 1.f) {
-		t = 1.f;
+	float fadeTime = elapsedTime / 1.0f; // 1.0초 동안 페이드
+	if (fadeTime > 1.f) {
+		fadeTime = 1.f;
 	}
 
-	sideAlpha = std::max(0.f, 100.f * (1.f - t));
-	centerAlpha = std::max(0.f, 170.f * (1.f - t));
-	startAlpha = std::max(0.f, 255.f * (1.f - t));
+	sideAlpha = static_cast<sf::Uint8>(std::max(0.f, 100.f * (1.f - fadeTime)));
+	centerAlpha = static_cast<sf::Uint8>(std::max(0.f, 170.f * (1.f - fadeTime)));
+	startAlpha = static_cast<sf::Uint8>(std::max(0.f, 255.f * (1.f - fadeTime)));
 
 	for (int i = 0; i < 4; i++) {
 		sideGrad[i].color.a = static_cast<sf::Uint8>(sideAlpha);
@@ -1123,7 +1123,7 @@ void gradation::updateFade(float& dt) {
 	textColor.a = static_cast<sf::Uint8>(startAlpha);
 	text.setFillColor(textColor);
 
-	if (t >= 1.f) {
+	if (fadeTime >= 1.f) {
 		fading = false;
 		elapsedTime = 0.f;
 	}
