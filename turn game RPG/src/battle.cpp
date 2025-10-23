@@ -208,8 +208,8 @@ void battle::playerTurn(const int& input, int skillInput) {
 	ui.playerTurn(cphp, p->getTurnPlayer().defense, battleselect, finalAttack, res.criticalYN);//log를 불러오기위해 log에서 필요로 하는 값 다 넘겨주기
 }
 
-void battle::enemyTurn() {
-	int enemy_action = e->enemyAction();
+void battle::enemyTurn(const int& action) {
+	int enemy_action = action;
 	// 전투 로직 (데미지 계산 등)
 	if (enemy_action == 0) {
 		// 상황 살피기 (출력은 UI에서)

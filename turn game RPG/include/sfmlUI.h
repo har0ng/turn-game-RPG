@@ -300,8 +300,9 @@ protected:
 
 	enum class Tex {
 		none, //기본 서있는 상태
-		attack, //공격
-		hit //상대에게 맞을 떄
+		attack1, //공격
+		attack2,
+		hit//상대에게 맞을 떄
 	}tex;
 	
 
@@ -319,8 +320,8 @@ class normalOne : public homunculus {
 public:
 	normalOne(sf::RenderWindow& win, resourceManager& res);
 	void draw(sf::RenderWindow& win) override;
-	void updateFrame(float& dt);
-	void updateTexture(resourceManager& res, const int& enemySelect) override;
+	void updateFrame(float& dt, resourceManager& res);
+	void updateTexture(resourceManager& res, const int& enemySelect = 0) override;
 };
 
 class eliteOne : public homunculus {

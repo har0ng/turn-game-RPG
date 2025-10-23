@@ -30,25 +30,21 @@ sf::Font& resourceManager::getFont(const std::string& key) {
 }
 
 void resourceManager::loadAll() {
-    //texture
+//texture
+    //background
     loadTexture("menuBg", "assets/images/1.png");
     loadTexture("mapBg", "assets/images/map.png");
     loadTexture("floorBg", "assets/images/1Floor.png");
+    loadTexture("1floorBattleRoomBg", "assets/images/1floorBattleRoom.png");
+    loadTexture("1floorTiferetRestSprite", "assets/images/1floorTiferetRestSprite.png");
+
+    //UI
     loadTexture("cursor", "assets/images/mouse.png");
     loadTexture("heal", "assets/images/heal.png");
     loadTexture("boss", "assets/images/boss.png");
     loadTexture("enemy", "assets/images/enemy.png");
-    loadTexture("1floorBattleRoomBg", "assets/images/1floorBattleRoom.png");
     loadTexture("expbar", "assets/images/exp.png");
     loadTexture("hpmp", "assets/images/hpmp.png");
-    loadTexture("normal1", "assets/images/normal1.png");
-    loadTexture("normal1Sprite", "assets/images/normal1Sheet.png");
-    loadTexture("elite1", "assets/images/elite1.png");
-    loadTexture("elite1Sprite", "assets/images/elite1Sheet.png");
-    loadTexture("tiferet", "assets/images/tiferet.png");
-    loadTexture("tiferetSprite", "assets/images/tiferetSheet.png");
-    loadTexture("boss1", "assets/images/boss1.png");
-    loadTexture("boss1Sprite", "assets/images/boss1Sheet.png");
     loadTexture("enemyHp", "assets/images/enemyHp.png");
     loadTexture("attack", "assets/images/attack.png"); //크기 제기 용
     loadTexture("defense", "assets/images/defense.png");
@@ -56,8 +52,20 @@ void resourceManager::loadAll() {
     loadTexture("attackSprite", "assets/images/attackSheet.png");
     loadTexture("defenseSprite", "assets/images/defenseSheet.png");
     loadTexture("skillSprite", "assets/images/skillSheet.png");
-    loadTexture("1floorTiferetRestSprite", "assets/images/1floorTiferetRestSprite.png");
+
+    //tiferet
+    loadTexture("tiferet", "assets/images/tiferet.png");
+    loadTexture("tiferetSprite", "assets/images/tiferetSheet.png");
     loadTexture("tiferetAttack", "assets/images/tiferetAttack.png");
+
+    //enemy
+    loadTexture("normal1", "assets/images/normal1.png");
+    loadTexture("normal1Sprite", "assets/images/normal1Sheet.png");
+    loadTexture("normal1Attack", "assets/images/normal1Attack.png");
+    loadTexture("elite1", "assets/images/elite1.png");
+    loadTexture("elite1Sprite", "assets/images/elite1Sheet.png");
+    loadTexture("boss1", "assets/images/boss1.png");
+    loadTexture("boss1Sprite", "assets/images/boss1Sheet.png");
 
     //font
     loadFont("normal", "assets/fonts/smartfont.otf");

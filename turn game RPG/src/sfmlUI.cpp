@@ -932,21 +932,68 @@ normalOne::normalOne(sf::RenderWindow& win, resourceManager& res)
 void normalOne::draw(sf::RenderWindow& win) {
 	win.draw(enemyImg);
 }
-void normalOne::updateFrame(float& dt) {
+void normalOne::updateFrame(float& dt, resourceManager& res) {
 	elapsed += dt;
-	if (elapsed >= frameDuration) { //elapsed가 0.15f 보다 커지면 초기화 시키고 장면 변화
-		elapsed = 0.f;
-		currentFrame++;
-		int framesPerAction = 2; // 마지막 액션 + 1이 몇인지. 장면변화 index를 제일 처음으로 초기화
-		if (currentFrame >= framesPerAction)
-			currentFrame = 0;
-
-		enemyImg.setTextureRect(
-			sf::IntRect(frameWidth * currentFrame, 0, frameWidth, frameHeight)
-		);
+	switch (tex){
+	case homunculus::Tex::none:
+		if (elapsed >= frameDuration) { //elapsed가 0.45f 보다 커지면 초기화 시키고 장면 변화
+			elapsed = 0.f;
+			currentFrame++;
+			int framesPerAction = 2; // 마지막 액션 + 1이 몇인지. 장면변화 index를 제일 처음으로 초기화
+			if (currentFrame >= framesPerAction) {
+				currentFrame = 0;
+			}
+			enemyImg.setTextureRect(
+				sf::IntRect(frameWidth * currentFrame, 0, frameWidth, frameHeight)
+			);
+		}
+		break;
+	case homunculus::Tex::attack1:
+		if (elapsed >= 0.3f) { //elapsed가 0.3f 보다 커지면 초기화 시키고 장면 변화
+			elapsed = 0.f;
+			currentFrame++;
+			int framesPerAction = 3; // 마지막 액션 + 1이 몇인지. 장면변화 index를 제일 처음으로 초기화
+			if (currentFrame >= framesPerAction) {
+				currentFrame = 0;
+				tex = Tex::none;
+				updateTexture(res);
+			}
+			enemyImg.setTextureRect(
+				sf::IntRect(frameWidth * currentFrame, 0, frameWidth, frameHeight)
+			);
+		}
+		break;
+	case homunculus::Tex::attack2:
+		break;
+	case homunculus::Tex::hit:
+		break;
+	default:
+		break;
 	}
 }
-void normalOne::updateTexture(resourceManager& res, const int& enemySelect) {
+void normalOne::updateTexture(resourceManager& res, const int& enemyAction) {
+	tex = static_cast<Tex>(enemyAction);
+	elapsed = 0.f;
+	switch (tex) {
+	case Tex::none:
+		enemyImg.setTexture(res.getTexture("normal1Sprite"));
+		enemyImg.setTextureRect(sf::IntRect(0, 0, frameWidth, frameHeight));
+		break;
+	case Tex::attack1:
+		enemyImg.setTexture(res.getTexture("normal1Attack"));
+		enemyImg.setTextureRect(sf::IntRect(0, 0, frameWidth, frameHeight));
+		break;
+	case Tex::attack2:
+		enemyImg.setTexture(res.getTexture("normal1Attack"));
+		enemyImg.setTextureRect(sf::IntRect(0, 0, frameWidth, frameHeight));
+		break;
+	case Tex::hit://임시 , 이미지가 없어서
+		enemyImg.setTexture(res.getTexture("normal1Sprite"));
+		enemyImg.setTextureRect(sf::IntRect(0, 0, frameWidth, frameHeight));
+		break;
+	default:
+		break;
+	}
 
 }
 

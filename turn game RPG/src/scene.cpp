@@ -701,7 +701,7 @@ void roomScene::selectRoomType(const int& roomType) { //적인지 휴식인지 �
         }
         if (getEnemyPtr().getEnemyType() == "normal") {
             frame += deltaTime;
-            normalOneImg.updateFrame(deltaTime);
+            normalOneImg.updateFrame(deltaTime, res);
         }
         else if (getEnemyPtr().getEnemyType() == "elite") {
             frame += deltaTime;
@@ -741,6 +741,7 @@ void roomScene::updateFrame(float& dt) {
     }
 }
 void roomScene::updateGameStatus() {
+    int enemyAction = 0;
     if (roomType != 1) {
         switch (battleState) {
         case BattleState::NotStarted:
@@ -759,7 +760,9 @@ void roomScene::updateGameStatus() {
 
         case BattleState::EnemyTurn:
             transition = false; //반복 클릭 해제
-            b.enemyTurn();// 적 행동
+            enemyAction = e->enemyAction(); //랜덤값 저장
+            normalOneImg.updateTexture(res, enemyAction); //텍스쳐 바꾸기 위함
+            b.enemyTurn(enemyAction);// 적 행동
             if (!b.getPlay()) {
                 window.close();//창이 닫힌다 , 진건데 gameover 안만들어서 처음으로 돌아가는거 안만듬
             }
@@ -768,7 +771,6 @@ void roomScene::updateGameStatus() {
                 b.statusManager();
             }
             break;
-
         case BattleState::Ended:
             b.battleEnd();// 승리/패배 처리
             b.battleEndManager();
