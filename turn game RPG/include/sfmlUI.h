@@ -204,6 +204,7 @@ private:
 	sf::Text hpLog;
 	std::string hp;
 	std::string maxHp;
+	float maxWidth{ 0.f };
 public:
 	hpBar(sf::RenderWindow& win, resourceManager& res);
 	void draw(sf::RenderWindow& win);
@@ -211,6 +212,7 @@ public:
 	void setTextHp();
 	void convertHp(const int& hp);
 	void convertMaxHp(const int& maxHp);
+	void setBarSize();
 };
 
 class mpBar {
@@ -232,14 +234,20 @@ public:
 class expBar{
 private:
 	sf::Sprite expbar;
+	sf::Text expLog;
 	sf::RectangleShape greenBar;
-	int MaxExp;
-	int exp;
+	std::string exp;
+	std::string maxExp;
 public:
 	expBar(sf::RenderWindow& win, resourceManager& res);
 	void draw(sf::RenderWindow& win);
 	void position(sf::RenderWindow& win);
 	const sf::Vector2f& getPosition();
+	void setTextExp();
+	void convertExp(const int& exp);
+	void convertMaxExp(const int& maxExp);
+	void setBarSize();
+
 };
 
 //class tiferetContractBar {};
@@ -250,9 +258,19 @@ protected:
 	int frameWidth{ 0 };	 // 직사각형 시작 위치 (intRect)
 	int frameHeight{ 0 };  //직사각형 시작 위치 (intRect)
 	int currentFrame{ 0 };
-	int currentAction{ 0 }; // 0: 숨 내쉬기, 1: 숨 쉬기
-	float elapsed{ 0.f };
+	int currentAction{ 0 }; // 0: default, 1: action
+	float elapsed{ 0.f }; //updateframe 전용
+	float attackElapsed{ 0.f }; //updateAttackFrame 전용
 	float frameDuration{ 0.45f };
+
+	enum class Tex {
+		none, //기본 서있는 상태
+		attack, //공격
+		defense, //방어
+		hit //상대에게 맞을 떄
+	}tex;
+	
+
 public:
 	character() = default;
 	virtual ~character() = default;
@@ -266,7 +284,8 @@ class tiferetImg : public character{
 public:
 	tiferetImg(sf::RenderWindow& win, resourceManager& res);
 	void draw(sf::RenderWindow& win) override;
-	void updateFrame(float& dt);
+	void updateFrame(const float& dt, resourceManager& res);
+	void updateTexture(resourceManager& res, const int& battleState = 0);
 };
 
 class homunculus { //방마다 힐인지 엘리트인지 노말인지 보스인지 구분하기
@@ -278,11 +297,20 @@ protected:
 	int currentAction{ 0 }; // 0: 숨 내쉬기, 1: 숨 쉬기
 	float elapsed{ 0.f };
 	float frameDuration{ 0.45f };
+
+	enum class Tex {
+		none, //기본 서있는 상태
+		attack, //공격
+		hit //상대에게 맞을 떄
+	}tex;
+	
+
 public:
 	homunculus() = default;
 	virtual ~homunculus() = default;
 	virtual void draw(sf::RenderWindow & win) = 0;
 	virtual void position(sf::RenderWindow & win);
+	virtual void updateTexture(resourceManager& res, const int& enemySelect) = 0;
 	const sf::Vector2f& getPosition(); //enemyImg.getPositon
 	const sf::FloatRect& getEnemyImg();
 };
@@ -292,7 +320,7 @@ public:
 	normalOne(sf::RenderWindow& win, resourceManager& res);
 	void draw(sf::RenderWindow& win) override;
 	void updateFrame(float& dt);
-
+	void updateTexture(resourceManager& res, const int& enemySelect) override;
 };
 
 class eliteOne : public homunculus {
@@ -301,6 +329,8 @@ public:
 	void draw(sf::RenderWindow& win) override;
 	void updateFrame(float& dt);
 	void position(sf::RenderWindow& win) override;
+	void updateTexture(resourceManager& res, const int& enemySelect) override;
+
 };
 
 class bossOne : public homunculus {
@@ -309,6 +339,8 @@ public:
 	void draw(sf::RenderWindow& win) override;
 	void updateFrame(float& dt);
 	void position(sf::RenderWindow& win) override;
+	void updateTexture(resourceManager& res, const int& enemySelect) override;
+
 
 };
 
@@ -319,6 +351,9 @@ private:
 	sf::Text hpLog;
 	std::string hp;
 	std::string maxHp;
+	float elapsed{ 0.f };
+	float duration{ 0.f };
+	float targetWidth{ 0.f };
 public:
 	homunculusHpbar(sf::RenderWindow& win, resourceManager& res);
 	void draw(sf::RenderWindow& win);
@@ -327,7 +362,7 @@ public:
 	void setTextHp();
 	void convertHp(const int& hp);
 	void convertMaxHp(const int& maxHp);
-	void barSetSize(); //남은 체력에 따른 바 크기
+	void setBarSize(); //남은 체력에 따른 바 크기
 };
 
 class selectAction { //플레이어 선택지

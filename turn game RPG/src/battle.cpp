@@ -97,7 +97,7 @@ void battle::battleStatus() {
 	}
 }
 
-void battle::playerTurn(int input, int skillInput) {
+void battle::playerTurn(const int& input, int skillInput) {
 	attackInfo res = atkInfo();
 	int finalAttack = 0;
 	bool activeWeaponMaster = false;

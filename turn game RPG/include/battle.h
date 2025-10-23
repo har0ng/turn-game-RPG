@@ -48,7 +48,7 @@ public:
 	void statusManager();
 	void showGetSkill(std::vector<skill> beforeTest, std::vector<skill> afterTest);
 	void battleStatus();    // 스탯 출력
-	void playerTurn(int input, int skillInput = 1);      // 사용자 입력 처리
+	void playerTurn(const int& input, int skillInput = 1);      // 사용자 입력 처리
 	void enemyTurn();       // 랜덤 AI 행동
 	void battleEnd();       // 승패 판단 및 출력
 	void battleEndManager(); //전투 종료후 사후 처리

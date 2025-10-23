@@ -684,7 +684,7 @@ hpBar::hpBar(sf::RenderWindow& win, resourceManager& res)
 	bar.setSize(sf::Vector2f(res.getTexture("hpmp").getSize().x, //x크기 0이 hp 0%임 현재는 100%
 		res.getTexture("hpmp").getSize().y / 2.f));
 	bar.setFillColor(sf::Color(207, 66, 62));
-	
+	maxWidth = bar.getGlobalBounds().width;
 	//hp log
 	hpLog.setFont(res.getFont("fantasy"));
 	hpLog.setCharacterSize(40);
@@ -722,6 +722,11 @@ void hpBar::convertMaxHp(const int& maxHp) {
 	std::string stringHp = std::to_string(maxHp);
 	this->maxHp = stringHp;
 }
+void hpBar::setBarSize() {
+	float newWidth = (static_cast<float>(p->getPlayer_current_health()) / p->getPlayer_health()) * maxWidth;
+
+	bar.setSize(sf::Vector2f(newWidth, bar.getLocalBounds().height));
+}
 
 //mpBar
 mpBar::mpBar(sf::RenderWindow& win, resourceManager& res)
@@ -745,8 +750,8 @@ void mpBar::position(const sf::Vector2f& hpmpP) {
 
 	// bar 중앙 위치에 텍스트 배치
 	mpLog.setPosition(
-		bar.getPosition().x + bar.getSize().x / 2.f,
-		bar.getPosition().y + bar.getSize().y / 2.f);
+		bar.getPosition().x + bar.getSize().x / 2.7f,
+		bar.getPosition().y + bar.getSize().y / 14.f);
 
 }
 void mpBar::setTextMp() {
@@ -764,8 +769,7 @@ void mpBar::convertMaxMp(const int& maxMp) {
 }
 
 //expBar
-expBar::expBar(sf::RenderWindow& win, resourceManager& res) :
-	MaxExp(0), exp(0)
+expBar::expBar(sf::RenderWindow& win, resourceManager& res)
 {
 	//expbar
 	expbar.setTexture(res.getTexture("expbar"));
@@ -776,20 +780,50 @@ expBar::expBar(sf::RenderWindow& win, resourceManager& res) :
 		static_cast<float>(res.getTexture("expbar").getSize().y)));
 	greenBar.setFillColor(sf::Color(91, 180, 102));
 
+	//hp log
+	expLog.setFont(res.getFont("fantasy"));
+	expLog.setCharacterSize(20);
+	expLog.setFillColor(sf::Color(250, 250, 250));
+	expLog.setOutlineColor(sf::Color(250, 250, 250));
+	expLog.setOutlineThickness(1.f);
+
 	//position
 	position(win);
 }
 void expBar::draw(sf::RenderWindow& win) {
 	win.draw(greenBar);
 	win.draw(expbar);
+	win.draw(expLog);
 }
 void expBar::position(sf::RenderWindow& win) {
 	expbar.setPosition(0,1440.f - expbar.getTexture()->getSize().y);
 	greenBar.setPosition(expbar.getPosition());
-	
+	// bar 중앙 위치에 텍스트 배치
+	expLog.setPosition(
+		expbar.getPosition().x + expbar.getLocalBounds().width / 2.f,
+		expbar.getPosition().y + expbar.getLocalBounds().top / 2.f);
 }
 const sf::Vector2f& expBar::getPosition() {
 	return expbar.getPosition();
+}
+void expBar::setTextExp() {
+	convertExp(p->getNow_exp());
+	convertMaxExp(p->getLevel_exp());
+	expLog.setString(exp + "/" + maxExp);
+}
+void expBar::convertExp(const int& exp) {
+	std::string stringExp = std::to_string(exp);
+	this->exp = stringExp;
+}
+void expBar::convertMaxExp(const int& maxExp) {
+	std::string stringExp = std::to_string(maxExp);
+	this->maxExp = stringExp;
+}
+void expBar::setBarSize() {
+	float maxWidth = expbar.getLocalBounds().width; // HP 바 최대 길이
+	float newWidth = (static_cast<float>(p->getNow_exp()) / p->getLevel_exp()) * maxWidth;
+
+	greenBar.setSize(sf::Vector2f(newWidth, expbar.getLocalBounds().height));
 }
 
 //character 공용
@@ -808,25 +842,70 @@ tiferetImg::tiferetImg(sf::RenderWindow& win, resourceManager& res)
 {
 	frameWidth = res.getTexture("tiferet").getSize().x;
 	frameHeight = res.getTexture("tiferet").getSize().y;
+	
 	characterImg.setTexture(res.getTexture("tiferetSprite"));
 	characterImg.setTextureRect(sf::IntRect(0, 0, frameWidth, frameHeight));
+
+	tex = Tex::none;
 	position(win);
 }
 void tiferetImg::draw(sf::RenderWindow& win) {
 	win.draw(characterImg);
 }
-void tiferetImg::updateFrame(float& dt) { //장면 변화
+void tiferetImg::updateFrame(const float& dt , resourceManager& res) { //장면 변화
 	elapsed += dt;
-	if (elapsed >= frameDuration) { //elapsed가 0.15f 보다 커지면 초기화 시키고 장면 변화
-		elapsed = 0.f;
-		currentFrame++;
-		int framesPerAction = 2; // 마지막 액션 + 1이 몇인지. 장면변화 index를 제일 처음으로 초기화
-		if (currentFrame >= framesPerAction)
-			currentFrame = 0;
+	switch (tex){
+	case Tex::none:
+		if (elapsed >= frameDuration) { //elapsed가 0.45f 보다 커지면 초기화 시키고 장면 변화
+			elapsed = 0.f;
+			currentFrame++;
+			int framesPerAction = 2; // 마지막 액션 + 1이 몇인지. 장면변화 index를 제일 처음으로 초기화
+			if (currentFrame >= framesPerAction)
+				currentFrame = 0;
 
-		characterImg.setTextureRect(
-			sf::IntRect(frameWidth * currentFrame, 0, frameWidth, frameHeight)
-		);
+			characterImg.setTextureRect(
+				sf::IntRect(frameWidth * currentFrame, 0, frameWidth, frameHeight)
+			);
+		}
+		break;
+	case Tex::attack:
+		if (elapsed >= 0.4f) {
+			tex = Tex::none;
+			updateTexture(res);	
+		}
+		break;
+	case Tex::defense:
+		updateTexture(res);
+		break;
+	case Tex::hit:
+		updateTexture(res);
+		break;
+	default:
+		break;
+	}
+}
+void tiferetImg::updateTexture(resourceManager& res, const int& playerSelect) {
+	tex = static_cast<Tex>(playerSelect);
+	elapsed = 0.f;
+	switch (tex){
+	case Tex::none:
+		characterImg.setTexture(res.getTexture("tiferetSprite"));
+		characterImg.setTextureRect(sf::IntRect(0, 0, frameWidth, frameHeight));
+		break;
+	case Tex::attack:
+		characterImg.setTexture(res.getTexture("tiferetAttack"));
+		characterImg.setTextureRect(sf::IntRect(0, 0, frameWidth, frameHeight));
+		break;
+	case Tex::defense: //임시 , 이미지가 없어서
+		characterImg.setTexture(res.getTexture("tiferetSprite"));
+		characterImg.setTextureRect(sf::IntRect(0, 0, frameWidth, frameHeight));
+		break;
+	case Tex::hit://임시 , 이미지가 없어서
+		characterImg.setTexture(res.getTexture("tiferetSprite"));
+		characterImg.setTextureRect(sf::IntRect(0, 0, frameWidth, frameHeight));
+		break;
+	default:
+		break;
 	}
 }
 
@@ -867,6 +946,9 @@ void normalOne::updateFrame(float& dt) {
 		);
 	}
 }
+void normalOne::updateTexture(resourceManager& res, const int& enemySelect) {
+
+}
 
 //eliteOne
 eliteOne::eliteOne(sf::RenderWindow& win, resourceManager& res)
@@ -896,6 +978,9 @@ void eliteOne::updateFrame(float& dt) {
 }
 void eliteOne::position(sf::RenderWindow& win) {
 	enemyImg.setPosition(win.getSize().x - (win.getSize().x / 5.f), win.getSize().y / 1.4f);
+}
+void eliteOne::updateTexture(resourceManager& res, const int& enemySelect) {
+	return;
 }
 
 //bossOne
@@ -927,6 +1012,9 @@ void bossOne::updateFrame(float& dt) {
 void bossOne::position(sf::RenderWindow& win) {
 	enemyImg.setPosition(win.getSize().x - (win.getSize().x / 5.f), win.getSize().y / 2.9f);
 }
+void bossOne::updateTexture(resourceManager& res, const int& enemySelect) {
+	return;
+}
 
 //homunculusHpbar
 homunculusHpbar::homunculusHpbar(sf::RenderWindow& win, resourceManager& res)
@@ -936,7 +1024,6 @@ homunculusHpbar::homunculusHpbar(sf::RenderWindow& win, resourceManager& res)
 
 	//bar
 	bar.setFillColor(sf::Color(207, 66, 62));
-
 	//hp log
 	hpLog.setFont(res.getFont("fantasy"));
 	hpLog.setCharacterSize(40);
@@ -958,7 +1045,6 @@ void homunculusHpbar::position(const sf::Vector2f& enemyP, const sf::FloatRect& 
 
 	// bar 위치
 	bar.setPosition(enemyHp.getPosition());
-
 	// 텍스트 중앙 정렬
 	sf::FloatRect textBounds = hpLog.getGlobalBounds();
 	hpLog.setOrigin(
@@ -982,9 +1068,10 @@ void homunculusHpbar::convertMaxHp(const int& maxHp) {
 	std::string stringHp = std::to_string(maxHp);
 	this->maxHp = stringHp;
 }
-void homunculusHpbar::barSetSize() {
+void homunculusHpbar::setBarSize() {
 	float maxWidth = enemyHp.getLocalBounds().width; // HP 바 최대 길이
 	float newWidth = (static_cast<float>(e->getEnemyCurrentHealth()) / e->getEnemy_health()) * maxWidth;
+
 	bar.setSize(sf::Vector2f(newWidth, enemyHp.getLocalBounds().height));
 }
 

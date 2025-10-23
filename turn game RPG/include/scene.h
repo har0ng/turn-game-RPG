@@ -159,6 +159,7 @@ public:
 class roomScene : public scene {
 private:
 	//scene
+	resourceManager& res;
 	sf::RenderWindow& window; // 빈 도화지 받아오기
 	sf::Sprite background;   // 배경화면
 	sf::View view;
@@ -190,6 +191,7 @@ private:
 	//battle
 	enum class BattleState { NotStarted, PlayerTurn, EnemyTurn, Ended };
 	BattleState battleState; // 현재 전투 상태
+	enum class playerSelect {attack = 1, defense , skill};
 	battle b;
 public:
 	roomScene(sf::RenderWindow& win, resourceManager& res , const int& roomNum);

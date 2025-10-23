@@ -566,7 +566,7 @@ void floorScene::setRoomNum(std::string roomName) {
 
 //roomScene
 roomScene::roomScene(sf::RenderWindow& win, resourceManager& res, const int& roomNum) :
-    window(win), log(win), view(sf::Vector2f(1280.f, 720.f), sf::Vector2f(2560.f, 1440.f)),
+    res(res),window(win), log(win), view(sf::Vector2f(1280.f, 720.f), sf::Vector2f(2560.f, 1440.f)),
     frameDuration(0.15f), backBtn("back", 0.0f, 960.0f, res.getFont("fantasy")),
     statusFrame(res), hpB(win, res), mpB(win, res), expB(win, res), eloaImg(win, res)
     , normalOneImg(win, res), eliteOneImg(win, res), bossOneImg(win, res),
@@ -610,7 +610,7 @@ roomScene::roomScene(sf::RenderWindow& win, resourceManager& res, const int& roo
 }
 void roomScene::update(sf::RenderWindow& window) {
     deltaTime = clock.restart().asSeconds();  // 프레임 독립적 시간
-    eloaImg.updateFrame(deltaTime);          // tiferetImg 애니메이션 갱신
+    eloaImg.updateFrame(deltaTime,res);          // tiferetImg 애니메이션 갱신
     selectRoomType(roomType);   //무슨 방인지 구분
     sf::Event event;
     while (window.pollEvent(event)) {//이벤트가 있다면 계속 반복
@@ -635,17 +635,20 @@ void roomScene::update(sf::RenderWindow& window) {
             if (battleState == BattleState::PlayerTurn && event.type == sf::Event::MouseButtonReleased && action.isClicked(worldPos, attackAction, defenseAction, skillAction) && event.mouseButton.button == sf::Mouse::Left) {
                 isTransition();
                 if (attackAction) {
-                    b.playerTurn(1); // cmd 로그를 보면 업뎃 되어있음. 이걸 실시간으로 피가 깎인걸 그래픽적인 부분과 현재체력을 보여주게끔 해줘야함 
+                    b.playerTurn(static_cast<int>(playerSelect::attack)); // cmd 로그를 보면 업뎃 되어있음. 이걸 실시간으로 피가 깎인걸 그래픽적인 부분과 현재체력을 보여주게끔 해줘야함 
+                    eloaImg.updateTexture(res, static_cast<int>(playerSelect::attack));
                     battleState = BattleState::EnemyTurn;
                     attackAction = false;
                 }
                 else if (defenseAction) {
-                    b.playerTurn(2);
+                    b.playerTurn(static_cast<int>(playerSelect::defense));
+                    eloaImg.updateTexture(res, static_cast<int>(playerSelect::defense));
                     battleState = BattleState::EnemyTurn;
                     defenseAction = false;
                 }
                 else if (skillAction) {
-                    b.playerTurn(3);
+                    b.playerTurn(static_cast<int>(playerSelect::skill));                    eloaImg.updateTexture(res, static_cast<int>(playerSelect::attack));
+                    eloaImg.updateTexture(res, static_cast<int>(playerSelect::skill));
                     battleState = BattleState::EnemyTurn;
                     skillAction = false;
                 }
@@ -774,8 +777,14 @@ void roomScene::updateGameStatus() {
         }
         //체력 계속 갱신
         hoHpB.setTextHp();
-        hoHpB.barSetSize(); //체력 바 실시간 업데이트
+        hoHpB.setBarSize(); //체력 바 실시간 업데이트
+
         hpB.setTextHp();
+        hpB.setBarSize();
+
         mpB.setTextMp();
+
+        expB.setTextExp();
+        expB.setBarSize();
     }
 }//백엔드와 연결된 직접적인 로직
