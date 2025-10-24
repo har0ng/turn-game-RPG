@@ -726,7 +726,7 @@ void roomScene::setBackground(resourceManager& res) {
     }
     background.setTexture(res.getTexture("1floorBattleRoomBg"));
 }
-void roomScene::updateFrame(float& dt) {
+void roomScene::updateFrame(float& dt) { //healRoom 전용
     frame += dt;
     if (frame >= 0.8f) { //elapsed가 0.15f 보다 커지면 초기화 시키고 장면 변화
         frame = 0.f;
@@ -748,7 +748,6 @@ void roomScene::updateGameStatus() {
             battleState = BattleState::PlayerTurn;// 전투 시작
             p->setBeforePlayer(); //전투 시작전 상태(레벨업 비교)
             break;
-
         case BattleState::PlayerTurn:
             p->setTurnPlayer();   // (버프 적용 스텟)
             p->setBattlePlayer(); // (버프 미적용 스텟)
@@ -757,7 +756,6 @@ void roomScene::updateGameStatus() {
                 battleState = BattleState::Ended;
             }
             break;
-
         case BattleState::EnemyTurn:
             transition = false; //반복 클릭 해제
             enemyAction = e->enemyAction(); //랜덤값 저장
@@ -777,15 +775,18 @@ void roomScene::updateGameStatus() {
             back = true;
             break;
         }
-        //체력 계속 갱신
+        //적 체력 계속 갱신
         hoHpB.setTextHp();
         hoHpB.setBarSize(); //체력 바 실시간 업데이트
 
+        //플레이어 체력 계속 갱신
         hpB.setTextHp();
         hpB.setBarSize();
 
+        //플레이어 마나 계속 갱신
         mpB.setTextMp();
 
+        //경험치 계속 갱신
         expB.setTextExp();
         expB.setBarSize();
     }

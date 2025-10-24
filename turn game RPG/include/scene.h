@@ -169,6 +169,8 @@ private:
 	bool attackAction{ false }; //true가 되면 그 선택지를 누른 것.
 	bool defenseAction{ false };
 	bool skillAction{ false };
+
+	//healRoomScene
 	int currentFrame{ 0 };
 	float frame{ 0 };
 	float frameWidth{ 0 };

@@ -964,6 +964,19 @@ void normalOne::updateFrame(float& dt, resourceManager& res) {
 		}
 		break;
 	case homunculus::Tex::attack2:
+		if (elapsed >= 0.2f) { //elapsed가 0.2f 보다 커지면 초기화 시키고 장면 변화
+			elapsed = 0.f;
+			currentFrame++;
+			int framesPerAction = 3; // 마지막 액션 + 1이 몇인지. 장면변화 index를 제일 처음으로 초기화
+			if (currentFrame >= framesPerAction) {
+				currentFrame = 0;
+				tex = Tex::none;
+				updateTexture(res);
+			}
+			enemyImg.setTextureRect(
+				sf::IntRect(frameWidth * currentFrame, 0, frameWidth, frameHeight)
+			);
+		}
 		break;
 	case homunculus::Tex::hit:
 		break;
@@ -974,7 +987,7 @@ void normalOne::updateFrame(float& dt, resourceManager& res) {
 void normalOne::updateTexture(resourceManager& res, const int& enemyAction) {
 	tex = static_cast<Tex>(enemyAction);
 	elapsed = 0.f;
-	switch (tex) {
+	switch (tex) { //스킬 추가시 case 업데이트
 	case Tex::none:
 		enemyImg.setTexture(res.getTexture("normal1Sprite"));
 		enemyImg.setTextureRect(sf::IntRect(0, 0, frameWidth, frameHeight));
@@ -1027,6 +1040,7 @@ void eliteOne::position(sf::RenderWindow& win) {
 	enemyImg.setPosition(win.getSize().x - (win.getSize().x / 5.f), win.getSize().y / 1.4f);
 }
 void eliteOne::updateTexture(resourceManager& res, const int& enemySelect) {
+	//텍스처 추가 시 업데이트
 	return;
 }
 
@@ -1060,6 +1074,7 @@ void bossOne::position(sf::RenderWindow& win) {
 	enemyImg.setPosition(win.getSize().x - (win.getSize().x / 5.f), win.getSize().y / 2.9f);
 }
 void bossOne::updateTexture(resourceManager& res, const int& enemySelect) {
+	//텍스처 추가 시 업데이트
 	return;
 }
 
