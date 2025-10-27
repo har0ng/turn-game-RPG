@@ -255,8 +255,11 @@ public:
 class character {
 protected:
 	sf::Sprite characterImg; //전체시트에 의존한 분할 시트
-	int frameWidth{ 0 };	 // 직사각형 시작 위치 (intRect)
-	int frameHeight{ 0 };  //직사각형 시작 위치 (intRect)
+	sf::Sprite attackEffect;
+	int characterWidth{ 0 };	 // 직사각형 시작 위치 (intRect)
+	int characterHeight{ 0 };  //직사각형 시작 위치 (intRect)
+	int effectWidth{ 0 };
+	int effectHeight{ 0 };
 	int currentFrame{ 0 };
 	int currentAction{ 0 }; // 0: default, 1: action
 	float elapsed{ 0.f }; //updateframe 전용
@@ -275,15 +278,19 @@ public:
 	character() = default;
 	virtual ~character() = default;
 	virtual void draw(sf::RenderWindow& win) = 0;
+	virtual void effectDraw(sf::RenderWindow& win) = 0;
 	virtual void position(sf::RenderWindow& win);
+	virtual void setEffectPosition(const sf::Vector2f& homunculusPos);
 	const sf::Vector2f& getPosition();
 	const sf::Sprite& getSprite();
+	
 };
 
 class tiferetImg : public character{
 public:
 	tiferetImg(sf::RenderWindow& win, resourceManager& res);
 	void draw(sf::RenderWindow& win) override;
+	void effectDraw(sf::RenderWindow& win) override;
 	void updateFrame(const float& dt, resourceManager& res);
 	void updateTexture(resourceManager& res, const int& battleState = 0);
 };
@@ -395,11 +402,12 @@ protected:
 	float centerY;
 	float barHeight;
 	bool fading{ false };
-	sf::Uint8 sideAlpha{ 100 };
-	sf::Uint8 centerAlpha{ 170 };
-	sf::Uint8 startAlpha{ 255 };
+	bool appear{ false };
+	sf::Uint8 sideAlpha{ 0 };
+	sf::Uint8 centerAlpha{ 0 };
+	sf::Uint8 startAlpha{ 0 };
 	float elapsedTime{ 0.f };
-	
+
 public:
 	gradation() = default;
 	virtual ~gradation() = default;
@@ -408,6 +416,10 @@ public:
 	virtual void setColor() = 0;
 	virtual void startFade();
 	virtual void updateFade(float& dt);
+	virtual bool isFading();
+	virtual void startAppear();
+	virtual void updateAppear(float& dt);
+	virtual bool isAppearing();
 };
 
 class startGradation : public gradation{ //전투 시작시 start 배경 그라데이션
@@ -416,4 +428,13 @@ public:
 	void draw(sf::RenderWindow& win) override;
 	void setPosition() override;
 	void setColor() override;
+};
+
+class battleGradation : public gradation {
+public:
+	battleGradation(resourceManager& res);
+	void draw(sf::RenderWindow& win) override;
+	void setPosition() override;
+	void setColor() override;
+	void selectText(const int& battleTurn);
 };

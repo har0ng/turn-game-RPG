@@ -34,8 +34,8 @@ int main() {
     // 씬 히스토리 스택
     std::vector<std::unique_ptr<scene>> history;
 
+    window.setFramerateLimit(120);
     while (window.isOpen()) {// 창이 열려 있는 동안 반복 , 이벤트니깐 거의 UI
-        window.setFramerateLimit(60);
         window.clear(sf::Color::Black); // 화면 지우기 , 안하면 새하얀 화면 (시작이라 보면 편함)
         currentScene->update(window); // 입력 처리, 상태 업데이트 (이벤트를 만들어내야 렌더링이 가능)
         currentScene->render(window); // 화면 렌더링 (부품들을 불러옴, 마우스 제외)

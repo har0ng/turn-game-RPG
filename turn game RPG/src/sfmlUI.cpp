@@ -836,21 +836,33 @@ const sf::Vector2f& character::getPosition(){
 const sf::Sprite& character::getSprite() {
 	return characterImg;
 }
+void character::setEffectPosition(const sf::Vector2f& homunculusPos){
+	attackEffect.setPosition(homunculusPos);
+}
 
 //tiferet
 tiferetImg::tiferetImg(sf::RenderWindow& win, resourceManager& res)
 {
-	frameWidth = res.getTexture("tiferet").getSize().x;
-	frameHeight = res.getTexture("tiferet").getSize().y;
+	characterWidth = res.getTexture("tiferet").getSize().x;
+	characterHeight = res.getTexture("tiferet").getSize().y;
 	
 	characterImg.setTexture(res.getTexture("tiferetSprite"));
-	characterImg.setTextureRect(sf::IntRect(0, 0, frameWidth, frameHeight));
+	characterImg.setTextureRect(sf::IntRect(0, 0, characterWidth, characterHeight));
 
+	effectWidth = 504;
+	effectHeight = 600;
+
+	attackEffect.setTexture(res.getTexture("attackEffectSheet"));
+	attackEffect.setTextureRect(sf::IntRect(0, 0, 0, 0));
+	
 	tex = Tex::none;
 	position(win);
 }
 void tiferetImg::draw(sf::RenderWindow& win) {
 	win.draw(characterImg);
+}
+void tiferetImg::effectDraw(sf::RenderWindow& win) {
+	win.draw(attackEffect);
 }
 void tiferetImg::updateFrame(const float& dt , resourceManager& res) { //장면 변화
 	elapsed += dt;
@@ -860,18 +872,28 @@ void tiferetImg::updateFrame(const float& dt , resourceManager& res) { //장면 
 			elapsed = 0.f;
 			currentFrame++;
 			int framesPerAction = 2; // 마지막 액션 + 1이 몇인지. 장면변화 index를 제일 처음으로 초기화
-			if (currentFrame >= framesPerAction)
+			if (currentFrame >= framesPerAction) {
 				currentFrame = 0;
-
+			}
 			characterImg.setTextureRect(
-				sf::IntRect(frameWidth * currentFrame, 0, frameWidth, frameHeight)
+				sf::IntRect(characterWidth * currentFrame, 0, characterWidth, characterHeight)
 			);
 		}
 		break;
 	case Tex::attack:
-		if (elapsed >= 0.4f) {
-			tex = Tex::none;
-			updateTexture(res);	
+		if (elapsed >= 0.05f) {
+			elapsed = 0.f;
+			currentFrame++;
+			int framesPerAction = 6;
+			if (currentFrame >= framesPerAction) {
+				currentFrame = 0;
+				tex = Tex::none;
+				updateTexture(res);
+				break;
+			}
+			attackEffect.setTextureRect(
+				sf::IntRect(effectWidth * currentFrame, 0, effectWidth, effectHeight)
+			);
 		}
 		break;
 	case Tex::defense:
@@ -890,19 +912,24 @@ void tiferetImg::updateTexture(resourceManager& res, const int& playerSelect) {
 	switch (tex){
 	case Tex::none:
 		characterImg.setTexture(res.getTexture("tiferetSprite"));
-		characterImg.setTextureRect(sf::IntRect(0, 0, frameWidth, frameHeight));
+		characterImg.setTextureRect(sf::IntRect(0, 0, characterWidth, characterHeight));
+		attackEffect.setTextureRect(sf::IntRect(0, 0, 0, 0));
+		currentFrame = 0;  // 프레임 초기화 추가
 		break;
 	case Tex::attack:
 		characterImg.setTexture(res.getTexture("tiferetAttack"));
-		characterImg.setTextureRect(sf::IntRect(0, 0, frameWidth, frameHeight));
+		characterImg.setTextureRect(sf::IntRect(0, 0, characterWidth, characterHeight));
+		attackEffect.setTextureRect(sf::IntRect(0, 0, effectWidth, effectHeight));
 		break;
 	case Tex::defense: //임시 , 이미지가 없어서
 		characterImg.setTexture(res.getTexture("tiferetSprite"));
-		characterImg.setTextureRect(sf::IntRect(0, 0, frameWidth, frameHeight));
+		characterImg.setTextureRect(sf::IntRect(0, 0, characterWidth, characterHeight));
+		attackEffect.setTextureRect(sf::IntRect(0, 0, 0, 0));
 		break;
 	case Tex::hit://임시 , 이미지가 없어서
 		characterImg.setTexture(res.getTexture("tiferetSprite"));
-		characterImg.setTextureRect(sf::IntRect(0, 0, frameWidth, frameHeight));
+		characterImg.setTextureRect(sf::IntRect(0, 0, characterWidth, characterHeight));
+		attackEffect.setTextureRect(sf::IntRect(0, 0, 0, 0));
 		break;
 	default:
 		break;
@@ -949,7 +976,7 @@ void normalOne::updateFrame(float& dt, resourceManager& res) {
 		}
 		break;
 	case homunculus::Tex::attack1:
-		if (elapsed >= 0.3f) { //elapsed가 0.3f 보다 커지면 초기화 시키고 장면 변화
+		if (elapsed >= 0.2f) { //elapsed가 0.3f 보다 커지면 초기화 시키고 장면 변화
 			elapsed = 0.f;
 			currentFrame++;
 			int framesPerAction = 3; // 마지막 액션 + 1이 몇인지. 장면변화 index를 제일 처음으로 초기화
@@ -1247,7 +1274,9 @@ void selectAction::ActionManager(sf::Vector2f& mousePos) {
 
 //gradation 공용
 void gradation::startFade() {
+	if (fading) { return; } // appear 중이면 무시
 	fading = true;
+	elapsedTime = 0.f;
 }
 void gradation::updateFade(float& dt) {
 	sf::Color textColor = text.getFillColor();
@@ -1256,13 +1285,13 @@ void gradation::updateFade(float& dt) {
 	}
 	elapsedTime += dt;
 	float fadeTime = elapsedTime / 1.0f; // 1.0초 동안 페이드
-	if (fadeTime > 1.f) {
-		fadeTime = 1.f;
+	if (fadeTime > 1.0f) {
+		fadeTime = 1.0f;
 	}
 
-	sideAlpha = static_cast<sf::Uint8>(std::max(0.f, 100.f * (1.f - fadeTime)));
-	centerAlpha = static_cast<sf::Uint8>(std::max(0.f, 170.f * (1.f - fadeTime)));
-	startAlpha = static_cast<sf::Uint8>(std::max(0.f, 255.f * (1.f - fadeTime)));
+	sideAlpha = static_cast<sf::Uint8>(std::max(0.f, 100.f * (1.0f - fadeTime)));
+	centerAlpha = static_cast<sf::Uint8>(std::max(0.f, 170.f * (1.0f - fadeTime)));
+	startAlpha = static_cast<sf::Uint8>(std::max(0.f, 255.f * (1.0f - fadeTime)));
 
 	for (int i = 0; i < 4; i++) {
 		sideGrad[i].color.a = static_cast<sf::Uint8>(sideAlpha);
@@ -1272,10 +1301,50 @@ void gradation::updateFade(float& dt) {
 	textColor.a = static_cast<sf::Uint8>(startAlpha);
 	text.setFillColor(textColor);
 
-	if (fadeTime >= 1.f) {
+	if (fadeTime >= 1.0f) {
 		fading = false;
 		elapsedTime = 0.f;
 	}
+}
+bool gradation::isFading() {
+	return fading;
+}
+void gradation::startAppear() {
+	if (fading) { return; }// fade 중이면 무시
+	appear = true;
+	elapsedTime = 0.f;
+}
+void gradation::updateAppear(float& dt) {
+	sf::Color textColor = text.getFillColor();
+
+	if (appear == false) {
+		return;
+	}
+	elapsedTime += dt;
+	float appearTime = elapsedTime / 1.0f; // 1.5초 동안 appear
+	if (appearTime > 1.0f) {
+		appearTime = 1.0f;
+	}
+
+	sideAlpha = static_cast<sf::Uint8>(std::max(0.f, 100.f * appearTime));
+	centerAlpha = static_cast<sf::Uint8>(std::max(0.f, 170.f * appearTime));
+	startAlpha = static_cast<sf::Uint8>(std::max(0.f, 255.f * appearTime));
+
+	for (int i = 0; i < 4; i++) {
+		sideGrad[i].color.a = static_cast<sf::Uint8>(sideAlpha);
+		centerGrad[i].color.a = static_cast<sf::Uint8>(centerAlpha);
+	}
+
+	textColor.a = static_cast<sf::Uint8>(startAlpha);
+	text.setFillColor(textColor);
+
+	if (appearTime >= 1.0f) {
+		appear = false;
+		elapsedTime = 0.f;
+	}
+}
+bool gradation::isAppearing() {
+	return appear;
 }
 
 //startGradtion
@@ -1333,4 +1402,72 @@ void startGradation::setColor() {
 	centerGrad[2].color = sf::Color(0, 0, 0, centerAlpha); // 오른쪽 아래
 	//start
 	text.setFillColor(sf::Color(97, 0, 0, 255));
+}
+
+//battleGradation
+battleGradation::battleGradation(resourceManager& res) {
+	width = static_cast<float>(res.getTexture("1floorBattleRoomBg").getSize().x);
+	height = static_cast<float>(res.getTexture("1floorBattleRoomBg").getSize().y);
+	centerY = height / 4.f;
+	barHeight = 100.f; // 띠의 높이
+
+	//text입력
+	text.setFont(res.getFont("fantasy"));
+	text.setCharacterSize(60);
+
+	//사이드 그라데이션 정의
+	sideGrad.setPrimitiveType(sf::Quads);
+	sideGrad.resize(4);
+	//센터 그라데이션 정의
+	centerGrad.setPrimitiveType(sf::Quads);
+	centerGrad.resize(4);
+	//위치와 색 정의
+	setPosition();
+	setColor();
+}
+void battleGradation::draw(sf::RenderWindow& win) {
+	win.draw(sideGrad);
+	win.draw(centerGrad);
+	win.draw(text);
+}
+void battleGradation::setPosition() {
+	//sideGrad
+	sideGrad[0].position = sf::Vector2f(0.f, centerY - barHeight / 2.f);     // 왼쪽 위
+	sideGrad[1].position = sf::Vector2f(width, centerY - barHeight / 2.f);   // 오른쪽 위
+	sideGrad[2].position = sf::Vector2f(width, centerY + barHeight / 2.f);   // 오른쪽 아래
+	sideGrad[3].position = sf::Vector2f(0.f, centerY + barHeight / 2.f);     // 왼쪽 아래
+	//centerGrad
+	centerGrad[0].position = sf::Vector2f(width / 4.f, centerY - barHeight / 2.f);		 // 왼쪽 위
+	centerGrad[1].position = sf::Vector2f(width / 4.f * 3.f, centerY - barHeight / 2.f); // 오른쪽 위
+	centerGrad[2].position = sf::Vector2f(width / 4.f * 3.f, centerY + barHeight / 2.f); // 오른쪽 아래
+	centerGrad[3].position = sf::Vector2f(width / 4.f, centerY + barHeight / 2.f);		 // 왼쪽 아래
+	//text
+	text.setPosition(sf::Vector2f(centerGrad.getBounds().width - 200.f,
+		centerY - barHeight / 2.f + 5.f));
+}		
+void battleGradation::setColor() {
+	//sideGrad
+	sideGrad[0].color = sf::Color(0, 0, 0, sideAlpha);   // 왼쪽 위
+	sideGrad[3].color = sf::Color(0, 0, 0, sideAlpha);   // 왼쪽 아래
+	sideGrad[1].color = sf::Color(0, 0, 0, sideAlpha);   // 오른쪽 위
+	sideGrad[2].color = sf::Color(0, 0, 0, sideAlpha);   // 오른쪽 아래
+	//centerGrad
+	centerGrad[0].color = sf::Color(0, 0, 0, centerAlpha); // 왼쪽 위
+	centerGrad[3].color = sf::Color(0, 0, 0, centerAlpha); // 왼쪽 아래
+	centerGrad[1].color = sf::Color(0, 0, 0, centerAlpha); // 오른쪽 위
+	centerGrad[2].color = sf::Color(0, 0, 0, centerAlpha); // 오른쪽 아래
+	//start
+	text.setFillColor(sf::Color(sf::Color::White));
+}
+void battleGradation::selectText(const int& battleTurn) {
+	switch (battleTurn){
+	case 1:
+		text.setString("player turn!");
+		break;
+	case 2:
+		text.setString("enemy turn!");
+		break;
+	default:
+		break;
+	}
 }

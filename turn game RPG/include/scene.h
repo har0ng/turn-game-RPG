@@ -90,6 +90,7 @@ private:
 	classSelectButton malkuthBtn; // 말쿠트(아도나이) 버튼
 	backButton backBtn; // 뒤로가기 버튼
 	bool selectBtn; //back 눌렸는지 직업 눌렸는지 확인
+	
 
 public:
 	classSelectScene(sf::RenderWindow& win, sf::Font& font, sf::Texture& tex);//빈 도화지와 폰트
@@ -104,6 +105,10 @@ private:
 	sf::Sprite background;   // 이미지를 표시할 스프라이트
 	sfmlLog log; // 필요할수도 있으니.
 	float elapsed{ 0.f };
+	enum class className {
+		tiferet,
+		malkuth
+	}classname;
 	
 public:
 	mapScene(sf::RenderWindow& win, resourceManager& res);
@@ -112,7 +117,7 @@ public:
 	void updateFade(sf::Sprite& sprite) override;
 	void updateAppear(sf::Sprite& sprite) override;
 	void allStartAppear() override;
-
+	void effectUploading(resourceManager& res);
 };
 
 class floorScene : public scene {
@@ -163,12 +168,12 @@ private:
 	sf::RenderWindow& window; // 빈 도화지 받아오기
 	sf::Sprite background;   // 배경화면
 	sf::View view;
-	sf::Clock clock;
 	sfmlLog log; // 싸울땐 로그 필수
 	float frameDuration;
 	bool attackAction{ false }; //true가 되면 그 선택지를 누른 것.
 	bool defenseAction{ false };
 	bool skillAction{ false };
+	sf::Clock roomClock;
 
 	//healRoomScene
 	int currentFrame{ 0 };
@@ -190,10 +195,14 @@ private:
 	homunculusHpbar hoHpB;
 	selectAction action;
 	startGradation startGD;
+	battleGradation battleGD;
+	float battleDelayTime{ 0.f }; //updateGameStatus()함수에서 턴별 시간차를 주기 위함.
+	bool battleGDStarted = false; // startGD가 끝난 뒤 battleGD를 한 번만 시작시키기 위한 플래그
 
 	//battle
 	enum class BattleState { NotStarted, PlayerTurn, EnemyTurn, Ended };
 	BattleState battleState; // 현재 전투 상태
+	BattleState prevBattleState = BattleState::NotStarted; // 이전 프레임의 상태 추적
 	enum class playerSelect {attack = 1, defense , skill};
 	battle b;
 public:
@@ -205,5 +214,6 @@ public:
 	void setBackground(resourceManager& res);
 	void updateFrame(float& dt);
 	void updateGameStatus();
+	
 };
 
