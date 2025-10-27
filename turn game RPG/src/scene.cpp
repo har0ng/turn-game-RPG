@@ -611,14 +611,21 @@ roomScene::roomScene(sf::RenderWindow& win, resourceManager& res, const int& roo
         if (getEnemyPtr().getEnemyType() == "normal") {
             hoHpB.position(normalOneImg.getPosition(), normalOneImg.getEnemyImg());
             eloaImg.setEffectPosition(normalOneImg.getPosition());
+            normalOneImg.setEffectPosition(eloaImg.getPosition());
+            normalOneImg.homunculusStartFade();
         }
         else if (getEnemyPtr().getEnemyType() == "elite") {
             hoHpB.position(eliteOneImg.getPosition(), eliteOneImg.getEnemyImg());
             eloaImg.setEffectPosition(eliteOneImg.getPosition());
+            eliteOneImg.setEffectPosition(eloaImg.getPosition());
+            eliteOneImg.homunculusStartFade();
         }
         else if (getEnemyPtr().getEnemyType() == "boss") {
             hoHpB.position(bossOneImg.getPosition(), bossOneImg.getEnemyImg());
             eloaImg.setEffectPosition(bossOneImg.getPosition());
+            normalOneImg.setEffectPosition(eloaImg.getPosition());
+            bossOneImg.setEffectPosition(eloaImg.getPosition());
+            bossOneImg.homunculusStartFade();
         }
         //5. enemy hp text 위치 조정 , 포인터가 정해지는게 4번이라 그 이후에 해야 enemyType에 맞는 hp를 들고옴
         hoHpB.setTextHp();
@@ -646,6 +653,9 @@ void roomScene::update(sf::RenderWindow& window) {
         if (event.type == sf::Event::MouseButtonReleased && backBtn.isClicked(worldPos) && event.mouseButton.button == sf::Mouse::Left) {
             back = true;
         }
+       /* if (battleState == BattleState::BackToMap && event.type == sf::Event::MouseButtonReleased && backBtn.isClicked(worldPos) && event.mouseButton.button == sf::Mouse::Left) {
+            back = true;
+        }*/
 
         if(roomType != 1){
             //선택지 아웃라인 스프라이트
@@ -659,12 +669,7 @@ void roomScene::update(sf::RenderWindow& window) {
                     eloaImg.updateTexture(res, static_cast<int>(playerSelect::attack));
                     attackAction = false;
                     battleDelayTime = 0.f;
-                    if (e->getEnemyCurrentHealth() <= 0) {//무승부 방지
-                        battleState = BattleState::Ended;
-                    }
-                    else {
-                        battleState = BattleState::EnemyTurn;
-                    }
+                    battleState = BattleState::EnemyTurn;
                 }
                 else if (defenseAction) {
                     b.playerTurn(static_cast<int>(playerSelect::defense));
@@ -721,6 +726,7 @@ void roomScene::render(sf::RenderWindow& window) {
             battleGD.draw(window);
         }
         eloaImg.effectDraw(window);
+        normalOneImg.effectDraw(window);
     }
 }
 void roomScene::allStartAppear() {
@@ -806,7 +812,19 @@ void roomScene::updateGameStatus() {
             b.battleStatus(); //유저와 적의 상황(체력 공격력 등)
             break;
         case BattleState::EnemyTurn:
-            transition = false; //반복 클릭 해제
+            if (e->getEnemyCurrentHealth() <= 0) {//무승부 방지
+                if (getEnemyPtr().getEnemyType() == "normal" && !homunculusUpdateEnd) {
+                    normalOneImg.homunculusUpdateFade(homunculusUpdateEnd);
+                }
+                else if (getEnemyPtr().getEnemyType() == "elite" && !homunculusUpdateEnd) {
+                    eliteOneImg.homunculusUpdateFade(homunculusUpdateEnd);
+                }
+                else if (getEnemyPtr().getEnemyType() == "boss" && !homunculusUpdateEnd) {
+                    bossOneImg.homunculusUpdateFade(homunculusUpdateEnd);
+                }
+                if (homunculusUpdateEnd) { battleState = BattleState::Ended; }
+                break;
+            }
             if (battleDelayTime >= 1.0f) {
                 enemyAction = e->enemyAction(); //랜덤값 저장
                 normalOneImg.updateTexture(res, enemyAction); //텍스쳐 바꾸기 위함
@@ -816,6 +834,7 @@ void roomScene::updateGameStatus() {
                 }
                 else {
                     battleState = BattleState::PlayerTurn;
+                    transition = false; //반복 클릭 해제
                     b.statusManager();
                 }
                 battleDelayTime = 0.f; //updateGameStatus()함수에서 턴별 시간차를 초기화
@@ -824,7 +843,9 @@ void roomScene::updateGameStatus() {
         case BattleState::Ended:
             b.battleEnd();// 승리/패배 처리
             b.battleEndManager();
-            back = true;
+            battleState = BattleState::BackToMap;
+            break;
+        case BattleState::BackToMap:
             break;
         default:
             break;

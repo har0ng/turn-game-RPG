@@ -261,7 +261,7 @@ protected:
 	int effectWidth{ 0 };
 	int effectHeight{ 0 };
 	int currentFrame{ 0 };
-	int currentAction{ 0 }; // 0: default, 1: action
+	int currentEffectFrame{ 0 };
 	float elapsed{ 0.f }; //updateframe 전용
 	float attackElapsed{ 0.f }; //updateAttackFrame 전용
 	float frameDuration{ 0.45f };
@@ -298,12 +298,20 @@ public:
 class homunculus { //방마다 힐인지 엘리트인지 노말인지 보스인지 구분하기
 protected:
 	sf::Sprite enemyImg; //frameWidth와 frameHeight의 기준이 될 이미지
-	int frameWidth{ 0 }; // 직사각형 시작 위치 (intRect)
-	int frameHeight{ 0 }; //직사각형 시작 위치 (intRect)
+	sf::Sprite attackEffect;
+	sf::Clock clock;
+	int enemyWidth{ 0 }; // 직사각형 시작 위치 (intRect)
+	int enemyHeight{ 0 }; //직사각형 시작 위치 (intRect)
+	int effectWidth{ 0 };
+	int effectHeight{ 0 };
 	int currentFrame{ 0 };
-	int currentAction{ 0 }; // 0: 숨 내쉬기, 1: 숨 쉬기
+	int currentEffectFrame{ 0 };
 	float elapsed{ 0.f };
+	float subElapsed{ 0.f };
 	float frameDuration{ 0.45f };
+	bool fading{ false };
+	float alpha{ 255.f };
+	
 
 	enum class Tex {
 		none, //기본 서있는 상태
@@ -317,16 +325,22 @@ public:
 	homunculus() = default;
 	virtual ~homunculus() = default;
 	virtual void draw(sf::RenderWindow & win) = 0;
+	virtual void effectDraw(sf::RenderWindow& win) = 0;
 	virtual void position(sf::RenderWindow & win);
 	virtual void updateTexture(resourceManager& res, const int& enemySelect) = 0;
+	virtual void setEffectPosition(const sf::Vector2f& playerPos);
 	const sf::Vector2f& getPosition(); //enemyImg.getPositon
 	const sf::FloatRect& getEnemyImg();
+	void homunculusStartFade(); // 죽을 떄
+	void homunculusUpdateFade(bool& BattleEnd);
+	
 };
 
 class normalOne : public homunculus {
 public:
 	normalOne(sf::RenderWindow& win, resourceManager& res);
 	void draw(sf::RenderWindow& win) override;
+	void effectDraw(sf::RenderWindow& win) override;
 	void updateFrame(float& dt, resourceManager& res);
 	void updateTexture(resourceManager& res, const int& enemySelect = 0) override;
 };
@@ -335,6 +349,7 @@ class eliteOne : public homunculus {
 public:
 	eliteOne(sf::RenderWindow& win, resourceManager& res);
 	void draw(sf::RenderWindow& win) override;
+	void effectDraw(sf::RenderWindow& win) override;
 	void updateFrame(float& dt);
 	void position(sf::RenderWindow& win) override;
 	void updateTexture(resourceManager& res, const int& enemySelect) override;
@@ -345,6 +360,7 @@ class bossOne : public homunculus {
 public:
 	bossOne(sf::RenderWindow& win, resourceManager& res);
 	void draw(sf::RenderWindow& win) override;
+	void effectDraw(sf::RenderWindow& win) override;
 	void updateFrame(float& dt);
 	void position(sf::RenderWindow& win) override;
 	void updateTexture(resourceManager& res, const int& enemySelect) override;

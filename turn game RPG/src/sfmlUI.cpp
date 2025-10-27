@@ -883,16 +883,16 @@ void tiferetImg::updateFrame(const float& dt , resourceManager& res) { //장면 
 	case Tex::attack:
 		if (elapsed >= 0.05f) {
 			elapsed = 0.f;
-			currentFrame++;
+			currentEffectFrame++;
 			int framesPerAction = 6;
-			if (currentFrame >= framesPerAction) {
-				currentFrame = 0;
+			if (currentEffectFrame >= framesPerAction) {
+				currentEffectFrame = 0;
 				tex = Tex::none;
 				updateTexture(res);
 				break;
 			}
 			attackEffect.setTextureRect(
-				sf::IntRect(effectWidth * currentFrame, 0, effectWidth, effectHeight)
+				sf::IntRect(effectWidth * currentEffectFrame, 0, effectWidth, effectHeight)
 			);
 		}
 		break;
@@ -915,6 +915,7 @@ void tiferetImg::updateTexture(resourceManager& res, const int& playerSelect) {
 		characterImg.setTextureRect(sf::IntRect(0, 0, characterWidth, characterHeight));
 		attackEffect.setTextureRect(sf::IntRect(0, 0, 0, 0));
 		currentFrame = 0;  // 프레임 초기화 추가
+		currentEffectFrame = 0;
 		break;
 	case Tex::attack:
 		characterImg.setTexture(res.getTexture("tiferetAttack"));
@@ -946,18 +947,51 @@ const sf::Vector2f& homunculus::getPosition() {
 const sf::FloatRect& homunculus::getEnemyImg() {
 	return enemyImg.getLocalBounds();
 }
+void homunculus::setEffectPosition(const sf::Vector2f& playerPos) {
+	attackEffect.setPosition(playerPos);
+}
+void homunculus::homunculusStartFade() {
+	fading = true;
+}
+void homunculus::homunculusUpdateFade(bool& BattleEnd) {
+	sf::Color homunculusColor = enemyImg.getColor(); // 현재 색상
+	if (fading == false) {
+		BattleEnd = true;
+		return;
+	}
+	alpha -= 0.05f * 255; // 2.0초에 걸쳐 감소
+	if (alpha < 0) {
+		alpha = 0;
+		fading = false; // 완료되면 멈춤
+		BattleEnd = true;
+		return;
+	}
+	homunculusColor.a = static_cast<sf::Uint8>(alpha);// 알파값만 변경
+	enemyImg.setColor(homunculusColor); // 다시 적용
+}
+
 
 //normalOne
 normalOne::normalOne(sf::RenderWindow& win, resourceManager& res)
 {
-	frameWidth = res.getTexture("normal1").getSize().x;
-	frameHeight = res.getTexture("normal1").getSize().y;
+	enemyWidth = res.getTexture("normal1").getSize().x;
+	enemyHeight = res.getTexture("normal1").getSize().y;
+
 	enemyImg.setTexture(res.getTexture("normal1Sprite"));
-	enemyImg.setTextureRect(sf::IntRect(0, 0, frameWidth, frameHeight));
+	enemyImg.setTextureRect(sf::IntRect(0, 0, enemyWidth, enemyHeight));
+
+	effectWidth = 496;
+	effectHeight = 496;
+
+	attackEffect.setTexture(res.getTexture("normal1EffectSheet"));
+	attackEffect.setTextureRect(sf::IntRect(0, 0, 0, 0));
 	position(win);
 }
 void normalOne::draw(sf::RenderWindow& win) {
 	win.draw(enemyImg);
+}
+void normalOne::effectDraw(sf::RenderWindow& win) {
+	win.draw(attackEffect);
 }
 void normalOne::updateFrame(float& dt, resourceManager& res) {
 	elapsed += dt;
@@ -971,38 +1005,64 @@ void normalOne::updateFrame(float& dt, resourceManager& res) {
 				currentFrame = 0;
 			}
 			enemyImg.setTextureRect(
-				sf::IntRect(frameWidth * currentFrame, 0, frameWidth, frameHeight)
+				sf::IntRect(enemyWidth * currentFrame, 0, enemyWidth, enemyHeight)
 			);
 		}
 		break;
 	case homunculus::Tex::attack1:
-		if (elapsed >= 0.2f) { //elapsed가 0.3f 보다 커지면 초기화 시키고 장면 변화
+		if (elapsed >= 0.05f) {
+			subElapsed += elapsed;
 			elapsed = 0.f;
-			currentFrame++;
-			int framesPerAction = 3; // 마지막 액션 + 1이 몇인지. 장면변화 index를 제일 처음으로 초기화
-			if (currentFrame >= framesPerAction) {
-				currentFrame = 0;
-				tex = Tex::none;
-				updateTexture(res);
+			currentEffectFrame++;
+			int framesPerAction = 8;
+			if(currentEffectFrame >= framesPerAction) {
+				currentEffectFrame = 0;
 			}
-			enemyImg.setTextureRect(
-				sf::IntRect(frameWidth * currentFrame, 0, frameWidth, frameHeight)
-			);
+			if (subElapsed >= 0.1f) { //elapsed가 0.3f 보다 커지면 초기화 시키고 장면 변화
+				subElapsed = 0.f;
+				currentFrame++;
+				int framesPerAction = 3; // 마지막 액션 + 1이 몇인지. 장면변화 index를 제일 처음으로 초기화
+				if (currentFrame >= framesPerAction) {
+					currentFrame = 0;
+					tex = Tex::none;
+					updateTexture(res);
+					break;
+				}
+				enemyImg.setTextureRect(
+					sf::IntRect(enemyWidth * currentFrame, 0, enemyWidth, enemyHeight)
+				);
+				attackEffect.setTextureRect(
+					sf::IntRect(effectWidth * currentFrame, 0, effectWidth, effectHeight)
+				);
+			}
 		}
 		break;
 	case homunculus::Tex::attack2:
-		if (elapsed >= 0.2f) { //elapsed가 0.2f 보다 커지면 초기화 시키고 장면 변화
+		if (elapsed >= 0.04f) {
+			subElapsed += elapsed;
 			elapsed = 0.f;
-			currentFrame++;
-			int framesPerAction = 3; // 마지막 액션 + 1이 몇인지. 장면변화 index를 제일 처음으로 초기화
-			if (currentFrame >= framesPerAction) {
-				currentFrame = 0;
-				tex = Tex::none;
-				updateTexture(res);
+			currentEffectFrame++;
+			int framesPerAction = 8;
+			if (currentEffectFrame >= framesPerAction) {
+				currentEffectFrame = 0;
 			}
-			enemyImg.setTextureRect(
-				sf::IntRect(frameWidth * currentFrame, 0, frameWidth, frameHeight)
-			);
+			if (subElapsed >= 0.1f) { //elapsed가 0.3f 보다 커지면 초기화 시키고 장면 변화
+				subElapsed = 0.f;
+				currentFrame++;
+				int framesPerAction = 3; // 마지막 액션 + 1이 몇인지. 장면변화 index를 제일 처음으로 초기화
+				if (currentFrame >= framesPerAction) {
+					currentFrame = 0;
+					tex = Tex::none;
+					updateTexture(res);
+					break;
+				}
+				enemyImg.setTextureRect(
+					sf::IntRect(enemyWidth * currentFrame, 0, enemyWidth, enemyHeight)
+				);
+				attackEffect.setTextureRect(
+					sf::IntRect(effectWidth * currentFrame, 0, effectWidth, effectHeight)
+				);
+			}
 		}
 		break;
 	case homunculus::Tex::hit:
@@ -1017,19 +1077,24 @@ void normalOne::updateTexture(resourceManager& res, const int& enemyAction) {
 	switch (tex) { //스킬 추가시 case 업데이트
 	case Tex::none:
 		enemyImg.setTexture(res.getTexture("normal1Sprite"));
-		enemyImg.setTextureRect(sf::IntRect(0, 0, frameWidth, frameHeight));
+		enemyImg.setTextureRect(sf::IntRect(0, 0, enemyWidth, enemyHeight));
+		attackEffect.setTextureRect(sf::IntRect(0, 0, 0, 0));
+		currentFrame = 0;  // 프레임 초기화 추가
 		break;
 	case Tex::attack1:
 		enemyImg.setTexture(res.getTexture("normal1Attack"));
-		enemyImg.setTextureRect(sf::IntRect(0, 0, frameWidth, frameHeight));
+		enemyImg.setTextureRect(sf::IntRect(0, 0, enemyWidth, enemyHeight));
+		attackEffect.setTextureRect(sf::IntRect(0, 0, effectWidth, effectHeight));
 		break;
 	case Tex::attack2:
 		enemyImg.setTexture(res.getTexture("normal1Attack"));
-		enemyImg.setTextureRect(sf::IntRect(0, 0, frameWidth, frameHeight));
+		enemyImg.setTextureRect(sf::IntRect(0, 0, enemyWidth, enemyHeight));
+		attackEffect.setTextureRect(sf::IntRect(0, 0, effectWidth, effectHeight));
 		break;
 	case Tex::hit://임시 , 이미지가 없어서
 		enemyImg.setTexture(res.getTexture("normal1Sprite"));
-		enemyImg.setTextureRect(sf::IntRect(0, 0, frameWidth, frameHeight));
+		enemyImg.setTextureRect(sf::IntRect(0, 0, enemyWidth, enemyHeight));
+		attackEffect.setTextureRect(sf::IntRect(0, 0, 0, 0));
 		break;
 	default:
 		break;
@@ -1040,14 +1105,17 @@ void normalOne::updateTexture(resourceManager& res, const int& enemyAction) {
 //eliteOne
 eliteOne::eliteOne(sf::RenderWindow& win, resourceManager& res)
 {
-	frameWidth = res.getTexture("elite1").getSize().x;
-	frameHeight = res.getTexture("elite1").getSize().y;
+	enemyWidth = res.getTexture("elite1").getSize().x;
+	enemyHeight = res.getTexture("elite1").getSize().y;
 	enemyImg.setTexture(res.getTexture("elite1Sprite"));
-	enemyImg.setTextureRect(sf::IntRect(0, 0, frameWidth, frameHeight));
+	enemyImg.setTextureRect(sf::IntRect(0, 0, enemyWidth, enemyHeight));
 	position(win);
 }
 void eliteOne::draw(sf::RenderWindow& win) {
 	win.draw(enemyImg);
+}
+void eliteOne::effectDraw(sf::RenderWindow& win) {
+	return;
 }
 void eliteOne::updateFrame(float& dt) {
 	elapsed += dt;
@@ -1059,7 +1127,7 @@ void eliteOne::updateFrame(float& dt) {
 			currentFrame = 0;
 
 		enemyImg.setTextureRect(
-			sf::IntRect(0,frameHeight * currentFrame, frameWidth, frameHeight)
+			sf::IntRect(0, enemyHeight * currentFrame, enemyWidth, enemyHeight)
 		);
 	}
 }
@@ -1074,14 +1142,17 @@ void eliteOne::updateTexture(resourceManager& res, const int& enemySelect) {
 //bossOne
 bossOne::bossOne(sf::RenderWindow& win, resourceManager& res)
 {
-	frameWidth = res.getTexture("boss1").getSize().x;
-	frameHeight = res.getTexture("boss1").getSize().y;
+	enemyWidth = res.getTexture("boss1").getSize().x;
+	enemyHeight = res.getTexture("boss1").getSize().y;
 	enemyImg.setTexture(res.getTexture("boss1Sprite"));
-	enemyImg.setTextureRect(sf::IntRect(0, 0, frameWidth, frameHeight));
+	enemyImg.setTextureRect(sf::IntRect(0, 0, enemyWidth, enemyHeight));
 	position(win);
 }
 void bossOne::draw(sf::RenderWindow& win) {
 	win.draw(enemyImg);
+}
+void bossOne::effectDraw(sf::RenderWindow& win) {
+	return;
 }
 void bossOne::updateFrame(float& dt) {
 	elapsed += dt;
@@ -1093,7 +1164,7 @@ void bossOne::updateFrame(float& dt) {
 			currentFrame = 0;
 
 		enemyImg.setTextureRect(
-			sf::IntRect(frameWidth * currentFrame, 0, frameWidth, frameHeight)
+			sf::IntRect(enemyWidth * currentFrame, 0, enemyWidth, enemyHeight)
 		);
 	}
 }

@@ -197,10 +197,11 @@ private:
 	startGradation startGD;
 	battleGradation battleGD;
 	float battleDelayTime{ 0.f }; //updateGameStatus()함수에서 턴별 시간차를 주기 위함.
-	bool battleGDStarted = false; // startGD가 끝난 뒤 battleGD를 한 번만 시작시키기 위한 플래그
+	bool battleGDStarted{ false }; // startGD가 끝난 뒤 battleGD를 한 번만 시작시키기 위한 플래그
+	bool homunculusUpdateEnd{ false };
 
 	//battle
-	enum class BattleState { NotStarted, PlayerTurn, EnemyTurn, Ended };
+	enum class BattleState { NotStarted, PlayerTurn, EnemyTurn, Ended, BackToMap };
 	BattleState battleState; // 현재 전투 상태
 	BattleState prevBattleState = BattleState::NotStarted; // 이전 프레임의 상태 추적
 	enum class playerSelect {attack = 1, defense , skill};
