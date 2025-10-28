@@ -168,12 +168,12 @@ private:
 	sf::RenderWindow& window; // 빈 도화지 받아오기
 	sf::Sprite background;   // 배경화면
 	sf::View view;
+	sf::Clock roomClock;
 	sfmlLog log; // 싸울땐 로그 필수
 	float frameDuration;
 	bool attackAction{ false }; //true가 되면 그 선택지를 누른 것.
 	bool defenseAction{ false };
 	bool skillAction{ false };
-	sf::Clock roomClock;
 
 	//healRoomScene
 	int currentFrame{ 0 };
@@ -196,16 +196,20 @@ private:
 	selectAction action;
 	startGradation startGD;
 	battleGradation battleGD;
-	float battleDelayTime{ 0.f }; //updateGameStatus()함수에서 턴별 시간차를 주기 위함.
-	bool battleGDStarted{ false }; // startGD가 끝난 뒤 battleGD를 한 번만 시작시키기 위한 플래그
 	bool homunculusUpdateEnd{ false };
+	struct TurnLog {
+		bool player{ false };
+		bool enemy{ false };
+	}turnLog;
+	bool oneTurn{ false };
 
 	//battle
 	enum class BattleState { NotStarted, PlayerTurn, EnemyTurn, Ended, BackToMap };
 	BattleState battleState; // 현재 전투 상태
-	BattleState prevBattleState = BattleState::NotStarted; // 이전 프레임의 상태 추적
+	BattleState currentState{ BattleState::NotStarted };
 	enum class playerSelect {attack = 1, defense , skill};
 	battle b;
+
 public:
 	roomScene(sf::RenderWindow& win, resourceManager& res , const int& roomNum);
 	void update(sf::RenderWindow& window) override; //메뉴 화면으로 상태갱신
@@ -215,6 +219,6 @@ public:
 	void setBackground(resourceManager& res);
 	void updateFrame(float& dt);
 	void updateGameStatus();
-	
+	void updateTurnLog();
 };
 

@@ -350,9 +350,9 @@ public:
 	eliteOne(sf::RenderWindow& win, resourceManager& res);
 	void draw(sf::RenderWindow& win) override;
 	void effectDraw(sf::RenderWindow& win) override;
-	void updateFrame(float& dt);
 	void position(sf::RenderWindow& win) override;
-	void updateTexture(resourceManager& res, const int& enemySelect) override;
+	void updateFrame(float& dt, resourceManager& res);
+	void updateTexture(resourceManager& res, const int& enemySelect = 0) override;
 
 };
 
@@ -413,10 +413,10 @@ protected:
 	sf::Text text;
 	sf::VertexArray sideGrad;
 	sf::VertexArray centerGrad;
-	float width;
-	float height;
-	float centerY;
-	float barHeight;
+	float width{ 0.f };
+	float height{ 0.f };
+	float centerY{ 0.f };
+	float barHeight{ 0.f };
 	bool fading{ false };
 	bool appear{ false };
 	sf::Uint8 sideAlpha{ 0 };
@@ -447,10 +447,15 @@ public:
 };
 
 class battleGradation : public gradation {
+private:
+	bool playerTurn{false};
+	bool enemyTurn{false};
 public:
 	battleGradation(resourceManager& res);
 	void draw(sf::RenderWindow& win) override;
 	void setPosition() override;
 	void setColor() override;
 	void selectText(const int& battleTurn);
+	bool& convertPlayerTurn();
+	bool& convertEnemyTurn();
 };

@@ -970,7 +970,6 @@ void homunculus::homunculusUpdateFade(bool& BattleEnd) {
 	enemyImg.setColor(homunculusColor); // 다시 적용
 }
 
-
 //normalOne
 normalOne::normalOne(sf::RenderWindow& win, resourceManager& res)
 {
@@ -985,6 +984,8 @@ normalOne::normalOne(sf::RenderWindow& win, resourceManager& res)
 
 	attackEffect.setTexture(res.getTexture("normal1EffectSheet"));
 	attackEffect.setTextureRect(sf::IntRect(0, 0, 0, 0));
+	tex = Tex::none;
+
 	position(win);
 }
 void normalOne::draw(sf::RenderWindow& win) {
@@ -1010,59 +1011,59 @@ void normalOne::updateFrame(float& dt, resourceManager& res) {
 		}
 		break;
 	case homunculus::Tex::attack1:
-		if (elapsed >= 0.05f) {
-			subElapsed += elapsed;
+		if (subElapsed >= 0.16f) { //elapsed가 0.48f 보다 커지면 초기화 시키고 장면 변화
+			subElapsed = 0.f;
+			currentFrame++;
+			int framesPerAction = 3; // 마지막 액션 + 1이 몇인지. 장면변화 index를 제일 처음으로 초기화
+			if (currentFrame >= framesPerAction) {
+				currentFrame = 0;
+				tex = Tex::none;
+				updateTexture(res);
+				break;
+			}
+			enemyImg.setTextureRect(
+				sf::IntRect(enemyWidth * currentFrame, 0, enemyWidth, enemyHeight)
+			);
+		}
+		if (elapsed >= 0.06f) {
+			subElapsed += 0.06f;
 			elapsed = 0.f;
 			currentEffectFrame++;
-			int framesPerAction = 8;
-			if(currentEffectFrame >= framesPerAction) {
+			int effectsPerAction = 8;
+			if(currentEffectFrame >= effectsPerAction) {
 				currentEffectFrame = 0;
 			}
-			if (subElapsed >= 0.1f) { //elapsed가 0.3f 보다 커지면 초기화 시키고 장면 변화
-				subElapsed = 0.f;
-				currentFrame++;
-				int framesPerAction = 3; // 마지막 액션 + 1이 몇인지. 장면변화 index를 제일 처음으로 초기화
-				if (currentFrame >= framesPerAction) {
-					currentFrame = 0;
-					tex = Tex::none;
-					updateTexture(res);
-					break;
-				}
-				enemyImg.setTextureRect(
-					sf::IntRect(enemyWidth * currentFrame, 0, enemyWidth, enemyHeight)
+			attackEffect.setTextureRect(
+					sf::IntRect(effectWidth * currentEffectFrame, 0, effectWidth, effectHeight)
 				);
-				attackEffect.setTextureRect(
-					sf::IntRect(effectWidth * currentFrame, 0, effectWidth, effectHeight)
-				);
-			}
-		}
+		}		
 		break;
 	case homunculus::Tex::attack2:
-		if (elapsed >= 0.04f) {
-			subElapsed += elapsed;
+		if (subElapsed >= 0.16f) { //elapsed가 0.48f 보다 커지면 초기화 시키고 장면 변화
+			subElapsed = 0.f;
+			currentFrame++;
+			int framesPerAction = 3; // 마지막 액션 + 1이 몇인지. 장면변화 index를 제일 처음으로 초기화
+			if (currentFrame >= framesPerAction) {
+				currentFrame = 0;
+				tex = Tex::none;
+				updateTexture(res);
+				break;
+			}
+			enemyImg.setTextureRect(
+				sf::IntRect(enemyWidth * currentFrame, 0, enemyWidth, enemyHeight)
+			);
+		}
+		if (elapsed >= 0.06f) {
+			subElapsed += 0.06f;
 			elapsed = 0.f;
 			currentEffectFrame++;
-			int framesPerAction = 8;
-			if (currentEffectFrame >= framesPerAction) {
+			int effectsPerAction = 8;
+			if (currentEffectFrame >= effectsPerAction) {
 				currentEffectFrame = 0;
 			}
-			if (subElapsed >= 0.1f) { //elapsed가 0.3f 보다 커지면 초기화 시키고 장면 변화
-				subElapsed = 0.f;
-				currentFrame++;
-				int framesPerAction = 3; // 마지막 액션 + 1이 몇인지. 장면변화 index를 제일 처음으로 초기화
-				if (currentFrame >= framesPerAction) {
-					currentFrame = 0;
-					tex = Tex::none;
-					updateTexture(res);
-					break;
-				}
-				enemyImg.setTextureRect(
-					sf::IntRect(enemyWidth * currentFrame, 0, enemyWidth, enemyHeight)
-				);
-				attackEffect.setTextureRect(
-					sf::IntRect(effectWidth * currentFrame, 0, effectWidth, effectHeight)
-				);
-			}
+			attackEffect.setTextureRect(
+				sf::IntRect(effectWidth * currentEffectFrame, 0, effectWidth, effectHeight)
+			);
 		}
 		break;
 	case homunculus::Tex::hit:
@@ -1107,36 +1108,134 @@ eliteOne::eliteOne(sf::RenderWindow& win, resourceManager& res)
 {
 	enemyWidth = res.getTexture("elite1").getSize().x;
 	enemyHeight = res.getTexture("elite1").getSize().y;
+
 	enemyImg.setTexture(res.getTexture("elite1Sprite"));
 	enemyImg.setTextureRect(sf::IntRect(0, 0, enemyWidth, enemyHeight));
+
+	effectWidth = 496;
+	effectHeight = 496;
+
+	attackEffect.setTexture(res.getTexture("elite1EffectSheet"));
+	attackEffect.setTextureRect(sf::IntRect(0, 0, 0, 0));
+	tex = Tex::none;
+
 	position(win);
 }
 void eliteOne::draw(sf::RenderWindow& win) {
 	win.draw(enemyImg);
 }
 void eliteOne::effectDraw(sf::RenderWindow& win) {
-	return;
-}
-void eliteOne::updateFrame(float& dt) {
-	elapsed += dt;
-	if (elapsed >= frameDuration) { //elapsed가 0.15f 보다 커지면 초기화 시키고 장면 변화
-		elapsed = 0.f;
-		currentFrame++;
-		int framesPerAction = 2; // 마지막 액션 + 1이 몇인지. 장면변화 index를 제일 처음으로 초기화
-		if (currentFrame >= framesPerAction)
-			currentFrame = 0;
-
-		enemyImg.setTextureRect(
-			sf::IntRect(0, enemyHeight * currentFrame, enemyWidth, enemyHeight)
-		);
-	}
+	win.draw(attackEffect);
 }
 void eliteOne::position(sf::RenderWindow& win) {
 	enemyImg.setPosition(win.getSize().x - (win.getSize().x / 5.f), win.getSize().y / 1.4f);
 }
-void eliteOne::updateTexture(resourceManager& res, const int& enemySelect) {
-	//텍스처 추가 시 업데이트
-	return;
+void eliteOne::updateFrame(float& dt, resourceManager& res) {
+	elapsed += dt;
+	switch (tex){
+	case homunculus::Tex::none:
+		if (elapsed >= frameDuration) { //elapsed가 0.45f 보다 커지면 초기화 시키고 장면 변화
+			elapsed = 0.f;
+			currentFrame++;
+			int framesPerAction = 2; // 마지막 액션 + 1이 몇인지. 장면변화 index를 제일 처음으로 초기화
+			if (currentFrame >= framesPerAction)
+				currentFrame = 0;
+
+			enemyImg.setTextureRect(
+				sf::IntRect(0, enemyHeight * currentFrame, enemyWidth, enemyHeight)
+			);
+		}
+		break;
+	case homunculus::Tex::attack1:
+		if (subElapsed >= 0.2f) { //elapsed가 0.3f 보다 커지면 초기화 시키고 장면 변화
+			subElapsed = 0.f;
+			currentFrame++;
+			int framesPerAction = 3; // 마지막 액션 + 1이 몇인지. 장면변화 index를 제일 처음으로 초기화
+			if (currentFrame >= framesPerAction) {
+				currentFrame = 0;
+				tex = Tex::none;
+				updateTexture(res);
+				break;
+			}
+			enemyImg.setTextureRect(
+				sf::IntRect(enemyWidth * currentFrame, 0, enemyWidth, enemyHeight)
+			);
+		}
+		if (elapsed >= 0.06f) {
+			subElapsed += 0.06f;
+			elapsed = 0.f;
+			currentEffectFrame++;
+			int effectsPerAction = 10;
+			if (currentEffectFrame >= effectsPerAction) {
+				currentEffectFrame = 0;
+			}
+			attackEffect.setTextureRect(
+				sf::IntRect(effectWidth * currentEffectFrame, 0, effectWidth, effectHeight)
+			);
+		}
+		break;
+	case homunculus::Tex::attack2:
+		if (subElapsed >= 0.2f) { //elapsed가 0.3f 보다 커지면 초기화 시키고 장면 변화
+			subElapsed = 0.f;
+			currentFrame++;
+			int framesPerAction = 3; // 마지막 액션 + 1이 몇인지. 장면변화 index를 제일 처음으로 초기화
+			if (currentFrame >= framesPerAction) {
+				currentFrame = 0;
+				tex = Tex::none;
+				updateTexture(res);
+				break;
+			}
+			enemyImg.setTextureRect(
+				sf::IntRect(enemyWidth * currentFrame, 0, enemyWidth, enemyHeight)
+			);
+		}
+		if (elapsed >= 0.06f) {
+			subElapsed += 0.06f;
+			elapsed = 0.f;
+			currentEffectFrame++;
+			int effectsPerAction = 10;
+			if (currentEffectFrame >= effectsPerAction) {
+				currentEffectFrame = 0;
+			}
+			attackEffect.setTextureRect(
+				sf::IntRect(effectWidth * currentEffectFrame, 0, effectWidth, effectHeight)
+			);
+		}
+		break;
+	case homunculus::Tex::hit:
+		break;
+	default:
+		break;
+	}
+}
+void eliteOne::updateTexture(resourceManager& res, const int& enemyAction) {
+	tex = static_cast<Tex>(enemyAction);
+	elapsed = 0.f;
+	switch (tex) { //스킬 추가시 case 업데이트
+	case Tex::none:
+		enemyImg.setTexture(res.getTexture("elite1Sprite"));
+		enemyImg.setTextureRect(sf::IntRect(0, 0, enemyWidth, enemyHeight));
+		attackEffect.setTextureRect(sf::IntRect(0, 0, 0, 0));
+		currentFrame = 0;  // 프레임 초기화 추가
+		break;
+	case Tex::attack1:
+		enemyImg.setTexture(res.getTexture("elite1Attack"));
+		enemyImg.setTextureRect(sf::IntRect(0, 0, enemyWidth, enemyHeight));
+		attackEffect.setTextureRect(sf::IntRect(0, 0, effectWidth, effectHeight));
+		break;
+	case Tex::attack2:
+		enemyImg.setTexture(res.getTexture("elite1Attack"));
+		enemyImg.setTextureRect(sf::IntRect(0, 0, enemyWidth, enemyHeight));
+		attackEffect.setTextureRect(sf::IntRect(0, 0, effectWidth, effectHeight));
+		break;
+	case Tex::hit://임시 , 이미지가 없어서
+		enemyImg.setTexture(res.getTexture("elite1Sprite"));
+		enemyImg.setTextureRect(sf::IntRect(0, 0, enemyWidth, enemyHeight));
+		attackEffect.setTextureRect(sf::IntRect(0, 0, 0, 0));
+		break;
+	default:
+		break;
+	}
 }
 
 //bossOne
@@ -1355,14 +1454,14 @@ void gradation::updateFade(float& dt) {
 		return;
 	}
 	elapsedTime += dt;
-	float fadeTime = elapsedTime / 1.0f; // 1.0초 동안 페이드
-	if (fadeTime > 1.0f) {
-		fadeTime = 1.0f;
+	float fadeTime = elapsedTime / 0.7f; // 0.7f초 동안 페이드
+	if (fadeTime > 0.7f) {
+		fadeTime = 0.7f;
 	}
 
-	sideAlpha = static_cast<sf::Uint8>(std::max(0.f, 100.f * (1.0f - fadeTime)));
-	centerAlpha = static_cast<sf::Uint8>(std::max(0.f, 170.f * (1.0f - fadeTime)));
-	startAlpha = static_cast<sf::Uint8>(std::max(0.f, 255.f * (1.0f - fadeTime)));
+	sideAlpha = static_cast<sf::Uint8>(std::max(0.f, 100.f * (0.7f - fadeTime)));
+	centerAlpha = static_cast<sf::Uint8>(std::max(0.f, 170.f * (0.7f - fadeTime)));
+	startAlpha = static_cast<sf::Uint8>(std::max(0.f, 255.f * (0.7f - fadeTime)));
 
 	for (int i = 0; i < 4; i++) {
 		sideGrad[i].color.a = static_cast<sf::Uint8>(sideAlpha);
@@ -1372,7 +1471,7 @@ void gradation::updateFade(float& dt) {
 	textColor.a = static_cast<sf::Uint8>(startAlpha);
 	text.setFillColor(textColor);
 
-	if (fadeTime >= 1.0f) {
+	if (fadeTime >= 0.7f) {
 		fading = false;
 		elapsedTime = 0.f;
 	}
@@ -1381,25 +1480,26 @@ bool gradation::isFading() {
 	return fading;
 }
 void gradation::startAppear() {
-	if (fading) { return; }// fade 중이면 무시
+	if (appear) { return; }// appear 중이면 무시
 	appear = true;
 	elapsedTime = 0.f;
 }
 void gradation::updateAppear(float& dt) {
 	sf::Color textColor = text.getFillColor();
 
-	if (appear == false) {
+	if (!appear) {
 		return;
 	}
+	
 	elapsedTime += dt;
-	float appearTime = elapsedTime / 1.0f; // 1.5초 동안 appear
-	if (appearTime > 1.0f) {
-		appearTime = 1.0f;
+	float appearTime = elapsedTime / 0.5f; // 1.0초 동안 appear
+	if (appearTime > 0.5f) {
+		appearTime = 0.5f;
 	}
 
-	sideAlpha = static_cast<sf::Uint8>(std::max(0.f, 100.f * appearTime));
-	centerAlpha = static_cast<sf::Uint8>(std::max(0.f, 170.f * appearTime));
-	startAlpha = static_cast<sf::Uint8>(std::max(0.f, 255.f * appearTime));
+	sideAlpha = static_cast<sf::Uint8>(std::max(0.f, 100.f * (appearTime * 2.f)));
+	centerAlpha = static_cast<sf::Uint8>(std::max(0.f, 170.f * (appearTime * 2.f)));
+	startAlpha = static_cast<sf::Uint8>(std::max(0.f, 255.f * (appearTime * 2.f)));
 
 	for (int i = 0; i < 4; i++) {
 		sideGrad[i].color.a = static_cast<sf::Uint8>(sideAlpha);
@@ -1409,7 +1509,7 @@ void gradation::updateAppear(float& dt) {
 	textColor.a = static_cast<sf::Uint8>(startAlpha);
 	text.setFillColor(textColor);
 
-	if (appearTime >= 1.0f) {
+	if (appearTime >= 0.5f) {
 		appear = false;
 		elapsedTime = 0.f;
 	}
@@ -1528,7 +1628,7 @@ void battleGradation::setColor() {
 	centerGrad[1].color = sf::Color(0, 0, 0, centerAlpha); // 오른쪽 위
 	centerGrad[2].color = sf::Color(0, 0, 0, centerAlpha); // 오른쪽 아래
 	//start
-	text.setFillColor(sf::Color(sf::Color::White));
+	text.setFillColor(sf::Color(255,255,255,0));
 }
 void battleGradation::selectText(const int& battleTurn) {
 	switch (battleTurn){
@@ -1541,4 +1641,10 @@ void battleGradation::selectText(const int& battleTurn) {
 	default:
 		break;
 	}
+}
+bool& battleGradation::convertPlayerTurn() {
+	return playerTurn;
+}
+bool& battleGradation::convertEnemyTurn() {
+	return enemyTurn;
 }

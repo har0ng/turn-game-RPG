@@ -75,7 +75,8 @@ public:
 	std::string randomEnemyType(); //에너미가 normal, elite 중 뭔지 랜덤 지정
 	RandomMinMax randomHealth(int enemyLv, std::string enemyType, int floor);//몹의 레벨과 잡,엘리트,보스에 따라 나뉨
 	RandomMinMax randomPower(int enemyLv, std::string enemyType, int floor);//몹의 레벨과 잡,엘리트,보스에 따라 나뉨
-	//void executeDeBuff(std::vector<deBuff> deBuffs);
+	int convertEnemyType(std::string enemyType);
+																			//void executeDeBuff(std::vector<deBuff> deBuffs);
 
 	//virtual
 	virtual void decideHealth(RandomMinMax minMax);// 체력의 최소와 최대에서 랜덤으로 뽑은 후 저장

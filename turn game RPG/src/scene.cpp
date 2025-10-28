@@ -312,6 +312,9 @@ void mapScene::effectUploading(resourceManager& res) {
     switch (classname) {
     case className::tiferet:
         res.tiferetEffect();
+        break;
+    case className::malkuth:
+        break;
     default:
         break;
     }
@@ -428,7 +431,7 @@ void floorScene::render(sf::RenderWindow& window) {
 }
 void floorScene::imageDraw(float bgWidth, float bgHeight) {
     // 버튼 초기 Y 위치: 배경 높이의 50% 정도로 중앙 근처에서 시작
-    float startY = bgHeight * 0.16;
+    float startY = bgHeight * 0.16f;
     // 층 간격: 배경 높이 기준 10~12% 정도
     float gapY = bgHeight * 0.12f;
 
@@ -608,35 +611,36 @@ roomScene::roomScene(sf::RenderWindow& win, resourceManager& res, const int& roo
         action.setPosition(eloaImg.getPosition(), eloaImg.getSprite());
 
         //4. enemy hp 위치 조정,player attack effect 위치 조정
-        if (getEnemyPtr().getEnemyType() == "normal") {
+        switch (e->convertEnemyType(getEnemyPtr().getEnemyType())) {
+        case 0: //normal
             hoHpB.position(normalOneImg.getPosition(), normalOneImg.getEnemyImg());
             eloaImg.setEffectPosition(normalOneImg.getPosition());
             normalOneImg.setEffectPosition(eloaImg.getPosition());
             normalOneImg.homunculusStartFade();
-        }
-        else if (getEnemyPtr().getEnemyType() == "elite") {
+            break; 
+        case 1: //elite
             hoHpB.position(eliteOneImg.getPosition(), eliteOneImg.getEnemyImg());
             eloaImg.setEffectPosition(eliteOneImg.getPosition());
             eliteOneImg.setEffectPosition(eloaImg.getPosition());
             eliteOneImg.homunculusStartFade();
-        }
-        else if (getEnemyPtr().getEnemyType() == "boss") {
+            break;
+        case 2: //boss
             hoHpB.position(bossOneImg.getPosition(), bossOneImg.getEnemyImg());
             eloaImg.setEffectPosition(bossOneImg.getPosition());
             normalOneImg.setEffectPosition(eloaImg.getPosition());
             bossOneImg.setEffectPosition(eloaImg.getPosition());
             bossOneImg.homunculusStartFade();
+            break;
+        default:
+            break;
         }
         //5. enemy hp text 위치 조정 , 포인터가 정해지는게 4번이라 그 이후에 해야 enemyType에 맞는 hp를 들고옴
         hoHpB.setTextHp();
         startGD.startFade();
-
-        
     }
 }
 void roomScene::update(sf::RenderWindow& window) {
     deltaTime = roomClock.restart().asSeconds();  // 프레임 독립적 시간
-    battleDelayTime += deltaTime;  //updateGameStatus()함수에서 턴별 시간차를 주기 위함.
     eloaImg.updateFrame(deltaTime,res);          // F 애니메이션 갱신
     selectRoomType(roomType);   //무슨 방인지 구분
     sf::Event event;
@@ -662,34 +666,29 @@ void roomScene::update(sf::RenderWindow& window) {
             action.ActionManager(worldPos);
 
             // 플레이어 턴일 때만 클릭 처리
-            if (battleState == BattleState::PlayerTurn && event.type == sf::Event::MouseButtonReleased && action.isClicked(worldPos, attackAction, defenseAction, skillAction) && event.mouseButton.button == sf::Mouse::Left) {
+            if (battleState == BattleState::PlayerTurn && event.type == sf::Event::MouseButtonReleased 
+                && action.isClicked(worldPos, attackAction, defenseAction, skillAction) 
+                && event.mouseButton.button == sf::Mouse::Left && !startGD.isFading() && !battleGD.isAppearing()
+                && !battleGD.isFading()) {
                 isTransition();
                 if (attackAction) {
                     b.playerTurn(static_cast<int>(playerSelect::attack)); // cmd 로그를 보면 업뎃 되어있음. 이걸 실시간으로 피가 깎인걸 그래픽적인 부분과 현재체력을 보여주게끔 해줘야함 
                     eloaImg.updateTexture(res, static_cast<int>(playerSelect::attack));
                     attackAction = false;
-                    battleDelayTime = 0.f;
                     battleState = BattleState::EnemyTurn;
                 }
                 else if (defenseAction) {
                     b.playerTurn(static_cast<int>(playerSelect::defense));
                     eloaImg.updateTexture(res, static_cast<int>(playerSelect::defense));
-                    battleDelayTime = 0.f;
-                    battleState = BattleState::EnemyTurn;
                     defenseAction = false;
+                    battleState = BattleState::EnemyTurn;
                 }
                 else if (skillAction) {
                     b.playerTurn(static_cast<int>(playerSelect::skill));
                     eloaImg.updateTexture(res, static_cast<int>(playerSelect::attack)); //임시
  //                   eloaImg.updateTexture(res, static_cast<int>(playerSelect::skill));
                     skillAction = false;
-                    battleDelayTime = 0.f;
-                    if (e->getEnemyCurrentHealth() <= 0) {//무승부 방지
-                        battleState = BattleState::Ended;
-                    }
-                    else {
-                        battleState = BattleState::EnemyTurn;
-                    }
+                    battleState = BattleState::EnemyTurn;
                 }
             }
             //선택지 아웃라인 스프라이트
@@ -710,23 +709,24 @@ void roomScene::render(sf::RenderWindow& window) {
         hoHpB.draw(window);
         action.draw(window);
         eloaImg.draw(window);
-        if (getEnemyPtr().getEnemyType() == "normal") {
+        startGD.draw(window);
+        switch (e->convertEnemyType(getEnemyPtr().getEnemyType())) {
+        case 0:
             normalOneImg.draw(window);
-            startGD.draw(window);
-            battleGD.draw(window);
-        }
-        else if (getEnemyPtr().getEnemyType() == "elite") {
+            break;
+        case 1:
             eliteOneImg.draw(window);
-            startGD.draw(window);
-            battleGD.draw(window);
-        }
-        else if (getEnemyPtr().getEnemyType() == "boss") {
+            break;
+        case 2:
             bossOneImg.draw(window);
-            startGD.draw(window);
-            battleGD.draw(window);
+            break;
+        default:
+            break;
         }
+        battleGD.draw(window);
         eloaImg.effectDraw(window);
         normalOneImg.effectDraw(window);
+        eliteOneImg.effectDraw(window);
     }
 }
 void roomScene::allStartAppear() {
@@ -736,41 +736,28 @@ void roomScene::selectRoomType(const int& roomType) {
     switch (roomType) {
     case 1:
         updateFrame(deltaTime);
+        break;
     case 2:
-        if (frame > 0.2f) {
+        if (frame > 0.3f) {
             startGD.updateFade(deltaTime); // 시작 그라데이션
         }
-
-        // start 페이드 완료 후 Battle 텍스트 등장
-        if (!startGD.isFading() && battleState == BattleState::PlayerTurn && !battleGDStarted) {
-            battleGD.selectText(static_cast<int>(battleState));
-            battleGD.startAppear();
-            battleGDStarted = true; // 단 한 번만 실행
-        }
-
         if (getEnemyPtr().getEnemyType() == "normal") {
             frame += deltaTime;
             normalOneImg.updateFrame(deltaTime, res);
         }
         else if (getEnemyPtr().getEnemyType() == "elite") {
             frame += deltaTime;
-            eliteOneImg.updateFrame(deltaTime);
+            eliteOneImg.updateFrame(deltaTime, res);
         }
         break;
-
     case 3:
-        frame += deltaTime;
-        if (frame > 0.2f) {
+        if (frame > 0.3f) {
             startGD.updateFade(deltaTime);
         }
-
-        //  동일하게 boss전에도 적용
-        if (!startGD.isFading() && battleState == BattleState::PlayerTurn && !battleGDStarted) {
-            battleGD.selectText(static_cast<int>(battleState));
-            battleGD.startAppear();
-            battleGDStarted = true; // 단 한 번만 실행
-        }
+        frame += deltaTime;
         bossOneImg.updateFrame(deltaTime);
+        break;
+    default:
         break;
     }
 }
@@ -782,8 +769,10 @@ void roomScene::setBackground(resourceManager& res) {
     background.setTexture(res.getTexture("1floorBattleRoomBg"));
 }
 void roomScene::updateFrame(float& dt) { //healRoom 전용
-    frame += dt;
-    if (frame >= 0.8f) { //elapsed가 0.15f 보다 커지면 초기화 시키고 장면 변화
+    if (dt >= 0.3f) {
+        frame += 0.15f;
+    }
+    if (frame >= 0.3f) { //elapsed가 0.3f 보다 커지면 초기화 시키고 장면 변화
         frame = 0.f;
         currentFrame++;
         int framesPerAction = 2; // 마지막 액션 + 1이 몇인지. 장면변화 index를 제일 처음으로 초기화
@@ -791,43 +780,63 @@ void roomScene::updateFrame(float& dt) { //healRoom 전용
             currentFrame = 0;
 
         background.setTextureRect(
-            sf::IntRect(0, frameHeight * currentFrame, frameWidth, frameHeight)
+            sf::IntRect(0, 
+                static_cast<int>(frameHeight * currentFrame), 
+                static_cast<int>(frameWidth), 
+                static_cast<int>(frameHeight))
         );
     }
 }
 void roomScene::updateGameStatus() {
     int enemyAction = 0;
     if (roomType != 1) {
-
-        BattleState curState = battleState; //상태 전환 감지용 복사 (프레임 시작 직후)
-
         switch (battleState) {
         case BattleState::NotStarted:
             battleState = BattleState::PlayerTurn;// 전투 시작
             p->setBeforePlayer(); //전투 시작전 상태(레벨업 비교)
             break;
         case BattleState::PlayerTurn:
+            updateTurnLog();
             p->setTurnPlayer();   // (버프 적용 스텟)
             p->setBattlePlayer(); // (버프 미적용 스텟)
             b.battleStatus(); //유저와 적의 상황(체력 공격력 등)
             break;
         case BattleState::EnemyTurn:
-            if (e->getEnemyCurrentHealth() <= 0) {//무승부 방지
-                if (getEnemyPtr().getEnemyType() == "normal" && !homunculusUpdateEnd) {
+            if (e->getEnemyCurrentHealth() <= 0 && !homunculusUpdateEnd) {//무승부 방지
+                switch (e->convertEnemyType(getEnemyPtr().getEnemyType())) {
+                case 0: // normal
                     normalOneImg.homunculusUpdateFade(homunculusUpdateEnd);
-                }
-                else if (getEnemyPtr().getEnemyType() == "elite" && !homunculusUpdateEnd) {
+                    break;
+                case 1: // elite
                     eliteOneImg.homunculusUpdateFade(homunculusUpdateEnd);
-                }
-                else if (getEnemyPtr().getEnemyType() == "boss" && !homunculusUpdateEnd) {
+                    break;
+                case 2: //boss
                     bossOneImg.homunculusUpdateFade(homunculusUpdateEnd);
+                    break;
+                default:
+                    break;
                 }
-                if (homunculusUpdateEnd) { battleState = BattleState::Ended; }
                 break;
             }
-            if (battleDelayTime >= 1.0f) {
+            if (homunculusUpdateEnd) {
+                battleState = BattleState::Ended;
+                break;
+            }
+            updateTurnLog();
+            if(!battleGD.isAppearing() && !battleGD.isFading()){
                 enemyAction = e->enemyAction(); //랜덤값 저장
-                normalOneImg.updateTexture(res, enemyAction); //텍스쳐 바꾸기 위함
+                switch (e->convertEnemyType(getEnemyPtr().getEnemyType())) {
+                case 0: //normal
+                    normalOneImg.updateTexture(res, enemyAction); //텍스쳐 바꾸기 위함
+                    break;
+                case 1: //elite
+                    eliteOneImg.updateTexture(res, enemyAction);
+                    break;
+                case 2: //boss
+                    break;
+                default:
+                    break;
+                }                
                 b.enemyTurn(enemyAction);// 적 행동
                 if (!b.getPlay()) {
                     window.close();//창이 닫힌다 , 진건데 gameover 안만들어서 처음으로 돌아가는거 안만듬
@@ -837,7 +846,6 @@ void roomScene::updateGameStatus() {
                     transition = false; //반복 클릭 해제
                     b.statusManager();
                 }
-                battleDelayTime = 0.f; //updateGameStatus()함수에서 턴별 시간차를 초기화
             }
             break;
         case BattleState::Ended:
@@ -850,17 +858,9 @@ void roomScene::updateGameStatus() {
         default:
             break;
         }
-
-        //상태가 바뀐 프레임에만 표시 / 페이드 시작
-        if (battleState != prevBattleState && !startGD.isFading() && !battleGD.isAppearing()) {
-            battleGD.selectText(static_cast<int>(battleState));
-            battleGD.startFade();
-            prevBattleState = battleState;
-        }
-
-        //매 프레임 fade 업데이트는 별도(항상 호출해서 alpha 감소 처리)
-        battleGD.updateFade(deltaTime);
         battleGD.updateAppear(deltaTime);
+        battleGD.updateFade(deltaTime);
+
         // hp/mp/exp 업데이트 
         hoHpB.setTextHp();
         hoHpB.setBarSize();
@@ -871,3 +871,31 @@ void roomScene::updateGameStatus() {
         expB.setBarSize();
     }
 }//백엔드와 연결된 직접적인 로직
+void roomScene::updateTurnLog() {
+    battleGD.selectText(static_cast<int>(battleState));
+    if (!startGD.isFading()) {
+        switch (battleState) {
+        case BattleState::PlayerTurn:
+            if (!turnLog.player) {
+                turnLog = TurnLog{ true,false };
+                battleGD.startAppear();
+                oneTurn = true;
+            }
+            break;
+        case BattleState::EnemyTurn:
+            if (!turnLog.enemy) {
+                turnLog = TurnLog{ false,true };
+                battleGD.startAppear();
+                oneTurn = true;
+            }
+            break;
+        default:
+            break;
+        }
+        if (!battleGD.isAppearing() && oneTurn) {
+            battleGD.startFade();
+            oneTurn = false;
+        }
+    }
+}
+

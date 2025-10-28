@@ -66,6 +66,8 @@ void resourceManager::loadAll() {
 
     loadTexture("elite1", "assets/images/elite1.png");
     loadTexture("elite1Sprite", "assets/images/elite1Sheet.png");
+    loadTexture("elite1Attack", "assets/images/elite1Attack.png");
+    loadTexture("elite1EffectSheet", "assets/effects/elite1/attackSheet.png");
 
     loadTexture("boss1", "assets/images/boss1.png");
     loadTexture("boss1Sprite", "assets/images/boss1Sheet.png");

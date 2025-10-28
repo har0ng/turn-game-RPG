@@ -305,7 +305,17 @@ RandomMinMax enemy::randomPower(int enemyLv, std::string enemyType, int floor) {
     }
     return RandomMinMax{ {min},{max} };
 }
-
+int enemy::convertEnemyType(std::string enemyType) {
+    if (getEnemyPtr().getEnemyType() == "normal") {
+        return 0;
+    }
+    else if (getEnemyPtr().getEnemyType() == "elite") {
+        return 1;
+    }
+    else if (getEnemyPtr().getEnemyType() == "boss") {
+        return 2;
+    }
+}
 
 //virtual
 void enemy::decideHealth(RandomMinMax minMax){
