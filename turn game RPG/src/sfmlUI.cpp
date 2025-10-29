@@ -1379,35 +1379,129 @@ bossOne::bossOne(sf::RenderWindow& win, resourceManager& res)
 {
 	enemyWidth = res.getTexture("boss1").getSize().x;
 	enemyHeight = res.getTexture("boss1").getSize().y;
+
 	enemyImg.setTexture(res.getTexture("boss1Sprite"));
 	enemyImg.setTextureRect(sf::IntRect(0, 0, enemyWidth, enemyHeight));
+
+	effectWidth = 496;
+	effectHeight = 496;
+
+	attackEffect.setTexture(res.getTexture("boss1EffectSheet"));
+	attackEffect.setTextureRect(sf::IntRect(0, 0, 0, 0));
+	tex = Tex::none;
+
 	position(win);
 }
 void bossOne::draw(sf::RenderWindow& win) {
 	win.draw(enemyImg);
 }
 void bossOne::effectDraw(sf::RenderWindow& win) {
-	return;
-}
-void bossOne::updateFrame(float& dt, sf::RenderWindow& win) {
-	elapsed += dt;
-	if (elapsed >= frameDuration) { //elapsed가 0.15f 보다 커지면 초기화 시키고 장면 변화
-		elapsed = 0.f;
-		currentFrame++;
-		int framesPerAction = 2; // 마지막 액션 + 1이 몇인지. 장면변화 index를 제일 처음으로 초기화
-		if (currentFrame >= framesPerAction)
-			currentFrame = 0;
-
-		enemyImg.setTextureRect(
-			sf::IntRect(enemyWidth * currentFrame, 0, enemyWidth, enemyHeight)
-		);
-	}
+	win.draw(attackEffect);
 }
 void bossOne::position(sf::RenderWindow& win) {
 	enemyImg.setPosition(win.getSize().x - (win.getSize().x / 2.4f), win.getSize().y / 3.2f);
 }
-void bossOne::updateTexture(resourceManager& res, sf::RenderWindow& win, const int& enemySelect) {
-	//텍스처 추가 시 업데이트
+void bossOne::updateFrame(float& dt, resourceManager& res, sf::RenderWindow& win) {
+	elapsed += dt;
+	switch (tex){
+	case homunculus::Tex::none:
+		if (elapsed >= frameDuration) { //elapsed가 0.15f 보다 커지면 초기화 시키고 장면 변화
+			elapsed = 0.f;
+			currentFrame++;
+			int framesPerAction = 2; // 마지막 액션 + 1이 몇인지. 장면변화 index를 제일 처음으로 초기화
+			if (currentFrame >= framesPerAction) {
+				currentFrame = 0;
+			}
+			enemyImg.setTextureRect(
+				sf::IntRect(enemyWidth * currentFrame, 0, enemyWidth, enemyHeight)
+			);
+		}
+		break;
+	case homunculus::Tex::attack1:
+		if (elapsed >= 0.08f) {
+			subElapsed += 0.08f;
+			elapsed = 0.f;
+			currentEffectFrame++;
+			attackEffect.setTextureRect(
+				sf::IntRect(effectWidth * currentEffectFrame, 0, effectWidth, effectHeight)
+			);
+		}
+		if (subElapsed >= 0.1f) { //elapsed가 0.1f 보다 커지면 초기화 시키고 장면 변화
+			subElapsed = 0.f;
+			currentFrame++;
+			int framesPerAction = 3; // 마지막 액션 + 1이 몇인지. 장면변화 index를 제일 처음으로 초기화
+			if (currentFrame >= framesPerAction) {
+				tex = Tex::none;
+				updateTexture(res, win);
+				break;
+			}
+			enemyImg.setTextureRect(
+				sf::IntRect(enemyWidth * currentFrame, 0, enemyWidth, enemyHeight)
+			);
+		}
+		break;
+	case homunculus::Tex::attack2:
+		if (elapsed >= 0.08f) {
+			subElapsed += 0.08f;
+			elapsed = 0.f;
+			currentEffectFrame++;
+			attackEffect.setTextureRect(
+				sf::IntRect(effectWidth * currentEffectFrame, 0, effectWidth, effectHeight)
+			);
+		}
+		if (subElapsed >= 0.1f) { //elapsed가 0.1f 보다 커지면 초기화 시키고 장면 변화
+			subElapsed = 0.f;
+			currentFrame++;
+			int framesPerAction = 3; // 마지막 액션 + 1이 몇인지. 장면변화 index를 제일 처음으로 초기화
+			if (currentFrame >= framesPerAction) {
+				tex = Tex::none;
+				updateTexture(res, win);
+				break;
+			}
+			enemyImg.setTextureRect(
+				sf::IntRect(enemyWidth * currentFrame, 0, enemyWidth, enemyHeight)
+			);
+		}
+		break;
+	case homunculus::Tex::hit:
+		break;
+	default:
+		break;
+	}
+}
+void bossOne::updateTexture(resourceManager& res, sf::RenderWindow& win, const int& enemyAction) {
+	tex = static_cast<Tex>(enemyAction);
+	currentFrame = 0;  // 움직임 모션 프레임 초기화
+	currentEffectFrame = 0; //공격 모션 프레임 초기화
+	elapsed = 0.f;
+	switch (tex) { //스킬 추가시 case 업데이트
+	case Tex::none:
+		enemyImg.setTexture(res.getTexture("boss1Sprite"));
+		enemyImg.setTextureRect(sf::IntRect(0, 0, enemyWidth, enemyHeight));
+		attackEffect.setTextureRect(sf::IntRect(0, 0, 0, 0));
+		position(win);
+		break;
+	case Tex::attack1:
+		enemyImg.setTexture(res.getTexture("boss1Attack"));
+		enemyImg.setTextureRect(sf::IntRect(0, 0, enemyWidth, enemyHeight));
+		attackEffect.setTextureRect(sf::IntRect(0, 0, effectWidth, effectHeight));
+		position(win);
+		break;
+	case Tex::attack2:
+		enemyImg.setTexture(res.getTexture("boss1Attack"));
+		enemyImg.setTextureRect(sf::IntRect(0, 0, enemyWidth, enemyHeight));
+		attackEffect.setTextureRect(sf::IntRect(0, 0, effectWidth, effectHeight));
+		position(win);
+		break;
+	case Tex::hit://임시 , 이미지가 없어서
+		enemyImg.setTexture(res.getTexture("boss1Sprite"));
+		enemyImg.setTextureRect(sf::IntRect(0, 0, enemyWidth, enemyHeight));
+		attackEffect.setTextureRect(sf::IntRect(0, 0, 0, 0));
+		position(win);
+		break;
+	default:
+		break;
+	}
 	return;
 }
 

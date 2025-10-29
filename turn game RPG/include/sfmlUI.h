@@ -362,7 +362,7 @@ public:
 	void draw(sf::RenderWindow& win) override;
 	void effectDraw(sf::RenderWindow& win) override;
 	void updateFrame(float& dt, resourceManager& res, sf::RenderWindow& win);
-	void updateTexture(resourceManager& res,sf::RenderWindow& win, const int& enemySelect = 0) override;
+	void updateTexture(resourceManager& res,sf::RenderWindow& win, const int& enemyAction = 0) override;
 };
 
 class eliteOne : public homunculus {
@@ -372,7 +372,7 @@ public:
 	void effectDraw(sf::RenderWindow& win) override;
 	void position(sf::RenderWindow& win) override;
 	void updateFrame(float& dt, resourceManager& res, sf::RenderWindow& win);
-	void updateTexture(resourceManager& res, sf::RenderWindow& win, const int& enemySelect = 0) override;
+	void updateTexture(resourceManager& res, sf::RenderWindow& win, const int& enemyAction = 0) override;
 
 };
 
@@ -381,9 +381,9 @@ public:
 	bossOne(sf::RenderWindow& win, resourceManager& res);
 	void draw(sf::RenderWindow& win) override;
 	void effectDraw(sf::RenderWindow& win) override;
-	void updateFrame(float& dt, sf::RenderWindow& win);
 	void position(sf::RenderWindow& win) override;
-	void updateTexture(resourceManager& res, sf::RenderWindow& win, const int& enemySelect) override;
+	void updateFrame(float& dt, resourceManager& res, sf::RenderWindow& win);
+	void updateTexture(resourceManager& res, sf::RenderWindow& win, const int& enemyAction = 0) override;
 
 
 };

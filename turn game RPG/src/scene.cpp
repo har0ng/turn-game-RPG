@@ -703,6 +703,9 @@ void roomScene::render(sf::RenderWindow& window) {
     backBtn.draw(window); //돌아가기 버튼 (임시용)
     expB.draw(window);
     if (roomType != 1) {
+        hpB.draw(window);
+        mpB.draw(window);
+        hoHpB.draw(window);
         statusFrame.draw(window);
         action.draw(window);
         eloaImg.draw(window);
@@ -720,13 +723,11 @@ void roomScene::render(sf::RenderWindow& window) {
         default:
             break;
         }
-        hpB.draw(window);
-        mpB.draw(window);
-        hoHpB.draw(window);
         battleGD.draw(window);
         eloaImg.effectDraw(window);
         normalOneImg.effectDraw(window);
         eliteOneImg.effectDraw(window);
+        bossOneImg.effectDraw(window);
     }
 }
 void roomScene::allStartAppear() {
@@ -755,7 +756,7 @@ void roomScene::selectRoomType(const int& roomType, sf::RenderWindow& win) {
             startGD.updateFade(deltaTime);
         }
         frame += deltaTime;
-        bossOneImg.updateFrame(deltaTime,win);
+        bossOneImg.updateFrame(deltaTime,res,win);
         break;
     default:
         break;
@@ -833,6 +834,7 @@ void roomScene::updateGameStatus(sf::RenderWindow& win) {
                     eliteOneImg.updateTexture(res, win ,enemyAction);
                     break;
                 case 2: //boss
+                    bossOneImg.updateTexture(res, win, enemyAction);
                     break;
                 default:
                     break;

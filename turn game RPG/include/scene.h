@@ -183,7 +183,7 @@ private:
 
 	//UI
 	backButton backBtn; // 뒤로가기 버튼로 되어있는데 이름만 바꿔서 배틀 끝나고 돌아가는 버튼으로 하나 만들어 쓰기.
-	status statusFrame; //왼쪽위 체력, 마나, 경험치,레벨의 틀
+	status statusFrame; //체력, 마나, 경험치,레벨의 틀
 	hpBar hpB; //struct 할까말까하다가 다 따로 구분
 	mpBar mpB;
 	expBar expB;
