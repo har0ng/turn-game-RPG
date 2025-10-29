@@ -691,7 +691,16 @@ hpBar::hpBar(sf::RenderWindow& win, resourceManager& res)
 	hpLog.setFillColor(sf::Color(250, 250, 250));
 	hpLog.setOutlineColor(sf::Color(250, 250, 250));
 	hpLog.setOutlineThickness(1.f);
-	
+
+	//setSize , 제일 처음 피 깎여 있는거까지 구현
+	maxWidth = bar.getLocalBounds().width; // HP 바 최대 길이
+	changeWidth = (static_cast<float>(p->getPlayer_current_health()) / p->getPlayer_health()) * maxWidth;
+	if (changeWidth < maxWidth) {
+		newWidth = changeWidth;
+	}
+	else {
+		newWidth = maxWidth;
+	}
 }
 void hpBar::draw(sf::RenderWindow& win) {
 	win.draw(bar);
@@ -722,10 +731,46 @@ void hpBar::convertMaxHp(const int& maxHp) {
 	std::string stringHp = std::to_string(maxHp);
 	this->maxHp = stringHp;
 }
-void hpBar::setBarSize() {
-	float newWidth = (static_cast<float>(p->getPlayer_current_health()) / p->getPlayer_health()) * maxWidth;
+void hpBar::setBarSize(float& dt) {
+	changeWidth = (static_cast<float>(p->getPlayer_current_health()) / p->getPlayer_health()) * maxWidth;
+	//레벨업을 하거나 모종의 방법으로 회복했을 때
+	if (newWidth < changeWidth) {
+		newWidth = changeWidth;
+		startUp = true;
+	}
+	if (startUp) {
+		elapsedTime += dt;
+		float upTime = elapsedTime / 1.0f; // 1.0f초 동안 변화
+		if (upTime > 1.0f) {
+			upTime = 1.0f;
+			startUp = false;
+		}
+		bar.setSize(sf::Vector2f(newWidth * upTime, bar.getLocalBounds().height));
+	}
 
-	bar.setSize(sf::Vector2f(newWidth, bar.getLocalBounds().height));
+	//hp가 줄어들 떄
+	if (newWidth > changeWidth) {
+		decrease = newWidth - changeWidth;
+		startDown = true;
+	}
+	if (startDown) {
+		elapsedTime += dt;
+		float upTime = elapsedTime / 1.0f; // 1.0f초 동안 변화
+		if (upTime >= 1.0f) {
+			upTime = 1.0f; 
+			startDown = false;
+			newWidth -= decrease * upTime;
+		}
+		else if (upTime < 1.0f) {
+			bar.setSize(sf::Vector2f(newWidth - decrease * upTime, bar.getLocalBounds().height));
+		}
+	}
+
+	//변화가 없을 때
+	if (!startUp && !startDown) {
+		elapsedTime = 0.f;
+		bar.setSize(sf::Vector2f(newWidth, bar.getLocalBounds().height));
+	}
 }
 
 //mpBar
@@ -740,6 +785,15 @@ mpBar::mpBar(sf::RenderWindow& win, resourceManager& res)
 	mpLog.setOutlineColor(sf::Color(250, 250, 250));
 	mpLog.setOutlineThickness(1.f);
 
+	//setSize , 제일 처음 마나 깎여 있는거까지 구현
+	maxWidth = bar.getLocalBounds().width; // MP 바 최대 길이
+	changeWidth = (static_cast<float>(p->getCurrent_mana()) / p->getMana()) * maxWidth;
+	if (changeWidth < maxWidth) {
+		newWidth = changeWidth;
+	}
+	else {
+		newWidth = maxWidth;
+	}
 }
 void mpBar::draw(sf::RenderWindow& win) {
 	win.draw(bar);
@@ -767,6 +821,47 @@ void mpBar::convertMaxMp(const int& maxMp) {
 	std::string stringMp = std::to_string(maxMp);
 	this->maxMp = stringMp;
 }
+void mpBar::setBarSize(float& dt) {
+	changeWidth = (static_cast<float>(p->getCurrent_mana()) / p->getMana()) * maxWidth;
+	//레벨업을 하거나 모종의 방법으로 회복했을 때
+	if (newWidth < changeWidth) {
+		newWidth = changeWidth;
+		startUp = true;
+	}
+	if (startUp) {
+		elapsedTime += dt;
+		float upTime = elapsedTime / 1.0f; // 1.0f초 동안 변화
+		if (upTime > 1.0f) {
+			upTime = 1.0f;
+			startUp = false;
+		}
+		bar.setSize(sf::Vector2f(newWidth * upTime, bar.getLocalBounds().height));
+	}
+
+	//Mp가 줄어들 떄
+	if (newWidth > changeWidth) {
+		decrease = newWidth - changeWidth;
+		startDown = true;
+	}
+	if (startDown) {
+		elapsedTime += dt;
+		float upTime = elapsedTime / 1.0f; // 1.0f초 동안 변화
+		if (upTime >= 1.0f) {
+			upTime = 1.0f;
+			startDown = false;
+			newWidth -= decrease * upTime;
+		}
+		else if (upTime < 1.0f) {
+			bar.setSize(sf::Vector2f(newWidth - decrease * upTime, bar.getLocalBounds().height));
+		}
+	}
+
+	//변화가 없을 때
+	if (!startUp && !startDown) {
+		elapsedTime = 0.f;
+		bar.setSize(sf::Vector2f(newWidth, bar.getLocalBounds().height));
+	}
+}
 
 //expBar
 expBar::expBar(sf::RenderWindow& win, resourceManager& res)
@@ -780,7 +875,7 @@ expBar::expBar(sf::RenderWindow& win, resourceManager& res)
 		static_cast<float>(res.getTexture("expbar").getSize().y)));
 	greenBar.setFillColor(sf::Color(91, 180, 102));
 
-	//hp log
+	//exp log
 	expLog.setFont(res.getFont("fantasy"));
 	expLog.setCharacterSize(20);
 	expLog.setFillColor(sf::Color(250, 250, 250));
@@ -789,6 +884,16 @@ expBar::expBar(sf::RenderWindow& win, resourceManager& res)
 
 	//position
 	position(win);
+
+	//setSize , 제일 처음 경험치가 있다면 있는거까지 구현
+	maxWidth = expbar.getLocalBounds().width; // exp 바 최대 길이
+	changeWidth = (static_cast<float>(p->getNow_exp()) / p->getLevel_exp()) * maxWidth;
+	if (changeWidth < maxWidth) {
+		newWidth = changeWidth;
+	}
+	else {
+		newWidth = maxWidth;
+	}
 }
 void expBar::draw(sf::RenderWindow& win) {
 	win.draw(greenBar);
@@ -819,11 +924,47 @@ void expBar::convertMaxExp(const int& maxExp) {
 	std::string stringExp = std::to_string(maxExp);
 	this->maxExp = stringExp;
 }
-void expBar::setBarSize() {
-	float maxWidth = expbar.getLocalBounds().width; // HP 바 최대 길이
-	float newWidth = (static_cast<float>(p->getNow_exp()) / p->getLevel_exp()) * maxWidth;
+void expBar::setBarSize(float& dt) {
+	changeWidth = (static_cast<float>(p->getNow_exp()) / p->getLevel_exp()) * maxWidth;	
+	
+	//경험치를 얻었을 때
+	if (newWidth < changeWidth) {
+		newWidth = changeWidth;
+		startUp = true;
+	}
+	if (startUp) {
+		elapsedTime += dt;
+		float upTime = elapsedTime / 1.0f; // 1.0f초 동안 변화
+		if (upTime > 1.0f) {
+			upTime = 1.0f;
+			startUp = false;
+		}
+		greenBar.setSize(sf::Vector2f(newWidth * upTime, expbar.getLocalBounds().height));
+	} 
 
-	greenBar.setSize(sf::Vector2f(newWidth, expbar.getLocalBounds().height));
+	//레벨업을 했을때
+	if (newWidth > changeWidth) {
+		decrease = newWidth - changeWidth;
+		startDown = true;
+	}
+	if (startDown) {
+		elapsedTime += dt;
+		float upTime = elapsedTime / 1.0f; // 1.0f초 동안 변화
+		if (upTime >= 1.0f) {
+			upTime = 1.0f; 
+			startDown = false;
+			newWidth -= decrease * upTime;
+		}
+		else if (upTime < 1.0f) {
+			greenBar.setSize(sf::Vector2f(newWidth - decrease * upTime, expbar.getLocalBounds().height));
+		}
+	}
+
+	//변화가 없을 때
+	if (!startUp && !startDown) {
+		elapsedTime = 0.f;
+		greenBar.setSize(sf::Vector2f(newWidth, expbar.getLocalBounds().height));
+	}
 }
 
 //character 공용
@@ -994,7 +1135,7 @@ void normalOne::draw(sf::RenderWindow& win) {
 void normalOne::effectDraw(sf::RenderWindow& win) {
 	win.draw(attackEffect);
 }
-void normalOne::updateFrame(float& dt, resourceManager& res) {
+void normalOne::updateFrame(float& dt, resourceManager& res, sf::RenderWindow& win) {
 	elapsed += dt;
 	switch (tex){
 	case homunculus::Tex::none:
@@ -1011,58 +1152,48 @@ void normalOne::updateFrame(float& dt, resourceManager& res) {
 		}
 		break;
 	case homunculus::Tex::attack1:
-		if (subElapsed >= 0.16f) { //elapsed가 0.48f 보다 커지면 초기화 시키고 장면 변화
-			subElapsed = 0.f;
-			currentFrame++;
-			int framesPerAction = 3; // 마지막 액션 + 1이 몇인지. 장면변화 index를 제일 처음으로 초기화
-			if (currentFrame >= framesPerAction) {
-				currentFrame = 0;
-				tex = Tex::none;
-				updateTexture(res);
-				break;
-			}
-			enemyImg.setTextureRect(
-				sf::IntRect(enemyWidth * currentFrame, 0, enemyWidth, enemyHeight)
-			);
-		}
 		if (elapsed >= 0.06f) {
 			subElapsed += 0.06f;
 			elapsed = 0.f;
 			currentEffectFrame++;
-			int effectsPerAction = 8;
-			if(currentEffectFrame >= effectsPerAction) {
-				currentEffectFrame = 0;
-			}
-			attackEffect.setTextureRect(
-					sf::IntRect(effectWidth * currentEffectFrame, 0, effectWidth, effectHeight)
-				);
-		}		
-		break;
-	case homunculus::Tex::attack2:
-		if (subElapsed >= 0.16f) { //elapsed가 0.48f 보다 커지면 초기화 시키고 장면 변화
-			subElapsed = 0.f;
-			currentFrame++;
-			int framesPerAction = 3; // 마지막 액션 + 1이 몇인지. 장면변화 index를 제일 처음으로 초기화
-			if (currentFrame >= framesPerAction) {
-				currentFrame = 0;
-				tex = Tex::none;
-				updateTexture(res);
-				break;
-			}
-			enemyImg.setTextureRect(
-				sf::IntRect(enemyWidth * currentFrame, 0, enemyWidth, enemyHeight)
-			);
-		}
-		if (elapsed >= 0.06f) {
-			subElapsed += 0.06f;
-			elapsed = 0.f;
-			currentEffectFrame++;
-			int effectsPerAction = 8;
-			if (currentEffectFrame >= effectsPerAction) {
-				currentEffectFrame = 0;
-			}
 			attackEffect.setTextureRect(
 				sf::IntRect(effectWidth * currentEffectFrame, 0, effectWidth, effectHeight)
+			);
+		}
+		if (subElapsed >= 0.14f) { //elapsed가 0.48f 보다 커지면 초기화 시키고 장면 변화
+			subElapsed = 0.f;
+			currentFrame++;
+			int framesPerAction = 3; // 마지막 액션 + 1이 몇인지. 장면변화 index를 제일 처음으로 초기화
+			if (currentFrame >= framesPerAction) {
+				tex = Tex::none;
+				updateTexture(res,win);
+				break;
+			}
+			enemyImg.setTextureRect(
+				sf::IntRect(enemyWidth * currentFrame, 0, enemyWidth, enemyHeight)
+			);
+		}
+		break;
+	case homunculus::Tex::attack2:
+		if (elapsed >= 0.06f) {
+			subElapsed += 0.06f;
+			elapsed = 0.f;
+			currentEffectFrame++;
+			attackEffect.setTextureRect(
+				sf::IntRect(effectWidth * currentEffectFrame, 0, effectWidth, effectHeight)
+			);
+		}
+		if (subElapsed >= 0.16f) { //elapsed가 0.48f 보다 커지면 초기화 시키고 장면 변화
+			subElapsed = 0.f;
+			currentFrame++;
+			int framesPerAction = 3; // 마지막 액션 + 1이 몇인지. 장면변화 index를 제일 처음으로 초기화
+			if (currentFrame >= framesPerAction) {
+				tex = Tex::none;
+				updateTexture(res,win);
+				break;
+			}
+			enemyImg.setTextureRect(
+				sf::IntRect(enemyWidth * currentFrame, 0, enemyWidth, enemyHeight)
 			);
 		}
 		break;
@@ -1072,15 +1203,16 @@ void normalOne::updateFrame(float& dt, resourceManager& res) {
 		break;
 	}
 }
-void normalOne::updateTexture(resourceManager& res, const int& enemyAction) {
+void normalOne::updateTexture(resourceManager& res, sf::RenderWindow& win, const int& enemyAction) {
 	tex = static_cast<Tex>(enemyAction);
+	currentFrame = 0;  // 움직임 모션 프레임 초기화
+	currentEffectFrame = 0; //공격 모션 프레임 초기화
 	elapsed = 0.f;
 	switch (tex) { //스킬 추가시 case 업데이트
 	case Tex::none:
 		enemyImg.setTexture(res.getTexture("normal1Sprite"));
 		enemyImg.setTextureRect(sf::IntRect(0, 0, enemyWidth, enemyHeight));
 		attackEffect.setTextureRect(sf::IntRect(0, 0, 0, 0));
-		currentFrame = 0;  // 프레임 초기화 추가
 		break;
 	case Tex::attack1:
 		enemyImg.setTexture(res.getTexture("normal1Attack"));
@@ -1128,9 +1260,14 @@ void eliteOne::effectDraw(sf::RenderWindow& win) {
 	win.draw(attackEffect);
 }
 void eliteOne::position(sf::RenderWindow& win) {
-	enemyImg.setPosition(win.getSize().x - (win.getSize().x / 5.f), win.getSize().y / 1.4f);
+	if (enemyHeight <= 400.f) {
+		enemyImg.setPosition(win.getSize().x - (win.getSize().x / 5.f), win.getSize().y / 1.4f);
+	}
+	else {
+		enemyImg.setPosition(win.getSize().x - (win.getSize().x / 4.f), win.getSize().y / 1.6f);
+	}
 }
-void eliteOne::updateFrame(float& dt, resourceManager& res) {
+void eliteOne::updateFrame(float& dt, resourceManager& res, sf::RenderWindow& win) {
 	elapsed += dt;
 	switch (tex){
 	case homunculus::Tex::none:
@@ -1147,58 +1284,48 @@ void eliteOne::updateFrame(float& dt, resourceManager& res) {
 		}
 		break;
 	case homunculus::Tex::attack1:
-		if (subElapsed >= 0.2f) { //elapsed가 0.3f 보다 커지면 초기화 시키고 장면 변화
-			subElapsed = 0.f;
-			currentFrame++;
-			int framesPerAction = 3; // 마지막 액션 + 1이 몇인지. 장면변화 index를 제일 처음으로 초기화
-			if (currentFrame >= framesPerAction) {
-				currentFrame = 0;
-				tex = Tex::none;
-				updateTexture(res);
-				break;
-			}
-			enemyImg.setTextureRect(
-				sf::IntRect(enemyWidth * currentFrame, 0, enemyWidth, enemyHeight)
-			);
-		}
 		if (elapsed >= 0.06f) {
 			subElapsed += 0.06f;
 			elapsed = 0.f;
 			currentEffectFrame++;
-			int effectsPerAction = 10;
-			if (currentEffectFrame >= effectsPerAction) {
-				currentEffectFrame = 0;
-			}
 			attackEffect.setTextureRect(
 				sf::IntRect(effectWidth * currentEffectFrame, 0, effectWidth, effectHeight)
+			);
+		}
+		if (subElapsed >= 0.2f) { //elapsed가 0.1f 보다 커지면 초기화 시키고 장면 변화
+			subElapsed = 0.f;
+			currentFrame++;
+			int framesPerAction = 3; // 마지막 액션 + 1이 몇인지. 장면변화 index를 제일 처음으로 초기화
+			if (currentFrame >= framesPerAction) {
+				tex = Tex::none;
+				updateTexture(res,win);
+				break;
+			}
+			enemyImg.setTextureRect(
+				sf::IntRect(enemyWidth * currentFrame, 0, enemyWidth, enemyHeight)
 			);
 		}
 		break;
 	case homunculus::Tex::attack2:
-		if (subElapsed >= 0.2f) { //elapsed가 0.3f 보다 커지면 초기화 시키고 장면 변화
-			subElapsed = 0.f;
-			currentFrame++;
-			int framesPerAction = 3; // 마지막 액션 + 1이 몇인지. 장면변화 index를 제일 처음으로 초기화
-			if (currentFrame >= framesPerAction) {
-				currentFrame = 0;
-				tex = Tex::none;
-				updateTexture(res);
-				break;
-			}
-			enemyImg.setTextureRect(
-				sf::IntRect(enemyWidth * currentFrame, 0, enemyWidth, enemyHeight)
-			);
-		}
 		if (elapsed >= 0.06f) {
 			subElapsed += 0.06f;
 			elapsed = 0.f;
 			currentEffectFrame++;
-			int effectsPerAction = 10;
-			if (currentEffectFrame >= effectsPerAction) {
-				currentEffectFrame = 0;
-			}
 			attackEffect.setTextureRect(
 				sf::IntRect(effectWidth * currentEffectFrame, 0, effectWidth, effectHeight)
+			);
+		}
+		if (subElapsed >= 0.2f) { //elapsed가 0.1f 보다 커지면 초기화 시키고 장면 변화
+			subElapsed = 0.f;
+			currentFrame++;
+			int framesPerAction = 3; // 마지막 액션 + 1이 몇인지. 장면변화 index를 제일 처음으로 초기화
+			if (currentFrame >= framesPerAction) {
+				tex = Tex::none;
+				updateTexture(res,win);
+				break;
+			}
+			enemyImg.setTextureRect(
+				sf::IntRect(enemyWidth * currentFrame, 0, enemyWidth, enemyHeight)
 			);
 		}
 		break;
@@ -1208,30 +1335,39 @@ void eliteOne::updateFrame(float& dt, resourceManager& res) {
 		break;
 	}
 }
-void eliteOne::updateTexture(resourceManager& res, const int& enemyAction) {
+void eliteOne::updateTexture(resourceManager& res, sf::RenderWindow& win, const int& enemyAction) {
 	tex = static_cast<Tex>(enemyAction);
+	currentFrame = 0;  // 움직임 모션 프레임 초기화
+	currentEffectFrame = 0; //공격 모션 프레임 초기화
 	elapsed = 0.f;
 	switch (tex) { //스킬 추가시 case 업데이트
 	case Tex::none:
+		enemyHeight = res.getTexture("elite1").getSize().y;
 		enemyImg.setTexture(res.getTexture("elite1Sprite"));
 		enemyImg.setTextureRect(sf::IntRect(0, 0, enemyWidth, enemyHeight));
 		attackEffect.setTextureRect(sf::IntRect(0, 0, 0, 0));
-		currentFrame = 0;  // 프레임 초기화 추가
+		position(win);
 		break;
 	case Tex::attack1:
+		enemyHeight = res.getTexture("elite1Attack").getSize().y;
 		enemyImg.setTexture(res.getTexture("elite1Attack"));
 		enemyImg.setTextureRect(sf::IntRect(0, 0, enemyWidth, enemyHeight));
 		attackEffect.setTextureRect(sf::IntRect(0, 0, effectWidth, effectHeight));
+		position(win);
 		break;
 	case Tex::attack2:
+		enemyHeight = res.getTexture("elite1Attack").getSize().y;
 		enemyImg.setTexture(res.getTexture("elite1Attack"));
 		enemyImg.setTextureRect(sf::IntRect(0, 0, enemyWidth, enemyHeight));
 		attackEffect.setTextureRect(sf::IntRect(0, 0, effectWidth, effectHeight));
+		position(win);
 		break;
 	case Tex::hit://임시 , 이미지가 없어서
+		enemyHeight = res.getTexture("elite1").getSize().y;
 		enemyImg.setTexture(res.getTexture("elite1Sprite"));
 		enemyImg.setTextureRect(sf::IntRect(0, 0, enemyWidth, enemyHeight));
 		attackEffect.setTextureRect(sf::IntRect(0, 0, 0, 0));
+		position(win);
 		break;
 	default:
 		break;
@@ -1253,7 +1389,7 @@ void bossOne::draw(sf::RenderWindow& win) {
 void bossOne::effectDraw(sf::RenderWindow& win) {
 	return;
 }
-void bossOne::updateFrame(float& dt) {
+void bossOne::updateFrame(float& dt, sf::RenderWindow& win) {
 	elapsed += dt;
 	if (elapsed >= frameDuration) { //elapsed가 0.15f 보다 커지면 초기화 시키고 장면 변화
 		elapsed = 0.f;
@@ -1268,9 +1404,9 @@ void bossOne::updateFrame(float& dt) {
 	}
 }
 void bossOne::position(sf::RenderWindow& win) {
-	enemyImg.setPosition(win.getSize().x - (win.getSize().x / 5.f), win.getSize().y / 2.9f);
+	enemyImg.setPosition(win.getSize().x - (win.getSize().x / 2.4f), win.getSize().y / 3.2f);
 }
-void bossOne::updateTexture(resourceManager& res, const int& enemySelect) {
+void bossOne::updateTexture(resourceManager& res, sf::RenderWindow& win, const int& enemySelect) {
 	//텍스처 추가 시 업데이트
 	return;
 }
@@ -1289,6 +1425,17 @@ homunculusHpbar::homunculusHpbar(sf::RenderWindow& win, resourceManager& res)
 	hpLog.setFillColor(sf::Color::White);
 	hpLog.setOutlineColor(sf::Color::White);
 	hpLog.setOutlineThickness(1.f);
+
+	//setSize , 제일 처음 피 깎여 있는거까지 구현
+	maxWidth = enemyHp.getLocalBounds().width; // HP 바 최대 길이
+	changeWidth = (static_cast<float>(e->getEnemyCurrentHealth()) / e->getEnemy_health()) * maxWidth;
+	if (changeWidth < maxWidth) {
+		newWidth = changeWidth;
+	}
+	else {
+		newWidth = maxWidth;
+	}
+
 }
 void homunculusHpbar::draw(sf::RenderWindow& win) {
 	win.draw(bar);
@@ -1300,7 +1447,7 @@ const sf::Vector2f& homunculusHpbar::getEnemyHpPosition() {
 }
 void homunculusHpbar::position(const sf::Vector2f& enemyP, const sf::FloatRect& enemyImg) {
 	// HP바 배경 위치: 적 이미지 아래
-	enemyHp.setPosition(enemyP.x, enemyP.y + enemyImg.height);
+	enemyHp.setPosition(1536.f, 1110.f); // 1536,1110
 
 	// bar 위치
 	bar.setPosition(enemyHp.getPosition());
@@ -1327,11 +1474,46 @@ void homunculusHpbar::convertMaxHp(const int& maxHp) {
 	std::string stringHp = std::to_string(maxHp);
 	this->maxHp = stringHp;
 }
-void homunculusHpbar::setBarSize() {
-	float maxWidth = enemyHp.getLocalBounds().width; // HP 바 최대 길이
-	float newWidth = (static_cast<float>(e->getEnemyCurrentHealth()) / e->getEnemy_health()) * maxWidth;
+void homunculusHpbar::setBarSize(float& dt) {
+	changeWidth = (static_cast<float>(e->getEnemyCurrentHealth()) / e->getEnemy_health()) * maxWidth;
+	//레벨업을 하거나 모종의 방법으로 회복했을 때
+	if (newWidth < changeWidth) {
+		newWidth = changeWidth;
+		startUp = true;
+	}
+	if (startUp) {
+		elapsedTime += dt;
+		float upTime = elapsedTime / 1.0f; // 1.0f초 동안 변화
+		if (upTime > 1.0f) {
+			upTime = 1.0f;
+			startUp = false;
+		}
+		bar.setSize(sf::Vector2f(newWidth * upTime, enemyHp.getLocalBounds().height));
+	}
 
-	bar.setSize(sf::Vector2f(newWidth, enemyHp.getLocalBounds().height));
+	//hp가 줄어들 떄
+	if (newWidth > changeWidth) {
+		decrease = newWidth - changeWidth;
+		startDown = true;
+	}
+	if (startDown) {
+		elapsedTime += dt;
+		float upTime = elapsedTime / 1.0f; // 1.0f초 동안 변화
+		if (upTime >= 1.0f) {
+			upTime = 1.0f;
+			startDown = false;
+			newWidth -= decrease * upTime;
+		}
+		else if (upTime < 1.0f) {
+			bar.setSize(sf::Vector2f(newWidth - decrease * upTime, enemyHp.getLocalBounds().height));
+		}
+	}
+
+	//변화가 없을 때
+	if (!startUp && !startDown) {
+		elapsedTime = 0.f;
+		bar.setSize(sf::Vector2f(newWidth, enemyHp.getLocalBounds().height));
+	}
 }
 
 //selectAction

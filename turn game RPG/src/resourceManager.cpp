@@ -71,6 +71,7 @@ void resourceManager::loadAll() {
 
     loadTexture("boss1", "assets/images/boss1.png");
     loadTexture("boss1Sprite", "assets/images/boss1Sheet.png");
+    loadTexture("boss1Attack", "assets/images/boss1Attack.png");
 
     //font
     loadFont("normal", "assets/fonts/smartfont.otf");

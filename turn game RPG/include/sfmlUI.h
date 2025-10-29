@@ -204,7 +204,13 @@ private:
 	sf::Text hpLog;
 	std::string hp;
 	std::string maxHp;
-	float maxWidth{ 0.f };
+	float maxWidth;
+	float newWidth;
+	float changeWidth;
+	float elapsedTime{ 0.f };
+	float decrease{ 0.f };
+	bool startUp{ false };
+	bool startDown{ false };
 public:
 	hpBar(sf::RenderWindow& win, resourceManager& res);
 	void draw(sf::RenderWindow& win);
@@ -212,7 +218,7 @@ public:
 	void setTextHp();
 	void convertHp(const int& hp);
 	void convertMaxHp(const int& maxHp);
-	void setBarSize();
+	void setBarSize(float& dt);
 };
 
 class mpBar {
@@ -221,6 +227,13 @@ private:
 	 sf::Text mpLog;
 	 std::string maxMp;
 	 std::string mp;
+	 float maxWidth;
+	 float newWidth;
+	 float changeWidth;
+	 float elapsedTime{ 0.f };
+	 float decrease{ 0.f };
+	 bool startUp{ false };
+	 bool startDown{ false };
 public:
 	mpBar(sf::RenderWindow& win, resourceManager& res);
 	void draw(sf::RenderWindow& win);
@@ -228,16 +241,23 @@ public:
 	void setTextMp();
 	void convertMp(const int& mp);
 	void convertMaxMp(const int& maxMp);
-
+	void setBarSize(float& dt);
 };
 
-class expBar{
+class expBar {
 private:
 	sf::Sprite expbar;
 	sf::Text expLog;
 	sf::RectangleShape greenBar;
 	std::string exp;
 	std::string maxExp;
+	float maxWidth;
+	float newWidth;
+	float changeWidth;
+	float elapsedTime{ 0.f };
+	float decrease{ 0.f };
+	bool startUp{ false };
+	bool startDown{ false };
 public:
 	expBar(sf::RenderWindow& win, resourceManager& res);
 	void draw(sf::RenderWindow& win);
@@ -246,7 +266,7 @@ public:
 	void setTextExp();
 	void convertExp(const int& exp);
 	void convertMaxExp(const int& maxExp);
-	void setBarSize();
+	void setBarSize(float& dt);
 
 };
 
@@ -327,7 +347,7 @@ public:
 	virtual void draw(sf::RenderWindow & win) = 0;
 	virtual void effectDraw(sf::RenderWindow& win) = 0;
 	virtual void position(sf::RenderWindow & win);
-	virtual void updateTexture(resourceManager& res, const int& enemySelect) = 0;
+	virtual void updateTexture(resourceManager& res, sf::RenderWindow& win, const int& enemySelect) = 0;
 	virtual void setEffectPosition(const sf::Vector2f& playerPos);
 	const sf::Vector2f& getPosition(); //enemyImg.getPositon
 	const sf::FloatRect& getEnemyImg();
@@ -341,8 +361,8 @@ public:
 	normalOne(sf::RenderWindow& win, resourceManager& res);
 	void draw(sf::RenderWindow& win) override;
 	void effectDraw(sf::RenderWindow& win) override;
-	void updateFrame(float& dt, resourceManager& res);
-	void updateTexture(resourceManager& res, const int& enemySelect = 0) override;
+	void updateFrame(float& dt, resourceManager& res, sf::RenderWindow& win);
+	void updateTexture(resourceManager& res,sf::RenderWindow& win, const int& enemySelect = 0) override;
 };
 
 class eliteOne : public homunculus {
@@ -351,8 +371,8 @@ public:
 	void draw(sf::RenderWindow& win) override;
 	void effectDraw(sf::RenderWindow& win) override;
 	void position(sf::RenderWindow& win) override;
-	void updateFrame(float& dt, resourceManager& res);
-	void updateTexture(resourceManager& res, const int& enemySelect = 0) override;
+	void updateFrame(float& dt, resourceManager& res, sf::RenderWindow& win);
+	void updateTexture(resourceManager& res, sf::RenderWindow& win, const int& enemySelect = 0) override;
 
 };
 
@@ -361,9 +381,9 @@ public:
 	bossOne(sf::RenderWindow& win, resourceManager& res);
 	void draw(sf::RenderWindow& win) override;
 	void effectDraw(sf::RenderWindow& win) override;
-	void updateFrame(float& dt);
+	void updateFrame(float& dt, sf::RenderWindow& win);
 	void position(sf::RenderWindow& win) override;
-	void updateTexture(resourceManager& res, const int& enemySelect) override;
+	void updateTexture(resourceManager& res, sf::RenderWindow& win, const int& enemySelect) override;
 
 
 };
@@ -375,9 +395,13 @@ private:
 	sf::Text hpLog;
 	std::string hp;
 	std::string maxHp;
-	float elapsed{ 0.f };
-	float duration{ 0.f };
-	float targetWidth{ 0.f };
+	float maxWidth;
+	float newWidth;
+	float changeWidth;
+	float elapsedTime{ 0.f };
+	float decrease{ 0.f };
+	bool startUp{ false };
+	bool startDown{ false };
 public:
 	homunculusHpbar(sf::RenderWindow& win, resourceManager& res);
 	void draw(sf::RenderWindow& win);
@@ -386,7 +410,7 @@ public:
 	void setTextHp();
 	void convertHp(const int& hp);
 	void convertMaxHp(const int& maxHp);
-	void setBarSize(); //남은 체력에 따른 바 크기
+	void setBarSize(float& dt); //남은 체력에 따른 바 크기
 };
 
 class selectAction { //플레이어 선택지

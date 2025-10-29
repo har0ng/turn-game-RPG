@@ -198,7 +198,7 @@ int enemy::enemyTakeDamage(int echp, int dmg) { //공격 받은 후 남은 체�
 std::string enemy::randomEnemyType() { //적이 노말인지 엘리트인지 랜덤
     std::random_device rd; //seed create
     std::mt19937 gen(rd()); //seed random
-    std::uniform_int_distribution<int> enemyTypelDist(0, 3);
+    std::uniform_int_distribution<int> enemyTypelDist(2, 2);
     return enemyTypelDist(gen) == 2 ? "elite" : "normal";
 }
 RandomMinMax enemy::randomHealth(int enemyLv, std::string enemyType, int floor) {

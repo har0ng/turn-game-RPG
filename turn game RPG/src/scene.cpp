@@ -642,7 +642,7 @@ roomScene::roomScene(sf::RenderWindow& win, resourceManager& res, const int& roo
 void roomScene::update(sf::RenderWindow& window) {
     deltaTime = roomClock.restart().asSeconds();  // 프레임 독립적 시간
     eloaImg.updateFrame(deltaTime,res);          // F 애니메이션 갱신
-    selectRoomType(roomType);   //무슨 방인지 구분
+    selectRoomType(roomType,window);   //무슨 방인지 구분
     sf::Event event;
     while (window.pollEvent(event)) {//이벤트가 있다면 계속 반복
         sf::Vector2i pixelPos = sf::Mouse::getPosition(window); //설정 해놓은 창 기준 마우스
@@ -696,17 +696,14 @@ void roomScene::update(sf::RenderWindow& window) {
         }
     } //End of while
     // 2. 게임 상태 처리 (전투 흐름)
-    updateGameStatus();
+    updateGameStatus(window);
 }
 void roomScene::render(sf::RenderWindow& window) {
     window.draw(background);
     backBtn.draw(window); //돌아가기 버튼 (임시용)
     expB.draw(window);
     if (roomType != 1) {
-        hpB.draw(window);
-        mpB.draw(window);
         statusFrame.draw(window);
-        hoHpB.draw(window);
         action.draw(window);
         eloaImg.draw(window);
         startGD.draw(window);
@@ -723,6 +720,9 @@ void roomScene::render(sf::RenderWindow& window) {
         default:
             break;
         }
+        hpB.draw(window);
+        mpB.draw(window);
+        hoHpB.draw(window);
         battleGD.draw(window);
         eloaImg.effectDraw(window);
         normalOneImg.effectDraw(window);
@@ -732,7 +732,7 @@ void roomScene::render(sf::RenderWindow& window) {
 void roomScene::allStartAppear() {
     return;
 }
-void roomScene::selectRoomType(const int& roomType) {
+void roomScene::selectRoomType(const int& roomType, sf::RenderWindow& win) {
     switch (roomType) {
     case 1:
         updateFrame(deltaTime);
@@ -743,11 +743,11 @@ void roomScene::selectRoomType(const int& roomType) {
         }
         if (getEnemyPtr().getEnemyType() == "normal") {
             frame += deltaTime;
-            normalOneImg.updateFrame(deltaTime, res);
+            normalOneImg.updateFrame(deltaTime, res, win);
         }
         else if (getEnemyPtr().getEnemyType() == "elite") {
             frame += deltaTime;
-            eliteOneImg.updateFrame(deltaTime, res);
+            eliteOneImg.updateFrame(deltaTime, res,win);
         }
         break;
     case 3:
@@ -755,7 +755,7 @@ void roomScene::selectRoomType(const int& roomType) {
             startGD.updateFade(deltaTime);
         }
         frame += deltaTime;
-        bossOneImg.updateFrame(deltaTime);
+        bossOneImg.updateFrame(deltaTime,win);
         break;
     default:
         break;
@@ -787,7 +787,7 @@ void roomScene::updateFrame(float& dt) { //healRoom 전용
         );
     }
 }
-void roomScene::updateGameStatus() {
+void roomScene::updateGameStatus(sf::RenderWindow& win) {
     int enemyAction = 0;
     if (roomType != 1) {
         switch (battleState) {
@@ -827,10 +827,10 @@ void roomScene::updateGameStatus() {
                 enemyAction = e->enemyAction(); //랜덤값 저장
                 switch (e->convertEnemyType(getEnemyPtr().getEnemyType())) {
                 case 0: //normal
-                    normalOneImg.updateTexture(res, enemyAction); //텍스쳐 바꾸기 위함
+                    normalOneImg.updateTexture(res, win ,enemyAction); //텍스쳐 바꾸기 위함
                     break;
                 case 1: //elite
-                    eliteOneImg.updateTexture(res, enemyAction);
+                    eliteOneImg.updateTexture(res, win ,enemyAction);
                     break;
                 case 2: //boss
                     break;
@@ -863,12 +863,12 @@ void roomScene::updateGameStatus() {
 
         // hp/mp/exp 업데이트 
         hoHpB.setTextHp();
-        hoHpB.setBarSize();
+        hoHpB.setBarSize(deltaTime);
         hpB.setTextHp();
-        hpB.setBarSize();
+        hpB.setBarSize(deltaTime);
         mpB.setTextMp();
         expB.setTextExp();
-        expB.setBarSize();
+        expB.setBarSize(deltaTime);
     }
 }//백엔드와 연결된 직접적인 로직
 void roomScene::updateTurnLog() {
