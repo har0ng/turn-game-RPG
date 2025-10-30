@@ -634,6 +634,8 @@ roomScene::roomScene(sf::RenderWindow& win, resourceManager& res, const int& roo
         default:
             break;
         }
+        hoHpB.homunculusHpStartFade();
+
         //5. enemy hp text 위치 조정 , 포인터가 정해지는게 4번이라 그 이후에 해야 enemyType에 맞는 hp를 들고옴
         hoHpB.setTextHp();
         startGD.startFade();
@@ -817,6 +819,7 @@ void roomScene::updateGameStatus(sf::RenderWindow& win) {
                 default:
                     break;
                 }
+                hoHpB.homunculusHpUpdateFade(homunculusUpdateEnd);
                 break;
             }
             if (homunculusUpdateEnd) {

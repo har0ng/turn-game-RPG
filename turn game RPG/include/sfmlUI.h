@@ -402,6 +402,9 @@ private:
 	float decrease{ 0.f };
 	bool startUp{ false };
 	bool startDown{ false };
+	bool fading{ false };
+	float alpha{ 255.f };
+
 public:
 	homunculusHpbar(sf::RenderWindow& win, resourceManager& res);
 	void draw(sf::RenderWindow& win);
@@ -411,6 +414,8 @@ public:
 	void convertHp(const int& hp);
 	void convertMaxHp(const int& maxHp);
 	void setBarSize(float& dt); //남은 체력에 따른 바 크기
+	void homunculusHpStartFade(); // 죽을 떄
+	void homunculusHpUpdateFade(bool& BattleEnd);
 };
 
 class selectAction { //플레이어 선택지

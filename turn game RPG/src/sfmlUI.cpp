@@ -639,7 +639,7 @@ const sf::Vector2f& status::getHpmpPosition() {
 }
 void status::setPosition(const sf::Vector2f& characterP,const sf::Vector2f& expbarP, resourceManager& res) {
 	//hpmp
-	hpmp.setPosition(characterP.x , characterP.y + res.getTexture("tiferet").getSize().y);
+	hpmp.setPosition(characterP.x , characterP.y + res.getTexture("tiferet").getSize().y /1.15f);
 
 	// level 텍스트 위치 설정
 	sf::Vector2f pos = sf::Vector2f(expbarP.x, expbarP.y - background.getSize().y);
@@ -969,7 +969,7 @@ void expBar::setBarSize(float& dt) {
 
 //character 공용
 void character::position(sf::RenderWindow& win) {
-	characterImg.setPosition(win.getSize().x / 5.f, win.getSize().y / 2.f);
+	characterImg.setPosition(win.getSize().x / 5.f, win.getSize().y / 1.7f);
 }
 const sf::Vector2f& character::getPosition(){
 	return characterImg.getPosition();
@@ -1260,12 +1260,7 @@ void eliteOne::effectDraw(sf::RenderWindow& win) {
 	win.draw(attackEffect);
 }
 void eliteOne::position(sf::RenderWindow& win) {
-	if (enemyHeight <= 400.f) {
-		enemyImg.setPosition(win.getSize().x - (win.getSize().x / 5.f), win.getSize().y / 1.4f);
-	}
-	else {
-		enemyImg.setPosition(win.getSize().x - (win.getSize().x / 4.f), win.getSize().y / 1.6f);
-	}
+	enemyImg.setPosition(win.getSize().x - (win.getSize().x / 4.f), win.getSize().y / 1.65f);
 }
 void eliteOne::updateFrame(float& dt, resourceManager& res, sf::RenderWindow& win) {
 	elapsed += dt;
@@ -1279,7 +1274,7 @@ void eliteOne::updateFrame(float& dt, resourceManager& res, sf::RenderWindow& wi
 				currentFrame = 0;
 
 			enemyImg.setTextureRect(
-				sf::IntRect(0, enemyHeight * currentFrame, enemyWidth, enemyHeight)
+				sf::IntRect(enemyWidth * currentFrame, 0, enemyWidth, enemyHeight)
 			);
 		}
 		break;
@@ -1609,6 +1604,31 @@ void homunculusHpbar::setBarSize(float& dt) {
 		bar.setSize(sf::Vector2f(newWidth, enemyHp.getLocalBounds().height));
 	}
 }
+void homunculusHpbar::homunculusHpStartFade() {
+	fading = true;
+}
+void homunculusHpbar::homunculusHpUpdateFade(bool& BattleEnd) {
+	sf::Color enemyHpColor = enemyHp.getColor(); // 현재 색상
+	sf::Color hpLogColor = hpLog.getFillColor(); //현재 텍스트 색상
+	if (fading == false) {
+		BattleEnd = true;
+		return;
+	}
+	alpha -= 0.05f * 255; // 2.0초에 걸쳐 감소
+	if (alpha < 0) {
+		alpha = 0;
+		fading = false; // 완료되면 멈춤
+		BattleEnd = true;
+		return;
+	}
+	enemyHpColor.a = static_cast<sf::Uint8>(alpha);// 알파값만 변경
+	hpLogColor.a = static_cast<sf::Uint8>(alpha);
+
+	enemyHp.setColor(enemyHpColor); // 다시 적용
+	hpLog.setFillColor(hpLogColor);
+	hpLog.setOutlineColor(hpLogColor);
+}
+
 
 //selectAction
 selectAction::selectAction(sf::RenderWindow& win, resourceManager& res)
@@ -1683,11 +1703,11 @@ bool selectAction::isClicked(sf::Vector2f& mousePos, bool& a, bool& d, bool& s) 
 }
 void selectAction::setPosition(const sf::Vector2f& characterP, const sf::Sprite& characterImg) {
 	//sprite
-	attack.setPosition(characterP.x + characterImg.getLocalBounds().width, 
+	attack.setPosition(characterP.x + characterImg.getLocalBounds().width / 2.f,
 		characterP.y + 100.f);
-	defense.setPosition(characterP.x + characterImg.getLocalBounds().width,
+	defense.setPosition(characterP.x + characterImg.getLocalBounds().width / 2.f,
 		attack.getPosition().y + attack.getLocalBounds().height);
-	skill.setPosition(characterP.x + characterImg.getLocalBounds().width,
+	skill.setPosition(characterP.x + characterImg.getLocalBounds().width / 2.f,
 		defense.getPosition().y + defense.getLocalBounds().height);
 
 	//background
