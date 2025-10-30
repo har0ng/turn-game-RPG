@@ -492,12 +492,16 @@ void floorScene::pushAssortMap(int assortMapCnt, resourceManager& res) { //각 �
     }
 }
 void floorScene::animation(sf::Vector2f& center, float& elapsed) {
+    float speed = elapsed;
+    if (elapsed > 20) {
+        speed = 20;
+    }
     if (center.y <= 640.f) {
         center.y == 640.f;
         animationYN = true;
     }
     if (center.y != 640.f) {
-        center.y = std::max(640.f, center.y - ((scrollSpeed / 12) * elapsed)); // 위로 이동
+        center.y = std::max(640.f, center.y - ((scrollSpeed / 12) * speed)); // 위로 이동
     }
 }
 std::vector<std::vector<assortMapSelectButton>>& floorScene::getAssortBtns() {
@@ -582,12 +586,12 @@ void floorScene::setRoomNum(std::string roomName) {
 
 //roomScene
 roomScene::roomScene(sf::RenderWindow& win, resourceManager& res, const int& roomNum) :
-    res(res),window(win), log(win), view(sf::Vector2f(1280.f, 720.f), sf::Vector2f(2560.f, 1440.f)),
+    res(res), window(win), log(win), view(sf::Vector2f(1280.f, 720.f), sf::Vector2f(2560.f, 1440.f)),
     frameDuration(0.15f), backBtn("back", 0.0f, 960.0f, res.getFont("fantasy")),
     statusFrame(res), hpB(win, res), mpB(win, res), expB(win, res), eloaImg(win, res),
-    normalOneImg(win, res), eliteOneImg(win, res), bossOneImg(win, res), 
-    hoHpB(win, res), action(win,res), startGD(res),battleState(BattleState::NotStarted) ,b(p,e)
-    ,battleGD(res)
+    normalOneImg(win, res), eliteOneImg(win, res), bossOneImg(win, res),
+    hoHpB(win, res), action(win, res), startGD(res), battleState(BattleState::NotStarted), b(p, e)
+    , battleGD(res), up(win, res, view)
 {
     //0.무슨 방인지 구분 rest, enemy , boss
     roomType = roomNum;
@@ -626,7 +630,8 @@ roomScene::roomScene(sf::RenderWindow& win, resourceManager& res, const int& roo
             break;
         case 2: //boss
             hoHpB.position(bossOneImg.getPosition(), bossOneImg.getEnemyImg());
-            eloaImg.setEffectPosition(bossOneImg.getPosition());
+            eloaImg.setEffectPosition(sf::Vector2f(bossOneImg.getPosition().x + res.getTexture("normal1").getSize().x / 1.1f,
+                bossOneImg.getPosition().y + res.getTexture("normal1").getSize().y / 4.f));
             normalOneImg.setEffectPosition(eloaImg.getPosition());
             bossOneImg.setEffectPosition(eloaImg.getPosition());
             bossOneImg.homunculusStartFade();
@@ -652,6 +657,7 @@ void roomScene::update(sf::RenderWindow& window) {
      
         //아웃라인 색상 변경
         backBtn.outlineColormanager(worldPos);
+        up.outlineColormanager(worldPos);
         
         if (event.type == sf::Event::Closed) { //만약 event 타입으로써 닫기 event가 일어나면
             window.close();//창이 닫힌다
@@ -730,6 +736,9 @@ void roomScene::render(sf::RenderWindow& window) {
         normalOneImg.effectDraw(window);
         eliteOneImg.effectDraw(window);
         bossOneImg.effectDraw(window);
+        if (p->getBeforePlayer().level < p->getLevel()) {
+            up.draw(window);
+        }
     }
 }
 void roomScene::allStartAppear() {

@@ -967,6 +967,58 @@ void expBar::setBarSize(float& dt) {
 	}
 }
 
+//levelUp
+levelUp::levelUp(sf::RenderWindow& win, resourceManager& res, const sf::View& view) {
+	//text
+	levUp.setString(L"レベルアップ！");
+	levUp.setFont(res.getFont("fantasy"));
+	levUp.setCharacterSize(30);
+	levUp.setFillColor(sf::Color(192, 160, 127));
+	//textground
+	sf::FloatRect textBounds = levUp.getLocalBounds();//멤버 변수 text의 경계 혹은 테두리 저장 
+	textBackground.setSize(sf::Vector2f(400, textBounds.height + 200));//버튼 배경 사이즈를 text에 맞춰 조절
+	textBackground.setFillColor(sf::Color(0, 0, 51)); //내부 색
+	textBackground.setOutlineColor(sf::Color(224, 224, 224)); //버튼 컬러
+	textBackground.setOutlineThickness(3.f); //테두리 두께
+	//statusground
+	sf::FloatRect statusBounds = levUp.getLocalBounds();//멤버 변수 text의 경계 혹은 테두리 저장 
+	statusBackground.setSize(sf::Vector2f(1200, statusBounds.height + 900));//버튼 배경 사이즈를 text에 맞춰 조절
+	statusBackground.setFillColor(sf::Color(0, 0, 51)); //내부 색
+	statusBackground.setOutlineColor(sf::Color(224, 224, 224)); //버튼 컬러
+	statusBackground.setOutlineThickness(3.f); //테두리 두께
+	//position
+	setPosition(win, view);
+}
+void levelUp::draw(sf::RenderWindow& win) {
+	win.draw(statusBackground);
+	win.draw(textBackground);
+	win.draw(levUp);
+}
+void levelUp::startFade(){
+
+}
+void levelUp::updateFade(){
+
+}
+void levelUp::startAppear(){
+
+}
+void levelUp::updateAppear(){
+
+}
+void levelUp::setPosition(sf::RenderWindow& win, const sf::View& view) {
+	//textBackground 
+	textBackground.setPosition(view.getSize().x / 2.f - (textBackground.getSize().x / 2.f)
+							, view.getSize().y / 10.f); // 버튼 배경 위치를 먼저 조절, 배경 먼저 해야 글자가 아래로 안감
+	//levUp
+	levUp.setPosition(textBackground.getPosition().x + (textBackground.getSize().x - levUp.getLocalBounds().width) / 2.f
+		, textBackground.getPosition().y + (textBackground.getSize().y - levUp.getLocalBounds().height) / 2.f);
+	//statusBackground
+	statusBackground.setPosition(textBackground.getPosition().x - (statusBackground.getLocalBounds().width - textBackground.getLocalBounds().width) / 2.f
+							,textBackground.getPosition().y + textBackground.getLocalBounds().height /2.f);
+
+}
+
 //character 공용
 void character::position(sf::RenderWindow& win) {
 	characterImg.setPosition(win.getSize().x / 5.f, win.getSize().y / 1.7f);
@@ -1629,7 +1681,6 @@ void homunculusHpbar::homunculusHpUpdateFade(bool& BattleEnd) {
 	hpLog.setOutlineColor(hpLogColor);
 }
 
-
 //selectAction
 selectAction::selectAction(sf::RenderWindow& win, resourceManager& res)
 {
@@ -1944,3 +1995,4 @@ bool& battleGradation::convertPlayerTurn() {
 bool& battleGradation::convertEnemyTurn() {
 	return enemyTurn;
 }
+

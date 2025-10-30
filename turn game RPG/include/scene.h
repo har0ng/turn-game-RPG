@@ -196,6 +196,7 @@ private:
 	selectAction action;
 	startGradation startGD;
 	battleGradation battleGD;
+	levelUp up;
 	bool homunculusUpdateEnd{ false };
 	struct TurnLog {
 		bool player{ false };
