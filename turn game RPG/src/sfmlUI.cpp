@@ -990,22 +990,39 @@ levelUp::levelUp(sf::RenderWindow& win, resourceManager& res, const sf::View& vi
 	//blackBackground
 	blackBackground.setSize(view.getSize());
 	blackBackground.setFillColor(sf::Color(0, 0, 0, 50));
+	//vector size
+	nextSkills.reserve(3);
+	categorizeBackground.reserve(6);
+	//category
+	categoryBackground.setSize(sf::Vector2f(statusBackground.getSize().x,statusBackground.getSize().y / categorizeBackground.capacity()));
+	categoryBackground.setFillColor(sf::Color(0, 0, 0, 0));
+	categoryBackground.setOutlineColor(sf::Color(255, 255, 255));
+	categoryBackground.setOutlineThickness(3.f); //테두리 두께
+
+	for (int i = 0; i < categorizeBackground.capacity(); i++) {
+		categorizeBackground.push_back(categoryBackground);
+	}
 	//position
 	setPosition(win, view);
 
-	nextSkills.reserve(3);
 }
 void levelUp::draw(sf::RenderWindow& win) {
 	win.draw(blackBackground);
 	win.draw(statusBackground);
+	for (auto& category : categorizeBackground) {
+		win.draw(category);
+	}
 	win.draw(textBackground);
 	win.draw(levUp);
+	
 }
 /*
-// 상승하는 스테이터스들을 sf::text화시켜서 fade & appear 시키기
+ 상승하는 스테이터스들을 sf::text화시켜서 fade & appear 시키기
 , lev는 작아진 상태였다가 커지는걸로 하기
 , background는 레벨업하면 나오게 하고 뒷배경은 좀 어둡게 바꾸기.
  view 크기의 검은색 rectangleShape를 준비해놓고 투명도 줄이면 될듯.
+ category는 6칸으로 나누고 2번쨰 칸부터 status 하나하나 부여하고, 아웃라인 컬러 없애면 끝일듯
+ 스킬 뭐 얻었는지 알려주는 버튼은 statusBackground 아래에다가 조금 간격 띄워서 만들고
 */
 void levelUp::startFade(){ 
 							
@@ -1030,7 +1047,12 @@ void levelUp::setPosition(sf::RenderWindow& win, const sf::View& view) {
 	//statusBackground
 	statusBackground.setPosition(textBackground.getPosition().x - (statusBackground.getLocalBounds().width - textBackground.getLocalBounds().width) / 2.f
 							,textBackground.getPosition().y + textBackground.getLocalBounds().height /2.f);
-
+	//categorizeBackground
+	int index = 0;
+	for (auto& category : categorizeBackground) {
+		category.setPosition(sf::Vector2f(statusBackground.getPosition().x, statusBackground.getPosition().y + categoryBackground.getSize().y * index));
+		index++;
+	}
 }
 void levelUp::setlevUpStatus() {
 	/* p->setBattlePlayer을 통해서 버프 미적용 스텟을 불러오고 싸운 이후의 

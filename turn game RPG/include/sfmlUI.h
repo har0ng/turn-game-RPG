@@ -284,9 +284,11 @@ private:
 	status prevStatus;
 	status nextStatus;
 	std::vector<std::string> nextSkills;
-	sf::RectangleShape textBackground; //스테이터스 설명 배경
-	sf::RectangleShape statusBackground; //스테이터스 설명 배경
+	sf::RectangleShape textBackground; //levUp 배경
+	sf::RectangleShape statusBackground; //스테이터스 변화 설명 배경
 	sf::RectangleShape blackBackground; //레벨업시 어두운 느낌을 위함
+	sf::RectangleShape categoryBackground;
+	std::vector<sf::RectangleShape> categorizeBackground;
 	float alpha{ 255.0f };   // 현재 알파값
 	bool appear{ false };	// 불러낼지 상태 여부
 	bool fading{ false };    // 페이드인 상태 여부

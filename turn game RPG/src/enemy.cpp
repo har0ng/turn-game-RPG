@@ -207,8 +207,8 @@ RandomMinMax enemy::randomHealth(int enemyLv, std::string enemyType, int floor) 
     int max = 0;
     if (enemyType == "normal") {
         switch (enemyLv) {
-        case 1: min = 12, max = 20; break;
-        case 2: min = 16, max = 24; break;
+        case 1: min = 1, max = 2; break; //12, 20
+        case 2: min = 1, max = 2; break; //16, 24
         case 3: min = 26, max = 36; break;
         case 4: min = 30, max = 39; break;
         case 5: min = 37, max = 45; break;
@@ -224,7 +224,7 @@ RandomMinMax enemy::randomHealth(int enemyLv, std::string enemyType, int floor) 
     }
     else if (enemyType == "elite") {
         switch (enemyLv) {
-        case 2: min = 37, max = 44; break;
+        case 2: min = 3, max = 4; break; //37, 44
         case 3: min = 40, max = 47; break;
         case 4: min = 43, max = 50; break;
         case 5: min = 46, max = 57; break;
