@@ -493,8 +493,8 @@ void floorScene::pushAssortMap(int assortMapCnt, resourceManager& res) { //각 �
 }
 void floorScene::animation(sf::Vector2f& center, float& elapsed) {
     float speed = elapsed;
-    if (elapsed > 20) {
-        speed = 20;
+    if (elapsed > 12) {
+        speed = 12;
     }
     if (center.y <= 640.f) {
         center.y == 640.f;
@@ -657,7 +657,6 @@ void roomScene::update(sf::RenderWindow& window) {
      
         //아웃라인 색상 변경
         backBtn.outlineColormanager(worldPos);
-        up.outlineColormanager(worldPos);
         
         if (event.type == sf::Event::Closed) { //만약 event 타입으로써 닫기 event가 일어나면
             window.close();//창이 닫힌다
@@ -736,7 +735,7 @@ void roomScene::render(sf::RenderWindow& window) {
         normalOneImg.effectDraw(window);
         eliteOneImg.effectDraw(window);
         bossOneImg.effectDraw(window);
-        if (p->getBeforePlayer().level < p->getLevel()) {
+        if (p->getBeforePlayer().level < p->getAfterPlayer().level) {
             up.draw(window);
         }
     }
@@ -865,6 +864,7 @@ void roomScene::updateGameStatus(sf::RenderWindow& win) {
         case BattleState::Ended:
             b.battleEnd();// 승리/패배 처리
             b.battleEndManager();
+            up.setlevUpStatus(); //레벨 업 전과 레벨업 후의 내용 담기
             battleState = BattleState::BackToMap;
             break;
         case BattleState::BackToMap:

@@ -72,7 +72,7 @@ int player::getAgility() const {
 int player::getCritical() const {
 	return critical;
 }
-std::vector<skill> player::getSkills() const {
+const std::vector<skill>& player::getSkills(){
 	if (skills.empty()) {
 		return {};
 	}
@@ -270,7 +270,7 @@ void player::initSkills() {
 					break;
 				}
 			}
-			if (it == skills.end()) { // 없다면 추가
+			if (level >= sk.levelReq && it == skills.end()) {// 없다면 추가
 				skills.push_back(std::move(sk));
 			}
 			/* 검사 또한 아직 안해서 디버깅도 해줘야함 제대로 된건지	*/

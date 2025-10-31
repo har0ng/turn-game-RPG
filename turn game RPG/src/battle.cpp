@@ -292,6 +292,7 @@ void battle::battleEnd() {
 		ui.battleEnd(cphp, e->getExpReward());
 		now_exp = p->getNow_exp(); // 갱신된 값으로 초기화
 		level_exp = p->getLevel_exp(); //레벨업 시 총 경험치 갱신된 값으로 초기화
+		p->initSkills();
 	}
 }
 

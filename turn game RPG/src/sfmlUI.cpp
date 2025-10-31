@@ -968,7 +968,8 @@ void expBar::setBarSize(float& dt) {
 }
 
 //levelUp
-levelUp::levelUp(sf::RenderWindow& win, resourceManager& res, const sf::View& view) {
+levelUp::levelUp(sf::RenderWindow& win, resourceManager& res, const sf::View& view)
+{
 	//text
 	levUp.setString(L"レベルアップ！");
 	levUp.setFont(res.getFont("fantasy"));
@@ -986,15 +987,28 @@ levelUp::levelUp(sf::RenderWindow& win, resourceManager& res, const sf::View& vi
 	statusBackground.setFillColor(sf::Color(0, 0, 51)); //내부 색
 	statusBackground.setOutlineColor(sf::Color(224, 224, 224)); //버튼 컬러
 	statusBackground.setOutlineThickness(3.f); //테두리 두께
+	//blackBackground
+	blackBackground.setSize(view.getSize());
+	blackBackground.setFillColor(sf::Color(0, 0, 0, 50));
 	//position
 	setPosition(win, view);
+
+	nextSkills.reserve(3);
 }
 void levelUp::draw(sf::RenderWindow& win) {
+	win.draw(blackBackground);
 	win.draw(statusBackground);
 	win.draw(textBackground);
 	win.draw(levUp);
 }
-void levelUp::startFade(){
+/*
+// 상승하는 스테이터스들을 sf::text화시켜서 fade & appear 시키기
+, lev는 작아진 상태였다가 커지는걸로 하기
+, background는 레벨업하면 나오게 하고 뒷배경은 좀 어둡게 바꾸기.
+ view 크기의 검은색 rectangleShape를 준비해놓고 투명도 줄이면 될듯.
+*/
+void levelUp::startFade(){ 
+							
 
 }
 void levelUp::updateFade(){
@@ -1017,6 +1031,34 @@ void levelUp::setPosition(sf::RenderWindow& win, const sf::View& view) {
 	statusBackground.setPosition(textBackground.getPosition().x - (statusBackground.getLocalBounds().width - textBackground.getLocalBounds().width) / 2.f
 							,textBackground.getPosition().y + textBackground.getLocalBounds().height /2.f);
 
+}
+void levelUp::setlevUpStatus() {
+	/* p->setBattlePlayer을 통해서 버프 미적용 스텟을 불러오고 싸운 이후의 
+		스텟과 비교후 struct에 저장
+	*/
+	if (p->getBeforePlayer().level == p->getAfterPlayer().level) {
+		return;
+	}
+	prevStatus = status{{ p->getBattlePlayer().level }
+				,{p->getBattlePlayer().health}
+				,{p->getBattlePlayer().mana}
+				,{p->getBattlePlayer().attack}
+				,{p->getBattlePlayer().defense}};
+
+	nextStatus = status{ {p->getAfterPlayer().level}
+				,{p->getAfterPlayer().health}
+				,{p->getAfterPlayer().mana}
+				,{p->getAfterPlayer().attack}
+				,{p->getAfterPlayer().defense}};
+	
+	if (!nextSkills.empty()) { 
+		nextSkills.clear();
+	}
+	for (auto& s : p->getAfterPlayer().skills) {
+		if (nextStatus.lev == s.levelReq) {
+			nextSkills.push_back(s.name);
+		}
+	}
 }
 
 //character 공용

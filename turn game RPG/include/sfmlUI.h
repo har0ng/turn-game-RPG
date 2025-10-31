@@ -5,6 +5,7 @@
 #include "player.h"
 #include "enemy.h"
 
+
 #include <SFML/Graphics.hpp>
 
 //UI는 화면에서 나오는 기능들을 부품화시켜 따로 분류해놓는 곳임
@@ -142,14 +143,6 @@ public:
 	int getIndexCol() const;
 };
 
-//class levelUpButton : public button {
-//public:
-//	levelUpButton(resourceManager& res);
-//	void draw(sf::RenderWindow& win) override; // 모든버튼 그리기
-//	bool isClicked(sf::Vector2f& mousePos) override;//클릭 이벤트
-//	void outlineColormanager(sf::Vector2f& mousePos) override; //버튼 호버시 아웃라인 색 변경
-//};
-
 class assortMapLine { //세부층과 세부층을 잇는 라인
 private:
 	struct lineInfo {
@@ -281,9 +274,19 @@ public:
 class levelUp {
 private:
 	sf::Text levUp;
-	sf::Text status;
+	struct status {
+		int lev;
+		int hp;
+		int mp;
+		int power;
+		int defense;
+	};
+	status prevStatus;
+	status nextStatus;
+	std::vector<std::string> nextSkills;
 	sf::RectangleShape textBackground; //스테이터스 설명 배경
 	sf::RectangleShape statusBackground; //스테이터스 설명 배경
+	sf::RectangleShape blackBackground; //레벨업시 어두운 느낌을 위함
 	float alpha{ 255.0f };   // 현재 알파값
 	bool appear{ false };	// 불러낼지 상태 여부
 	bool fading{ false };    // 페이드인 상태 여부
@@ -295,7 +298,18 @@ public:
 	void startAppear(); // 불러내는 타이머 가동
 	void updateAppear(); // 타이머 시간 계산
 	void setPosition(sf::RenderWindow& win, const sf::View& view);
+	void setlevUpStatus();
+
 };
+
+class levelUpButton : public button, public levelUp {
+public:
+	levelUpButton(resourceManager& res);
+	void draw(sf::RenderWindow& win) override; // 모든버튼 그리기
+	bool isClicked(sf::Vector2f& mousePos) override;//클릭 이벤트
+	void outlineColormanager(sf::Vector2f& mousePos) override; //버튼 호버시 아웃라인 색 변경
+};
+
 //class tiferetContractBar {};
 
 class character {

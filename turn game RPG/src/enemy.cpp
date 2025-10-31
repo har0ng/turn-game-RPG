@@ -208,7 +208,7 @@ RandomMinMax enemy::randomHealth(int enemyLv, std::string enemyType, int floor) 
     if (enemyType == "normal") {
         switch (enemyLv) {
         case 1: min = 12, max = 20; break;
-        case 2: min = 18, max = 29; break;
+        case 2: min = 16, max = 24; break;
         case 3: min = 26, max = 36; break;
         case 4: min = 30, max = 39; break;
         case 5: min = 37, max = 45; break;
