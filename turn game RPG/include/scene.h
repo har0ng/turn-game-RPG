@@ -174,6 +174,9 @@ private:
 	bool attackAction{ false }; //true가 되면 그 선택지를 누른 것.
 	bool defenseAction{ false };
 	bool skillAction{ false };
+	bool next{ false };
+	bool colorChange{ false };
+	bool close{ false };
 
 	//healRoomScene
 	int currentFrame{ 0 };
@@ -197,6 +200,7 @@ private:
 	startGradation startGD;
 	battleGradation battleGD;
 	levelUp up;
+	levelUpButton upBtn;
 	bool homunculusUpdateEnd{ false };
 	struct TurnLog {
 		bool player{ false };
@@ -221,5 +225,8 @@ public:
 	void updateFrame(float& dt);
 	void updateGameStatus(sf::RenderWindow& win);
 	void updateTurnLog();
+	void levelUp();
+	bool isNext() { return next; };
+	bool isClose() { return close; };
 };
 

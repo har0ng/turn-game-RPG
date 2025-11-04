@@ -272,7 +272,7 @@ classSelectButton::classSelectButton(const std::string& label, float x, float y,
 	sf::Color color(0, 0, 51, 155);
 	background.setFillColor(color); //내부 색
 	background.setOutlineThickness(3.f); //테두리 두께
-
+	background.setOutlineColor(sf::Color(128, 128, 128));
 	//직업 이름
 	text.setString(label); //직업 이름
 	text.setFont(font); // 폰트
@@ -970,6 +970,8 @@ void expBar::setBarSize(float& dt) {
 //levelUp
 levelUp::levelUp(sf::RenderWindow& win, resourceManager& res, const sf::View& view)
 {
+	this->view = view;
+	this->res = res;
 	//text
 	levUp.setString(L"レベルアップ！");
 	levUp.setFont(res.getFont("fantasy"));
@@ -991,7 +993,6 @@ levelUp::levelUp(sf::RenderWindow& win, resourceManager& res, const sf::View& vi
 	blackBackground.setSize(view.getSize());
 	blackBackground.setFillColor(sf::Color(0, 0, 0, 50));
 	//vector size
-	nextSkills.reserve(3);
 	categorizeBackground.reserve(6);
 	//category
 	categoryBackground.setSize(sf::Vector2f(statusBackground.getSize().x,statusBackground.getSize().y / categorizeBackground.capacity()));
@@ -1002,19 +1003,32 @@ levelUp::levelUp(sf::RenderWindow& win, resourceManager& res, const sf::View& vi
 	for (int i = 0; i < categorizeBackground.capacity(); i++) {
 		categorizeBackground.push_back(categoryBackground);
 	}
-	//position
-	setPosition(win, view);
+	//newSkill
+	newSkill.setString(L"新たなスキルを習得！");
+	newSkill.setCharacterSize(70);
+	newSkill.setFillColor(sf::Color(192, 160, 127,0));
+	newSkill.setFont(res.getFont("fantasy"));
 
+	//arrow
+	arrow.setString(L"⇒");
+	arrow.setFont(res.getFont("fantasy"));
+	arrow.setCharacterSize(50);
+	arrow.setFillColor(sf::Color(sf::Color::White));
 }
 void levelUp::draw(sf::RenderWindow& win) {
 	win.draw(blackBackground);
 	win.draw(statusBackground);
-	for (auto& category : categorizeBackground) {
+	/*for (auto& category : categorizeBackground) {
 		win.draw(category);
+	}*/
+	for (auto& sts : statusText) {
+		win.draw(sts);
+	}
+	for (auto& sk : nextSkills) {
+		win.draw(sk.second);
 	}
 	win.draw(textBackground);
-	win.draw(levUp);
-	
+	win.draw(levUp);	
 }
 /*
  상승하는 스테이터스들을 sf::text화시켜서 fade & appear 시키기
@@ -1024,20 +1038,23 @@ void levelUp::draw(sf::RenderWindow& win) {
  category는 6칸으로 나누고 2번쨰 칸부터 status 하나하나 부여하고, 아웃라인 컬러 없애면 끝일듯
  스킬 뭐 얻었는지 알려주는 버튼은 statusBackground 아래에다가 조금 간격 띄워서 만들고
 */
-void levelUp::startFade(){ 
-							
-
-}
-void levelUp::updateFade(){
-
-}
-void levelUp::startAppear(){
-
-}
-void levelUp::updateAppear(){
-
-}
-void levelUp::setPosition(sf::RenderWindow& win, const sf::View& view) {
+void levelUp::nextColor() { // 다음으로 버튼 누를시 글자 변환
+	for (auto& it : statusText) {
+		if (it.getFillColor().a == static_cast<sf::Uint8>(255)) {
+			sf::Color color = it.getFillColor();
+			color.a = static_cast<sf::Uint8>(0);
+			it.setFillColor(color);
+		}
+	}
+	for (auto& it : nextSkills) {
+		if (it.second.getFillColor().a == static_cast<sf::Uint8>(0)) {
+			sf::Color color = it.second.getFillColor();
+			color.a = static_cast<sf::Uint8>(255);
+			it.second.setFillColor(color);
+		}
+	}
+} 
+void levelUp::setPosition() {
 	//textBackground 
 	textBackground.setPosition(view.getSize().x / 2.f - (textBackground.getSize().x / 2.f)
 							, view.getSize().y / 10.f); // 버튼 배경 위치를 먼저 조절, 배경 먼저 해야 글자가 아래로 안감
@@ -1047,10 +1064,34 @@ void levelUp::setPosition(sf::RenderWindow& win, const sf::View& view) {
 	//statusBackground
 	statusBackground.setPosition(textBackground.getPosition().x - (statusBackground.getLocalBounds().width - textBackground.getLocalBounds().width) / 2.f
 							,textBackground.getPosition().y + textBackground.getLocalBounds().height /2.f);
-	//categorizeBackground
+	//categorizeBackground,status
 	int index = 0;
 	for (auto& category : categorizeBackground) {
 		category.setPosition(sf::Vector2f(statusBackground.getPosition().x, statusBackground.getPosition().y + categoryBackground.getSize().y * index));
+		if (index > 0 && prevStatus.count(index)) {
+			//name
+			sf::Text name = stringToText(prevStatus.at(index).name, res);
+			name.setPosition(category.getPosition().x + category.getSize().x/ 5.f, category.getPosition().y + category.getSize().y / 3.5f);
+			statusText.push_back(name);
+			//prev
+			sf::Text st = intToText(prevStatus.at(index).st, res);
+			st.setPosition(category.getPosition().x + category.getSize().x / 5.f * 2.f, category.getPosition().y + category.getSize().y / 3.5f);
+			statusText.push_back(st);
+			//arrow
+			arrow.setPosition(category.getPosition().x + category.getSize().x / 5.f * 2.5f, category.getPosition().y + category.getSize().y / 3.5f);
+			statusText.push_back(arrow);
+			//next
+			sf::Text st2 = intToText(nextStatus.at(index).st, res);
+			st2.setPosition(category.getPosition().x + category.getSize().x / 5.f * 3.f, category.getPosition().y + category.getSize().y / 3.5f);
+			statusText.push_back(st2);
+			//skill
+			if (index == 1 && nextSkills.count(index)) {
+				nextSkills.at(index).setPosition(name.getPosition().x * 1.05f, name.getPosition().y);
+			}
+			else if(index > 1 && nextSkills.count(index)){
+				nextSkills.at(index).setPosition(st.getPosition());
+			}
+		}
 		index++;
 	}
 }
@@ -1058,29 +1099,139 @@ void levelUp::setlevUpStatus() {
 	/* p->setBattlePlayer을 통해서 버프 미적용 스텟을 불러오고 싸운 이후의 
 		스텟과 비교후 struct에 저장
 	*/
-	if (p->getBeforePlayer().level == p->getAfterPlayer().level) {
+	if (p->getBeforePlayer().level == p->getAfterPlayer().level) { //レベルアップをしてなかったら。
 		return;
 	}
-	prevStatus = status{{ p->getBattlePlayer().level }
-				,{p->getBattlePlayer().health}
-				,{p->getBattlePlayer().mana}
-				,{p->getBattlePlayer().attack}
-				,{p->getBattlePlayer().defense}};
-
-	nextStatus = status{ {p->getAfterPlayer().level}
-				,{p->getAfterPlayer().health}
-				,{p->getAfterPlayer().mana}
-				,{p->getAfterPlayer().attack}
-				,{p->getAfterPlayer().defense}};
 	
-	if (!nextSkills.empty()) { 
+	{//必要な能力値を保存
+		prevStatus.emplace(1, status{ std::string("  Lv :"), p->getBattlePlayer().level });
+		prevStatus.emplace(2, status{ std::string("  Hp :"), p->getBattlePlayer().health });
+		prevStatus.emplace(3, status{ std::string("  Mp :"), p->getBattlePlayer().mana });
+		prevStatus.emplace(4, status{ std::string(" Str :"), p->getBattlePlayer().attack });
+		prevStatus.emplace(5, status{ std::string(" Def :"), p->getBattlePlayer().defense });
+	}
+
+	{//必要な能力値を保存
+		nextStatus.emplace(1, status{ std::string("  Lv :"), p->getAfterPlayer().level });
+		nextStatus.emplace(2, status{ std::string("  Hp :"), p->getAfterPlayer().health });
+		nextStatus.emplace(3, status{ std::string("  Mp :"), p->getAfterPlayer().mana });
+		nextStatus.emplace(4, status{ std::string(" Str :"), p->getAfterPlayer().attack });
+		nextStatus.emplace(5, status{ std::string(" Def :"), p->getAfterPlayer().defense });
+	}
+
+	if (!nextSkills.empty()) { //もし、vectorに情報があったらエーラーなので、片付けておく。
 		nextSkills.clear();
 	}
+	int index = 1;
+	nextSkills.insert({ index, newSkill });
 	for (auto& s : p->getAfterPlayer().skills) {
-		if (nextStatus.lev == s.levelReq) {
-			nextSkills.push_back(s.name);
+		if (nextStatus.at(1).st == s.levelReq) {//プレイヤーのレベルによるスキルだけ表紙されるように条件設定。
+			auto& val = nextStatus.at(1).st;  // エーラーチェック
+			index++;
+			nextSkills.insert({ index,stringToZeroText(s.name,res) });
 		}
 	}
+	setPosition();
+}
+void levelUp::close() {
+	levUp.setFillColor(sf::Color(0, 0, 0, 0));
+	for (auto& it : nextSkills) {
+		it.second.setFillColor(sf::Color(0, 0, 0, 0));
+	}
+	textBackground.setFillColor(sf::Color(0, 0, 0, 0));
+	textBackground.setOutlineColor(sf::Color(0, 0, 0, 0));
+	statusBackground.setFillColor(sf::Color(0, 0, 0, 0));
+	statusBackground.setOutlineColor(sf::Color(0, 0, 0, 0));
+	blackBackground.setFillColor(sf::Color(0, 0, 0, 0));
+	categoryBackground.setFillColor(sf::Color(0, 0, 0, 0));
+}
+const sf::Vector2f& levelUp::getStatusBackgroundPosition() {
+	return statusBackground.getPosition();
+}
+const sf::Vector2f& levelUp::getStatusBackgroundSize() {
+	return statusBackground.getSize();
+}
+sf::Text levelUp::stringToText(const std::string& name, resourceManager& res) {
+	sf::Text text;
+	text.setCharacterSize(50);
+	text.setFillColor(sf::Color(sf::Color::White));
+	text.setFont(res.getFont("fantasy"));
+	text.setString(name);
+	return text;
+}
+sf::Text levelUp::stringToZeroText(const std::string& name, resourceManager& res) {
+	sf::Text text;
+	text.setCharacterSize(50);
+	text.setFillColor(sf::Color(255,255,255,0));
+	text.setFont(res.getFont("fantasy"));
+	text.setString(name);
+	return text;
+}
+sf::Text levelUp::intToText(const int& st, resourceManager& res) {
+	sf::Text text;
+	text.setCharacterSize(50);
+	text.setFillColor(sf::Color(sf::Color::White));
+	text.setFont(res.getFont("fantasy"));
+	text.setString(std::to_string(st));
+	return text;
+}
+
+//levelUpButton
+levelUpButton::levelUpButton(resourceManager& res) 
+{
+	//글자 배경
+	sf::Color color(0, 0, 51, 255);
+	background.setFillColor(color); //내부 색
+	background.setOutlineThickness(3.f); //테두리 두께
+	background.setOutlineColor(sf::Color(128, 128, 128));
+
+	//글자
+	text.setString(L"次へ"); 
+	text.setFont(res.getFont("fantasy")); // 폰트
+	text.setCharacterSize(70); //글자 크기
+	sf::Color charactorClass(0, 153, 153); //글자 색
+	text.setFillColor(charactorClass); //글자 색
+
+	//버튼 크기
+	sf::FloatRect bounds = text.getLocalBounds();//멤버 변수 text의 경계 혹은 테두리 저장 
+	background.setSize(sf::Vector2f(600, 100));//버튼 배경 사이즈를 text에 맞춰 조절
+}
+void levelUpButton::draw(sf::RenderWindow& win) {
+	win.draw(background);
+	win.draw(text);
+}
+bool levelUpButton::isClicked(sf::Vector2f& mousePos) {
+	sf::FloatRect bound = background.getGlobalBounds();//버튼 배경의 전체를 기준으로 잡아버림
+	if (bound.contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))) {
+		//버튼 배경 전체가 기준이니 버튼배경 안에서 마우스의 움직임이나 이벤트를 인정해준다는 의미
+		return true; //버튼 배경안에 마우스 좌표가 있으면 true
+	}
+	return false;
+}
+void levelUpButton::outlineColormanager(sf::Vector2f& mousePos) {
+	if (!closeYN && background.getGlobalBounds().contains(mousePos)) {
+		sf::Color color(224, 224, 224);
+		background.setOutlineColor(color); //버튼 컬러
+	}
+	else if (!closeYN && !background.getGlobalBounds().contains(mousePos)) {
+		sf::Color color(128, 128, 128);
+		background.setOutlineColor(color);//버튼 컬러
+	}
+}
+void levelUpButton::setPosition(const sf::Vector2f& position, const sf::Vector2f& size) {
+	//위치 설정
+	background.setPosition(position.x + (size.x - background.getSize().x) / 2.f
+		, position.y + size.y + 50.f); // 버튼 배경 위치를 먼저 조절, 배경 먼저 해야 글자가 아래로 안감
+	float a = position.x;
+	float b = size.x;
+	text.setPosition(background.getPosition().x + (background.getSize().x - text.getLocalBounds().width) / 2.f,
+		background.getPosition().y + (background.getSize().y - text.getLocalBounds().height) / 3.f - text.getLocalBounds().top); //이후에 배경에 맞춰 위치를 조절 
+}
+void levelUpButton::close() {
+	closeYN = true;
+	background.setFillColor(sf::Color(0, 0, 0, 0));
+	background.setOutlineColor(sf::Color(0, 0, 0, 0));
+	text.setFillColor(sf::Color(0, 0, 0, 0));
 }
 
 //character 공용

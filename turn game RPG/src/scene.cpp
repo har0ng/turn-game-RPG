@@ -591,7 +591,7 @@ roomScene::roomScene(sf::RenderWindow& win, resourceManager& res, const int& roo
     statusFrame(res), hpB(win, res), mpB(win, res), expB(win, res), eloaImg(win, res),
     normalOneImg(win, res), eliteOneImg(win, res), bossOneImg(win, res),
     hoHpB(win, res), action(win, res), startGD(res), battleState(BattleState::NotStarted), b(p, e)
-    , battleGD(res), up(win, res, view)
+    , battleGD(res), up(win, res, view), upBtn(res)
 {
     //0.무슨 방인지 구분 rest, enemy , boss
     roomType = roomNum;
@@ -657,6 +657,7 @@ void roomScene::update(sf::RenderWindow& window) {
      
         //아웃라인 색상 변경
         backBtn.outlineColormanager(worldPos);
+        upBtn.outlineColormanager(worldPos);
         
         if (event.type == sf::Event::Closed) { //만약 event 타입으로써 닫기 event가 일어나면
             window.close();//창이 닫힌다
@@ -667,6 +668,12 @@ void roomScene::update(sf::RenderWindow& window) {
        /* if (battleState == BattleState::BackToMap && event.type == sf::Event::MouseButtonReleased && backBtn.isClicked(worldPos) && event.mouseButton.button == sf::Mouse::Left) {
             back = true;
         }*/
+        if (battleState == BattleState::BackToMap && event.type == sf::Event::MouseButtonReleased && upBtn.isClicked(worldPos) && event.mouseButton.button == sf::Mouse::Left) {
+            next = true;
+        }
+        if (battleState == BattleState::BackToMap && event.type == sf::Event::MouseButtonReleased && upBtn.isClicked(worldPos) && event.mouseButton.button == sf::Mouse::Left && colorChange) {
+            close = true;
+        }
 
         if(roomType != 1){
             //선택지 아웃라인 스프라이트
@@ -704,6 +711,7 @@ void roomScene::update(sf::RenderWindow& window) {
     } //End of while
     // 2. 게임 상태 처리 (전투 흐름)
     updateGameStatus(window);
+    levelUp();
 }
 void roomScene::render(sf::RenderWindow& window) {
     window.draw(background);
@@ -737,6 +745,7 @@ void roomScene::render(sf::RenderWindow& window) {
         bossOneImg.effectDraw(window);
         if (p->getBeforePlayer().level < p->getAfterPlayer().level) {
             up.draw(window);
+            upBtn.draw(window);
         }
     }
 }
@@ -865,6 +874,7 @@ void roomScene::updateGameStatus(sf::RenderWindow& win) {
             b.battleEnd();// 승리/패배 처리
             b.battleEndManager();
             up.setlevUpStatus(); //레벨 업 전과 레벨업 후의 내용 담기
+            upBtn.setPosition(up.getStatusBackgroundPosition(),up.getStatusBackgroundSize());
             battleState = BattleState::BackToMap;
             break;
         case BattleState::BackToMap:
@@ -910,6 +920,18 @@ void roomScene::updateTurnLog() {
             battleGD.startFade();
             oneTurn = false;
         }
+    }
+}
+void roomScene::levelUp() { // levelUp 했을 시 다음으로 눌렀을 때 반응
+    if (isNext()) {
+        up.nextColor();
+        next = false;
+        colorChange = true;
+    }
+    if (isClose()) {
+        up.close();
+        upBtn.close();
+        close = false;
     }
 }
 
