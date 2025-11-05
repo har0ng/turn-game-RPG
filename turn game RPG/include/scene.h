@@ -201,6 +201,7 @@ private:
 	battleGradation battleGD;
 	levelUp up;
 	levelUpButton upBtn;
+	battleBackButton battleBackBtn;
 	bool homunculusUpdateEnd{ false };
 	struct TurnLog {
 		bool player{ false };

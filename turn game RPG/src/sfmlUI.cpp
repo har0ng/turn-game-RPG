@@ -356,6 +356,58 @@ void backButton::outlineColormanager(sf::Vector2f& mousePos){
 	}
 }
 
+//battleBackButton
+battleBackButton::battleBackButton(resourceManager& res , sf::View& view) {
+	battleBack.setTexture(res.getTexture("battleBack"));
+	battleBack.setPosition(view.getSize().x, view.getSize().y - 400.f);
+	startPos = battleBack.getPosition();
+	updateHitbox();
+}
+void battleBackButton::draw(sf::RenderWindow& win) {
+	win.draw(battleBack);
+}
+bool battleBackButton::isClicked(sf::Vector2f& mousePos) {
+	if (arrowHitbox.contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))) {
+		//버튼 배경 전체가 기준이니 버튼배경 안에서 마우스의 움직임이나 이벤트를 인정해준다는 의미
+		return true; //버튼 배경안에 마우스 좌표가 있으면 true
+	}
+	return false;
+}
+void battleBackButton::outlineColormanager(sf::Vector2f& mousePos) {
+	return;
+}
+void battleBackButton::startSliding() {
+	sliding = true;
+	elapsedTime = 0.f;
+}
+void battleBackButton::slideToTarget(float& dt){
+	if (!sliding) return;
+	elapsedTime += dt;
+	float duration = 1.0f;
+
+	float progress = elapsedTime / duration;
+	if (progress >= 1.f) {
+		progress = 1.f;
+		sliding = false;
+	}
+
+	// Cubic Ease-Out (처음 빠르게 → 끝 감속)
+	float eased = 1.f - pow(1.f - progress, 3.f);
+
+	float totalDistance = startPos.x - targetX;
+	float offset = totalDistance * eased;
+
+	battleBack.setPosition(startPos.x - offset, startPos.y);
+}
+void battleBackButton::updateHitbox(){
+	sf::Vector2f pos = battleBack.getPosition();
+
+	arrowHitbox.left = pos.x + 25.f;
+	arrowHitbox.top = pos.y + 33.4f;
+	arrowHitbox.width = 200.f;
+	arrowHitbox.height = 100.2f;
+}
+
 //assortMapSelectButton
 assortMapSelectButton::assortMapSelectButton(room roomInfo, resourceManager& res, index indexPos) :
 	rest(res.getTexture("heal")),
@@ -685,6 +737,9 @@ hpBar::hpBar(sf::RenderWindow& win, resourceManager& res)
 		res.getTexture("hpmp").getSize().y / 2.f));
 	bar.setFillColor(sf::Color(207, 66, 62));
 	maxWidth = bar.getGlobalBounds().width;
+	//barrierBar
+	barrierBar.setSize(bar.getSize());
+	barrierBar.setFillColor(sf::Color(sf::Color::White));
 	//hp log
 	hpLog.setFont(res.getFont("fantasy"));
 	hpLog.setCharacterSize(40);
@@ -733,6 +788,7 @@ void hpBar::convertMaxHp(const int& maxHp) {
 }
 void hpBar::setBarSize(float& dt) {
 	changeWidth = (static_cast<float>(p->getPlayer_current_health()) / p->getPlayer_health()) * maxWidth;
+	
 	//레벨업을 하거나 모종의 방법으로 회복했을 때
 	if (newWidth < changeWidth) {
 		newWidth = changeWidth;
@@ -772,6 +828,7 @@ void hpBar::setBarSize(float& dt) {
 		bar.setSize(sf::Vector2f(newWidth, bar.getLocalBounds().height));
 	}
 }
+
 
 //mpBar
 mpBar::mpBar(sf::RenderWindow& win, resourceManager& res)
@@ -1030,14 +1087,6 @@ void levelUp::draw(sf::RenderWindow& win) {
 	win.draw(textBackground);
 	win.draw(levUp);	
 }
-/*
- 상승하는 스테이터스들을 sf::text화시켜서 fade & appear 시키기
-, lev는 작아진 상태였다가 커지는걸로 하기
-, background는 레벨업하면 나오게 하고 뒷배경은 좀 어둡게 바꾸기.
- view 크기의 검은색 rectangleShape를 준비해놓고 투명도 줄이면 될듯.
- category는 6칸으로 나누고 2번쨰 칸부터 status 하나하나 부여하고, 아웃라인 컬러 없애면 끝일듯
- 스킬 뭐 얻었는지 알려주는 버튼은 statusBackground 아래에다가 조금 간격 띄워서 만들고
-*/
 void levelUp::nextColor() { // 다음으로 버튼 누를시 글자 변환
 	for (auto& it : statusText) {
 		if (it.getFillColor().a == static_cast<sf::Uint8>(255)) {
@@ -1305,9 +1354,22 @@ void tiferetImg::updateFrame(const float& dt , resourceManager& res) { //장면 
 		}
 		break;
 	case Tex::defense:
-		updateTexture(res);
+		if (elapsed >= 0.05f) {
+			elapsed = 0.f;
+			currentEffectFrame++;
+			int framesPerAction = 6;
+			if (currentEffectFrame >= framesPerAction) {
+				currentEffectFrame = 0;
+				tex = Tex::none;
+				updateTexture(res);
+				break;
+			}
+		}
 		break;
 	case Tex::hit:
+		updateTexture(res);
+		break;
+	case Tex::dead:
 		updateTexture(res);
 		break;
 	default:
@@ -1331,15 +1393,17 @@ void tiferetImg::updateTexture(resourceManager& res, const int& playerSelect) {
 		attackEffect.setTextureRect(sf::IntRect(0, 0, effectWidth, effectHeight));
 		break;
 	case Tex::defense: //임시 , 이미지가 없어서
-		characterImg.setTexture(res.getTexture("tiferetSprite"));
+		characterImg.setTexture(res.getTexture("tiferetDefense"));
 		characterImg.setTextureRect(sf::IntRect(0, 0, characterWidth, characterHeight));
-		attackEffect.setTextureRect(sf::IntRect(0, 0, 0, 0));
 		break;
 	case Tex::hit://임시 , 이미지가 없어서
 		characterImg.setTexture(res.getTexture("tiferetSprite"));
 		characterImg.setTextureRect(sf::IntRect(0, 0, characterWidth, characterHeight));
 		attackEffect.setTextureRect(sf::IntRect(0, 0, 0, 0));
 		break;
+	case Tex::dead:
+		characterImg.setTexture(res.getTexture("tiferetSprite"));
+		characterImg.setTextureRect(sf::IntRect(0, 0, characterWidth, characterHeight));
 	default:
 		break;
 	}

@@ -52,11 +52,13 @@ void resourceManager::loadAll() {
     loadTexture("attackSprite", "assets/images/attackSheet.png");
     loadTexture("defenseSprite", "assets/images/defenseSheet.png");
     loadTexture("skillSprite", "assets/images/skillSheet.png");
+    loadTexture("battleBack", "assets/images/battleBack.png");
 
     //tiferet
     loadTexture("tiferet", "assets/images/tiferet.png");
     loadTexture("tiferetSprite", "assets/images/tiferetSheet.png");
     loadTexture("tiferetAttack", "assets/images/tiferetAttack.png");
+    loadTexture("tiferetDefense", "assets/images/tiferetDefense.png");
 
     //enemy
     loadTexture("normal1", "assets/images/normal1.png");

@@ -109,6 +109,23 @@ public:
 	void outlineColormanager(sf::Vector2f& mousePos) override; //버튼 호버시 아웃라인 색 변경
 };
 
+class battleBackButton : public button {
+	sf::Sprite battleBack;
+	sf::FloatRect arrowHitbox;
+	bool sliding{ false };
+	float targetX{ 2000.f };
+	float elapsedTime{ 0.f };
+	sf::Vector2f startPos;
+public:
+	battleBackButton(resourceManager& res, sf::View& view);
+	void draw(sf::RenderWindow& win) override;
+	bool isClicked(sf::Vector2f& mousePos) override;
+	void outlineColormanager(sf::Vector2f& mousePos) override;
+	void startSliding();
+	void slideToTarget(float& dt);
+	void updateHitbox();
+};
+
 class assortMapSelectButton : public button {
 private:
 	sf::Sprite button;
@@ -200,11 +217,12 @@ public:
 
 class hpBar {
 private:
-	sf::RectangleShape bar;
+	sf::RectangleShape bar; // 실제 HP 표시 (빨간색)
+	sf::RectangleShape barrierBar; // Barrier 표시 (흰색)
 	sf::Text hpLog;
 	std::string hp;
 	std::string maxHp;
-	float maxWidth;
+	float maxWidth; // 바 전체 길이 (100%)
 	float newWidth;
 	float changeWidth;
 	float elapsedTime{ 0.f };
@@ -338,7 +356,8 @@ protected:
 		none, //기본 서있는 상태
 		attack, //공격
 		defense, //방어
-		hit //상대에게 맞을 떄
+		hit, //상대에게 맞을 떄
+		dead //쓰러졌을 때
 	}tex;
 	
 
@@ -536,3 +555,4 @@ public:
 	bool& convertPlayerTurn();
 	bool& convertEnemyTurn();
 };
+

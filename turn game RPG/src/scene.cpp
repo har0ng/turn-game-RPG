@@ -591,11 +591,11 @@ roomScene::roomScene(sf::RenderWindow& win, resourceManager& res, const int& roo
     statusFrame(res), hpB(win, res), mpB(win, res), expB(win, res), eloaImg(win, res),
     normalOneImg(win, res), eliteOneImg(win, res), bossOneImg(win, res),
     hoHpB(win, res), action(win, res), startGD(res), battleState(BattleState::NotStarted), b(p, e)
-    , battleGD(res), up(win, res, view), upBtn(res)
+    , battleGD(res), up(win, res, view), upBtn(res), battleBackBtn(res, view)
 {
     //0.무슨 방인지 구분 rest, enemy , boss
     roomType = roomNum;
-
+   
     //1. 기본 뷰 초기화
     window.setView(window.getDefaultView()); //main에서 하면 좋지만..늦게 알아버린,mapScene view에서의 누적 초기화
     window.setView(view);
@@ -665,9 +665,9 @@ void roomScene::update(sf::RenderWindow& window) {
         if (event.type == sf::Event::MouseButtonReleased && backBtn.isClicked(worldPos) && event.mouseButton.button == sf::Mouse::Left) {
             back = true;
         }
-       /* if (battleState == BattleState::BackToMap && event.type == sf::Event::MouseButtonReleased && backBtn.isClicked(worldPos) && event.mouseButton.button == sf::Mouse::Left) {
+        if (battleState == BattleState::BackToMap && event.type == sf::Event::MouseButtonReleased && battleBackBtn.isClicked(worldPos) && event.mouseButton.button == sf::Mouse::Left) {
             back = true;
-        }*/
+        }
         if (battleState == BattleState::BackToMap && event.type == sf::Event::MouseButtonReleased && upBtn.isClicked(worldPos) && event.mouseButton.button == sf::Mouse::Left) {
             next = true;
         }
@@ -694,6 +694,7 @@ void roomScene::update(sf::RenderWindow& window) {
                 else if (defenseAction) {
                     b.playerTurn(static_cast<int>(playerSelect::defense));
                     eloaImg.updateTexture(res, static_cast<int>(playerSelect::defense));
+
                     defenseAction = false;
                     battleState = BattleState::EnemyTurn;
                 }
@@ -712,6 +713,8 @@ void roomScene::update(sf::RenderWindow& window) {
     // 2. 게임 상태 처리 (전투 흐름)
     updateGameStatus(window);
     levelUp();
+    battleBackBtn.slideToTarget(deltaTime);
+    battleBackBtn.updateHitbox();
 }
 void roomScene::render(sf::RenderWindow& window) {
     window.draw(background);
@@ -743,6 +746,7 @@ void roomScene::render(sf::RenderWindow& window) {
         normalOneImg.effectDraw(window);
         eliteOneImg.effectDraw(window);
         bossOneImg.effectDraw(window);
+        battleBackBtn.draw(window);
         if (p->getBeforePlayer().level < p->getAfterPlayer().level) {
             up.draw(window);
             upBtn.draw(window);
@@ -875,6 +879,9 @@ void roomScene::updateGameStatus(sf::RenderWindow& win) {
             b.battleEndManager();
             up.setlevUpStatus(); //레벨 업 전과 레벨업 후의 내용 담기
             upBtn.setPosition(up.getStatusBackgroundPosition(),up.getStatusBackgroundSize());
+            if (p->getBeforePlayer().level == p->getAfterPlayer().level) {
+                battleBackBtn.startSliding();
+            }
             battleState = BattleState::BackToMap;
             break;
         case BattleState::BackToMap:
@@ -931,6 +938,7 @@ void roomScene::levelUp() { // levelUp 했을 시 다음으로 눌렀을 때 반
     if (isClose()) {
         up.close();
         upBtn.close();
+        battleBackBtn.startSliding();
         close = false;
     }
 }
