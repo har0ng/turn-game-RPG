@@ -591,7 +591,7 @@ roomScene::roomScene(sf::RenderWindow& win, resourceManager& res, const int& roo
     statusFrame(res), hpB(win, res), mpB(win, res), expB(win, res), eloaImg(win, res),
     normalOneImg(win, res), eliteOneImg(win, res), bossOneImg(win, res),
     hoHpB(win, res), action(win, res), startGD(res), battleState(BattleState::NotStarted), b(p, e)
-    , battleGD(res), up(win, res, view), upBtn(res), battleBackBtn(res, view)
+    , battleGD(res), up(win, res, view), upBtn(res), battleBackBtn(res, view),skillT(view), skillTBtn(res)
 {
     //0.무슨 방인지 구분 rest, enemy , boss
     roomType = roomNum;
@@ -665,6 +665,10 @@ void roomScene::update(sf::RenderWindow& window) {
         if (event.type == sf::Event::MouseButtonReleased && backBtn.isClicked(worldPos) && event.mouseButton.button == sf::Mouse::Left) {
             back = true;
         }
+        if (battleState == BattleState::PlayerTurn && event.type == sf::Event::MouseButtonReleased && skillTBtn.isClicked(worldPos) && event.mouseButton.button == sf::Mouse::Left) {
+            skillTBtn.close();
+            skillT.close();
+        }
         if (battleState == BattleState::BackToMap && event.type == sf::Event::MouseButtonReleased && battleBackBtn.isClicked(worldPos) && event.mouseButton.button == sf::Mouse::Left) {
             back = true;
         }
@@ -694,16 +698,16 @@ void roomScene::update(sf::RenderWindow& window) {
                 else if (defenseAction) {
                     b.playerTurn(static_cast<int>(playerSelect::defense));
                     eloaImg.updateTexture(res, static_cast<int>(playerSelect::defense));
-
                     defenseAction = false;
                     battleState = BattleState::EnemyTurn;
                 }
                 else if (skillAction) {
-                    b.playerTurn(static_cast<int>(playerSelect::skill));
-                    eloaImg.updateTexture(res, static_cast<int>(playerSelect::attack)); //임시
- //                   eloaImg.updateTexture(res, static_cast<int>(playerSelect::skill));
+                    //b.playerTurn(static_cast<int>(playerSelect::skill));
+                    skillTBtn.setPosition(up.getStatusBackgroundPosition(), up.getStatusBackgroundSize());
+                    skillT.startVisible();
                     skillAction = false;
-                    battleState = BattleState::EnemyTurn;
+
+                    //battleState = BattleState::EnemyTurn;
                 }
             }
             //선택지 아웃라인 스프라이트
@@ -742,6 +746,10 @@ void roomScene::render(sf::RenderWindow& window) {
             break;
         }
         battleGD.draw(window);
+        if (skillT.isVisible()) {
+            skillT.draw(window);
+            skillTBtn.draw(window);
+        }
         eloaImg.effectDraw(window);
         normalOneImg.effectDraw(window);
         eliteOneImg.effectDraw(window);

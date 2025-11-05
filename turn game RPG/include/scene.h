@@ -202,6 +202,9 @@ private:
 	levelUp up;
 	levelUpButton upBtn;
 	battleBackButton battleBackBtn;
+	skillTable skillT;
+	skillTableButton skillTBtn;
+	bool selectSkill{ false };
 	bool homunculusUpdateEnd{ false };
 	struct TurnLog {
 		bool player{ false };

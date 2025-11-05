@@ -329,7 +329,7 @@ class levelUpButton : public button {
 	bool closeYN{ false };
 public:
 	levelUpButton(resourceManager& res);
-	void draw(sf::RenderWindow& win) override; // 모든버튼 그리기
+	void draw(sf::RenderWindow& win) override; // 버튼 그리기
 	bool isClicked(sf::Vector2f& mousePos) override;//클릭 이벤트
 	void outlineColormanager(sf::Vector2f& mousePos) override; //버튼 호버시 아웃라인 색 변경
 	void setPosition(const sf::Vector2f& position, const sf::Vector2f& size);
@@ -382,6 +382,48 @@ public:
 	void updateTexture(resourceManager& res, const int& battleState = 0);
 };
 
+class skillTable {
+private:
+	sf::RectangleShape skTable;
+	sf::RectangleShape skTableBorder;
+	bool visible{ false };
+public:
+	skillTable(sf::View& view);
+	void draw(sf::RenderWindow& win);
+	void setPosition(sf::View& view);
+	void close();
+	bool isVisible() { return visible; };
+	void startVisible();
+	const sf::Vector2f& getSkTablePosition();
+	const sf::Vector2f& getSkTableSize();
+};
+
+class skillScript {
+
+};
+
+class skillTableButton : public button {
+	bool closeYN{ false };
+public:
+	skillTableButton(resourceManager& res);
+	void draw(sf::RenderWindow& win) override; // 버튼 그리기
+	bool isClicked(sf::Vector2f& mousePos) override;//클릭 이벤트
+	void outlineColormanager(sf::Vector2f& mousePos) override; //버튼 호버시 아웃라인 색 변경
+	void setPosition(const sf::Vector2f& position, const sf::Vector2f& size);
+	void close();
+
+};
+
+/*스킬 창 큰거 하나.
+	이후 스킬 개수에 맞게 스킬창 큰거의
+	ㅁㅁ
+	ㅁㅁ
+	의 느낌으로 4개 까지 해놓고 드래그해서 아래로 내리기
+	마우스 올리면 outlineColor 흰색으로 바뀌게끔 하고 두께 두껍게
+	이미지는 왼쪽 위 이름은 이미지의 오른쪽으로 중앙위
+	스킬 설명은 스킬 이름의 아래
+
+*/
 class homunculus { //방마다 힐인지 엘리트인지 노말인지 보스인지 구분하기
 protected:
 	sf::Sprite enemyImg; //frameWidth와 frameHeight의 기준이 될 이미지
