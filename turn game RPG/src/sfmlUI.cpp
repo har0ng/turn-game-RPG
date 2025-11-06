@@ -1249,7 +1249,7 @@ void levelUpButton::draw(sf::RenderWindow& win) {
 }
 bool levelUpButton::isClicked(sf::Vector2f& mousePos) {
 	sf::FloatRect bound = background.getGlobalBounds();//버튼 배경의 전체를 기준으로 잡아버림
-	if (bound.contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))) {
+	if (bound.contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y)) && !closeYN) {
 		//버튼 배경 전체가 기준이니 버튼배경 안에서 마우스의 움직임이나 이벤트를 인정해준다는 의미
 		return true; //버튼 배경안에 마우스 좌표가 있으면 true
 	}
@@ -1275,6 +1275,7 @@ void levelUpButton::setPosition(const sf::Vector2f& position, const sf::Vector2f
 		background.getPosition().y + (background.getSize().y - text.getLocalBounds().height) / 3.f - text.getLocalBounds().top); //이후에 배경에 맞춰 위치를 조절 
 }
 void levelUpButton::close() {
+	closeYN = true;
 	background.setFillColor(sf::Color(0, 0, 0, 0));
 	background.setOutlineColor(sf::Color(0, 0, 0, 0));
 	text.setFillColor(sf::Color(0, 0, 0, 0));
@@ -1407,78 +1408,58 @@ void tiferetImg::updateTexture(resourceManager& res, const int& playerSelect) {
 }
 
 //skillTable
-skillTable::skillTable(sf::View& view)
+skillTable::skillTable(sf::View& view, resourceManager& res)
 {
 	//skTable
-	skTable.setSize(sf::Vector2f(600.f, 1100.f));
-	skTable.setFillColor(sf::Color(0, 0, 0, 0));
-	skTableBorder.setOutlineColor(sf::Color(sf::Color::White));
-	skTable.setOutlineThickness(4.f);
-
-	//skTableBorder
-	skTableBorder.setSize(sf::Vector2f(skTable.getSize().x + 30.f, skTable.getSize().y + 30.f));
-	skTableBorder.setFillColor(sf::Color(0, 0, 51, 225));
-	skTableBorder.setOutlineColor(sf::Color(sf::Color::White));
-	skTableBorder.setOutlineThickness(1.5f);
-
+	skTable.setTexture(res.getTexture("battleSkill"));
 	setPosition(view);
 }
 void skillTable::draw(sf::RenderWindow& win) {
-	win.draw(skTableBorder);
 	win.draw(skTable);
 }
 void skillTable::setPosition(sf::View& view) {
 	//skTable
-	skTable.setPosition(view.getSize().x / 3.f, view.getSize().y / 5.f - 200.f);
-
-	//skTableBorder
-	skTableBorder.setPosition(view.getSize().x / 3.f - 15.f, view.getSize().y / 5.f - 215.f);
+	skTable.setPosition(view.getSize().x / 3.4f, view.getSize().y / 5.f - 200.f);
 }
 void skillTable::close() {
-	skTable.setFillColor(sf::Color(0, 0, 0, 0));
-	skTable.setOutlineColor(sf::Color(0, 0, 0, 0));
-	skTableBorder.setFillColor(sf::Color(0, 0, 0, 0));
-	skTableBorder.setOutlineColor(sf::Color(0, 0, 0, 0));
+	sf::Color color = skTable.getColor();
+	color.a = sf::Uint8(0);
+	skTable.setColor(color);
+	visible = false;
 }
 void skillTable::startVisible() {
+	sf::Color color = skTable.getColor();
+	color.a = sf::Uint8(255);
+	skTable.setColor(color);
 	visible = true;
 }
 const sf::Vector2f& skillTable::getSkTablePosition() {
 	return skTable.getPosition();
 }
-const sf::Vector2f& skillTable::getSkTableSize() {
-	return skTable.getSize();
+const sf::FloatRect& skillTable::getSkTableSize() {
+	return skTable.getLocalBounds();
 }
-
-//skillScript
 
 //skillTableButton
 skillTableButton::skillTableButton(resourceManager& res) 
 {
 	//글자 배경
-	sf::Color color(0, 0, 51, 255);
-	background.setFillColor(color); //내부 색
-	background.setOutlineThickness(3.f); //테두리 두께
-	background.setOutlineColor(sf::Color(128, 128, 128));
-
+	skillBack.setTexture(res.getTexture("battleSkillBack"));
+	
 	//글자
 	text.setString(L"戻る");
 	text.setFont(res.getFont("fantasy")); // 폰트
-	text.setCharacterSize(70); //글자 크기
+	text.setCharacterSize(40); //글자 크기
 	sf::Color charactorClass(0, 153, 153); //글자 색
 	text.setFillColor(charactorClass); //글자 색
 
-	//버튼 크기
-	sf::FloatRect bounds = text.getLocalBounds();//멤버 변수 text의 경계 혹은 테두리 저장 
-	background.setSize(sf::Vector2f(600, 100));//버튼 배경 사이즈를 text에 맞춰 조절
-
 }
 void skillTableButton::draw(sf::RenderWindow& win) {
-	win.draw(background);
+	win.draw(skillBack);
 	win.draw(text);
 }
 bool skillTableButton::isClicked(sf::Vector2f& mousePos) {
-	sf::FloatRect bound = background.getGlobalBounds();//버튼 배경의 전체를 기준으로 잡아버림
+	sf::FloatRect bound = skillBack.getGlobalBounds();
 	if (bound.contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))) {
 		//버튼 배경 전체가 기준이니 버튼배경 안에서 마우스의 움직임이나 이벤트를 인정해준다는 의미
 		return true; //버튼 배경안에 마우스 좌표가 있으면 true
@@ -1495,20 +1476,32 @@ void skillTableButton::outlineColormanager(sf::Vector2f& mousePos) {
 		background.setOutlineColor(color);//버튼 컬러
 	}
 }
-void skillTableButton::setPosition(const sf::Vector2f& position, const sf::Vector2f& size) {
+void skillTableButton::setPosition(const sf::Vector2f& position, const sf::FloatRect& size) {
 	//위치 설정
-	background.setPosition(position.x + (size.x - background.getSize().x) / 2.f
-		, position.y + size.y + 50.f); // 버튼 배경 위치를 먼저 조절, 배경 먼저 해야 글자가 아래로 안감
-	float a = position.x;
-	float b = size.x;
-	text.setPosition(background.getPosition().x + (background.getSize().x - text.getLocalBounds().width) / 2.f,
-		background.getPosition().y + (background.getSize().y - text.getLocalBounds().height) / 3.f - text.getLocalBounds().top); //이후에 배경에 맞춰 위치를 조절 
+	skillBack.setPosition(position.x + (size.width/2.f - skillBack.getLocalBounds().width/2.f), position.y + size.height + 100.f);
+
+	text.setPosition(skillBack.getPosition().x + (skillBack.getLocalBounds().width- text.getLocalBounds().width) / 2.f,
+		skillBack.getPosition().y + (skillBack.getLocalBounds().height - text.getLocalBounds().height) / 2.8f); //이후에 배경에 맞춰 위치를 조절 
+
 }
 void skillTableButton::close() {
 	closeYN = true;
-	background.setFillColor(sf::Color(0, 0, 0, 0));
-	background.setOutlineColor(sf::Color(0, 0, 0, 0));
-	text.setFillColor(sf::Color(0, 0, 0, 0));
+	sf::Color color = skillBack.getColor();
+	color.a = sf::Uint8(0);
+	skillBack.setColor(color);
+	sf::Color textColor = text.getFillColor();
+	textColor.a = sf::Uint8(0);
+	text.setFillColor(textColor);
+
+}
+void skillTableButton::unClose() {
+	closeYN = false;
+	sf::Color color = skillBack.getColor();
+	color.a = sf::Uint8(255);
+	skillBack.setColor(color);
+	sf::Color textColor = text.getFillColor();
+	textColor.a = sf::Uint8(255);
+	text.setFillColor(textColor);
 }
 
 //homunculus 공용
@@ -2114,24 +2107,21 @@ void selectAction::draw(sf::RenderWindow& win) {
 	win.draw(defenseText);
 	win.draw(skillText);
 }
-bool selectAction::isClicked(sf::Vector2f& mousePos, bool& a, bool& d, bool& s) {
+int selectAction::isClicked(sf::Vector2f& mousePos, const bool& skillVisible) {
 	sf::FloatRect attackBound = attack.getGlobalBounds();//버튼 배경의 전체를 기준으로 잡아버림
 	sf::FloatRect defenseBound = defense.getGlobalBounds();
 	sf::FloatRect skillBound = skill.getGlobalBounds();
-	if (attackBound.contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))){
+	if (attackBound.contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y)) && !skillVisible){
 		//버튼 배경 전체가 기준이니 버튼배경 안에서 마우스의 움직임이나 이벤트를 인정해준다는 의미
-		a = true;
-		return true; //버튼 배경안에 마우스 좌표가 있으면 true
+		return static_cast<int>(Action::attack); //버튼 배경안에 마우스 좌표가 있으면 true
 	}
-	else if (defenseBound.contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))) {
-		d = true;
-		return true;
+	else if (defenseBound.contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y)) && !skillVisible) {
+		return static_cast<int>(Action::defense);
 	}
-	else if (skillBound.contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))) {
-		s = true;
-		return true;
+	else if (skillBound.contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y)) && !skillVisible) {
+		return static_cast<int>(Action::skill);
 	}
-	return false;
+	return static_cast<int>(Action::none);
 }
 void selectAction::setPosition(const sf::Vector2f& characterP, const sf::Sprite& characterImg) {
 	//sprite

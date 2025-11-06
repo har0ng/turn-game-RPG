@@ -591,7 +591,7 @@ roomScene::roomScene(sf::RenderWindow& win, resourceManager& res, const int& roo
     statusFrame(res), hpB(win, res), mpB(win, res), expB(win, res), eloaImg(win, res),
     normalOneImg(win, res), eliteOneImg(win, res), bossOneImg(win, res),
     hoHpB(win, res), action(win, res), startGD(res), battleState(BattleState::NotStarted), b(p, e)
-    , battleGD(res), up(win, res, view), upBtn(res), battleBackBtn(res, view),skillT(view), skillTBtn(res)
+    , battleGD(res), up(win, res, view), upBtn(res), battleBackBtn(res, view),skillT(view,res), skillTBtn(res)
 {
     //0.무슨 방인지 구분 rest, enemy , boss
     roomType = roomNum;
@@ -644,6 +644,9 @@ roomScene::roomScene(sf::RenderWindow& win, resourceManager& res, const int& roo
         //5. enemy hp text 위치 조정 , 포인터가 정해지는게 4번이라 그 이후에 해야 enemyType에 맞는 hp를 들고옴
         hoHpB.setTextHp();
         startGD.startFade();
+
+        //6. skillBtn 위치 조절
+        skillTBtn.setPosition(skillT.getSkTablePosition(), skillT.getSkTableSize());
     }
 }
 void roomScene::update(sf::RenderWindow& window) {
@@ -685,29 +688,30 @@ void roomScene::update(sf::RenderWindow& window) {
 
             // 플레이어 턴일 때만 클릭 처리
             if (battleState == BattleState::PlayerTurn && event.type == sf::Event::MouseButtonReleased 
-                && action.isClicked(worldPos, attackAction, defenseAction, skillAction) 
+                && action.isClicked(worldPos, skillT.isVisible()) != static_cast<int>(playerSelect::none)
                 && event.mouseButton.button == sf::Mouse::Left && !startGD.isFading() && !battleGD.isAppearing()
                 && !battleGD.isFading()) {
+                playerselect = static_cast<playerSelect>(action.isClicked(worldPos, skillT.isVisible()));
                 isTransition();
-                if (attackAction) {
+                switch (playerselect){
+                case playerSelect::attack:
                     b.playerTurn(static_cast<int>(playerSelect::attack)); // cmd 로그를 보면 업뎃 되어있음. 이걸 실시간으로 피가 깎인걸 그래픽적인 부분과 현재체력을 보여주게끔 해줘야함 
                     eloaImg.updateTexture(res, static_cast<int>(playerSelect::attack));
-                    attackAction = false;
                     battleState = BattleState::EnemyTurn;
-                }
-                else if (defenseAction) {
+                    break;
+                case playerSelect::defense:
                     b.playerTurn(static_cast<int>(playerSelect::defense));
                     eloaImg.updateTexture(res, static_cast<int>(playerSelect::defense));
-                    defenseAction = false;
                     battleState = BattleState::EnemyTurn;
-                }
-                else if (skillAction) {
+                    break;
+                case playerSelect::skill:
                     //b.playerTurn(static_cast<int>(playerSelect::skill));
-                    skillTBtn.setPosition(up.getStatusBackgroundPosition(), up.getStatusBackgroundSize());
                     skillT.startVisible();
-                    skillAction = false;
-
+                    skillTBtn.unClose();
                     //battleState = BattleState::EnemyTurn;
+                    break;
+                default:
+                    break;
                 }
             }
             //선택지 아웃라인 스프라이트
@@ -729,7 +733,9 @@ void roomScene::render(sf::RenderWindow& window) {
         mpB.draw(window);
         hoHpB.draw(window);
         statusFrame.draw(window);
-        action.draw(window);
+        if (!skillT.isVisible() && battleState == BattleState::PlayerTurn) {
+            action.draw(window);
+        }
         eloaImg.draw(window);
         startGD.draw(window);
         switch (e->convertEnemyType(getEnemyPtr().getEnemyType())) {
@@ -746,6 +752,7 @@ void roomScene::render(sf::RenderWindow& window) {
             break;
         }
         battleGD.draw(window);
+      
         if (skillT.isVisible()) {
             skillT.draw(window);
             skillTBtn.draw(window);

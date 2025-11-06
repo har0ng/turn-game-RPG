@@ -171,9 +171,6 @@ private:
 	sf::Clock roomClock;
 	sfmlLog log; // 싸울땐 로그 필수
 	float frameDuration;
-	bool attackAction{ false }; //true가 되면 그 선택지를 누른 것.
-	bool defenseAction{ false };
-	bool skillAction{ false };
 	bool next{ false };
 	bool colorChange{ false };
 	bool close{ false };
@@ -216,7 +213,8 @@ private:
 	enum class BattleState { NotStarted, PlayerTurn, EnemyTurn, Ended, BackToMap };
 	BattleState battleState; // 현재 전투 상태
 	BattleState currentState{ BattleState::NotStarted };
-	enum class playerSelect {attack = 1, defense , skill};
+	enum class playerSelect {none, attack , defense , skill};
+	playerSelect playerselect;
 	battle b;
 
 public:

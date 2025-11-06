@@ -53,6 +53,8 @@ void resourceManager::loadAll() {
     loadTexture("defenseSprite", "assets/images/defenseSheet.png");
     loadTexture("skillSprite", "assets/images/skillSheet.png");
     loadTexture("battleBack", "assets/images/battleBack.png");
+    loadTexture("battleSkill", "assets/images/battleSkill.png");
+    loadTexture("battleSkillBack", "assets/images/battleSkillBack.png");
 
     //tiferet
     loadTexture("tiferet", "assets/images/tiferet.png");

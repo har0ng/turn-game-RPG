@@ -384,34 +384,30 @@ public:
 
 class skillTable {
 private:
-	sf::RectangleShape skTable;
-	sf::RectangleShape skTableBorder;
+	sf::Sprite skTable;
 	bool visible{ false };
 public:
-	skillTable(sf::View& view);
+	skillTable(sf::View& view, resourceManager& res);
 	void draw(sf::RenderWindow& win);
 	void setPosition(sf::View& view);
 	void close();
-	bool isVisible() { return visible; };
+	const bool& isVisible() { return visible; };
 	void startVisible();
 	const sf::Vector2f& getSkTablePosition();
-	const sf::Vector2f& getSkTableSize();
-};
-
-class skillScript {
-
+	const sf::FloatRect& getSkTableSize();
 };
 
 class skillTableButton : public button {
+	sf::Sprite skillBack;
 	bool closeYN{ false };
 public:
 	skillTableButton(resourceManager& res);
 	void draw(sf::RenderWindow& win) override; // 버튼 그리기
 	bool isClicked(sf::Vector2f& mousePos) override;//클릭 이벤트
 	void outlineColormanager(sf::Vector2f& mousePos) override; //버튼 호버시 아웃라인 색 변경
-	void setPosition(const sf::Vector2f& position, const sf::Vector2f& size);
+	void setPosition(const sf::Vector2f& position, const sf::FloatRect& size);
 	void close();
-
+	void unClose();
 };
 
 /*스킬 창 큰거 하나.
@@ -538,10 +534,16 @@ private:
 	sf::Text attackText;
 	sf::Text defenseText;
 	sf::Text skillText;
+	enum class Action{
+		none,
+		attack,
+		defense,
+		skill
+	};
 public:
 	selectAction(sf::RenderWindow& win, resourceManager& res);
 	void draw(sf::RenderWindow& win);
-	bool isClicked(sf::Vector2f& mousePos, bool& attack, bool& defense, bool& skill);
+	int isClicked(sf::Vector2f& mousePos, const bool& skillVisible);
 	void setPosition(const sf::Vector2f& characterP, const sf::Sprite& characterImg);
 	void ActionManager(sf::Vector2f& mousePos);
 };
