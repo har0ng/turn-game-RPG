@@ -84,5 +84,6 @@ void resourceManager::loadAll() {
 }
 
 void resourceManager::tiferetEffect() {
-    loadTexture("attackEffectSheet", "assets/effects/tiferet/attackSheet.png");
+    loadTexture("attackEffectSheet", "assets/effects/tiferet/default/attackSheet.png");
+    //loadTexture("powerStrike", "assets/effects/tiferet/powerStrike/attackSheet.png");
 }

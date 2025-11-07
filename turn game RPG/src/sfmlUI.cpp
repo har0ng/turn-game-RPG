@@ -1443,6 +1443,8 @@ skillTable::skillTable(sf::View& view, resourceManager& res)
 		for (auto& shape : small.second){
 			shape.setFillColor(sf::Color::Black);
 			shape.setSize(sf::Vector2f(bigShape.getSize().x - 10.f, bigShape.getSize().y / 3.f - 10.f));
+			float x = shape.getSize().x;
+			float y = shape.getSize().y;
 		}
 	}	
 	setPosition(view);
