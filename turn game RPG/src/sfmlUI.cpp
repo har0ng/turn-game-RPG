@@ -1414,7 +1414,7 @@ skillTable::skillTable(sf::View& view, resourceManager& res)
 	skTable.setTexture(res.getTexture("battleSkill"));
 
 	//bigShape
-	bigShape.setFillColor(sf::Color::White);
+	bigShape.setFillColor(sf::Color(255,255,255,0));
 	bigShape.setSize(sf::Vector2f(skTable.getLocalBounds().width - 80.f, skTable.getLocalBounds().height - 120.f));
 
 	//SATList vector size
@@ -1422,13 +1422,8 @@ skillTable::skillTable(sf::View& view, resourceManager& res)
 
 	int index = 0;		
 	for (auto sk = p->getBeforePlayer().skills.begin();sk != p->getBeforePlayer().skills.end(); ++sk) {
-		std::string test = sk->imgName;
-		if (test == "powerStrikeIcon") {
-			SAT.icon.setTexture(res.getTexture("powerStrikeIcon")); //sk->imgName error
-		}
-		else {
-			SAT.icon.setTexture(res.getTexture("skillIcon"));
-		}
+		sf::Texture& tex = res.getTexture(sk->imgName);// 이미지 못찾으면 range가 터지면서 에러 뜨는데 계속하기 누르면 이상한 이미지가 나옴 이미지 넣어주면 해결가능
+		SAT.icon.setTexture(tex);
 		SATList.push_back(SAT);
 		if (SATList.size() == 3) {
 			smallShapeList.emplace(index, SATList);
@@ -1446,10 +1441,8 @@ skillTable::skillTable(sf::View& view, resourceManager& res)
 	//smallShapeList setting
 	for (auto& small : smallShapeList) {
 		for (auto& shape : small.second){
-			shape.smallShape.setFillColor(sf::Color::Black);
+			shape.smallShape.setFillColor(sf::Color(0,0,0,0));
 			shape.smallShape.setSize(sf::Vector2f(bigShape.getSize().x - 10.f, bigShape.getSize().y / 3.f - 10.f));
-			float x = shape.smallShape.getSize().x;
-			float y = shape.smallShape.getSize().y;
 		}
 	}	
 	setPosition(view);
@@ -1555,11 +1548,13 @@ void skillTable::setPosition(sf::View& view) {
 		for (auto it = small.second.begin(); it != small.second.end(); ++it) {
 			if (it == small.second.begin()) {
 				it->smallShape.setPosition(x, y);
-				it->icon.setPosition(it->smallShape.getPosition()); //test 디버깅용
+				it->icon.setPosition(it->smallShape.getPosition().x + 10.f
+									,it->smallShape.getPosition().y + (it->smallShape.getSize().y - it->icon.getGlobalBounds().height)/2.f); //test 디버깅용
 			}
 			else {
 				it->smallShape.setPosition(x, y + it->smallShape.getSize().y * index);
-				it->icon.setPosition(it->smallShape.getPosition()); //test 디버깅용
+				it->icon.setPosition(it->smallShape.getPosition().x + 10.f
+					, it->smallShape.getPosition().y + (it->smallShape.getSize().y - it->icon.getGlobalBounds().height) / 2.f); //test 디버깅용
 			}
 			index++;
 		}
