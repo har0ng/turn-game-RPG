@@ -1412,20 +1412,164 @@ skillTable::skillTable(sf::View& view, resourceManager& res)
 {
 	//skTable
 	skTable.setTexture(res.getTexture("battleSkill"));
+
+	//bigShape
+	bigShape.setFillColor(sf::Color::White);
+	bigShape.setSize(sf::Vector2f(skTable.getLocalBounds().width - 80.f, skTable.getLocalBounds().height - 120.f));
+
+	//smallShape vector size
+	smallShape.reserve(3);
+
+	int index = 0;		
+	for (auto sk = p->getBeforePlayer().skills.begin();sk != p->getBeforePlayer().skills.end(); ++sk) {
+		sf::RectangleShape shape;
+		smallShape.push_back(shape);
+
+		if (smallShape.size() == 3) {
+			smallShapeList.emplace(index, smallShape);
+			smallShape.clear();
+			index++;
+		}
+	}
+
+	// 루프 끝난 뒤 smallShape에 남아있으면 저장
+	if (!smallShape.empty()) {
+		smallShapeList.emplace(index, smallShape);
+		smallShape.clear();
+	}
+
+	//smallShapeList setting
+	for (auto& small : smallShapeList) {
+		for (auto& shape : small.second){
+			shape.setFillColor(sf::Color::Black);
+			shape.setSize(sf::Vector2f(bigShape.getSize().x - 10.f, bigShape.getSize().y / 3.f - 10.f));
+		}
+	}	
 	setPosition(view);
+
+	//page
+	page = Page::one;
+	pageCount.setFillColor(sf::Color::Black);
+	pageCount.setCharacterSize(30);
+	pageCount.setFont(res.getFont("fantasy"));
+	pageCounting(res);
 }
 void skillTable::draw(sf::RenderWindow& win) {
 	win.draw(skTable);
+	win.draw(bigShape);
+	switch (page){
+	case skillTable::Page::one:
+		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
+			win.draw(sk);
+		}
+		break;
+	case skillTable::Page::two:
+		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
+			win.draw(sk);
+		}
+		break;
+	case skillTable::Page::three:
+		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
+			win.draw(sk);
+		}
+		break;
+	case skillTable::Page::four:
+		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
+			win.draw(sk);
+		}
+		break;
+	case skillTable::Page::five:
+		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
+			win.draw(sk);
+		}
+		break;
+	case skillTable::Page::six:
+		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
+			win.draw(sk);
+		}
+		break;
+	case skillTable::Page::seven:
+		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
+			win.draw(sk);
+		}
+		break;
+	case skillTable::Page::eight:
+		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
+			win.draw(sk);
+		}
+		break;
+	case skillTable::Page::nine:
+		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
+			win.draw(sk);
+		}
+		break;
+	case skillTable::Page::ten:
+		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
+			win.draw(sk);
+		}
+		break;
+	case skillTable::Page::eleven:
+		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
+			win.draw(sk);
+		}
+		break;
+	case skillTable::Page::twelve:
+		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
+			win.draw(sk);
+		}
+		break;
+	default:
+		break;
+	}
+	win.draw(pageCount);
 }
 void skillTable::setPosition(sf::View& view) {
 	//skTable
 	skTable.setPosition(view.getSize().x / 3.4f, view.getSize().y / 5.f - 200.f);
+	//bigShape
+	bigShape.setPosition(sf::Vector2f(skTable.getPosition().x + 40.f,skTable.getPosition().y + 60.f));
+	//smallShapeList
+	float x = bigShape.getPosition().x + (bigShape.getSize().x - (bigShape.getSize().x - 10.f)) / 2.f;
+	float y = bigShape.getPosition().y + 5.f;
+	int index = 0;
+	for (auto& small : smallShapeList) {
+		for (auto it = small.second.begin(); it != small.second.end(); ++it) {
+			if (it == small.second.begin()) {
+				it->setPosition(x, y);
+			}
+			else {
+				it->setPosition(x, y + it->getSize().y * index);
+			}
+			index++;
+		}
+	}
+	//pageCount
+	pageCount.setPosition(bigShape.getPosition().x + (bigShape.getSize().x - pageCount.getLocalBounds().width) / 2.f
+		, bigShape.getPosition().y + bigShape.getSize().y);
 }
 void skillTable::close() {
 	sf::Color color = skTable.getColor();
 	color.a = sf::Uint8(0);
 	skTable.setColor(color);
 	visible = false;
+}
+void skillTable::prevPage() {
+	if (page == Page::one) { return; }
+	int prev = static_cast<int>(page) - 1;
+	page = static_cast<Page>(prev);
+}
+void skillTable::nextPage() {
+	if (page == Page::twelve) { return; }
+	int next = static_cast<int>(page) + 1;
+
+	if (!smallShapeList.count(next)) { return; }
+	page = static_cast<Page>(next);
+}
+void skillTable::pageCounting(resourceManager& res) {
+	int min = static_cast<int>(page) + 1;
+	std::string minPage = std::to_string(min);
+	std::string maxPage = std::to_string(smallShapeList.size());
+	pageCount.setString(minPage + "/" + maxPage);
 }
 void skillTable::startVisible() {
 	sf::Color color = skTable.getColor();
@@ -1452,7 +1596,6 @@ skillTableButton::skillTableButton(resourceManager& res)
 	text.setCharacterSize(40); //글자 크기
 	sf::Color charactorClass(0, 153, 153); //글자 색
 	text.setFillColor(charactorClass); //글자 색
-
 }
 void skillTableButton::draw(sf::RenderWindow& win) {
 	win.draw(skillBack);
@@ -1466,14 +1609,12 @@ bool skillTableButton::isClicked(sf::Vector2f& mousePos) {
 	}
 	return false;
 }
-void skillTableButton::outlineColormanager(sf::Vector2f& mousePos) {
-	if (!closeYN && background.getGlobalBounds().contains(mousePos)) {
-		sf::Color color(224, 224, 224);
-		background.setOutlineColor(color); //버튼 컬러
+void skillTableButton::outlineColormanager(sf::Vector2f& mousePos) { //버튼 호버시 *텍스트 크기 변경임*
+	if (!closeYN && skillBack.getGlobalBounds().contains(mousePos)) {
+		text.setCharacterSize(45);
 	}
-	else if (!closeYN && !background.getGlobalBounds().contains(mousePos)) {
-		sf::Color color(128, 128, 128);
-		background.setOutlineColor(color);//버튼 컬러
+	else if (!closeYN && !skillBack.getGlobalBounds().contains(mousePos)) {
+		text.setCharacterSize(40); //글자 크기
 	}
 }
 void skillTableButton::setPosition(const sf::Vector2f& position, const sf::FloatRect& size) {

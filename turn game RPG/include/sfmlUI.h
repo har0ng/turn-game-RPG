@@ -386,11 +386,32 @@ class skillTable {
 private:
 	sf::Sprite skTable;
 	bool visible{ false };
+	sf::RectangleShape bigShape;
+	std::vector<sf::RectangleShape> smallShape;
+	std::map<int, std::vector<sf::RectangleShape>> smallShapeList;
+	sf::Text pageCount;
+	enum class Page {
+		one,
+		two,
+		three,
+		four,
+		five,
+		six,
+		seven,
+		eight,
+		nine,
+		ten,
+		eleven,
+		twelve
+	}page;
 public:
 	skillTable(sf::View& view, resourceManager& res);
 	void draw(sf::RenderWindow& win);
 	void setPosition(sf::View& view);
 	void close();
+	void prevPage(); //이전 페이지로 넘기기
+	void nextPage(); //다음 페이지로 넘기기
+	void pageCounting(resourceManager& res); //몇페이지인지 카운팅
 	const bool& isVisible() { return visible; };
 	void startVisible();
 	const sf::Vector2f& getSkTablePosition();
@@ -404,7 +425,7 @@ public:
 	skillTableButton(resourceManager& res);
 	void draw(sf::RenderWindow& win) override; // 버튼 그리기
 	bool isClicked(sf::Vector2f& mousePos) override;//클릭 이벤트
-	void outlineColormanager(sf::Vector2f& mousePos) override; //버튼 호버시 아웃라인 색 변경
+	void outlineColormanager(sf::Vector2f& mousePos) override; //버튼 호버시 *텍스트 크기 변경임*
 	void setPosition(const sf::Vector2f& position, const sf::FloatRect& size);
 	void close();
 	void unClose();

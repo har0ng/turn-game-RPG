@@ -236,6 +236,7 @@ mapScene::mapScene(sf::RenderWindow& win, resourceManager& res)
     :window(win), log(win)
 {
     effectUploading(res); // 캐릭터별 이펙트 정보 받아놓기
+    p->setBeforePlayer(); //전투 시작전 상태(레벨업 비교)
     res.unloadTexture("menuBg");
     background.setTexture(res.getTexture("mapBg")); //배경화면
     sf::Color color = background.getColor();
@@ -661,6 +662,7 @@ void roomScene::update(sf::RenderWindow& window) {
         //아웃라인 색상 변경
         backBtn.outlineColormanager(worldPos);
         upBtn.outlineColormanager(worldPos);
+        skillTBtn.outlineColormanager(worldPos);
         
         if (event.type == sf::Event::Closed) { //만약 event 타입으로써 닫기 event가 일어나면
             window.close();//창이 닫힌다
@@ -723,6 +725,7 @@ void roomScene::update(sf::RenderWindow& window) {
     levelUp();
     battleBackBtn.slideToTarget(deltaTime);
     battleBackBtn.updateHitbox();
+    skillT.pageCounting(res);
 }
 void roomScene::render(sf::RenderWindow& window) {
     window.draw(background);
