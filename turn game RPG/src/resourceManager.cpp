@@ -55,7 +55,7 @@ void resourceManager::loadAll() {
     loadTexture("battleBack", "assets/images/battleBack.png");
     loadTexture("battleSkill", "assets/images/battleSkill.png");
     loadTexture("battleSkillBack", "assets/images/battleSkillBack.png");
-
+    loadTexture("skillIcon", "assets/images/skillIcon.png");
     //tiferet
     loadTexture("tiferet", "assets/images/tiferet.png");
     loadTexture("tiferetSprite", "assets/images/tiferetSheet.png");
@@ -85,5 +85,6 @@ void resourceManager::loadAll() {
 
 void resourceManager::tiferetEffect() {
     loadTexture("attackEffectSheet", "assets/effects/tiferet/default/attackSheet.png");
-    //loadTexture("powerStrike", "assets/effects/tiferet/powerStrike/attackSheet.png");
+    loadTexture("powerStrike", "assets/effects/tiferet/powerStrike/powerStrikeSheet.png");
+    loadTexture("powerStrikeIcon", "assets/effects/tiferet/powerStrike/skillIcon.png");
 }

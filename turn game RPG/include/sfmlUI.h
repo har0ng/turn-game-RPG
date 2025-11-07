@@ -387,8 +387,13 @@ private:
 	sf::Sprite skTable;
 	bool visible{ false };
 	sf::RectangleShape bigShape;
-	std::vector<sf::RectangleShape> smallShape;
-	std::map<int, std::vector<sf::RectangleShape>> smallShapeList;
+	struct ShapeAndTex{
+		sf::RectangleShape smallShape;
+		sf::Sprite icon;
+	};
+	ShapeAndTex SAT;
+	std::vector<ShapeAndTex> SATList;
+	std::map<int, std::vector<ShapeAndTex>> smallShapeList;
 	sf::Text pageCount;
 	enum class Page {
 		one,

@@ -1417,34 +1417,39 @@ skillTable::skillTable(sf::View& view, resourceManager& res)
 	bigShape.setFillColor(sf::Color::White);
 	bigShape.setSize(sf::Vector2f(skTable.getLocalBounds().width - 80.f, skTable.getLocalBounds().height - 120.f));
 
-	//smallShape vector size
-	smallShape.reserve(3);
+	//SATList vector size
+	SATList.reserve(3);
 
 	int index = 0;		
 	for (auto sk = p->getBeforePlayer().skills.begin();sk != p->getBeforePlayer().skills.end(); ++sk) {
-		sf::RectangleShape shape;
-		smallShape.push_back(shape);
-
-		if (smallShape.size() == 3) {
-			smallShapeList.emplace(index, smallShape);
-			smallShape.clear();
+		std::string test = sk->imgName;
+		if (test == "powerStrikeIcon") {
+			SAT.icon.setTexture(res.getTexture("powerStrikeIcon")); //sk->imgName error
+		}
+		else {
+			SAT.icon.setTexture(res.getTexture("skillIcon"));
+		}
+		SATList.push_back(SAT);
+		if (SATList.size() == 3) {
+			smallShapeList.emplace(index, SATList);
+			SATList.clear();
 			index++;
 		}
 	}
 
 	// 루프 끝난 뒤 smallShape에 남아있으면 저장
-	if (!smallShape.empty()) {
-		smallShapeList.emplace(index, smallShape);
-		smallShape.clear();
+	if (!SATList.empty()) {
+		smallShapeList.emplace(index, SATList);
+		SATList.clear();
 	}
 
 	//smallShapeList setting
 	for (auto& small : smallShapeList) {
 		for (auto& shape : small.second){
-			shape.setFillColor(sf::Color::Black);
-			shape.setSize(sf::Vector2f(bigShape.getSize().x - 10.f, bigShape.getSize().y / 3.f - 10.f));
-			float x = shape.getSize().x;
-			float y = shape.getSize().y;
+			shape.smallShape.setFillColor(sf::Color::Black);
+			shape.smallShape.setSize(sf::Vector2f(bigShape.getSize().x - 10.f, bigShape.getSize().y / 3.f - 10.f));
+			float x = shape.smallShape.getSize().x;
+			float y = shape.smallShape.getSize().y;
 		}
 	}	
 	setPosition(view);
@@ -1462,62 +1467,74 @@ void skillTable::draw(sf::RenderWindow& win) {
 	switch (page){
 	case skillTable::Page::one:
 		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
-			win.draw(sk);
+			win.draw(sk.smallShape);
+			win.draw(sk.icon);
 		}
 		break;
 	case skillTable::Page::two:
 		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
-			win.draw(sk);
+			win.draw(sk.smallShape);
+			win.draw(sk.icon);
 		}
 		break;
 	case skillTable::Page::three:
 		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
-			win.draw(sk);
+			win.draw(sk.smallShape);
+			win.draw(sk.icon);
 		}
 		break;
 	case skillTable::Page::four:
 		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
-			win.draw(sk);
+			win.draw(sk.smallShape);
+			win.draw(sk.icon);
 		}
 		break;
 	case skillTable::Page::five:
 		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
-			win.draw(sk);
+			win.draw(sk.smallShape);
+			win.draw(sk.icon);
 		}
 		break;
 	case skillTable::Page::six:
 		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
-			win.draw(sk);
+			win.draw(sk.smallShape);
+			win.draw(sk.icon);
 		}
 		break;
 	case skillTable::Page::seven:
 		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
-			win.draw(sk);
+			win.draw(sk.smallShape);
+			win.draw(sk.icon);
 		}
 		break;
 	case skillTable::Page::eight:
 		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
-			win.draw(sk);
+			win.draw(sk.smallShape);
+			win.draw(sk.icon);
 		}
 		break;
 	case skillTable::Page::nine:
 		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
-			win.draw(sk);
+			win.draw(sk.smallShape);
+			win.draw(sk.icon);
 		}
 		break;
 	case skillTable::Page::ten:
 		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
-			win.draw(sk);
+			win.draw(sk.smallShape);
+			win.draw(sk.icon);
 		}
 		break;
 	case skillTable::Page::eleven:
 		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
-			win.draw(sk);
+			win.draw(sk.smallShape);
+			win.draw(sk.icon);
 		}
 		break;
 	case skillTable::Page::twelve:
 		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
-			win.draw(sk);
+			win.draw(sk.smallShape);
+			win.draw(sk.icon);
 		}
 		break;
 	default:
@@ -1537,10 +1554,12 @@ void skillTable::setPosition(sf::View& view) {
 	for (auto& small : smallShapeList) {
 		for (auto it = small.second.begin(); it != small.second.end(); ++it) {
 			if (it == small.second.begin()) {
-				it->setPosition(x, y);
+				it->smallShape.setPosition(x, y);
+				it->icon.setPosition(it->smallShape.getPosition()); //test 디버깅용
 			}
 			else {
-				it->setPosition(x, y + it->getSize().y * index);
+				it->smallShape.setPosition(x, y + it->smallShape.getSize().y * index);
+				it->icon.setPosition(it->smallShape.getPosition()); //test 디버깅용
 			}
 			index++;
 		}

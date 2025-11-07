@@ -9,6 +9,7 @@ struct skill {
 	std::string charactorClass{""};  // class
 	std::string name{"unknown"}; // skill name
 	std::string targetObject{"player"}; //skill target (player,enemy)
+	std::string imgName{""};
 	int power{0}; // 최종데미지에 +power 만큼 추가 데미지
 	float TDMultiplier{1.0}; // 토탈데미지에 % 만큼 추가데미지
 	float playerMultiplier{0.0}; //attack, heal ,defense * etc
