@@ -212,6 +212,7 @@ public:
 	void draw(sf::RenderWindow& win);
 	const sf::Vector2f& getHpmpPosition();
 	void setPosition(const sf::Vector2f& characterP, const sf::Vector2f& expbarP, resourceManager& res);
+	void setLevel();
 	std::string getPlayerLevel(const int& level);
 };
 
@@ -387,7 +388,8 @@ private:
 	sf::Sprite skTable;
 	bool visible{ false };
 	sf::RectangleShape bigShape; //스킬 표시 이미지 내부 큰 박스
-	struct ShapeAndTex{ //큰 박스에 담을 3개의 이미지와 스킬
+	struct ShapeAndTex { //큰 박스에 담을 3개의 이미지와 스킬
+		int number{0};
 		sf::RectangleShape smallShape; //아이콘을 포함한 스킬 이름, 설명등.
 		sf::Sprite icon; // 아이콘(이미지)
 		sf::Text skillName;
@@ -397,6 +399,8 @@ private:
 	std::vector<ShapeAndTex> SATList; // 패키지 3개가 들어갈 크기의 박스
 	std::map<int, std::vector<ShapeAndTex>> smallShapeList; //패키지 3개 크기의 박스를 넣을 더 큰 박스
 	sf::Text pageCount; //몇번쨰 스킬 페이지인지 알기 위함.
+	sf::Sprite next;
+	sf::Sprite prev;
 	enum class Page { //페이지
 		one,
 		two,
@@ -414,6 +418,9 @@ private:
 public:
 	skillTable(sf::View& view, resourceManager& res);
 	void draw(sf::RenderWindow& win);
+	bool prevClicked(sf::Vector2f& mousePos);//클릭 이벤트
+	bool nextClicked(sf::Vector2f& mousePos);//클릭 이벤트
+	int skillClicked(sf::Vector2f& mousePos);
 	void setPosition(sf::View& view);
 	void close();
 	void prevPage(); //이전 페이지로 넘기기
@@ -567,7 +574,7 @@ private:
 		none,
 		attack,
 		defense,
-		skill
+		skill = 4
 	};
 public:
 	selectAction(sf::RenderWindow& win, resourceManager& res);

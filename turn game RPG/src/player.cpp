@@ -250,6 +250,7 @@ void player::initSkills() {
 			sk.name = s.value("name", "unknown");
 			sk.targetObject = s.value("targetObject", "player");
 			sk.imgName = s.value("imgName", "");
+			sk.script = s.value("script", "");
 			sk.power = s.value("power", 0);
 			sk.TDMultiplier = s.value("TDMultiplier", 1.0);
 			sk.playerMultiplier = s.value("playerMultiplier", 0.0);

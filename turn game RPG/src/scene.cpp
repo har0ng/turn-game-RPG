@@ -236,7 +236,6 @@ mapScene::mapScene(sf::RenderWindow& win, resourceManager& res)
     :window(win), log(win)
 {
     effectUploading(res); // 캐릭터별 이펙트 정보 받아놓기
-    p->setBeforePlayer(); //전투 시작전 상태(레벨업 비교)
     res.unloadTexture("menuBg");
     background.setTexture(res.getTexture("mapBg")); //배경화면
     sf::Color color = background.getColor();
@@ -332,6 +331,7 @@ floorScene::floorScene(sf::RenderWindow& win, resourceManager& res)
     res.unloadTexture("mapBg");
     visitedRoom.reserve(2); //미리 vector크기를 지정함으로써 index늘어날 때마다 복사 비용 제거.
     connectedRoom.reserve(5);
+    p->setBeforePlayer(); //전투 시작전 상태(레벨업 비교)
     // 1.기본 뷰 초기화
     window.setView(window.getDefaultView()); //mapScene view에서의 누적 초기화
     background.setTexture(res.getTexture("floorBg"));
@@ -675,6 +675,12 @@ void roomScene::update(sf::RenderWindow& window) {
             skillTBtn.close();
             skillT.close();
         }
+        if (battleState == BattleState::PlayerTurn && event.type == sf::Event::MouseButtonReleased && skillT.prevClicked(worldPos) && event.mouseButton.button == sf::Mouse::Left) {
+            skillT.prevPage();
+        }
+        if (battleState == BattleState::PlayerTurn && event.type == sf::Event::MouseButtonReleased && skillT.nextClicked(worldPos) && event.mouseButton.button == sf::Mouse::Left) {
+            skillT.nextPage();
+        }
         if (battleState == BattleState::BackToMap && event.type == sf::Event::MouseButtonReleased && battleBackBtn.isClicked(worldPos) && event.mouseButton.button == sf::Mouse::Left) {
             back = true;
         }
@@ -707,15 +713,23 @@ void roomScene::update(sf::RenderWindow& window) {
                     eloaImg.updateTexture(res, static_cast<int>(playerSelect::defense));
                     battleState = BattleState::EnemyTurn;
                     break;
-                case playerSelect::skill:
-                    //b.playerTurn(static_cast<int>(playerSelect::skill));
+                case playerSelect::skillVisible:
                     skillT.startVisible();
                     skillTBtn.unClose();
-                    //battleState = BattleState::EnemyTurn;
                     break;
                 default:
                     break;
                 }
+            }
+            else if (battleState == BattleState::PlayerTurn && event.type == sf::Event::MouseButtonReleased
+                && playerselect == playerSelect::skillVisible && skillT.skillClicked(worldPos) >= 0
+                && event.mouseButton.button == sf::Mouse::Left && !startGD.isFading() && !battleGD.isAppearing()
+                && !battleGD.isFading()) {
+                    b.playerTurn(static_cast<int>(playerSelect::skill),skillT.skillClicked(worldPos));
+                    // eloaImg.updateTexture(res, static_cast<int>(playerSelect::skill));
+                    skillTBtn.close();
+                    skillT.close();
+                    battleState = BattleState::EnemyTurn;
             }
             //선택지 아웃라인 스프라이트
             action.ActionManager(worldPos); 
@@ -757,7 +771,7 @@ void roomScene::render(sf::RenderWindow& window) {
         }
         battleGD.draw(window);
       
-        if (skillT.isVisible()) {
+        if (skillT.isVisible() && battleState == BattleState::PlayerTurn) {
             skillT.draw(window);
             skillTBtn.draw(window);
         }
@@ -901,6 +915,9 @@ void roomScene::updateGameStatus(sf::RenderWindow& win) {
             if (p->getBeforePlayer().level == p->getAfterPlayer().level) {
                 battleBackBtn.startSliding();
             }
+            else {
+                statusFrame.setLevel();
+            }
             battleState = BattleState::BackToMap;
             break;
         case BattleState::BackToMap:
@@ -917,6 +934,7 @@ void roomScene::updateGameStatus(sf::RenderWindow& win) {
         hpB.setTextHp();
         hpB.setBarSize(deltaTime);
         mpB.setTextMp();
+        mpB.setBarSize(deltaTime);
         expB.setTextExp();
         expB.setBarSize(deltaTime);
     }

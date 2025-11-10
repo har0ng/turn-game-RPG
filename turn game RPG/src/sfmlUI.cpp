@@ -699,6 +699,9 @@ void status::setPosition(const sf::Vector2f& characterP,const sf::Vector2f& expb
 	level.setPosition(background.getPosition().x + (background.getSize().x / 4.f)
 		, background.getPosition().y - (background.getSize().y / 4.f)); //이후에 배경에 맞춰 위치를 조절 
 }
+void status::setLevel() {
+	level.setString("Lv." + getPlayerLevel(p->getLevel())); // 글자
+}
 std::string status::getPlayerLevel(const int& level) {
 	switch (level){
 	case 1:
@@ -1421,15 +1424,32 @@ skillTable::skillTable(sf::View& view, resourceManager& res)
 	SATList.reserve(3);
 
 	int index = 0;		
-	for (auto sk = p->getBeforePlayer().skills.begin();sk != p->getBeforePlayer().skills.end(); ++sk) {
+	int skillIndex = 0;
+	for (auto sk = p->getSkills().begin();sk != p->getSkills().end(); ++sk) {
+		SAT.number = skillIndex;
 		//icon
 		sf::Texture& tex = res.getTexture(sk->imgName);// 이미지 못찾으면 range가 터지면서 에러 뜨는데 계속하기 누르면 이상한 이미지가 나옴 이미지 넣어주면 해결가능
 		SAT.icon.setTexture(tex);
 		//skillName
-		std::string& text = sk->name;
+		std::string text = sk->name;
 		SAT.skillName.setString(text);
-		
+		SAT.skillName.setFont(res.getFont("fantasy"));
+		SAT.skillName.setCharacterSize(50.f);
+		SAT.skillName.setFillColor(sf::Color::Black);
+		//skillScript
+		std::string script = sk->script;
+		// std::wstring -> sf::String 변환
+		sf::String sfText = sf::String::fromUtf8(
+			script.begin(),
+			script.end()
+		);
+		SAT.skillScript.setString(sfText);
+		SAT.skillScript.setFont(res.getFont("fantasy"));
+		SAT.skillScript.setCharacterSize(28.f);
+		SAT.skillScript.setFillColor(sf::Color::Black);
+
 		SATList.push_back(SAT);
+		skillIndex++;
 		if (SATList.size() == 3) {
 			smallShapeList.emplace(index, SATList);
 			SATList.clear();
@@ -1456,9 +1476,13 @@ skillTable::skillTable(sf::View& view, resourceManager& res)
 	//page
 	page = Page::one;
 	pageCount.setFillColor(sf::Color::Black);
-	pageCount.setCharacterSize(30);
+	pageCount.setCharacterSize(40);
 	pageCount.setFont(res.getFont("fantasy"));
 	pageCounting(res);
+
+	//next,prev
+	next.setTexture(res.getTexture("next"));
+	prev.setTexture(res.getTexture("prev"));
 }
 void skillTable::draw(sf::RenderWindow& win) {
 	win.draw(skTable);
@@ -1468,78 +1492,213 @@ void skillTable::draw(sf::RenderWindow& win) {
 		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
 			win.draw(sk.smallShape);
 			win.draw(sk.icon);
+			win.draw(sk.skillName);
+			win.draw(sk.skillScript);
 		}
 		break;
 	case skillTable::Page::two:
 		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
-			win.draw(sk.smallShape);
-			win.draw(sk.icon);
+win.draw(sk.smallShape);
+win.draw(sk.icon);
+win.draw(sk.skillName);
+win.draw(sk.skillScript);
 		}
 		break;
 	case skillTable::Page::three:
 		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
 			win.draw(sk.smallShape);
 			win.draw(sk.icon);
+			win.draw(sk.skillName);
+			win.draw(sk.skillScript);
 		}
 		break;
 	case skillTable::Page::four:
 		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
 			win.draw(sk.smallShape);
 			win.draw(sk.icon);
+			win.draw(sk.skillName);
+			win.draw(sk.skillScript);
 		}
 		break;
 	case skillTable::Page::five:
 		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
 			win.draw(sk.smallShape);
 			win.draw(sk.icon);
+			win.draw(sk.skillName);
+			win.draw(sk.skillScript);
 		}
 		break;
 	case skillTable::Page::six:
 		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
 			win.draw(sk.smallShape);
 			win.draw(sk.icon);
+			win.draw(sk.skillName);
+			win.draw(sk.skillScript);
 		}
 		break;
 	case skillTable::Page::seven:
 		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
 			win.draw(sk.smallShape);
 			win.draw(sk.icon);
+			win.draw(sk.skillName);
+			win.draw(sk.skillScript);
 		}
 		break;
 	case skillTable::Page::eight:
 		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
 			win.draw(sk.smallShape);
 			win.draw(sk.icon);
+			win.draw(sk.skillName);
+			win.draw(sk.skillScript);
 		}
 		break;
 	case skillTable::Page::nine:
 		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
 			win.draw(sk.smallShape);
 			win.draw(sk.icon);
+			win.draw(sk.skillName);
+			win.draw(sk.skillScript);
 		}
 		break;
 	case skillTable::Page::ten:
 		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
 			win.draw(sk.smallShape);
 			win.draw(sk.icon);
+			win.draw(sk.skillName);
+			win.draw(sk.skillScript);
 		}
 		break;
 	case skillTable::Page::eleven:
 		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
 			win.draw(sk.smallShape);
 			win.draw(sk.icon);
+			win.draw(sk.skillName);
+			win.draw(sk.skillScript);
 		}
 		break;
 	case skillTable::Page::twelve:
 		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
 			win.draw(sk.smallShape);
 			win.draw(sk.icon);
+			win.draw(sk.skillName);
+			win.draw(sk.skillScript);
 		}
 		break;
 	default:
 		break;
 	}
 	win.draw(pageCount);
+	if (page != Page::one) {
+		win.draw(prev);
+	}
+	if (smallShapeList.count(static_cast<int>(page) + 1)) {
+		win.draw(next);
+	}
+}
+bool skillTable::prevClicked(sf::Vector2f& mousePos) {
+	sf::FloatRect prevArea = prev.getGlobalBounds();
+	if(prevArea.contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))) {
+		return true;
+	}
+	return false;
+}
+bool skillTable::nextClicked(sf::Vector2f& mousePos) {
+	sf::FloatRect nextArea = next.getGlobalBounds();
+	if (nextArea.contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))) {
+		return true;
+	}
+	return false;
+}
+int skillTable::skillClicked(sf::Vector2f& mousePos) {
+	switch (page) {
+	case skillTable::Page::one:
+		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
+			if (sk.smallShape.getGlobalBounds().contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))) {
+				return sk.number;
+			}
+		}
+		break;
+	case skillTable::Page::two:
+		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
+			if (sk.smallShape.getGlobalBounds().contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))) {
+				return sk.number;
+			}
+		}
+		break;
+	case skillTable::Page::three:
+		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
+			if (sk.smallShape.getGlobalBounds().contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))) {
+				return sk.number;
+			}
+		}
+		break;
+	case skillTable::Page::four:
+		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
+			if (sk.smallShape.getGlobalBounds().contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))) {
+				return sk.number;
+			}
+		}
+		break;
+	case skillTable::Page::five:
+		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
+			if (sk.smallShape.getGlobalBounds().contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))) {
+				return sk.number;
+			}
+		}
+		break;
+	case skillTable::Page::six:
+		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
+			if (sk.smallShape.getGlobalBounds().contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))) {
+				return sk.number;
+			}
+		}
+		break;
+	case skillTable::Page::seven:
+		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
+			if (sk.smallShape.getGlobalBounds().contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))) {
+				return sk.number;
+			}
+		}
+		break;
+	case skillTable::Page::eight:
+		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
+			if (sk.smallShape.getGlobalBounds().contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))) {
+				return sk.number;
+			}
+		}
+		break;
+	case skillTable::Page::nine:
+		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
+			if (sk.smallShape.getGlobalBounds().contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))) {
+				return sk.number;
+			}
+		}
+		break;
+	case skillTable::Page::ten:
+		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
+			if (sk.smallShape.getGlobalBounds().contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))) {
+				return sk.number;
+			}
+		}
+		break;
+	case skillTable::Page::eleven:
+		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
+			if (sk.smallShape.getGlobalBounds().contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))) {
+				return sk.number;
+			}
+		}
+		break;
+	case skillTable::Page::twelve:
+		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
+			if (sk.smallShape.getGlobalBounds().contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))) {
+				return sk.number;
+			}
+		}
+		break;
+	default:
+		break;
+	}
+
 }
 void skillTable::setPosition(sf::View& view) {
 	//skTable
@@ -1556,18 +1715,33 @@ void skillTable::setPosition(sf::View& view) {
 				it->smallShape.setPosition(x, y);
 				it->icon.setPosition(it->smallShape.getPosition().x + 10.f
 									,it->smallShape.getPosition().y + (it->smallShape.getSize().y - it->icon.getGlobalBounds().height)/2.f); //test 디버깅용
+				it->skillName.setPosition(it->icon.getPosition().x + it->icon.getLocalBounds().width + 30.f,
+					it->icon.getPosition().y);
+				it->skillScript.setPosition(it->icon.getPosition().x + it->icon.getLocalBounds().width + 30.f,
+					it->icon.getPosition().y + 80.f);
 			}
 			else {
 				it->smallShape.setPosition(x, y + it->smallShape.getSize().y * index);
 				it->icon.setPosition(it->smallShape.getPosition().x + 10.f
 					, it->smallShape.getPosition().y + (it->smallShape.getSize().y - it->icon.getGlobalBounds().height) / 2.f); //test 디버깅용
+				it->skillName.setPosition(it->icon.getPosition().x + it->icon.getLocalBounds().width + 30.f,
+					it->icon.getPosition().y);
+				it->skillScript.setPosition(it->icon.getPosition().x + it->icon.getLocalBounds().width + 30.f,
+					it->icon.getPosition().y + 80.f);
 			}
 			index++;
 		}
 	}
 	//pageCount
-	pageCount.setPosition(bigShape.getPosition().x + (bigShape.getSize().x - pageCount.getLocalBounds().width) / 2.f
-		, bigShape.getPosition().y + bigShape.getSize().y);
+	pageCount.setPosition(bigShape.getPosition().x + (bigShape.getSize().x - pageCount.getLocalBounds().width) / 2.f - 20.f
+		, bigShape.getPosition().y + bigShape.getSize().y -10.f);
+
+	//next,prev
+	next.setPosition(skTable.getPosition().x + skTable.getLocalBounds().width + 20.f
+		, skTable.getPosition().y + (skTable.getLocalBounds().height - next.getLocalBounds().height) / 2.f);
+	prev.setPosition(skTable.getPosition().x - 20.f
+		, skTable.getPosition().y + (skTable.getLocalBounds().height - prev.getLocalBounds().height) / 2.f);
+
 }
 void skillTable::close() {
 	sf::Color color = skTable.getColor();
@@ -1743,7 +1917,6 @@ void skillTable::smallTableColorManager(sf::Vector2f& mousePos) { //버튼 호�
 		break;
 	}
 }
-
 void skillTable::startVisible() {
 	sf::Color color = skTable.getColor();
 	color.a = sf::Uint8(255);

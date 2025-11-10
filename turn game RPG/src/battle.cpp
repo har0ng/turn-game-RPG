@@ -146,8 +146,8 @@ void battle::playerTurn(const int& input, int skillInput) {
 				}
 				ui.exitSkill(0);
 
-				skillSelect = input;
-				if (skillSelect == -1) { // 0을 입력했을 때 무한 반복 깨기
+				skillSelect = skillInput;
+				if (skillSelect == -1) { 
 					break;
 				}
 				if (current_mana < skill[skillSelect].mpCost) { //현재 마나가 스킬 필요 마나보다 모자를 경우
