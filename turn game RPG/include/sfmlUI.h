@@ -386,16 +386,18 @@ class skillTable {
 private:
 	sf::Sprite skTable;
 	bool visible{ false };
-	sf::RectangleShape bigShape;
-	struct ShapeAndTex{
-		sf::RectangleShape smallShape;
-		sf::Sprite icon;
+	sf::RectangleShape bigShape; //스킬 표시 이미지 내부 큰 박스
+	struct ShapeAndTex{ //큰 박스에 담을 3개의 이미지와 스킬
+		sf::RectangleShape smallShape; //아이콘을 포함한 스킬 이름, 설명등.
+		sf::Sprite icon; // 아이콘(이미지)
+		sf::Text skillName;
+		sf::Text skillScript;
 	};
-	ShapeAndTex SAT;
-	std::vector<ShapeAndTex> SATList;
-	std::map<int, std::vector<ShapeAndTex>> smallShapeList;
-	sf::Text pageCount;
-	enum class Page {
+	ShapeAndTex SAT; //작은 상자와 아이콘 패키지
+	std::vector<ShapeAndTex> SATList; // 패키지 3개가 들어갈 크기의 박스
+	std::map<int, std::vector<ShapeAndTex>> smallShapeList; //패키지 3개 크기의 박스를 넣을 더 큰 박스
+	sf::Text pageCount; //몇번쨰 스킬 페이지인지 알기 위함.
+	enum class Page { //페이지
 		one,
 		two,
 		three,
@@ -417,6 +419,7 @@ public:
 	void prevPage(); //이전 페이지로 넘기기
 	void nextPage(); //다음 페이지로 넘기기
 	void pageCounting(resourceManager& res); //몇페이지인지 카운팅
+	void smallTableColorManager(sf::Vector2f& mouse);
 	const bool& isVisible() { return visible; };
 	void startVisible();
 	const sf::Vector2f& getSkTablePosition();

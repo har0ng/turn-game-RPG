@@ -1422,8 +1422,13 @@ skillTable::skillTable(sf::View& view, resourceManager& res)
 
 	int index = 0;		
 	for (auto sk = p->getBeforePlayer().skills.begin();sk != p->getBeforePlayer().skills.end(); ++sk) {
+		//icon
 		sf::Texture& tex = res.getTexture(sk->imgName);// 이미지 못찾으면 range가 터지면서 에러 뜨는데 계속하기 누르면 이상한 이미지가 나옴 이미지 넣어주면 해결가능
 		SAT.icon.setTexture(tex);
+		//skillName
+		std::string& text = sk->name;
+		SAT.skillName.setString(text);
+		
 		SATList.push_back(SAT);
 		if (SATList.size() == 3) {
 			smallShapeList.emplace(index, SATList);
@@ -1443,6 +1448,7 @@ skillTable::skillTable(sf::View& view, resourceManager& res)
 		for (auto& shape : small.second){
 			shape.smallShape.setFillColor(sf::Color(0,0,0,0));
 			shape.smallShape.setSize(sf::Vector2f(bigShape.getSize().x - 10.f, bigShape.getSize().y / 3.f - 10.f));
+			shape.smallShape.setOutlineThickness(2.f);
 		}
 	}	
 	setPosition(view);
@@ -1587,6 +1593,157 @@ void skillTable::pageCounting(resourceManager& res) {
 	std::string maxPage = std::to_string(smallShapeList.size());
 	pageCount.setString(minPage + "/" + maxPage);
 }
+void skillTable::smallTableColorManager(sf::Vector2f& mousePos) { //버튼 호버시 배경 일렁임
+	switch (page) {
+	case skillTable::Page::one:
+		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
+			if (sk.smallShape.getGlobalBounds().contains(mousePos)) {
+				sk.smallShape.setFillColor(sf::Color(255, 255, 255, 80));
+				sk.smallShape.setOutlineColor(sf::Color(255, 255, 255, 255));
+			}
+			else {
+				sk.smallShape.setFillColor(sf::Color(255, 255, 255, 0));
+				sk.smallShape.setOutlineColor(sf::Color(255, 255, 255, 0));
+			}
+		}
+		break;
+	case skillTable::Page::two:
+		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
+			if (sk.smallShape.getGlobalBounds().contains(mousePos)) {
+				sk.smallShape.setFillColor(sf::Color(255, 255, 255, 80));
+				sk.smallShape.setOutlineColor(sf::Color(255, 255, 255, 255));
+			}
+			else {
+				sk.smallShape.setFillColor(sf::Color(255, 255, 255, 0));
+				sk.smallShape.setOutlineColor(sf::Color(255, 255, 255, 0));
+			}
+		}
+		break;
+	case skillTable::Page::three:
+		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
+			if (sk.smallShape.getGlobalBounds().contains(mousePos)) {
+				sk.smallShape.setFillColor(sf::Color(255, 255, 255, 80));
+				sk.smallShape.setOutlineColor(sf::Color(255, 255, 255, 255));
+			}
+			else {
+				sk.smallShape.setFillColor(sf::Color(255, 255, 255, 0));
+				sk.smallShape.setOutlineColor(sf::Color(255, 255, 255, 0));
+			}
+		}
+		break;
+	case skillTable::Page::four:
+		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
+			if (sk.smallShape.getGlobalBounds().contains(mousePos)) {
+				sk.smallShape.setFillColor(sf::Color(255, 255, 255, 80));
+				sk.smallShape.setOutlineColor(sf::Color(255, 255, 255, 255));
+			}
+			else {
+				sk.smallShape.setFillColor(sf::Color(255, 255, 255, 0));
+				sk.smallShape.setOutlineColor(sf::Color(255, 255, 255, 0));
+			}
+		}
+		break;
+	case skillTable::Page::five:
+		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
+			if (sk.smallShape.getGlobalBounds().contains(mousePos)) {
+				sk.smallShape.setFillColor(sf::Color(255, 255, 255, 80));
+				sk.smallShape.setOutlineColor(sf::Color(255, 255, 255, 255));
+			}
+			else {
+				sk.smallShape.setFillColor(sf::Color(255, 255, 255, 0));
+				sk.smallShape.setOutlineColor(sf::Color(255, 255, 255, 0));
+			}
+		}
+		break;
+	case skillTable::Page::six:
+		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
+			if (sk.smallShape.getGlobalBounds().contains(mousePos)) {
+				sk.smallShape.setFillColor(sf::Color(255, 255, 255, 80));
+				sk.smallShape.setOutlineColor(sf::Color(255, 255, 255, 255));
+			}
+			else {
+				sk.smallShape.setFillColor(sf::Color(255, 255, 255, 0));
+				sk.smallShape.setOutlineColor(sf::Color(255, 255, 255, 0));
+			}
+		}
+		break;
+	case skillTable::Page::seven:
+		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
+			if (sk.smallShape.getGlobalBounds().contains(mousePos)) {
+				sk.smallShape.setFillColor(sf::Color(255, 255, 255, 80));
+				sk.smallShape.setOutlineColor(sf::Color(255, 255, 255, 255));
+			}
+			else {
+				sk.smallShape.setFillColor(sf::Color(255, 255, 255, 0));
+				sk.smallShape.setOutlineColor(sf::Color(255, 255, 255, 0));
+			}
+		}
+		break;
+	case skillTable::Page::eight:
+		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
+			if (sk.smallShape.getGlobalBounds().contains(mousePos)) {
+				sk.smallShape.setFillColor(sf::Color(255, 255, 255, 80));
+				sk.smallShape.setOutlineColor(sf::Color(255, 255, 255, 255));
+			}
+			else {
+				sk.smallShape.setFillColor(sf::Color(255, 255, 255, 0));
+				sk.smallShape.setOutlineColor(sf::Color(255, 255, 255, 0));
+			}
+		}
+		break;
+	case skillTable::Page::nine:
+		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
+			if (sk.smallShape.getGlobalBounds().contains(mousePos)) {
+				sk.smallShape.setFillColor(sf::Color(255, 255, 255, 80));
+				sk.smallShape.setOutlineColor(sf::Color(255, 255, 255, 255));
+			}
+			else {
+				sk.smallShape.setFillColor(sf::Color(255, 255, 255, 0));
+				sk.smallShape.setOutlineColor(sf::Color(255, 255, 255, 0));
+			}
+		}
+		break;
+	case skillTable::Page::ten:
+		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
+			if (sk.smallShape.getGlobalBounds().contains(mousePos)) {
+				sk.smallShape.setFillColor(sf::Color(255, 255, 255, 80));
+				sk.smallShape.setOutlineColor(sf::Color(255, 255, 255, 255));
+			}
+			else {
+				sk.smallShape.setFillColor(sf::Color(255, 255, 255, 0));
+				sk.smallShape.setOutlineColor(sf::Color(255, 255, 255, 0));
+			}
+		}
+		break;
+	case skillTable::Page::eleven:
+		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
+			if (sk.smallShape.getGlobalBounds().contains(mousePos)) {
+				sk.smallShape.setFillColor(sf::Color(255, 255, 255, 80));
+				sk.smallShape.setOutlineColor(sf::Color(255, 255, 255, 255));
+			}
+			else {
+				sk.smallShape.setFillColor(sf::Color(255, 255, 255, 0));
+				sk.smallShape.setOutlineColor(sf::Color(255, 255, 255, 0));
+			}
+		}
+		break;
+	case skillTable::Page::twelve:
+		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
+			if (sk.smallShape.getGlobalBounds().contains(mousePos)) {
+				sk.smallShape.setFillColor(sf::Color(255, 255, 255, 80));
+				sk.smallShape.setOutlineColor(sf::Color(255, 255, 255, 255));
+			}
+			else {
+				sk.smallShape.setFillColor(sf::Color(255, 255, 255, 0));
+				sk.smallShape.setOutlineColor(sf::Color(255, 255, 255, 0));
+			}
+		}
+		break;
+	default:
+		break;
+	}
+}
+
 void skillTable::startVisible() {
 	sf::Color color = skTable.getColor();
 	color.a = sf::Uint8(255);

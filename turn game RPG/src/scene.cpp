@@ -663,7 +663,8 @@ void roomScene::update(sf::RenderWindow& window) {
         backBtn.outlineColormanager(worldPos);
         upBtn.outlineColormanager(worldPos);
         skillTBtn.outlineColormanager(worldPos);
-        
+        skillT.smallTableColorManager(worldPos);
+
         if (event.type == sf::Event::Closed) { //만약 event 타입으로써 닫기 event가 일어나면
             window.close();//창이 닫힌다
         }

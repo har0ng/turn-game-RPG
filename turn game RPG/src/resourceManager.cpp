@@ -87,4 +87,5 @@ void resourceManager::tiferetEffect() {
     loadTexture("attackEffectSheet", "assets/effects/tiferet/default/attackSheet.png");
     loadTexture("powerStrike", "assets/effects/tiferet/powerStrike/powerStrikeSheet.png");
     loadTexture("powerStrikeIcon", "assets/effects/tiferet/powerStrike/skillIcon.png");
+    loadTexture("healIcon", "assets/effects/tiferet/heal/skillIcon.png");
 }
