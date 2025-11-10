@@ -216,6 +216,7 @@ private:
 	enum class playerSelect {none, attack , defense, skill, skillVisible};
 	playerSelect playerselect;
 	battle b;
+	bool skillTurn{false};
 
 public:
 	roomScene(sf::RenderWindow& win, resourceManager& res , const int& roomNum);

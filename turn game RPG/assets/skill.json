@@ -61,7 +61,7 @@
 	 "name": "doubleAttack",
 	 "targetObject": "enemy",
 	 "imgName":"doubleAttackIcon",
-	 "script":"二度斬りつけるような連撃で、\n確実にダメージを与える。",
+	 "script":"二度斬りつける連撃で、\n確実にダメージを与える。",
 	 "power": 0,
 	 "TDMultiplier": 1.5,
 	 "playerMultiplier":0.8,

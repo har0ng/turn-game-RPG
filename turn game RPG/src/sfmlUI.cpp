@@ -1377,6 +1377,39 @@ void tiferetImg::updateFrame(const float& dt , resourceManager& res) { //장면 
 		break;
 	}
 }
+void tiferetImg::skillUpdateFrame(const float& dt, resourceManager& res) { //여기서 버그
+	elapsed += dt; 
+	switch (sknum) {
+	case skNum::powerStrike:
+		if (elapsed >= 0.1f) {
+			elapsed = 0.f;
+			currentEffectFrame++;
+			int framesPerAction = 4;
+			if (currentEffectFrame >= framesPerAction) {
+				currentEffectFrame = 0;
+				tex = Tex::none;
+				updateTexture(res);
+				break;
+			}
+			attackEffect.setTextureRect(
+				sf::IntRect(res.getTexture("powerStrike").getSize().x / 4.f * currentEffectFrame, 0, res.getTexture("powerStrike").getSize().x / 4.f
+					, res.getTexture("powerStrike").getSize().y));
+		}
+		break;
+	case skNum::heal:
+		updateTexture(res);
+		break;
+	case skNum::overLapping:
+		updateTexture(res);
+		break;
+	case skNum::doubleAttack:
+		updateTexture(res);
+		break;
+	default:
+		break;
+	}
+
+}
 void tiferetImg::updateTexture(resourceManager& res, const int& playerSelect) {
 	tex = static_cast<Tex>(playerSelect);
 	elapsed = 0.f;
@@ -1391,9 +1424,10 @@ void tiferetImg::updateTexture(resourceManager& res, const int& playerSelect) {
 	case Tex::attack:
 		characterImg.setTexture(res.getTexture("tiferetAttack"));
 		characterImg.setTextureRect(sf::IntRect(0, 0, characterWidth, characterHeight));
+		attackEffect.setTexture(res.getTexture("attackEffectSheet"));
 		attackEffect.setTextureRect(sf::IntRect(0, 0, effectWidth, effectHeight));
 		break;
-	case Tex::defense: //임시 , 이미지가 없어서
+	case Tex::defense:
 		characterImg.setTexture(res.getTexture("tiferetDefense"));
 		characterImg.setTextureRect(sf::IntRect(0, 0, characterWidth, characterHeight));
 		break;
@@ -1408,6 +1442,26 @@ void tiferetImg::updateTexture(resourceManager& res, const int& playerSelect) {
 	default:
 		break;
 	}
+}
+void tiferetImg::skillTexture(resourceManager& res, const int& skillNum) {
+	sknum = static_cast<skNum>(skillNum);
+	switch (sknum){
+	case skNum::powerStrike:
+		characterImg.setTexture(res.getTexture("tiferetAttack"));
+		characterImg.setTextureRect(sf::IntRect(0, 0, characterWidth, characterHeight));
+		attackEffect.setTexture(res.getTexture("powerStrike"));
+		attackEffect.setTextureRect(sf::IntRect(0, 0,res.getTexture("powerStrike").getSize().x/4.f
+			, res.getTexture("powerStrike").getSize().y));
+		break;
+	case skNum::heal:
+		break;
+	case skNum::overLapping:
+		break;
+	case skNum::doubleAttack:
+		break;
+	default:
+		break;
+	} // 더 늘려야하는데 이 이상 레벨을 아직 올릴 일이 없기에 12까지만.
 }
 
 //skillTable
@@ -1428,8 +1482,14 @@ skillTable::skillTable(sf::View& view, resourceManager& res)
 	for (auto sk = p->getSkills().begin();sk != p->getSkills().end(); ++sk) {
 		SAT.number = skillIndex;
 		//icon
-		sf::Texture& tex = res.getTexture(sk->imgName);// 이미지 못찾으면 range가 터지면서 에러 뜨는데 계속하기 누르면 이상한 이미지가 나옴 이미지 넣어주면 해결가능
-		SAT.icon.setTexture(tex);
+		if (res.countTexture(sk->imgName)) {
+			sf::Texture& tex = res.getTexture(sk->imgName);
+			SAT.icon.setTexture(tex);
+		}
+		else {
+			sf::Texture& tex = res.getTexture("skillIcon");
+			SAT.icon.setTexture(tex);
+		}
 		//skillName
 		std::string text = sk->name;
 		SAT.skillName.setString(text);
@@ -1498,10 +1558,10 @@ void skillTable::draw(sf::RenderWindow& win) {
 		break;
 	case skillTable::Page::two:
 		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
-win.draw(sk.smallShape);
-win.draw(sk.icon);
-win.draw(sk.skillName);
-win.draw(sk.skillScript);
+			win.draw(sk.smallShape);
+			win.draw(sk.icon);
+			win.draw(sk.skillName);
+			win.draw(sk.skillScript);
 		}
 		break;
 	case skillTable::Page::three:
@@ -1739,7 +1799,7 @@ void skillTable::setPosition(sf::View& view) {
 	//next,prev
 	next.setPosition(skTable.getPosition().x + skTable.getLocalBounds().width + 20.f
 		, skTable.getPosition().y + (skTable.getLocalBounds().height - next.getLocalBounds().height) / 2.f);
-	prev.setPosition(skTable.getPosition().x - 20.f
+	prev.setPosition(skTable.getPosition().x - 100.f
 		, skTable.getPosition().y + (skTable.getLocalBounds().height - prev.getLocalBounds().height) / 2.f);
 
 }

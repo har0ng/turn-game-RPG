@@ -19,6 +19,13 @@ void resourceManager::unloadTexture(const std::string& key) {
     }
 }
 
+bool resourceManager::countTexture(const std::string& key) {
+    if (textures.count(key)) {
+        return true;
+    }
+    return false;
+}
+
 void resourceManager::loadFont(const std::string& key, const std::string& file) {
     sf::Font font;
     if (!font.loadFromFile(file)) { throw std::runtime_error("Font load failed: " + file); }

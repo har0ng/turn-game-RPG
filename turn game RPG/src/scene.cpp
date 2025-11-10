@@ -652,7 +652,13 @@ roomScene::roomScene(sf::RenderWindow& win, resourceManager& res, const int& roo
 }
 void roomScene::update(sf::RenderWindow& window) {
     deltaTime = roomClock.restart().asSeconds();  // 프레임 독립적 시간
-    eloaImg.updateFrame(deltaTime,res);          // F 애니메이션 갱신
+    if (skillTurn) {
+        eloaImg.skillUpdateFrame(deltaTime, res);
+        skillTurn = false;
+    }
+    else {
+        eloaImg.updateFrame(deltaTime, res);
+    }          // F 애니메이션 갱신
     selectRoomType(roomType,window);   //무슨 방인지 구분
     sf::Event event;
     while (window.pollEvent(event)) {//이벤트가 있다면 계속 반복
@@ -726,9 +732,10 @@ void roomScene::update(sf::RenderWindow& window) {
                 && event.mouseButton.button == sf::Mouse::Left && !startGD.isFading() && !battleGD.isAppearing()
                 && !battleGD.isFading()) {
                     b.playerTurn(static_cast<int>(playerSelect::skill),skillT.skillClicked(worldPos));
-                    // eloaImg.updateTexture(res, static_cast<int>(playerSelect::skill));
+                    eloaImg.skillTexture(res, skillT.skillClicked(worldPos));
                     skillTBtn.close();
                     skillT.close();
+                    skillTurn = true;
                     battleState = BattleState::EnemyTurn;
             }
             //선택지 아웃라인 스프라이트

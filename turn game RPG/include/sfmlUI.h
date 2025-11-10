@@ -374,13 +374,21 @@ public:
 	
 };
 
-class tiferetImg : public character{
+class tiferetImg : public character {
+	enum class skNum{
+		powerStrike = 0,
+		heal,
+		overLapping,
+		doubleAttack, // 더 추가해야함
+	}sknum;
 public:
 	tiferetImg(sf::RenderWindow& win, resourceManager& res);
 	void draw(sf::RenderWindow& win) override;
 	void effectDraw(sf::RenderWindow& win) override;
 	void updateFrame(const float& dt, resourceManager& res);
+	void skillUpdateFrame(const float& dt, resourceManager& res);
 	void updateTexture(resourceManager& res, const int& battleState = 0);
+	void skillTexture(resourceManager& res, const int& skillNum);
 };
 
 class skillTable {
@@ -446,16 +454,6 @@ public:
 	void unClose();
 };
 
-/*스킬 창 큰거 하나.
-	이후 스킬 개수에 맞게 스킬창 큰거의
-	ㅁㅁ
-	ㅁㅁ
-	의 느낌으로 4개 까지 해놓고 드래그해서 아래로 내리기
-	마우스 올리면 outlineColor 흰색으로 바뀌게끔 하고 두께 두껍게
-	이미지는 왼쪽 위 이름은 이미지의 오른쪽으로 중앙위
-	스킬 설명은 스킬 이름의 아래
-
-*/
 class homunculus { //방마다 힐인지 엘리트인지 노말인지 보스인지 구분하기
 protected:
 	sf::Sprite enemyImg; //frameWidth와 frameHeight의 기준이 될 이미지
