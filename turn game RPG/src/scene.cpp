@@ -230,7 +230,6 @@ void classSelectScene::allStartAppear() {
     malkuthDc.startAppear();
 }
 
-
 //mapScene
 mapScene::mapScene(sf::RenderWindow& win, resourceManager& res)
     :window(win), log(win)
@@ -584,7 +583,6 @@ void floorScene::setRoomNum(std::string roomName) {
     return;
 }
 
-
 //roomScene
 roomScene::roomScene(sf::RenderWindow& win, resourceManager& res, const int& roomNum) :
     res(res), window(win), log(win), view(sf::Vector2f(1280.f, 720.f), sf::Vector2f(2560.f, 1440.f)),
@@ -618,20 +616,20 @@ roomScene::roomScene(sf::RenderWindow& win, resourceManager& res, const int& roo
     switch (e->convertEnemyType(getEnemyPtr().getEnemyType())) {
     case 0: //normal
         hoHpB.position(normalOneImg.getPosition(), normalOneImg.getEnemyImg());
-        eloaImg.setEffectPosition(normalOneImg.getPosition());
+        eloaImg.setEffectPosition(normalOneImg.getPosition(),eloaImg.getPosition());
         normalOneImg.setEffectPosition(eloaImg.getPosition());
         normalOneImg.homunculusStartFade();
         break; 
     case 1: //elite
         hoHpB.position(eliteOneImg.getPosition(), eliteOneImg.getEnemyImg());
-        eloaImg.setEffectPosition(eliteOneImg.getPosition());
+        eloaImg.setEffectPosition(eliteOneImg.getPosition(), eloaImg.getPosition());
         eliteOneImg.setEffectPosition(eloaImg.getPosition());
         eliteOneImg.homunculusStartFade();
         break;
     case 2: //boss
         hoHpB.position(bossOneImg.getPosition(), bossOneImg.getEnemyImg());
         eloaImg.setEffectPosition(sf::Vector2f(bossOneImg.getPosition().x + res.getTexture("normal1").getSize().x / 1.1f,
-            bossOneImg.getPosition().y + res.getTexture("normal1").getSize().y / 4.f));
+            bossOneImg.getPosition().y + res.getTexture("normal1").getSize().y / 4.f), eloaImg.getPosition());
         normalOneImg.setEffectPosition(eloaImg.getPosition());
         bossOneImg.setEffectPosition(eloaImg.getPosition());
         bossOneImg.homunculusStartFade();

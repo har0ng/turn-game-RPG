@@ -1307,8 +1307,9 @@ const sf::Vector2f& character::getPosition(){
 const sf::Sprite& character::getSprite() {
 	return characterImg;
 }
-void character::setEffectPosition(const sf::Vector2f& homunculusPos){
+void character::setEffectPosition(const sf::Vector2f& homunculusPos, const sf::Vector2f& playerPos){
 	attackEffect.setPosition(homunculusPos);
+	healEffect.setPosition(playerPos);
 }
 
 //tiferet
@@ -1329,6 +1330,9 @@ tiferetImg::tiferetImg(sf::RenderWindow& win, resourceManager& res, const int& r
 
 		characterImg.setTexture(res.getTexture("tiferetSprite"));
 		characterImg.setTextureRect(sf::IntRect(0, 0, characterWidth, characterHeight));
+
+		healEffect.setTexture(res.getTexture("healSk"));
+		healEffect.setTextureRect(sf::IntRect(0, 0, 0, 0));
 		break;
 	case tiferetImg::roomType::boss:
 		characterWidth = res.getTexture("tiferet").getSize().x;
@@ -1336,6 +1340,9 @@ tiferetImg::tiferetImg(sf::RenderWindow& win, resourceManager& res, const int& r
 
 		characterImg.setTexture(res.getTexture("tiferetSprite"));
 		characterImg.setTextureRect(sf::IntRect(0, 0, characterWidth, characterHeight));
+
+		healEffect.setTexture(res.getTexture("healSk"));
+		healEffect.setTextureRect(sf::IntRect(0, 0, 0, 0));
 		break;
 	default:
 		break;
@@ -1351,6 +1358,7 @@ tiferetImg::tiferetImg(sf::RenderWindow& win, resourceManager& res, const int& r
 }
 void tiferetImg::draw(sf::RenderWindow& win) {
 	win.draw(characterImg);
+	win.draw(healEffect);
 }
 void tiferetImg::effectDraw(sf::RenderWindow& win) {
 	win.draw(attackEffect);
@@ -1411,7 +1419,7 @@ void tiferetImg::updateFrame(const float& dt , resourceManager& res) { //장면 
 		break;
 	}
 }
-void tiferetImg::skillUpdateFrame(const float& dt, resourceManager& res) { //여기서 버그
+void tiferetImg::skillUpdateFrame(const float& dt, resourceManager& res) { 
 	elapsed += dt; 
 	switch (sknum) {
 	case skNum::powerStrike:
@@ -1432,7 +1440,21 @@ void tiferetImg::skillUpdateFrame(const float& dt, resourceManager& res) { //여
 		}
 		break;
 	case skNum::heal:
-		updateTexture(res);
+		healEffect.setTextureRect(
+			sf::IntRect(res.getTexture("healSk").getSize().x/20.f * currentEffectFrame, 0, res.getTexture("healSk").getSize().x / 20.f
+				,res.getTexture("healSk").getSize().y));
+		if (elapsed >= 0.05f) {
+			elapsed = 0.f;
+			currentEffectFrame++;
+			int framesPerAction = 21;
+			if (currentEffectFrame >= framesPerAction) {
+				currentEffectFrame = 0;
+				tex = Tex::none;
+				skillEnd = true;
+				updateTexture(res);
+				break;
+			}
+		}
 		break;
 	case skNum::overLapping:
 		updateTexture(res);
@@ -1448,13 +1470,13 @@ void tiferetImg::skillUpdateFrame(const float& dt, resourceManager& res) { //여
 void tiferetImg::updateTexture(resourceManager& res, const int& playerSelect) {
 	tex = static_cast<Tex>(playerSelect);
 	elapsed = 0.f;
+	currentFrame = 0;  // 프레임 초기화 추가
+	currentEffectFrame = 0;
 	switch (tex){
 	case Tex::none:
 		characterImg.setTexture(res.getTexture("tiferetSprite"));
 		characterImg.setTextureRect(sf::IntRect(0, 0, characterWidth, characterHeight));
 		attackEffect.setTextureRect(sf::IntRect(0, 0, 0, 0));
-		currentFrame = 0;  // 프레임 초기화 추가
-		currentEffectFrame = 0;
 		break;
 	case Tex::attack:
 		characterImg.setTexture(res.getTexture("tiferetAttack"));
@@ -1493,6 +1515,9 @@ void tiferetImg::skillTexture(resourceManager& res, const int& skillNum) {
 		skillEnd = false;
 		break;
 	case skNum::heal:
+		characterImg.setTexture(res.getTexture("tiferetSprite"));
+		characterImg.setTextureRect(sf::IntRect(0, 0, characterWidth, characterHeight));
+		healEffect.setTextureRect(sf::IntRect(0, 0, res.getTexture("healSk").getSize().x/20.f, res.getTexture("healSk").getSize().y));
 		break;
 	case skNum::overLapping:
 		break;
@@ -1634,6 +1659,7 @@ void skillTable::draw(sf::RenderWindow& win) {
 			win.draw(sk.icon);
 			win.draw(sk.skillName);
 			win.draw(sk.skillScript);
+			
 		}
 		break;
 	case skillTable::Page::two:

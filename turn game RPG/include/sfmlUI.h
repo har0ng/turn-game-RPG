@@ -343,6 +343,7 @@ class character {
 protected:
 	sf::Sprite characterImg; //전체시트에 의존한 분할 시트
 	sf::Sprite attackEffect;
+	sf::Sprite healEffect;
 	int characterWidth{ 0 };	 // 직사각형 시작 위치 (intRect)
 	int characterHeight{ 0 };  //직사각형 시작 위치 (intRect)
 	int effectWidth{ 0 };
@@ -364,7 +365,6 @@ protected:
 		hit, //상대에게 맞을 떄
 		dead //쓰러졌을 때
 	}tex;
-	
 
 public:
 	character() = default;
@@ -372,7 +372,7 @@ public:
 	virtual void draw(sf::RenderWindow& win) = 0;
 	virtual void effectDraw(sf::RenderWindow& win) = 0;
 	virtual void position(sf::RenderWindow& win, const int& roomNum);
-	virtual void setEffectPosition(const sf::Vector2f& homunculusPos);
+	virtual void setEffectPosition(const sf::Vector2f& homunculusPos, const sf::Vector2f& playerPos);
 	const sf::Vector2f& getPosition();
 	const sf::Sprite& getSprite();
 	
