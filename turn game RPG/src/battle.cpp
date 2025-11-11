@@ -246,8 +246,8 @@ void battle::enemyTurn(const int& action) {
 	}
 
 	if (battleselect == 2) { //방어
-		eattack = std::max(0, eattack - pdefense);
-		p->playerTakeDamage(eattack);   // player 내부 체력 갱신, (*p).playerTakeDamage(eattack) 주소값이 나타내는 값을 바꿈
+		int attack = std::max(0, eattack - pdefense);
+		p->playerTakeDamage(attack);   // player 내부 체력 갱신, (*p).playerTakeDamage(eattack) 주소값이 나타내는 값을 바꿈
 		cphp = p->getPlayer_current_health(); // battle 내 체력도 동기화
 	}
 	else { // 공격 혹은 스킬

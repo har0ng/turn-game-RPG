@@ -352,7 +352,11 @@ protected:
 	float elapsed{ 0.f }; //updateframe 전용
 	float attackElapsed{ 0.f }; //updateAttackFrame 전용
 	float frameDuration{ 0.45f };
-
+	enum class roomType {
+		rest = 1,
+		battle,
+		boss
+	}roomT;
 	enum class Tex {
 		none, //기본 서있는 상태
 		attack, //공격
@@ -367,7 +371,7 @@ public:
 	virtual ~character() = default;
 	virtual void draw(sf::RenderWindow& win) = 0;
 	virtual void effectDraw(sf::RenderWindow& win) = 0;
-	virtual void position(sf::RenderWindow& win);
+	virtual void position(sf::RenderWindow& win, const int& roomNum);
 	virtual void setEffectPosition(const sf::Vector2f& homunculusPos);
 	const sf::Vector2f& getPosition();
 	const sf::Sprite& getSprite();
@@ -375,6 +379,7 @@ public:
 };
 
 class tiferetImg : public character {
+	bool skillEnd{ false };
 	enum class skNum{
 		powerStrike = 0,
 		heal,
@@ -382,13 +387,29 @@ class tiferetImg : public character {
 		doubleAttack, // 더 추가해야함
 	}sknum;
 public:
-	tiferetImg(sf::RenderWindow& win, resourceManager& res);
+	tiferetImg(sf::RenderWindow& win, resourceManager& res, const int& roomNum);
 	void draw(sf::RenderWindow& win) override;
 	void effectDraw(sf::RenderWindow& win) override;
 	void updateFrame(const float& dt, resourceManager& res);
 	void skillUpdateFrame(const float& dt, resourceManager& res);
 	void updateTexture(resourceManager& res, const int& battleState = 0);
 	void skillTexture(resourceManager& res, const int& skillNum);
+	void restFrame(float& dt);
+	bool getSkillEnd();
+};
+
+class restRoomFire {
+private:
+	sf::Sprite fire;
+	float elapsed{ 0.f }; //updateframe 전용
+	float frameWidth{ 0.f };
+	float frameHeight{ 0.f };
+	float frameDuration{ 0.3f };
+	int currentFrame{ 0 };
+public:
+	restRoomFire(sf::RenderWindow& win, resourceManager& res);
+	void draw(sf::RenderWindow& win);
+	void fireFrame(float& dt);
 };
 
 class skillTable {

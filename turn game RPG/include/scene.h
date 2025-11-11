@@ -174,13 +174,7 @@ private:
 	bool next{ false };
 	bool colorChange{ false };
 	bool close{ false };
-
-	//healRoomScene
-	int currentFrame{ 0 };
-	float frame{ 0 };
-	float frameWidth{ 0 };
-	float frameHeight{ 0 };
-
+	float frame{ 0.f };
 	//UI
 	backButton backBtn; // 뒤로가기 버튼로 되어있는데 이름만 바꿔서 배틀 끝나고 돌아가는 버튼으로 하나 만들어 쓰기.
 	status statusFrame; //체력, 마나, 경험치,레벨의 틀
@@ -201,6 +195,7 @@ private:
 	battleBackButton battleBackBtn;
 	skillTable skillT;
 	skillTableButton skillTBtn;
+	restRoomFire fire;
 	bool selectSkill{ false };
 	bool homunculusUpdateEnd{ false };
 	struct TurnLog {
@@ -208,6 +203,7 @@ private:
 		bool enemy{ false };
 	}turnLog;
 	bool oneTurn{ false };
+	bool heal{ false };
 
 	//battle
 	enum class BattleState { NotStarted, PlayerTurn, EnemyTurn, Ended, BackToMap };
@@ -225,11 +221,11 @@ public:
 	void allStartAppear() override;
 	void selectRoomType(const int& roomType, sf::RenderWindow& win);  //적인지 휴식인지 구분과 적의 종류 구분
 	void setBackground(resourceManager& res);
-	void updateFrame(float& dt);
 	void updateGameStatus(sf::RenderWindow& win);
 	void updateTurnLog();
 	void levelUp();
 	bool isNext() { return next; };
 	bool isClose() { return close; };
+	bool isHeal() { return heal; };
 };
 

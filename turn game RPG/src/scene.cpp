@@ -589,72 +589,73 @@ void floorScene::setRoomNum(std::string roomName) {
 roomScene::roomScene(sf::RenderWindow& win, resourceManager& res, const int& roomNum) :
     res(res), window(win), log(win), view(sf::Vector2f(1280.f, 720.f), sf::Vector2f(2560.f, 1440.f)),
     frameDuration(0.15f), backBtn("back", 0.0f, 960.0f, res.getFont("fantasy")),
-    statusFrame(res), hpB(win, res), mpB(win, res), expB(win, res), eloaImg(win, res),
+    statusFrame(res), hpB(win, res), mpB(win, res), expB(win, res), eloaImg(win, res,roomNum),
     normalOneImg(win, res), eliteOneImg(win, res), bossOneImg(win, res),
     hoHpB(win, res), action(win, res), startGD(res), battleState(BattleState::NotStarted), b(p, e)
     , battleGD(res), up(win, res, view), upBtn(res), battleBackBtn(res, view),skillT(view,res), skillTBtn(res)
+    ,fire(win,res)
 {
     //0.무슨 방인지 구분 rest, enemy , boss
     roomType = roomNum;
    
+    if (roomType == 1) {
+        heal = true;
+    }
+
     //1. 기본 뷰 초기화
     window.setView(window.getDefaultView()); //main에서 하면 좋지만..늦게 알아버린,mapScene view에서의 누적 초기화
     window.setView(view);
     setBackground(res);
+    
+    //3. player mp, hp,action 위치 조정
+    hpB.setTextHp();
+    statusFrame.setPosition(eloaImg.getPosition(), expB.getPosition(), res);
+    hpB.position(statusFrame.getHpmpPosition());
+    mpB.position(statusFrame.getHpmpPosition());
+    action.setPosition(eloaImg.getPosition(), eloaImg.getSprite());
 
-    if (roomType == 1) {
-        //2. 만약 rest 방이라면 움직이게끔.
-        frameWidth = background.getLocalBounds().width;
-        frameHeight = background.getLocalBounds().height / 2.f;
-        background.setTextureRect(sf::IntRect(0, 0, frameWidth, frameHeight));
-    }else{
-        //3. player mp, hp,action 위치 조정
-        hpB.setTextHp();
-        statusFrame.setPosition(eloaImg.getPosition(), expB.getPosition(), res);
-        hpB.position(statusFrame.getHpmpPosition());
-        mpB.position(statusFrame.getHpmpPosition());
-        action.setPosition(eloaImg.getPosition(), eloaImg.getSprite());
-
-        //4. enemy hp 위치 조정,player attack effect 위치 조정
-        switch (e->convertEnemyType(getEnemyPtr().getEnemyType())) {
-        case 0: //normal
-            hoHpB.position(normalOneImg.getPosition(), normalOneImg.getEnemyImg());
-            eloaImg.setEffectPosition(normalOneImg.getPosition());
-            normalOneImg.setEffectPosition(eloaImg.getPosition());
-            normalOneImg.homunculusStartFade();
-            break; 
-        case 1: //elite
-            hoHpB.position(eliteOneImg.getPosition(), eliteOneImg.getEnemyImg());
-            eloaImg.setEffectPosition(eliteOneImg.getPosition());
-            eliteOneImg.setEffectPosition(eloaImg.getPosition());
-            eliteOneImg.homunculusStartFade();
-            break;
-        case 2: //boss
-            hoHpB.position(bossOneImg.getPosition(), bossOneImg.getEnemyImg());
-            eloaImg.setEffectPosition(sf::Vector2f(bossOneImg.getPosition().x + res.getTexture("normal1").getSize().x / 1.1f,
-                bossOneImg.getPosition().y + res.getTexture("normal1").getSize().y / 4.f));
-            normalOneImg.setEffectPosition(eloaImg.getPosition());
-            bossOneImg.setEffectPosition(eloaImg.getPosition());
-            bossOneImg.homunculusStartFade();
-            break;
-        default:
-            break;
-        }
-        hoHpB.homunculusHpStartFade();
-
-        //5. enemy hp text 위치 조정 , 포인터가 정해지는게 4번이라 그 이후에 해야 enemyType에 맞는 hp를 들고옴
-        hoHpB.setTextHp();
-        startGD.startFade();
-
-        //6. skillBtn 위치 조절
-        skillTBtn.setPosition(skillT.getSkTablePosition(), skillT.getSkTableSize());
+    //4. enemy hp 위치 조정,player attack effect 위치 조정
+    switch (e->convertEnemyType(getEnemyPtr().getEnemyType())) {
+    case 0: //normal
+        hoHpB.position(normalOneImg.getPosition(), normalOneImg.getEnemyImg());
+        eloaImg.setEffectPosition(normalOneImg.getPosition());
+        normalOneImg.setEffectPosition(eloaImg.getPosition());
+        normalOneImg.homunculusStartFade();
+        break; 
+    case 1: //elite
+        hoHpB.position(eliteOneImg.getPosition(), eliteOneImg.getEnemyImg());
+        eloaImg.setEffectPosition(eliteOneImg.getPosition());
+        eliteOneImg.setEffectPosition(eloaImg.getPosition());
+        eliteOneImg.homunculusStartFade();
+        break;
+    case 2: //boss
+        hoHpB.position(bossOneImg.getPosition(), bossOneImg.getEnemyImg());
+        eloaImg.setEffectPosition(sf::Vector2f(bossOneImg.getPosition().x + res.getTexture("normal1").getSize().x / 1.1f,
+            bossOneImg.getPosition().y + res.getTexture("normal1").getSize().y / 4.f));
+        normalOneImg.setEffectPosition(eloaImg.getPosition());
+        bossOneImg.setEffectPosition(eloaImg.getPosition());
+        bossOneImg.homunculusStartFade();
+        break;
+    default:
+        break;
     }
+    hoHpB.homunculusHpStartFade();
+
+    //5. enemy hp text 위치 조정 , 포인터가 정해지는게 4번이라 그 이후에 해야 enemyType에 맞는 hp를 들고옴
+    hoHpB.setTextHp();
+    startGD.startFade();
+
+    //6. skillBtn 위치 조절
+    skillTBtn.setPosition(skillT.getSkTablePosition(), skillT.getSkTableSize());
+    
 }
 void roomScene::update(sf::RenderWindow& window) {
     deltaTime = roomClock.restart().asSeconds();  // 프레임 독립적 시간
+    if (eloaImg.getSkillEnd() && skillTurn) {
+        skillTurn = false;
+    }
     if (skillTurn) {
         eloaImg.skillUpdateFrame(deltaTime, res);
-        skillTurn = false;
     }
     else {
         eloaImg.updateFrame(deltaTime, res);
@@ -792,6 +793,10 @@ void roomScene::render(sf::RenderWindow& window) {
             upBtn.draw(window);
         }
     }
+    else {
+        eloaImg.draw(window);
+        fire.draw(window);
+    }
 }
 void roomScene::allStartAppear() {
     return;
@@ -799,7 +804,14 @@ void roomScene::allStartAppear() {
 void roomScene::selectRoomType(const int& roomType, sf::RenderWindow& win) {
     switch (roomType) {
     case 1:
-        updateFrame(deltaTime);
+        eloaImg.restFrame(deltaTime);
+        fire.fireFrame(deltaTime);
+        if (isHeal()) {
+            int hp = p->getPlayer_current_health() + p->getPlayer_health() * 0.3f;
+            if (hp > p->getPlayer_health()) { hp = p->getPlayer_health(); }
+            p->setPlayer_current_health(hp);
+            heal = false;
+        }
         break;
     case 2:
         if (frame > 0.3f) {
@@ -827,29 +839,10 @@ void roomScene::selectRoomType(const int& roomType, sf::RenderWindow& win) {
 }
 void roomScene::setBackground(resourceManager& res) {
     if (roomType == 1) {
-        background.setTexture(res.getTexture("1floorTiferetRestSprite"));
+        background.setTexture(res.getTexture("1floorRestRoom"));
         return;
     }
     background.setTexture(res.getTexture("1floorBattleRoomBg"));
-}
-void roomScene::updateFrame(float& dt) { //healRoom 전용
-    if (dt >= 0.3f) {
-        frame += 0.15f;
-    }
-    if (frame >= 0.3f) { //elapsed가 0.3f 보다 커지면 초기화 시키고 장면 변화
-        frame = 0.f;
-        currentFrame++;
-        int framesPerAction = 2; // 마지막 액션 + 1이 몇인지. 장면변화 index를 제일 처음으로 초기화
-        if (currentFrame >= framesPerAction)
-            currentFrame = 0;
-
-        background.setTextureRect(
-            sf::IntRect(0, 
-                static_cast<int>(frameHeight * currentFrame), 
-                static_cast<int>(frameWidth), 
-                static_cast<int>(frameHeight))
-        );
-    }
 }
 void roomScene::updateGameStatus(sf::RenderWindow& win) {
     int enemyAction = 0;

@@ -43,7 +43,7 @@ void resourceManager::loadAll() {
     loadTexture("mapBg", "assets/images/map.png");
     loadTexture("floorBg", "assets/images/1Floor.png");
     loadTexture("1floorBattleRoomBg", "assets/images/1floorBattleRoom.png");
-    loadTexture("1floorTiferetRestSprite", "assets/images/1floorTiferetRestSprite.png");
+    loadTexture("1floorRestRoom", "assets/images/1floorRestRoom.jpeg");
 
     //UI
     loadTexture("cursor", "assets/images/mouse.png");
@@ -65,11 +65,14 @@ void resourceManager::loadAll() {
     loadTexture("skillIcon", "assets/images/skillIcon.png");
     loadTexture("next", "assets/images/next.png");
     loadTexture("prev", "assets/images/prev.png");
+    loadTexture("fire", "assets/effects/campfire/fireSpriteSheet.png");
+
     //tiferet
     loadTexture("tiferet", "assets/images/tiferet.png");
     loadTexture("tiferetSprite", "assets/images/tiferetSheet.png");
     loadTexture("tiferetAttack", "assets/images/tiferetAttack.png");
     loadTexture("tiferetDefense", "assets/images/tiferetDefense.png");
+    loadTexture("tiferetRest", "assets/images/tiferetRest.png");
 
     //enemy
     loadTexture("normal1", "assets/images/normal1.png");

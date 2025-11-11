@@ -1285,8 +1285,21 @@ void levelUpButton::close() {
 }
 
 //character 공용
-void character::position(sf::RenderWindow& win) {
-	characterImg.setPosition(win.getSize().x / 5.f, win.getSize().y / 1.7f);
+void character::position(sf::RenderWindow& win, const int& roomNum) {
+	roomT = static_cast<roomType>(roomNum);
+	switch (roomT){
+	case character::roomType::rest:
+		characterImg.setPosition(0.f, 0.f);
+		break;
+	case character::roomType::battle:
+		characterImg.setPosition(win.getSize().x / 5.f, win.getSize().y / 1.7f);
+		break;
+	case character::roomType::boss:
+		characterImg.setPosition(win.getSize().x / 5.f, win.getSize().y / 1.7f);
+		break;
+	default:
+		break;
+	}
 }
 const sf::Vector2f& character::getPosition(){
 	return characterImg.getPosition();
@@ -1299,14 +1312,34 @@ void character::setEffectPosition(const sf::Vector2f& homunculusPos){
 }
 
 //tiferet
-tiferetImg::tiferetImg(sf::RenderWindow& win, resourceManager& res)
+tiferetImg::tiferetImg(sf::RenderWindow& win, resourceManager& res, const int& roomNum)
 {
-	characterWidth = res.getTexture("tiferet").getSize().x;
-	characterHeight = res.getTexture("tiferet").getSize().y;
-	
-	characterImg.setTexture(res.getTexture("tiferetSprite"));
-	characterImg.setTextureRect(sf::IntRect(0, 0, characterWidth, characterHeight));
+	roomT = static_cast<roomType>(roomNum);
+	switch (roomT){
+	case tiferetImg::roomType::rest:
+		characterWidth = res.getTexture("tiferetRest").getSize().x /2.f;
+		characterHeight = res.getTexture("tiferetRest").getSize().y;
 
+		characterImg.setTexture(res.getTexture("tiferetRest"));
+		characterImg.setTextureRect(sf::IntRect(0, 0, characterWidth, characterHeight));
+		break;
+	case tiferetImg::roomType::battle:
+		characterWidth = res.getTexture("tiferet").getSize().x;
+		characterHeight = res.getTexture("tiferet").getSize().y;
+
+		characterImg.setTexture(res.getTexture("tiferetSprite"));
+		characterImg.setTextureRect(sf::IntRect(0, 0, characterWidth, characterHeight));
+		break;
+	case tiferetImg::roomType::boss:
+		characterWidth = res.getTexture("tiferet").getSize().x;
+		characterHeight = res.getTexture("tiferet").getSize().y;
+
+		characterImg.setTexture(res.getTexture("tiferetSprite"));
+		characterImg.setTextureRect(sf::IntRect(0, 0, characterWidth, characterHeight));
+		break;
+	default:
+		break;
+	}
 	effectWidth = 504;
 	effectHeight = 600;
 
@@ -1314,7 +1347,7 @@ tiferetImg::tiferetImg(sf::RenderWindow& win, resourceManager& res)
 	attackEffect.setTextureRect(sf::IntRect(0, 0, 0, 0));
 	
 	tex = Tex::none;
-	position(win);
+	position(win,roomNum);
 }
 void tiferetImg::draw(sf::RenderWindow& win) {
 	win.draw(characterImg);
@@ -1339,6 +1372,9 @@ void tiferetImg::updateFrame(const float& dt , resourceManager& res) { //장면 
 		}
 		break;
 	case Tex::attack:
+		attackEffect.setTextureRect(
+			sf::IntRect(effectWidth * currentEffectFrame, 0, effectWidth, effectHeight)
+		);
 		if (elapsed >= 0.05f) {
 			elapsed = 0.f;
 			currentEffectFrame++;
@@ -1347,11 +1383,9 @@ void tiferetImg::updateFrame(const float& dt , resourceManager& res) { //장면 
 				currentEffectFrame = 0;
 				tex = Tex::none;
 				updateTexture(res);
+				skillEnd = true;
 				break;
 			}
-			attackEffect.setTextureRect(
-				sf::IntRect(effectWidth * currentEffectFrame, 0, effectWidth, effectHeight)
-			);
 		}
 		break;
 	case Tex::defense:
@@ -1381,19 +1415,20 @@ void tiferetImg::skillUpdateFrame(const float& dt, resourceManager& res) { //여
 	elapsed += dt; 
 	switch (sknum) {
 	case skNum::powerStrike:
+		attackEffect.setTextureRect(
+			sf::IntRect(res.getTexture("powerStrike").getSize().x / 4.f * currentEffectFrame, 0, res.getTexture("powerStrike").getSize().x / 4.f
+				, res.getTexture("powerStrike").getSize().y));
 		if (elapsed >= 0.1f) {
 			elapsed = 0.f;
 			currentEffectFrame++;
-			int framesPerAction = 4;
+			int framesPerAction = 5;
 			if (currentEffectFrame >= framesPerAction) {
 				currentEffectFrame = 0;
 				tex = Tex::none;
+				skillEnd = true;
 				updateTexture(res);
 				break;
 			}
-			attackEffect.setTextureRect(
-				sf::IntRect(res.getTexture("powerStrike").getSize().x / 4.f * currentEffectFrame, 0, res.getTexture("powerStrike").getSize().x / 4.f
-					, res.getTexture("powerStrike").getSize().y));
 		}
 		break;
 	case skNum::heal:
@@ -1445,6 +1480,9 @@ void tiferetImg::updateTexture(resourceManager& res, const int& playerSelect) {
 }
 void tiferetImg::skillTexture(resourceManager& res, const int& skillNum) {
 	sknum = static_cast<skNum>(skillNum);
+	elapsed = 0.f;
+	currentFrame = 0;  // 프레임 초기화 추가
+	currentEffectFrame = 0;
 	switch (sknum){
 	case skNum::powerStrike:
 		characterImg.setTexture(res.getTexture("tiferetAttack"));
@@ -1452,6 +1490,7 @@ void tiferetImg::skillTexture(resourceManager& res, const int& skillNum) {
 		attackEffect.setTexture(res.getTexture("powerStrike"));
 		attackEffect.setTextureRect(sf::IntRect(0, 0,res.getTexture("powerStrike").getSize().x/4.f
 			, res.getTexture("powerStrike").getSize().y));
+		skillEnd = false;
 		break;
 	case skNum::heal:
 		break;
@@ -1462,6 +1501,47 @@ void tiferetImg::skillTexture(resourceManager& res, const int& skillNum) {
 	default:
 		break;
 	} // 더 늘려야하는데 이 이상 레벨을 아직 올릴 일이 없기에 12까지만.
+}
+void tiferetImg::restFrame(float& dt) { //healRoom 전용
+    elapsed += dt;
+	characterImg.setTextureRect(
+		sf::IntRect(characterWidth * currentFrame, 0, characterWidth, characterHeight)
+	);
+    if (elapsed >= 1.0f) { //elapsed가 0.3f 보다 커지면 초기화 시키고 장면 변화
+		elapsed = 0.f;
+        currentFrame++;
+        int framesPerAction = 2; // 마지막 액션 + 1이 몇인지. 장면변화 index를 제일 처음으로 초기화
+        if (currentFrame >= framesPerAction)
+            currentFrame = 0;
+    }
+}
+bool tiferetImg::getSkillEnd() {
+	return skillEnd;
+}
+
+//restRoomFire
+restRoomFire::restRoomFire(sf::RenderWindow& win, resourceManager& res) {
+	fire.setTexture(res.getTexture("fire"));
+	fire.setTextureRect(sf::IntRect(0, 0, 0, 0));
+	frameWidth = res.getTexture("fire").getSize().x / 6.f;
+	frameHeight = res.getTexture("fire").getSize().y;
+}
+void restRoomFire::draw(sf::RenderWindow& win) {
+	win.draw(fire);
+}
+void restRoomFire::fireFrame(float& dt) {
+	elapsed += dt;
+	fire.setTextureRect(
+		sf::IntRect(frameWidth * currentFrame, 0, frameWidth, frameHeight)
+	);
+	if (elapsed >= frameDuration) { //elapsed가 0.45f 보다 커지면 초기화 시키고 장면 변화
+		elapsed = 0.f;
+		currentFrame++;
+		int framesPerAction = 6; // 마지막 액션 + 1이 몇인지. 장면변화 index를 제일 처음으로 초기화
+		if (currentFrame >= framesPerAction) {
+			currentFrame = 0;
+		}
+	}
 }
 
 //skillTable
