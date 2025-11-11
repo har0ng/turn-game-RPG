@@ -21,15 +21,15 @@ int main() {
     sf::RenderWindow window(sf::VideoMode(1820, 960), "test"); //창
     sfmlLog log(window); //매개변수가 있는 생성자
     //리소스 로드(texture, font)
-        resourceManager res;
-        res.loadAll();
-
+    resourceManager res;
+    res.loadStart();
+    res.battleResource();
     //공통 마우스
     mouse cursor(window, res.getTexture("cursor"));
 
     //초기 씬
     std::unique_ptr<scene> currentScene = std::make_unique<menuScene>(window,
-        res.getFont("fantasy"), res.getTexture("menuBg"));
+    res.getFont("fantasy"), res.getTexture("menuBg"));
 
     // 씬 히스토리 스택
     std::vector<std::unique_ptr<scene>> history;

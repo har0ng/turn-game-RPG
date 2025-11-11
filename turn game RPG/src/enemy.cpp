@@ -315,6 +315,7 @@ int enemy::convertEnemyType(std::string enemyType) {
     else if (getEnemyPtr().getEnemyType() == "boss") {
         return 2;
     }
+    return NULL;
 }
 
 //virtual

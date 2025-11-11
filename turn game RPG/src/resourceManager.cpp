@@ -36,17 +36,25 @@ sf::Font& resourceManager::getFont(const std::string& key) {
     return fonts.at(key);
 }
 
-void resourceManager::loadAll() {
+void resourceManager::loadStart() {
 //texture
     //background
     loadTexture("menuBg", "assets/images/1.png");
     loadTexture("mapBg", "assets/images/map.png");
+    //UI
+    loadTexture("cursor", "assets/images/mouse.png");
+    //font
+    loadFont("normal", "assets/fonts/smartfont.otf");
+    loadFont("fantasy", "assets/fonts/Nosutaru-dotMPlusH-10-Regular.ttf");
+
+}
+void resourceManager::battleResource() {
+    //background
     loadTexture("floorBg", "assets/images/1Floor.png");
     loadTexture("1floorBattleRoomBg", "assets/images/1floorBattleRoom.png");
     loadTexture("1floorRestRoom", "assets/images/1floorRestRoom.jpeg");
-
+   
     //UI
-    loadTexture("cursor", "assets/images/mouse.png");
     loadTexture("heal", "assets/images/heal.png");
     loadTexture("boss", "assets/images/boss.png");
     loadTexture("enemy", "assets/images/enemy.png");
@@ -90,11 +98,8 @@ void resourceManager::loadAll() {
     loadTexture("boss1Attack", "assets/images/boss1Attack.png");
     loadTexture("boss1EffectSheet", "assets/effects/boss1/attackSheet.png");
 
-    //font
-    loadFont("normal", "assets/fonts/smartfont.otf");
-    loadFont("fantasy", "assets/fonts/Nosutaru-dotMPlusH-10-Regular.ttf");
-}
 
+}
 void resourceManager::tiferetEffect() {
     loadTexture("attackEffectSheet", "assets/effects/tiferet/default/attackSheet.png");
     loadTexture("powerStrike", "assets/effects/tiferet/powerStrike/powerStrikeSheet.png");
