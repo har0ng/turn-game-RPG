@@ -4,7 +4,9 @@
 #include "map.h"
 #include "player.h"
 #include "enemy.h"
+#include "skillDisable.h"
 
+#include <unordered_map>
 #include <SFML/Graphics.hpp>
 
 //UI는 화면에서 나오는 기능들을 부품화시켜 따로 분류해놓는 곳임
@@ -419,10 +421,15 @@ private:
 	sf::RectangleShape bigShape; //스킬 표시 이미지 내부 큰 박스
 	struct ShapeAndTex { //큰 박스에 담을 3개의 이미지와 스킬
 		int number{0};
+		int mana{ 0 };
 		sf::RectangleShape smallShape; //아이콘을 포함한 스킬 이름, 설명등.
 		sf::Sprite icon; // 아이콘(이미지)
 		sf::Text skillName;
 		sf::Text skillScript;
+		sf::Text mp;
+		sf::Text turnText;
+		sf::Text turn;
+		sf::Text coolDown;
 	};
 	ShapeAndTex SAT; //작은 상자와 아이콘 패키지
 	std::vector<ShapeAndTex> SATList; // 패키지 3개가 들어갈 크기의 박스
@@ -430,6 +437,7 @@ private:
 	sf::Text pageCount; //몇번쨰 스킬 페이지인지 알기 위함.
 	sf::Sprite next;
 	sf::Sprite prev;
+	std::unordered_map<int, disable> disableSkill;
 	enum class Page { //페이지
 		one,
 		two,
@@ -451,6 +459,9 @@ public:
 	bool nextClicked(sf::Vector2f& mousePos);//클릭 이벤트
 	int skillClicked(sf::Vector2f& mousePos);
 	void setPosition(sf::View& view);
+	void setCoolDown(ShapeAndTex& SAT, int& remainTurn);
+	void setSkillNameColor(ShapeAndTex& SAT);
+	void setDisableSkill();
 	void close();
 	void prevPage(); //이전 페이지로 넘기기
 	void nextPage(); //다음 페이지로 넘기기

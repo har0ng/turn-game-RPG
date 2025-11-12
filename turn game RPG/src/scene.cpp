@@ -658,6 +658,10 @@ void roomScene::update(sf::RenderWindow& window) {
     else {
         eloaImg.updateFrame(deltaTime, res);
     }          // F 애니메이션 갱신
+    if (disableSkillCheck) {
+        skillT.setDisableSkill();
+        disableSkillCheck = false;
+    }
     selectRoomType(roomType,window);   //무슨 방인지 구분
     sf::Event event;
     while (window.pollEvent(event)) {//이벤트가 있다면 계속 반복
@@ -734,7 +738,7 @@ void roomScene::update(sf::RenderWindow& window) {
                     eloaImg.skillTexture(res, skillT.skillClicked(worldPos));
                     skillTBtn.close();
                     skillT.close();
-                    skillTurn = true;
+                    skillTurn = true;          
                     battleState = BattleState::EnemyTurn;
             }
             //선택지 아웃라인 스프라이트
@@ -899,9 +903,10 @@ void roomScene::updateGameStatus(sf::RenderWindow& win) {
                     window.close();//창이 닫힌다 , 진건데 gameover 안만들어서 처음으로 돌아가는거 안만듬
                 }
                 else {
+                    disableSkillCheck = true;
+                    b.statusManager();
                     battleState = BattleState::PlayerTurn;
                     transition = false; //반복 클릭 해제
-                    b.statusManager();
                 }
             }
             break;

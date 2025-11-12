@@ -204,7 +204,7 @@ private:
 	}turnLog;
 	bool oneTurn{ false };
 	bool heal{ false };
-
+	bool disableSkillCheck{ true };
 	//battle
 	enum class BattleState { NotStarted, PlayerTurn, EnemyTurn, Ended, BackToMap };
 	BattleState battleState; // 현재 전투 상태

@@ -428,6 +428,7 @@ void player::clearBuff() {//전투 후 사용중이던 버프 전부 삭제
 
 //CT
 void player::skillDisable(int skillSelect, int turn) {
+	disables[skillSelect].skillNum = skillSelect;
 	disables[skillSelect].remainTurn = turn; //CT 턴 기입
 	disables[skillSelect].enabled = false; //사용 불가능 하게
 }

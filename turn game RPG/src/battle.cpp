@@ -56,6 +56,7 @@ battle::battle(std::unique_ptr<player>& playerP, std::unique_ptr<enemy>& EnemyP)
 
 void battle::statusManager() {
 	turn++; //몇턴 째인지 셈
+	p->skillCT(); //쿨타임 백터 전체 쿨 다운
 	p->decreaseBuffTurns(turn); //버프 삭제 카운터 다운
 	if (p->getClassName() == "tiferet") { //턴마다 1씩 회복
 		const int MAX_CONTRACT = 12;
@@ -82,7 +83,6 @@ void battle::showGetSkill(std::vector<skill> beforeSkill, std::vector<skill> aft
 }
 
 void battle::battleStatus() {
-	p->skillCT(); //쿨타임 백터 전체 쿨 다운
 	if (p->getClassName() == "tiferet") {
 		ui.battleStatus(turn, php, cphp, p->getTurnPlayer().attack, p->getTurnPlayer().defense,
 			p->getContract(), e->getEnemyType(), ehp, echp ,eattack, level, level_exp, now_exp, mana, current_mana,
@@ -186,8 +186,6 @@ void battle::playerTurn(const int& input, int skillInput) {
 				if (skill[skillSelect].name == "you") { //tiferet
 					p->clearImSlashYou();
 				}
-				
-				
 				break;
 			}
 			if (skillCheck == false) { //무한 반복을 깨고 나왔으니 그냥 넘어가게끔해서 battleSelect부터 다시 하게끔 하기.
