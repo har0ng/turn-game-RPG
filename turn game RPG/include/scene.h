@@ -196,6 +196,7 @@ private:
 	skillTable skillT;
 	skillTableButton skillTBtn;
 	restRoomFire fire;
+	gameover GAMEOVER;
 	bool selectSkill{ false };
 	bool homunculusUpdateEnd{ false };
 	struct TurnLog {
@@ -205,6 +206,8 @@ private:
 	bool oneTurn{ false };
 	bool heal{ false };
 	bool disableSkillCheck{ true };
+	bool end{ false };
+
 	//battle
 	enum class BattleState { NotStarted, PlayerTurn, EnemyTurn, Ended, BackToMap };
 	BattleState battleState; // 현재 전투 상태

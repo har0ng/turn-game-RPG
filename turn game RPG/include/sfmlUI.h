@@ -353,7 +353,6 @@ public:
 	void close();
 };
 
-
 class character {
 protected:
 	sf::Sprite characterImg; //전체시트에 의존한 분할 시트
@@ -682,3 +681,23 @@ public:
 	bool& convertEnemyTurn();
 };
 
+class gameover {
+private:
+	sf::RectangleShape blackBackground;
+	sf::Sprite defeated;
+	float elapsed{0.f};
+	bool appear{ false };
+	bool fade{ false };
+	float alpha{ 0.f };
+	bool exchange{ false };
+public:
+	gameover(resourceManager& res,sf::View& view);
+	void draw(sf::RenderWindow& win);
+	void startAppear();
+	void updateAppear(float& dt);
+	bool isAppear() { return appear; }
+	void startFade();
+	void updateFade(float& dt);
+	bool isExchange(){ return exchange; }
+	void setExchange();
+};

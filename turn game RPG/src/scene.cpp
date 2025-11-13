@@ -591,7 +591,7 @@ roomScene::roomScene(sf::RenderWindow& win, resourceManager& res, const int& roo
     normalOneImg(win, res), eliteOneImg(win, res), bossOneImg(win, res),
     hoHpB(win, res), action(win, res), startGD(res), battleState(BattleState::NotStarted), b(p, e)
     , battleGD(res), up(win, res, view), upBtn(res), battleBackBtn(res, view),skillT(view,res), skillTBtn(res)
-    ,fire(win,res),eloaContract(win,res)
+    ,fire(win,res),eloaContract(win,res),GAMEOVER(res,view)
 {
     //0.무슨 방인지 구분 rest, enemy , boss
     roomType = roomNum;
@@ -650,6 +650,9 @@ roomScene::roomScene(sf::RenderWindow& win, resourceManager& res, const int& roo
     if (p->getClassName() == "tiferet") {
         eloaContract.setPosition(eloaImg.getPosition());
     }
+
+    //8. gameover  설정
+    GAMEOVER.startAppear();
 }
 void roomScene::update(sf::RenderWindow& window) {
     deltaTime = roomClock.restart().asSeconds();  // 프레임 독립적 시간
@@ -743,6 +746,7 @@ void roomScene::update(sf::RenderWindow& window) {
                 && playerselect == playerSelect::skillVisible && skillT.skillClicked(worldPos) >= 0
                 && event.mouseButton.button == sf::Mouse::Left && !startGD.isFading() && !battleGD.isAppearing()
                 && !battleGD.isFading()) {
+                    isTransition();
                     b.playerTurn(static_cast<int>(playerSelect::skill),skillT.skillClicked(worldPos));
                     eloaImg.skillTexture(res, skillT.skillClicked(worldPos));
                     skillTBtn.close();
@@ -813,6 +817,7 @@ void roomScene::render(sf::RenderWindow& window) {
         eloaImg.draw(window);
         fire.draw(window);
     }
+    GAMEOVER.draw(window);
 }
 void roomScene::allStartAppear() {
     return;
@@ -914,11 +919,7 @@ void roomScene::updateGameStatus(sf::RenderWindow& win) {
                 }                
                 b.enemyTurn(enemyAction);// 적 행동
                 if (p->getPlayer_current_health() == 0) {
-                    while (hpB.getBarSize().x == 0.f) {
-                        eloaImg.updateTexture(res, static_cast<int>(playerSelect::dead));
                         battleState = BattleState::Ended;
-                        break;
-                    }
                 }
                 else {
                     disableSkillCheck = true;
@@ -943,7 +944,18 @@ void roomScene::updateGameStatus(sf::RenderWindow& win) {
                 battleState = BattleState::BackToMap;
             }
             else {
-
+                if (hpB.getBarSize().x == 0.f) {
+                    eloaImg.updateTexture(res, static_cast<int>(playerSelect::dead));
+                    end = true;
+                }
+                if (end) {
+                    GAMEOVER.updateAppear(deltaTime);
+                }
+                if (GAMEOVER.isExchange()) {
+                    GAMEOVER.startFade();
+                    GAMEOVER.setExchange();
+                }
+                GAMEOVER.updateFade(deltaTime);
             }
             break;
         case BattleState::BackToMap:

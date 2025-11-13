@@ -3303,3 +3303,66 @@ bool& battleGradation::convertEnemyTurn() {
 	return enemyTurn;
 }
 
+//gameover
+gameover::gameover(resourceManager& res,sf::View& view) {
+	//blackBackground
+	blackBackground.setFillColor(sf::Color(0, 0, 0, 0));
+	blackBackground.setSize(view.getSize());
+	//defeated
+	defeated.setTexture(res.getTexture("gameover"));
+	sf::Color color = defeated.getColor();
+	color.a = sf::Uint8(0);
+	defeated.setColor(color);
+}
+void gameover::draw(sf::RenderWindow& win) {
+	win.draw(blackBackground);
+	win.draw(defeated);
+}
+void gameover::startAppear() {
+	appear = true;
+	elapsed = 0.f;
+}
+void gameover::updateAppear(float& dt) {
+	if (!appear) {
+		return;
+	}
+	elapsed += dt;
+	if (elapsed < 1.f) {
+		return;
+	}
+	alpha += (dt / 2.f) * 255; // 3초에 걸쳐 감소
+	if (alpha > 255) {
+		alpha = 255;
+		appear = false; // 완료되면 멈춤
+		exchange = true;
+		elapsed = 0.f;
+	}
+	sf::Color color = defeated.getColor();
+	color.a = sf::Uint8(alpha);
+	defeated.setColor(sf::Color(color));
+	blackBackground.setFillColor(sf::Color(0, 0, 0, sf::Uint8(alpha)));
+}
+void gameover::startFade() {
+	fade = true;
+	elapsed = 0.f;
+}
+void gameover::updateFade(float& dt) {
+	if (!fade) {
+		return;
+	}
+	elapsed += dt; // 누적시간
+	float fadeDuration = 2.f; // 3초 동안 페이드
+
+	alpha = 255 - (elapsed / fadeDuration) * 255;
+
+	if (alpha < 0) {
+		alpha = 0;
+		fade = false; // 완료되면 멈춤
+	}
+	sf::Color color = defeated.getColor();
+	color.a = sf::Uint8(alpha);
+	defeated.setColor(sf::Color(color));
+}
+void gameover::setExchange() {
+	exchange = false;
+}

@@ -74,6 +74,7 @@ void resourceManager::battleResource() {
     loadTexture("next", "assets/images/next.png");
     loadTexture("prev", "assets/images/prev.png");
     loadTexture("fire", "assets/effects/campfire/fireSpriteSheet.png");
+    loadTexture("gameover", "assets/images/gameover.jpg");
 
     //enemy
     loadTexture("normal1", "assets/images/normal1.png");
