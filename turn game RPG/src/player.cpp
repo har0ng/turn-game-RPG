@@ -496,6 +496,10 @@ void selectClass(const std::string& className) {
 		p = std::make_unique<malkuth>();
 	}
 }
+
+void clearPlayerPtr() {
+	p.reset();  // 내부 객체 삭제 + 포인터 nullptr로 초기화
+}
 player& getPlayerPtr(){// 유니크 포인터를 넘겨야하니깐 이렇게 됨.
 	return *p;
 }

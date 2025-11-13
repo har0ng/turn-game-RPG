@@ -685,11 +685,12 @@ class gameover {
 private:
 	sf::RectangleShape blackBackground;
 	sf::Sprite defeated;
-	float elapsed{0.f};
+	float elapsed{ 0.f };
 	bool appear{ false };
 	bool fade{ false };
 	float alpha{ 0.f };
 	bool exchange{ false };
+	bool goRestart{ false };
 public:
 	gameover(resourceManager& res,sf::View& view);
 	void draw(sf::RenderWindow& win);
@@ -698,6 +699,7 @@ public:
 	bool isAppear() { return appear; }
 	void startFade();
 	void updateFade(float& dt);
+	bool& isGoRestart() { return goRestart; }
 	bool isExchange(){ return exchange; }
 	void setExchange();
 };

@@ -23,6 +23,7 @@
     <ClCompile Include="src\binah.cpp" />
     <ClCompile Include="src\chesed.cpp" />
     <ClCompile Include="src\elite.cpp" />
+    <ClCompile Include="src\mainManager.cpp" />
     <ClCompile Include="src\malkuth.cpp" />
     <ClCompile Include="src\map.cpp" />
     <ClCompile Include="src\normal.cpp" />
@@ -51,6 +52,7 @@
     <ClInclude Include="include\enemyBuff.h" />
     <ClInclude Include="include\enemySkill.h" />
     <ClInclude Include="include\enemySkillDisable.h" />
+    <ClInclude Include="include\mainManager.h" />
     <ClInclude Include="include\map.h" />
     <ClInclude Include="include\player.h" />
     <ClInclude Include="include\resourceManager.h" />

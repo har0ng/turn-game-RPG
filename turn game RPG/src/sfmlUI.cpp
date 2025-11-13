@@ -3358,6 +3358,7 @@ void gameover::updateFade(float& dt) {
 	if (alpha < 0) {
 		alpha = 0;
 		fade = false; // 완료되면 멈춤
+		goRestart = true;
 	}
 	sf::Color color = defeated.getColor();
 	color.a = sf::Uint8(alpha);

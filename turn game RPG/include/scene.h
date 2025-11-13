@@ -28,6 +28,8 @@ protected:
 	float mainViewX{ 0.f }; //마우스를 위한 메인 화면 기준 x
 	float mainViewY{ 0.f }; //마우스를 위한 메인 화면 기준 y
 	int roomNum{ 0 }; // floorScene에서 battleScene으로 main을 통해 넘겨주기 위함
+	bool restartBtn{ false }; //주의!! 게임 재시작 버튼임.
+	bool exitBtn{ false }; //플레이어 자의적으로 나가기 버튼
 public:
 	virtual ~scene() = default;
 	//입력(키보드/마우스/창 이벤트)을 처리.
@@ -55,6 +57,9 @@ public:
 
 	//공용
 	void isTransition(); //씬 바뀌고 있는데 클릭 금지
+	bool& isRestartBtn() { return restartBtn; }
+	bool& isExitBtn(){ return exitBtn; }
+	void setRestartBtn();
 	const int& getRoomNum();
 	virtual void startFade(); // 페이드 시작 
 	virtual void updateFade(sf::Sprite& sprite); // 페이드 계속 업데이트
@@ -209,7 +214,7 @@ private:
 	bool end{ false };
 
 	//battle
-	enum class BattleState { NotStarted, PlayerTurn, EnemyTurn, Ended, BackToMap };
+	enum class BattleState { NotStarted, PlayerTurn, EnemyTurn, Ended, BackToMap ,restart};
 	BattleState battleState; // 현재 전투 상태
 	BattleState currentState{ BattleState::NotStarted };
 	enum class playerSelect {none, attack , defense, skill, skillVisible , dead = 100};

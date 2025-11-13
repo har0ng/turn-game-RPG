@@ -7,6 +7,9 @@ void scene::isTransition() { //반복 클릭 막기
     if (transition) { return; }
     transition = true;
 }
+void scene::setRestartBtn() {
+    restartBtn = true;
+}
 const int& scene::getRoomNum() {
     return roomNum;
 }
@@ -81,7 +84,7 @@ void menuScene::update(sf::RenderWindow& window) {
         startBtn.outlineColormanager(worldPos);
         endBtn.outlineColormanager(worldPos);
         if (event.type == sf::Event::Closed) { //만약 event 타입으로써 닫기 event가 일어나면
-            window.close();//창이 닫힌다
+            exitBtn = true;
         }
         if (event.type == sf::Event::MouseButtonReleased && !transition && event.mouseButton.button == sf::Mouse::Left) {
             if (startBtn.isClicked(worldPos) && !startBtn.getAppear()) {
@@ -91,7 +94,7 @@ void menuScene::update(sf::RenderWindow& window) {
                 titleText.startFade();
             }
             if (endBtn.isClicked(worldPos)) {
-                window.close(); // end 버튼 누를 시 종료
+                exitBtn = true;
             }
         }
     }
@@ -157,7 +160,7 @@ void classSelectScene::update(sf::RenderWindow& window){
         backBtn.outlineColormanager(worldPos);
 
         if (event.type == sf::Event::Closed) { //만약 event 타입으로써 닫기 event가 일어나면
-            window.close();//창이 닫힌다
+            exitBtn = true;
         }
         if (event.type == sf::Event::MouseButtonReleased && !transition && event.mouseButton.button == sf::Mouse::Left) { // 앞으로
             if (tiferetBtn.isClicked(worldPos) && !tiferetBtn.getAppear()) {
@@ -257,7 +260,7 @@ void mapScene::update(sf::RenderWindow& window){
     }
     while (window.pollEvent(event)) {//이벤트가 있다면 계속 반복
         if (event.type == sf::Event::Closed) { //만약 event 타입으로써 닫기 event가 일어나면
-            window.close();//창이 닫힌다
+            exitBtn = true;
         }
     }
 
@@ -386,7 +389,7 @@ void floorScene::update(sf::RenderWindow& window) {
             }
         }
         if (event.type == sf::Event::Closed) { //만약 event 타입으로써 닫기 event가 일어나면
-            window.close();//창이 닫힌다
+            exitBtn = true;
         }
         if (event.type == sf::Event::MouseWheelScrolled && animationYN && event.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel && event.mouseWheelScroll.delta > 0) {
             center.y -= scrollSpeed; // 위로 이동
@@ -687,7 +690,7 @@ void roomScene::update(sf::RenderWindow& window) {
         skillT.smallTableColorManager(worldPos);
 
         if (event.type == sf::Event::Closed) { //만약 event 타입으로써 닫기 event가 일어나면
-            window.close();//창이 닫힌다
+            exitBtn = true;
         }
         if (event.type == sf::Event::MouseButtonReleased && backBtn.isClicked(worldPos) && event.mouseButton.button == sf::Mouse::Left) {
             back = true;
@@ -956,10 +959,16 @@ void roomScene::updateGameStatus(sf::RenderWindow& win) {
                     GAMEOVER.setExchange();
                 }
                 GAMEOVER.updateFade(deltaTime);
+                if (GAMEOVER.isGoRestart()) {
+                    battleState = BattleState::restart;
+                    GAMEOVER.isGoRestart() = false;
+                }
             }
             break;
         case BattleState::BackToMap:
             break;
+        case BattleState::restart:
+            setRestartBtn();
         default:
             break;
         }
@@ -981,6 +990,8 @@ void roomScene::updateTurnLog() {
     battleGD.selectText(static_cast<int>(battleState));
     if (!startGD.isFading()) {
         switch (battleState) {
+        case BattleState::NotStarted:
+            break;
         case BattleState::PlayerTurn:
             if (!turnLog.player) {
                 turnLog = TurnLog{ true,false };
@@ -994,6 +1005,12 @@ void roomScene::updateTurnLog() {
                 battleGD.startAppear();
                 oneTurn = true;
             }
+            break;
+        case BattleState::Ended:
+            break;
+        case BattleState::BackToMap:
+            break;
+        case BattleState::restart:
             break;
         default:
             break;
