@@ -75,13 +75,6 @@ void resourceManager::battleResource() {
     loadTexture("prev", "assets/images/prev.png");
     loadTexture("fire", "assets/effects/campfire/fireSpriteSheet.png");
 
-    //tiferet
-    loadTexture("tiferet", "assets/images/tiferet.png");
-    loadTexture("tiferetSprite", "assets/images/tiferetSheet.png");
-    loadTexture("tiferetAttack", "assets/images/tiferetAttack.png");
-    loadTexture("tiferetDefense", "assets/images/tiferetDefense.png");
-    loadTexture("tiferetRest", "assets/images/tiferetRest.png");
-
     //enemy
     loadTexture("normal1", "assets/images/normal1.png");
     loadTexture("normal1Sprite", "assets/images/normal1Sheet.png");
@@ -101,6 +94,13 @@ void resourceManager::battleResource() {
 
 }
 void resourceManager::tiferetEffect() {
+    //tiferet
+    loadTexture("tiferet", "assets/images/tiferet.png");
+    loadTexture("tiferetSprite", "assets/images/tiferetSheet.png");
+    loadTexture("tiferetAttack", "assets/images/tiferetAttack.png");
+    loadTexture("tiferetDefense", "assets/images/tiferetDefense.png");
+    loadTexture("tiferetRest", "assets/images/tiferetRest.png");
+    loadTexture("tiferetDefeated", "assets/images/tiferetDefeated.png");
     //status
     loadTexture("contractSheet", "assets/images/contractSheet.png");
     //effect
@@ -109,5 +109,4 @@ void resourceManager::tiferetEffect() {
     loadTexture("powerStrikeIcon", "assets/effects/tiferet/powerStrike/skillIcon.png");
     loadTexture("healSk", "assets/effects/tiferet/heal/healSpriteSheet.png");
     loadTexture("healIcon", "assets/effects/tiferet/heal/skillIcon.png");
-    
 }

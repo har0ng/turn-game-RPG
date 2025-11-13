@@ -240,6 +240,7 @@ public:
 	void convertHp(const int& hp);
 	void convertMaxHp(const int& maxHp);
 	void setBarSize(float& dt);
+	const sf::Vector2f& getBarSize();
 };
 
 class mpBar {
@@ -377,7 +378,7 @@ protected:
 		attack, //공격
 		defense, //방어
 		hit, //상대에게 맞을 떄
-		dead //쓰러졌을 때
+		dead = 100 //쓰러졌을 때
 	}tex;
 
 public:

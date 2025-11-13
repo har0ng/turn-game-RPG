@@ -831,6 +831,9 @@ void hpBar::setBarSize(float& dt) {
 		bar.setSize(sf::Vector2f(newWidth, bar.getLocalBounds().height));
 	}
 }
+const sf::Vector2f& hpBar::getBarSize() {
+	return bar.getSize();
+}
 
 //mpBar
 mpBar::mpBar(sf::RenderWindow& win, resourceManager& res)
@@ -1449,10 +1452,8 @@ void tiferetImg::updateFrame(const float& dt , resourceManager& res) { //장면 
 		}
 		break;
 	case Tex::hit:
-		updateTexture(res);
 		break;
 	case Tex::dead:
-		updateTexture(res);
 		break;
 	default:
 		break;
@@ -1540,7 +1541,7 @@ void tiferetImg::updateTexture(resourceManager& res, const int& playerSelect) {
 		attackEffect.setTextureRect(sf::IntRect(0, 0, 0, 0));
 		break;
 	case Tex::dead:
-		characterImg.setTexture(res.getTexture("tiferetSprite"));
+		characterImg.setTexture(res.getTexture("tiferetDefeated"));
 		characterImg.setTextureRect(sf::IntRect(0, 0, characterWidth, characterHeight));
 	default:
 		break;

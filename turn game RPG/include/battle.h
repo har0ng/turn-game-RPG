@@ -33,7 +33,6 @@ private:
 	int eattack{ 0 }; //enemy attack
 
 	int turn{ 0 };
-	bool play{ false }; //player의 hp의 상태에 따라 게임 지속 가능한지 확인
 
 	//tiferet 전용
 	int contract{ 0 }; //tiferet 아니면 0
@@ -53,7 +52,6 @@ public:
 	void battleEnd();       // 승패 판단 및 출력
 	void battleEndManager(); //전투 종료후 사후 처리
 	//void selectClass(); // 전직 결정
-	bool getPlay() const;   // 플레이어의 체력이 남아있어 지속 가능한지 확인
 	//std::unique_ptr<player> getPlayerPtr(); // 플레이어 정보 계속 들고 가야해서 들고 갈 바구니 만든 것
 	//int inputCheck(int min, int max, int input);
 

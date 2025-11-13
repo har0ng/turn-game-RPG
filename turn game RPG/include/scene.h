@@ -209,7 +209,7 @@ private:
 	enum class BattleState { NotStarted, PlayerTurn, EnemyTurn, Ended, BackToMap };
 	BattleState battleState; // 현재 전투 상태
 	BattleState currentState{ BattleState::NotStarted };
-	enum class playerSelect {none, attack , defense, skill, skillVisible};
+	enum class playerSelect {none, attack , defense, skill, skillVisible , dead = 100};
 	playerSelect playerselect;
 	battle b;
 	bool skillTurn{false};

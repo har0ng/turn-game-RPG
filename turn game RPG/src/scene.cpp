@@ -764,8 +764,8 @@ void roomScene::update(sf::RenderWindow& window) {
 void roomScene::render(sf::RenderWindow& window) {
     window.draw(background);
     backBtn.draw(window); //돌아가기 버튼 (임시용)
-    expB.draw(window);
     if (roomType != 1) {
+        expB.draw(window);
         hpB.draw(window);
         mpB.draw(window);
         hoHpB.draw(window);
@@ -913,8 +913,12 @@ void roomScene::updateGameStatus(sf::RenderWindow& win) {
                     break;
                 }                
                 b.enemyTurn(enemyAction);// 적 행동
-                if (!b.getPlay()) {
-                    window.close();//창이 닫힌다 , 진건데 gameover 안만들어서 처음으로 돌아가는거 안만듬
+                if (p->getPlayer_current_health() == 0) {
+                    while (hpB.getBarSize().x == 0.f) {
+                        eloaImg.updateTexture(res, static_cast<int>(playerSelect::dead));
+                        battleState = BattleState::Ended;
+                        break;
+                    }
                 }
                 else {
                     disableSkillCheck = true;
@@ -925,17 +929,22 @@ void roomScene::updateGameStatus(sf::RenderWindow& win) {
             }
             break;
         case BattleState::Ended:
-            b.battleEnd();// 승리/패배 처리
-            b.battleEndManager();
-            up.setlevUpStatus(); //레벨 업 전과 레벨업 후의 내용 담기
-            upBtn.setPosition(up.getStatusBackgroundPosition(),up.getStatusBackgroundSize());
-            if (p->getBeforePlayer().level == p->getAfterPlayer().level) {
-                battleBackBtn.startSliding();
+            if (p->getPlayer_current_health() > 0) {
+                b.battleEnd();
+                b.battleEndManager();
+                up.setlevUpStatus(); //레벨 업 전과 레벨업 후의 내용 담기
+                upBtn.setPosition(up.getStatusBackgroundPosition(), up.getStatusBackgroundSize());
+                if (p->getBeforePlayer().level == p->getAfterPlayer().level) {
+                    battleBackBtn.startSliding();
+                }
+                else {
+                    statusFrame.setLevel();
+                }
+                battleState = BattleState::BackToMap;
             }
             else {
-                statusFrame.setLevel();
+
             }
-            battleState = BattleState::BackToMap;
             break;
         case BattleState::BackToMap:
             break;

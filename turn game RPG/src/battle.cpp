@@ -47,8 +47,6 @@ battle::battle(std::unique_ptr<player>& playerP, std::unique_ptr<enemy>& EnemyP)
 	//battletime
 	turn = 0; // 몇번째 턴인지 알려주기위함.
 	//gameover(Y/N)
-	play = true;
-
 	//tiferet
 	contract = p->getContract();
 	amplifyActivate = p->getAmplifyActivate();
@@ -275,11 +273,6 @@ void battle::enemyTurn(const int& action) {
 }
 
 void battle::battleEnd() {
-	if (cphp <= 0) {
-		play = false;
-		ui.battleEnd(cphp, e->getExpReward());//log를 불러오기위해 log에서 필요로 하는 값 다 넘겨주기
-		exit(0);
-	}
 	p->clearBuff();
 	if (p->getClassName() == "tiferet") {
 		p->setContract(std::min(p->getContract() + 3, 12));
@@ -344,10 +337,6 @@ void battle::battleEndManager() {
 //	}
 //
 //}
-
-bool battle::getPlay() const { //게임이 지속 가능한지 플레이어의 체력이 남아있는지 확인
-	return play;
-}
 
 //std::unique_ptr<player> battle::getPlayerPtr() { // 유니크 포인터를 넘겨야하니깐 이렇게 됨.
 //	return std::move(p);
