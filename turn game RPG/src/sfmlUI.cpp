@@ -1025,6 +1025,45 @@ void expBar::setBarSize(float& dt) {
 	}
 }
 
+//tifertContract
+tiferetContract::tiferetContract(sf::RenderWindow& win, resourceManager& res) {
+	//image
+	image.setTexture(res.getTexture("contractSheet"));
+	image.setTextureRect(sf::IntRect(35, 0, 188, res.getTexture("contractSheet").getSize().y));
+
+	//contract
+	setContractText();
+	contract.setFont(res.getFont("fantasy"));
+	contract.setFillColor(sf::Color(144, 13, 144));
+	contract.setCharacterSize(35);
+	contract.setOutlineColor(sf::Color::Black);
+	contract.setOutlineThickness(1.f);
+
+	//background
+	background.setFillColor(sf::Color(50,50,50,100));
+	background.setOutlineColor(sf::Color(201, 201, 201,125));
+	background.setOutlineThickness(2.f);
+	background.setSize(sf::Vector2f(image.getLocalBounds().width + 10.f,image.getLocalBounds().height + 100.f ));
+}
+void tiferetContract::draw(sf::RenderWindow& win) {
+	win.draw(background);
+	win.draw(image);
+	win.draw(contract);
+}
+void tiferetContract::setPosition(const sf::Vector2f& tiferetPos) {
+	background.setPosition(3.f, tiferetPos.y);
+	image.setPosition(sf::Vector2f(background.getPosition().x + 5.f, background.getPosition().y));
+	contract.setPosition(sf::Vector2f(image.getPosition().x + (image.getLocalBounds().width - contract.getLocalBounds().width) / 2.f
+		, image.getPosition().y + image.getLocalBounds().height + 30.f));
+}
+void tiferetContract::setContractText() {
+	contract.setString(std::to_string(p->getContract()) + std::string("/12"));
+}
+void tiferetContract::updateTexture(resourceManager& res) {
+	int leftMultiplier = std::abs(12 - p->getContract());
+	image.setTextureRect(sf::IntRect(35 + (412 * leftMultiplier), 0, 188, res.getTexture("contractSheet").getSize().y));
+}
+
 //levelUp
 levelUp::levelUp(sf::RenderWindow& win, resourceManager& res, const sf::View& view)
 {
@@ -1641,6 +1680,8 @@ skillTable::skillTable(sf::View& view, resourceManager& res)
 		SAT.coolDown.setFont(res.getFont("fantasy"));
 		SAT.coolDown.setCharacterSize(28.f);
 		SAT.coolDown.setFillColor(sf::Color::Red);
+		//contract
+		setTiferetStatus(res,sk);
 
 		SATList.push_back(SAT);
 		skillIndex++;
@@ -1698,6 +1739,9 @@ void skillTable::draw(sf::RenderWindow& win) {
 				setCoolDown(sk, disableSkill.at(sk.number).remainTurn);
 				win.draw(sk.coolDown);
 			}
+			if (p->getClassName() == "tiferet") {
+				win.draw(sk.contractText);
+			}
 		}
 		break;
 	case skillTable::Page::two:
@@ -1715,6 +1759,9 @@ void skillTable::draw(sf::RenderWindow& win) {
 			else {
 				setCoolDown(sk, disableSkill.at(sk.number).remainTurn);
 				win.draw(sk.coolDown);
+			}
+			if (p->getClassName() == "tiferet") {
+				win.draw(sk.contractText);
 			}
 		}
 		break;
@@ -1734,6 +1781,9 @@ void skillTable::draw(sf::RenderWindow& win) {
 				setCoolDown(sk, disableSkill.at(sk.number).remainTurn);
 				win.draw(sk.coolDown);
 			}
+			if (p->getClassName() == "tiferet") {
+				win.draw(sk.contractText);
+			}
 		}
 		break;
 	case skillTable::Page::four:
@@ -1751,6 +1801,9 @@ void skillTable::draw(sf::RenderWindow& win) {
 			else {
 				setCoolDown(sk, disableSkill.at(sk.number).remainTurn);
 				win.draw(sk.coolDown);
+			}
+			if (p->getClassName() == "tiferet") {
+				win.draw(sk.contractText);
 			}
 		}
 		break;
@@ -1770,6 +1823,9 @@ void skillTable::draw(sf::RenderWindow& win) {
 				setCoolDown(sk, disableSkill.at(sk.number).remainTurn);
 				win.draw(sk.coolDown);
 			}
+			if (p->getClassName() == "tiferet") {
+				win.draw(sk.contractText);
+			}
 		}
 		break;
 	case skillTable::Page::six:
@@ -1787,6 +1843,9 @@ void skillTable::draw(sf::RenderWindow& win) {
 			else {
 				setCoolDown(sk, disableSkill.at(sk.number).remainTurn);
 				win.draw(sk.coolDown);
+			}
+			if (p->getClassName() == "tiferet") {
+				win.draw(sk.contractText);
 			}
 		}
 		break;
@@ -1806,6 +1865,9 @@ void skillTable::draw(sf::RenderWindow& win) {
 				setCoolDown(sk, disableSkill.at(sk.number).remainTurn);
 				win.draw(sk.coolDown);
 			}
+			if (p->getClassName() == "tiferet") {
+				win.draw(sk.contractText);
+			}
 		}
 		break;
 	case skillTable::Page::eight:
@@ -1823,6 +1885,9 @@ void skillTable::draw(sf::RenderWindow& win) {
 			else {
 				setCoolDown(sk, disableSkill.at(sk.number).remainTurn);
 				win.draw(sk.coolDown);
+			}
+			if (p->getClassName() == "tiferet") {
+				win.draw(sk.contractText);
 			}
 		}
 		break;
@@ -1842,6 +1907,9 @@ void skillTable::draw(sf::RenderWindow& win) {
 				setCoolDown(sk, disableSkill.at(sk.number).remainTurn);
 				win.draw(sk.coolDown);
 			}
+			if (p->getClassName() == "tiferet") {
+				win.draw(sk.contractText);
+			}
 		}
 		break;
 	case skillTable::Page::ten:
@@ -1859,6 +1927,9 @@ void skillTable::draw(sf::RenderWindow& win) {
 			else {
 				setCoolDown(sk, disableSkill.at(sk.number).remainTurn);
 				win.draw(sk.coolDown);
+			}
+			if (p->getClassName() == "tiferet") {
+				win.draw(sk.contractText);
 			}
 		}
 		break;
@@ -1878,6 +1949,9 @@ void skillTable::draw(sf::RenderWindow& win) {
 				setCoolDown(sk, disableSkill.at(sk.number).remainTurn);
 				win.draw(sk.coolDown);
 			}
+			if (p->getClassName() == "tiferet") {
+				win.draw(sk.contractText);
+			}
 		}
 		break;
 	case skillTable::Page::twelve:
@@ -1895,6 +1969,9 @@ void skillTable::draw(sf::RenderWindow& win) {
 			else {
 				setCoolDown(sk, disableSkill.at(sk.number).remainTurn);
 				win.draw(sk.coolDown);
+			}
+			if (p->getClassName() == "tiferet") {
+				win.draw(sk.contractText);
 			}
 		}
 		break;
@@ -1928,7 +2005,7 @@ int skillTable::skillClicked(sf::Vector2f& mousePos) {
 	case skillTable::Page::one:
 		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
 			if (sk.smallShape.getGlobalBounds().contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))
-				&& !disableSkill.count(sk.number) && p->getCurrent_mana() >= sk.mana) {
+				&& !disableSkill.count(sk.number) && p->getCurrent_mana() >= sk.mana && p->getContract() >= sk.contract) {
 				return sk.number;
 			}
 		}
@@ -2050,6 +2127,7 @@ void skillTable::setPosition(sf::View& view) {
 				it->turnText.setPosition(it->mp.getPosition().x + it->mp.getLocalBounds().width * 1.5f, it->mp.getPosition().y);
 				it->turn.setPosition(it->turnText.getPosition().x + it->turnText.getLocalBounds().width, it->turnText.getPosition().y);
 				it->coolDown.setPosition(it->turn.getPosition());
+				it->contractText.setPosition(it->turn.getPosition().x + it->turnText.getLocalBounds().width / 2.f, it->turn.getPosition().y);
 			}
 			else {
 				it->smallShape.setPosition(x, y + it->smallShape.getSize().y * index);
@@ -2064,6 +2142,7 @@ void skillTable::setPosition(sf::View& view) {
 				it->turnText.setPosition(it->mp.getPosition().x + it->mp.getLocalBounds().width * 1.5f, it->mp.getPosition().y);
 				it->turn.setPosition(it->turnText.getPosition().x + it->turnText.getLocalBounds().width, it->turnText.getPosition().y);
 				it->coolDown.setPosition(it->turn.getPosition());
+				it->contractText.setPosition(it->turn.getPosition().x + it->turnText.getLocalBounds().width / 2.f, it->turn.getPosition().y);
 			}
 			index++;
 		}
@@ -2099,6 +2178,17 @@ void skillTable::setDisableSkill() {
 		if (!dis.enabled) {
 			disableSkill.emplace(dis.skillNum, disable{ dis.skillNum,dis.remainTurn,dis.enabled });
 		}
+	}
+}
+void skillTable::setTiferetStatus(resourceManager& res, std::vector<skill>::const_iterator sk) {
+	if (p->getClassName() == "tiferet") {
+		//contract (tiferet)
+		SAT.contract = sk->contractCost;
+		std::string text = std::string("契約: ") + std::to_string(SAT.contract);
+		SAT.contractText.setString(sf::String::fromUtf8(text.begin(),text.end()));
+		SAT.contractText.setFont(res.getFont("fantasy"));
+		SAT.contractText.setCharacterSize(28.f);
+		SAT.contractText.setFillColor(sf::Color(144,13,144));
 	}
 }
 void skillTable::close() {

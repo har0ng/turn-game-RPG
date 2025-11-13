@@ -591,7 +591,7 @@ roomScene::roomScene(sf::RenderWindow& win, resourceManager& res, const int& roo
     normalOneImg(win, res), eliteOneImg(win, res), bossOneImg(win, res),
     hoHpB(win, res), action(win, res), startGD(res), battleState(BattleState::NotStarted), b(p, e)
     , battleGD(res), up(win, res, view), upBtn(res), battleBackBtn(res, view),skillT(view,res), skillTBtn(res)
-    ,fire(win,res)
+    ,fire(win,res),eloaContract(win,res)
 {
     //0.무슨 방인지 구분 rest, enemy , boss
     roomType = roomNum;
@@ -646,6 +646,10 @@ roomScene::roomScene(sf::RenderWindow& win, resourceManager& res, const int& roo
     //6. skillBtn 위치 조절
     skillTBtn.setPosition(skillT.getSkTablePosition(), skillT.getSkTableSize());
     
+    //7. tifiret라면 조정
+    if (p->getClassName() == "tiferet") {
+        eloaContract.setPosition(eloaImg.getPosition());
+    }
 }
 void roomScene::update(sf::RenderWindow& window) {
     deltaTime = roomClock.restart().asSeconds();  // 프레임 독립적 시간
@@ -661,6 +665,11 @@ void roomScene::update(sf::RenderWindow& window) {
     if (disableSkillCheck) {
         skillT.setDisableSkill();
         disableSkillCheck = false;
+    }
+    //tiferet
+    if (p->getClassName() == "tiferet") {
+        eloaContract.setContractText();
+        eloaContract.updateTexture(res);
     }
     selectRoomType(roomType,window);   //무슨 방인지 구분
     sf::Event event;
@@ -738,7 +747,7 @@ void roomScene::update(sf::RenderWindow& window) {
                     eloaImg.skillTexture(res, skillT.skillClicked(worldPos));
                     skillTBtn.close();
                     skillT.close();
-                    skillTurn = true;          
+                    skillTurn = true;
                     battleState = BattleState::EnemyTurn;
             }
             //선택지 아웃라인 스프라이트
@@ -764,7 +773,10 @@ void roomScene::render(sf::RenderWindow& window) {
         if (!skillT.isVisible() && battleState == BattleState::PlayerTurn) {
             action.draw(window);
         }
-        eloaImg.draw(window);
+        if (p->getClassName() == "tiferet") {
+            eloaContract.draw(window);
+            eloaImg.draw(window);
+        }
         startGD.draw(window);
         switch (e->convertEnemyType(getEnemyPtr().getEnemyType())) {
         case 0:
@@ -785,7 +797,9 @@ void roomScene::render(sf::RenderWindow& window) {
             skillT.draw(window);
             skillTBtn.draw(window);
         }
-        eloaImg.effectDraw(window);
+        if (p->getClassName() == "tiferet") {
+            eloaImg.effectDraw(window);
+        }
         normalOneImg.effectDraw(window);
         eliteOneImg.effectDraw(window);
         bossOneImg.effectDraw(window);

@@ -101,6 +101,9 @@ void resourceManager::battleResource() {
 
 }
 void resourceManager::tiferetEffect() {
+    //status
+    loadTexture("contractSheet", "assets/images/contractSheet.png");
+    //effect
     loadTexture("attackEffectSheet", "assets/effects/tiferet/default/attackSheet.png");
     loadTexture("powerStrike", "assets/effects/tiferet/powerStrike/powerStrikeSheet.png");
     loadTexture("powerStrikeIcon", "assets/effects/tiferet/powerStrike/skillIcon.png");

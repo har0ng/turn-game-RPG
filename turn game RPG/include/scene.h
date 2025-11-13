@@ -214,6 +214,8 @@ private:
 	battle b;
 	bool skillTurn{false};
 
+	//tiferet
+	tiferetContract eloaContract;
 public:
 	roomScene(sf::RenderWindow& win, resourceManager& res , const int& roomNum);
 	void update(sf::RenderWindow& window) override; //메뉴 화면으로 상태갱신

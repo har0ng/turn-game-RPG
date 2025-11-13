@@ -291,6 +291,19 @@ public:
 
 };
 
+class tiferetContract {
+private:
+	sf::Sprite image;
+	sf::Text contract;
+	sf::RectangleShape background;
+public:
+	tiferetContract(sf::RenderWindow& win, resourceManager& res);
+	void draw(sf::RenderWindow& win);
+	void setPosition(const sf::Vector2f& tiferetPos);
+	void setContractText();
+	void updateTexture(resourceManager& res);
+};
+
 class levelUp {
 private:
 	sf::Text levUp;
@@ -339,7 +352,6 @@ public:
 	void close();
 };
 
-//class tiferetContractBar {};
 
 class character {
 protected:
@@ -422,6 +434,7 @@ private:
 	struct ShapeAndTex { //큰 박스에 담을 3개의 이미지와 스킬
 		int number{0};
 		int mana{ 0 };
+		int contract{ 0 };
 		sf::RectangleShape smallShape; //아이콘을 포함한 스킬 이름, 설명등.
 		sf::Sprite icon; // 아이콘(이미지)
 		sf::Text skillName;
@@ -430,6 +443,7 @@ private:
 		sf::Text turnText;
 		sf::Text turn;
 		sf::Text coolDown;
+		sf::Text contractText;
 	};
 	ShapeAndTex SAT; //작은 상자와 아이콘 패키지
 	std::vector<ShapeAndTex> SATList; // 패키지 3개가 들어갈 크기의 박스
@@ -462,6 +476,7 @@ public:
 	void setCoolDown(ShapeAndTex& SAT, int& remainTurn);
 	void setSkillNameColor(ShapeAndTex& SAT);
 	void setDisableSkill();
+	void setTiferetStatus(resourceManager& res, std::vector<skill>::const_iterator sk);
 	void close();
 	void prevPage(); //이전 페이지로 넘기기
 	void nextPage(); //다음 페이지로 넘기기
