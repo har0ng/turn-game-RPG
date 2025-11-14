@@ -106,8 +106,12 @@ void resourceManager::tiferetEffect() {
     loadTexture("contractSheet", "assets/images/contractSheet.png");
     //effect
     loadTexture("attackEffectSheet", "assets/effects/tiferet/default/attackSheet.png");
+    //skillEffect
     loadTexture("powerStrike", "assets/effects/tiferet/powerStrike/powerStrikeSheet.png");
-    loadTexture("powerStrikeIcon", "assets/effects/tiferet/powerStrike/skillIcon.png");
+    loadTexture("powerStrikeIcon", "assets/effects/tiferet/powerStrike/powerStrikeIcon.png");
     loadTexture("healSk", "assets/effects/tiferet/heal/healSpriteSheet.png");
-    loadTexture("healIcon", "assets/effects/tiferet/heal/skillIcon.png");
+    loadTexture("healIcon", "assets/effects/tiferet/heal/healIcon.png");
+    loadTexture("overLappingIcon", "assets/effects/tiferet/overLapping/overLappingIcon.png");
+    loadTexture("doubleAttack", "assets/effects/tiferet/doubleAttack/doubleAttackSpriteSheet.png");
+    loadTexture("doubleAttackIcon", "assets/effects/tiferet/doubleAttack/doubleAttackIcon.png");
 }

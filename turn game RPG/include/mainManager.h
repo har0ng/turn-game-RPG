@@ -12,6 +12,7 @@
 
 class init {
 private:
+	// 현재 씬
 	std::unique_ptr<scene> currentScene;
 	// 씬 히스토리 스택
 	std::vector<std::unique_ptr<scene>> history;
