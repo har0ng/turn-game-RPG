@@ -659,9 +659,10 @@ roomScene::roomScene(sf::RenderWindow& win, resourceManager& res, const int& roo
 }
 void roomScene::update(sf::RenderWindow& window) {
     deltaTime = roomClock.restart().asSeconds();  // 프레임 독립적 시간
-    if (eloaImg.getSkillEnd() && skillTurn) {
+    if (eloaImg.isSkillEnd() && skillTurn) {
         skillTurn = false;
     }
+
     if (skillTurn) {
         eloaImg.skillUpdateFrame(deltaTime, res);
     }
@@ -750,8 +751,8 @@ void roomScene::update(sf::RenderWindow& window) {
                 && event.mouseButton.button == sf::Mouse::Left && !startGD.isFading() && !battleGD.isAppearing()
                 && !battleGD.isFading()) {
                     isTransition();
-                    b.playerTurn(static_cast<int>(playerSelect::skill),skillT.skillClicked(worldPos));
                     eloaImg.skillTexture(res, skillT.skillClicked(worldPos));
+                    b.playerTurn(static_cast<int>(playerSelect::skill),skillT.skillClicked(worldPos));
                     skillTBtn.close();
                     skillT.close();
                     skillTurn = true;
@@ -934,6 +935,7 @@ void roomScene::updateGameStatus(sf::RenderWindow& win) {
             break;
         case BattleState::Ended:
             if (p->getPlayer_current_health() > 0) {
+                eloaImg.isSkillEnd() = true;
                 b.battleEnd();
                 b.battleEndManager();
                 up.setlevUpStatus(); //레벨 업 전과 레벨업 후의 내용 담기

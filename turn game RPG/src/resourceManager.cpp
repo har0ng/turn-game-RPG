@@ -111,6 +111,7 @@ void resourceManager::tiferetEffect() {
     loadTexture("powerStrikeIcon", "assets/effects/tiferet/powerStrike/powerStrikeIcon.png");
     loadTexture("healSk", "assets/effects/tiferet/heal/healSpriteSheet.png");
     loadTexture("healIcon", "assets/effects/tiferet/heal/healIcon.png");
+    loadTexture("overLapping", "assets/effects/tiferet/overLapping/overLappingSpriteSheet.png");
     loadTexture("overLappingIcon", "assets/effects/tiferet/overLapping/overLappingIcon.png");
     loadTexture("doubleAttack", "assets/effects/tiferet/doubleAttack/doubleAttackSpriteSheet.png");
     loadTexture("doubleAttackIcon", "assets/effects/tiferet/doubleAttack/doubleAttackIcon.png");

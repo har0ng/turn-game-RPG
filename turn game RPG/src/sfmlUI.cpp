@@ -799,7 +799,7 @@ void hpBar::setBarSize(float& dt) {
 	}
 	if (startUp) {
 		elapsedTime += dt;
-		float upTime = elapsedTime / 1.0f; // 1.0f초 동안 변화
+		float upTime = elapsedTime / 0.5f; // 0.5f초 동안 변화
 		if (upTime > 1.0f) {
 			upTime = 1.0f;
 			startUp = false;
@@ -814,7 +814,7 @@ void hpBar::setBarSize(float& dt) {
 	}
 	if (startDown) {
 		elapsedTime += dt;
-		float upTime = elapsedTime / 1.0f; // 1.0f초 동안 변화
+		float upTime = elapsedTime / 0.5f; // 0.5f초 동안 변화
 		if (upTime >= 1.0f) {
 			upTime = 1.0f; 
 			startDown = false;
@@ -891,7 +891,7 @@ void mpBar::setBarSize(float& dt) {
 	}
 	if (startUp) {
 		elapsedTime += dt;
-		float upTime = elapsedTime / 1.0f; // 1.0f초 동안 변화
+		float upTime = elapsedTime / 0.5f; //0.5f초 동안 변화
 		if (upTime > 1.0f) {
 			upTime = 1.0f;
 			startUp = false;
@@ -906,7 +906,7 @@ void mpBar::setBarSize(float& dt) {
 	}
 	if (startDown) {
 		elapsedTime += dt;
-		float upTime = elapsedTime / 1.0f; // 1.0f초 동안 변화
+		float upTime = elapsedTime / 0.5f; //0.5f초 동안 변화
 		if (upTime >= 1.0f) {
 			upTime = 1.0f;
 			startDown = false;
@@ -1350,8 +1350,14 @@ const sf::Sprite& character::getSprite() {
 	return characterImg;
 }
 void character::setEffectPosition(const sf::Vector2f& homunculusPos, const sf::Vector2f& playerPos){
-	attackEffect.setPosition(homunculusPos);
+	if (attackEffect.getLocalBounds().height <= homunculusPos.y) {
+		attackEffect.setPosition(homunculusPos);
+	}
+	else {
+		attackEffect.setPosition(homunculusPos.x, homunculusPos.y - ((attackEffect.getLocalBounds().height - homunculusPos.y)));
+	}
 	healEffect.setPosition(playerPos);
+	buffEffect.setPosition(sf::Vector2f(playerPos.x + 50.f, playerPos.y - 200.f));
 }
 
 //tiferet
@@ -1401,6 +1407,7 @@ tiferetImg::tiferetImg(sf::RenderWindow& win, resourceManager& res, const int& r
 void tiferetImg::draw(sf::RenderWindow& win) {
 	win.draw(characterImg);
 	win.draw(healEffect);
+	win.draw(buffEffect);
 }
 void tiferetImg::effectDraw(sf::RenderWindow& win) {
 	win.draw(attackEffect);
@@ -1408,7 +1415,7 @@ void tiferetImg::effectDraw(sf::RenderWindow& win) {
 void tiferetImg::updateFrame(const float& dt , resourceManager& res) { //장면 변화
 	elapsed += dt;
 	switch (tex){
-	case Tex::none:
+	case Tex::none: {
 		if (elapsed >= frameDuration) { //elapsed가 0.45f 보다 커지면 초기화 시키고 장면 변화
 			elapsed = 0.f;
 			currentFrame++;
@@ -1420,8 +1427,8 @@ void tiferetImg::updateFrame(const float& dt , resourceManager& res) { //장면 
 				sf::IntRect(characterWidth * currentFrame, 0, characterWidth, characterHeight)
 			);
 		}
-		break;
-	case Tex::attack:
+		break; }
+	case Tex::attack: {
 		attackEffect.setTextureRect(
 			sf::IntRect(effectWidth * currentEffectFrame, 0, effectWidth, effectHeight)
 		);
@@ -1437,8 +1444,8 @@ void tiferetImg::updateFrame(const float& dt , resourceManager& res) { //장면 
 				break;
 			}
 		}
-		break;
-	case Tex::defense:
+		break; }
+	case Tex::defense: {
 		if (elapsed >= 0.05f) {
 			elapsed = 0.f;
 			currentEffectFrame++;
@@ -1450,7 +1457,7 @@ void tiferetImg::updateFrame(const float& dt , resourceManager& res) { //장면 
 				break;
 			}
 		}
-		break;
+		break; }
 	case Tex::hit:
 		break;
 	case Tex::dead:
@@ -1469,7 +1476,7 @@ void tiferetImg::skillUpdateFrame(const float& dt, resourceManager& res) {
 		return;
 	}
 	switch (sknum) {
-	case skNum::powerStrike:
+	case skNum::powerStrike: 
 		attackEffect.setTextureRect(
 			sf::IntRect(res.getTexture("powerStrike").getSize().x / 4.f * currentEffectFrame, 0, res.getTexture("powerStrike").getSize().x / 4.f
 				, res.getTexture("powerStrike").getSize().y));
@@ -1485,11 +1492,11 @@ void tiferetImg::skillUpdateFrame(const float& dt, resourceManager& res) {
 				break;
 			}
 		}
-		break;
+		break; 
 	case skNum::heal:
 		healEffect.setTextureRect(
-			sf::IntRect(res.getTexture("healSk").getSize().x/5.f * currentEffectFrame, 0, res.getTexture("healSk").getSize().x / 5.f
-				,res.getTexture("healSk").getSize().y));
+			sf::IntRect(res.getTexture("healSk").getSize().x / 5.f * currentEffectFrame, 0, res.getTexture("healSk").getSize().x / 5.f
+				, res.getTexture("healSk").getSize().y));
 		if (elapsed >= 0.1f) {
 			elapsed = 0.f;
 			currentEffectFrame++;
@@ -1502,13 +1509,40 @@ void tiferetImg::skillUpdateFrame(const float& dt, resourceManager& res) {
 				break;
 			}
 		}
-		break;
-	case skNum::overLapping:
-		updateTexture(res);
-		break;
-	case skNum::doubleAttack:
-		updateTexture(res);
-		break;
+		break; 
+	case skNum::overLapping: 
+		buffEffect.setTextureRect(sf::IntRect(res.getTexture("overLapping").getSize().x / 8.f * currentEffectFrame, 0, res.getTexture("overLapping").getSize().x / 8.f
+			, res.getTexture("overLapping").getSize().y));
+		if (elapsed >= 0.05f) {
+			elapsed = 0.f;
+			currentEffectFrame++;
+			int framesPerAction = 9;
+			if (currentEffectFrame >= framesPerAction) {
+				currentEffectFrame = 0;
+				tex = Tex::none;
+				skillEnd = true;
+				updateTexture(res);
+				break;
+			}
+		}
+		break; 
+	case skNum::doubleAttack: 
+		attackEffect.setTextureRect(
+			sf::IntRect(effectWidth * currentEffectFrame, 0, effectWidth, effectHeight)
+		);
+		if (elapsed >= 0.05f) {
+			elapsed = 0.f;
+			currentEffectFrame++;
+			int framesPerAction = 6;
+			if (currentEffectFrame >= framesPerAction) {
+				currentEffectFrame = 0;
+				tex = Tex::none;
+				updateTexture(res);
+				skillEnd = true;
+				break;
+			}
+		}
+		break; 
 	default:
 		break;
 	}
@@ -1520,29 +1554,30 @@ void tiferetImg::updateTexture(resourceManager& res, const int& playerSelect) {
 	currentFrame = 0;  // 프레임 초기화 추가
 	currentEffectFrame = 0;
 	switch (tex){
-	case Tex::none:
+	case Tex::none: {
 		characterImg.setTexture(res.getTexture("tiferetSprite"));
 		characterImg.setTextureRect(sf::IntRect(0, 0, characterWidth, characterHeight));
 		attackEffect.setTextureRect(sf::IntRect(0, 0, 0, 0));
-		break;
-	case Tex::attack:
+		break; }
+	case Tex::attack: {
 		characterImg.setTexture(res.getTexture("tiferetAttack"));
 		characterImg.setTextureRect(sf::IntRect(0, 0, characterWidth, characterHeight));
 		attackEffect.setTexture(res.getTexture("attackEffectSheet"));
 		attackEffect.setTextureRect(sf::IntRect(0, 0, effectWidth, effectHeight));
-		break;
-	case Tex::defense:
+		break; }
+	case Tex::defense: {
 		characterImg.setTexture(res.getTexture("tiferetDefense"));
 		characterImg.setTextureRect(sf::IntRect(0, 0, characterWidth, characterHeight));
-		break;
-	case Tex::hit://임시 , 이미지가 없어서
+		break; }
+	case Tex::hit: {//임시 , 이미지가 없어서
 		characterImg.setTexture(res.getTexture("tiferetSprite"));
 		characterImg.setTextureRect(sf::IntRect(0, 0, characterWidth, characterHeight));
 		attackEffect.setTextureRect(sf::IntRect(0, 0, 0, 0));
-		break;
-	case Tex::dead:
+		break; }
+	case Tex::dead: {
 		characterImg.setTexture(res.getTexture("tiferetDefeated"));
 		characterImg.setTextureRect(sf::IntRect(0, 0, characterWidth, characterHeight));
+		break; }
 	default:
 		break;
 	}
@@ -1553,24 +1588,35 @@ void tiferetImg::skillTexture(resourceManager& res, const int& skillNum) {
 	currentFrame = 0;  // 프레임 초기화 추가
 	currentEffectFrame = 0;
 	switch (sknum){
-	case skNum::powerStrike:
+	case skNum::powerStrike: 
 		characterImg.setTexture(res.getTexture("tiferetAttack"));
 		characterImg.setTextureRect(sf::IntRect(0, 0, characterWidth, characterHeight));
 		attackEffect.setTexture(res.getTexture("powerStrike"));
-		attackEffect.setTextureRect(sf::IntRect(0, 0,res.getTexture("powerStrike").getSize().x/4.f
+		attackEffect.setTextureRect(sf::IntRect(0, 0, res.getTexture("powerStrike").getSize().x / 4.f
 			, res.getTexture("powerStrike").getSize().y));
 		skillEnd = false;
-		break;
-	case skNum::heal:
+		break; 
+	case skNum::heal: 
 		characterImg.setTexture(res.getTexture("tiferetSprite"));
 		characterImg.setTextureRect(sf::IntRect(0, 0, characterWidth, characterHeight));
-		healEffect.setTextureRect(sf::IntRect(0, 0, res.getTexture("healSk").getSize().x/5.f, res.getTexture("healSk").getSize().y));
+		healEffect.setTextureRect(sf::IntRect(0, 0, res.getTexture("healSk").getSize().x / 5.f, res.getTexture("healSk").getSize().y));
 		skillEnd = false;
-		break;
-	case skNum::overLapping:
-		break;
-	case skNum::doubleAttack:
-		break;
+		break; 
+	case skNum::overLapping: 
+		characterImg.setTexture(res.getTexture("tiferetSprite"));
+		characterImg.setTextureRect(sf::IntRect(0, 0, characterWidth, characterHeight));
+		buffEffect.setTexture(res.getTexture("overLapping"));
+		buffEffect.setTextureRect(sf::IntRect(0, 0, res.getTexture("overLapping").getSize().x, res.getTexture("overLapping").getSize().y));
+		skillEnd = false;
+		break; 
+	case skNum::doubleAttack: 
+		characterImg.setTexture(res.getTexture("tiferetAttack"));
+		characterImg.setTextureRect(sf::IntRect(0, 0, characterWidth, characterHeight));
+		attackEffect.setTexture(res.getTexture("doubleAttack"));
+		attackEffect.setTextureRect(sf::IntRect(0, 0, res.getTexture("doubleAttack").getSize().x / 4.f
+			, res.getTexture("doubleAttack").getSize().y));
+		skillEnd = false;
+		break; 
 	default:
 		break;
 	} // 더 늘려야하는데 이 이상 레벨을 아직 올릴 일이 없기에 12까지만.
@@ -1588,7 +1634,7 @@ void tiferetImg::restFrame(float& dt) { //healRoom 전용
             currentFrame = 0;
     }
 }
-bool tiferetImg::getSkillEnd() {
+bool& tiferetImg::isSkillEnd() {
 	return skillEnd;
 }
 
@@ -2014,7 +2060,7 @@ int skillTable::skillClicked(sf::Vector2f& mousePos) {
 	case skillTable::Page::two:
 		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
 			if (sk.smallShape.getGlobalBounds().contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))
-				&& !disableSkill.count(sk.number) && p->getCurrent_mana() >= sk.mana) {
+				&& !disableSkill.count(sk.number) && p->getCurrent_mana() >= sk.mana && p->getContract() >= sk.contract) {
 				return sk.number;
 			}
 		}
@@ -2022,7 +2068,7 @@ int skillTable::skillClicked(sf::Vector2f& mousePos) {
 	case skillTable::Page::three:
 		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
 			if (sk.smallShape.getGlobalBounds().contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))
-				&& !disableSkill.count(sk.number) && p->getCurrent_mana() >= sk.mana) {
+				&& !disableSkill.count(sk.number) && p->getCurrent_mana() >= sk.mana && p->getContract() >= sk.contract) {
 				return sk.number;
 			}
 		}
@@ -2030,7 +2076,7 @@ int skillTable::skillClicked(sf::Vector2f& mousePos) {
 	case skillTable::Page::four:
 		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
 			if (sk.smallShape.getGlobalBounds().contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))
-				&& !disableSkill.count(sk.number) && p->getCurrent_mana() >= sk.mana) {
+				&& !disableSkill.count(sk.number) && p->getCurrent_mana() >= sk.mana && p->getContract() >= sk.contract) {
 				return sk.number;
 			}
 		}
@@ -2038,7 +2084,7 @@ int skillTable::skillClicked(sf::Vector2f& mousePos) {
 	case skillTable::Page::five:
 		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
 			if (sk.smallShape.getGlobalBounds().contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))
-				&& !disableSkill.count(sk.number) && p->getCurrent_mana() >= sk.mana) {
+				&& !disableSkill.count(sk.number) && p->getCurrent_mana() >= sk.mana && p->getContract() >= sk.contract) {
 				return sk.number;
 			}
 		}
@@ -2046,7 +2092,7 @@ int skillTable::skillClicked(sf::Vector2f& mousePos) {
 	case skillTable::Page::six:
 		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
 			if (sk.smallShape.getGlobalBounds().contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))
-				&& !disableSkill.count(sk.number) && p->getCurrent_mana() >= sk.mana) {
+				&& !disableSkill.count(sk.number) && p->getCurrent_mana() >= sk.mana && p->getContract() >= sk.contract) {
 				return sk.number;
 			}
 		}
@@ -2054,7 +2100,7 @@ int skillTable::skillClicked(sf::Vector2f& mousePos) {
 	case skillTable::Page::seven:
 		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
 			if (sk.smallShape.getGlobalBounds().contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))
-				&& disableSkill.count(sk.number) && p->getCurrent_mana() >= sk.mana) {
+				&& disableSkill.count(sk.number) && p->getCurrent_mana() >= sk.mana && p->getContract() >= sk.contract) {
 				return sk.number;
 			}
 		}
@@ -2062,7 +2108,7 @@ int skillTable::skillClicked(sf::Vector2f& mousePos) {
 	case skillTable::Page::eight:
 		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
 			if (sk.smallShape.getGlobalBounds().contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))
-				&& !disableSkill.count(sk.number) && p->getCurrent_mana() >= sk.mana) {
+				&& !disableSkill.count(sk.number) && p->getCurrent_mana() >= sk.mana && p->getContract() >= sk.contract) {
 				return sk.number;
 			}
 		}
@@ -2070,7 +2116,7 @@ int skillTable::skillClicked(sf::Vector2f& mousePos) {
 	case skillTable::Page::nine:
 		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
 			if (sk.smallShape.getGlobalBounds().contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))
-				&& disableSkill.count(sk.number) && p->getCurrent_mana() >= sk.mana) {
+				&& disableSkill.count(sk.number) && p->getCurrent_mana() >= sk.mana && p->getContract() >= sk.contract) {
 				return sk.number;
 			}
 		}
@@ -2078,7 +2124,7 @@ int skillTable::skillClicked(sf::Vector2f& mousePos) {
 	case skillTable::Page::ten:
 		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
 			if (sk.smallShape.getGlobalBounds().contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))
-				&& !disableSkill.count(sk.number) && p->getCurrent_mana() >= sk.mana) {
+				&& !disableSkill.count(sk.number) && p->getCurrent_mana() >= sk.mana && p->getContract() >= sk.contract) {
 				return sk.number;
 			}
 		}
@@ -2086,7 +2132,7 @@ int skillTable::skillClicked(sf::Vector2f& mousePos) {
 	case skillTable::Page::eleven:
 		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
 			if (sk.smallShape.getGlobalBounds().contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))
-				&& !disableSkill.count(sk.number) && p->getCurrent_mana() >= sk.mana) {
+				&& !disableSkill.count(sk.number) && p->getCurrent_mana() >= sk.mana && p->getContract() >= sk.contract) {
 				return sk.number;
 			}
 		}
@@ -2094,7 +2140,7 @@ int skillTable::skillClicked(sf::Vector2f& mousePos) {
 	case skillTable::Page::twelve:
 		for (auto& sk : smallShapeList.at(static_cast<int>(page))) {
 			if (sk.smallShape.getGlobalBounds().contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))
-				&& !disableSkill.count(sk.number) && p->getCurrent_mana() >= sk.mana) {
+				&& !disableSkill.count(sk.number) && p->getCurrent_mana() >= sk.mana && p->getContract() >= sk.contract) {
 				return sk.number;
 			}
 		}
@@ -2934,7 +2980,7 @@ void homunculusHpbar::setBarSize(float& dt) {
 	}
 	if (startUp) {
 		elapsedTime += dt;
-		float upTime = elapsedTime / 1.0f; // 1.0f초 동안 변화
+		float upTime = elapsedTime / 0.5f; // 0.5f초 동안 변화
 		if (upTime > 1.0f) {
 			upTime = 1.0f;
 			startUp = false;
@@ -2949,7 +2995,7 @@ void homunculusHpbar::setBarSize(float& dt) {
 	}
 	if (startDown) {
 		elapsedTime += dt;
-		float upTime = elapsedTime / 1.0f; // 1.0f초 동안 변화
+		float upTime = elapsedTime / 0.5f; // 0.5f초 동안 변화
 		if (upTime >= 1.0f) {
 			upTime = 1.0f;
 			startDown = false;

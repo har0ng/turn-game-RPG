@@ -358,6 +358,7 @@ protected:
 	sf::Sprite characterImg; //전체시트에 의존한 분할 시트
 	sf::Sprite attackEffect;
 	sf::Sprite healEffect;
+	sf::Sprite buffEffect;
 	int characterWidth{ 0 };	 // 직사각형 시작 위치 (intRect)
 	int characterHeight{ 0 };  //직사각형 시작 위치 (intRect)
 	int effectWidth{ 0 };
@@ -367,6 +368,7 @@ protected:
 	float elapsed{ 0.f }; //updateframe 전용
 	float attackElapsed{ 0.f }; //updateAttackFrame 전용
 	float frameDuration{ 0.45f };
+	float speed{ 360.f };
 	enum class roomType {
 		rest = 1,
 		battle,
@@ -409,7 +411,7 @@ public:
 	void updateTexture(resourceManager& res, const int& battleState = 0);
 	void skillTexture(resourceManager& res, const int& skillNum);
 	void restFrame(float& dt);
-	bool getSkillEnd();
+	bool& isSkillEnd();
 };
 
 class restRoomFire {
@@ -418,7 +420,7 @@ private:
 	float elapsed{ 0.f }; //updateframe 전용
 	float frameWidth{ 0.f };
 	float frameHeight{ 0.f };
-	float frameDuration{ 0.3f };
+	float frameDuration{ 0.1f };
 	int currentFrame{ 0 };
 public:
 	restRoomFire(sf::RenderWindow& win, resourceManager& res);

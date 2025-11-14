@@ -1,5 +1,6 @@
 ﻿//mainManager.cpp
 #include "mainManager.h"
+#include <Windows.h>
 
 void init::restart() {
     history.clear();
@@ -15,7 +16,21 @@ void init::run() {
             //어디서든 열어도 디버깅 모드로 열리게끔 해놓은건데 릴리즈땐 필요없을지도? 알아보기
             std::filesystem::current_path(std::filesystem::path(__argv[0]).parent_path());
 
-            sf::RenderWindow window(sf::VideoMode(1820, 960), "test"); //창
+            sf::RenderWindow window(sf::VideoMode(1920, 980), "test"); //창 1920x1080
+            //window 전용----------
+            #ifdef _WIN32
+            #include <Windows.h>
+            HWND hwnd = window.getSystemHandle(); // SFML 창 핸들
+            RECT workArea;
+            SystemParametersInfo(SPI_GETWORKAREA, 0, &workArea, 0); // 작업 표시줄 제외 영역 가져오기
+
+            // X=0, Y=0 (왼쪽 위), Y축 길이는 작업 표시줄 고려
+            SetWindowPos(hwnd, 0, 0, 0, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
+            #endif
+            // 여기까지------------
+            sf::View view(sf::FloatRect(0.f, 0.f, 1820.f, 960.f));
+            window.setView(view);
+
             sfmlLog log(window); //매개변수가 있는 생성자
             //리소스 로드(texture, font)
             resourceManager res;
