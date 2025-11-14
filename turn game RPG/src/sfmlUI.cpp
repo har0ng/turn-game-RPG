@@ -668,6 +668,8 @@ status::status(resourceManager& res)
 {
 	//hpmp
 	hpmp.setTexture(res.getTexture("hpmp"));
+	//amplifyActive
+	amplifyActive.setTexture(res.getTexture("overLappingBuffIcon"));
 
 	//level 기본 설정
 	level.setString("Lv." + getPlayerLevel(p->getLevel())); // 글자
@@ -685,6 +687,9 @@ void status::draw(sf::RenderWindow& win) {
 	win.draw(hpmp);
 	win.draw(background);
 	win.draw(level);
+	if (p->getClassName() == "tiferet" && p->getAmplifyActivate()) {
+		win.draw(amplifyActive);
+	}
 }
 const sf::Vector2f& status::getHpmpPosition() {
 	return hpmp.getPosition();
@@ -698,6 +703,9 @@ void status::setPosition(const sf::Vector2f& characterP,const sf::Vector2f& expb
 	background.setPosition(pos); // 버튼 배경 위치를 먼저 조절, 배경 먼저 해야 글자가 아래로 안감
 	level.setPosition(background.getPosition().x + (background.getSize().x / 4.f)
 		, background.getPosition().y - (background.getSize().y / 4.f)); //이후에 배경에 맞춰 위치를 조절 
+	
+	//amplifyActive
+	amplifyActive.setPosition(hpmp.getPosition().x, hpmp.getPosition().y + hpmp.getLocalBounds().height);
 }
 void status::setLevel() {
 	level.setString("Lv." + getPlayerLevel(p->getLevel())); // 글자
@@ -3192,7 +3200,7 @@ void gradation::updateAppear(float& dt) {
 	}
 	
 	elapsedTime += dt;
-	float appearTime = elapsedTime / 0.5f; // 1.0초 동안 appear
+	float appearTime = elapsedTime / 1.0f; // 1.0초 동안 appear
 	if (appearTime > 0.5f) {
 		appearTime = 0.5f;
 	}
@@ -3397,7 +3405,7 @@ void gameover::updateFade(float& dt) {
 		return;
 	}
 	elapsed += dt; // 누적시간
-	float fadeDuration = 2.f; // 3초 동안 페이드
+	float fadeDuration = 2.5f; // 3초 동안 페이드
 
 	alpha = 255 - (elapsed / fadeDuration) * 255;
 

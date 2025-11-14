@@ -104,6 +104,7 @@ void resourceManager::tiferetEffect() {
     loadTexture("tiferetDefeated", "assets/images/tiferetDefeated.png");
     //status
     loadTexture("contractSheet", "assets/images/contractSheet.png");
+    loadTexture("overLappingBuffIcon", "assets/effects/tiferet/overLapping/overLappingBuffIcon.png");
     //effect
     loadTexture("attackEffectSheet", "assets/effects/tiferet/default/attackSheet.png");
     //skillEffect

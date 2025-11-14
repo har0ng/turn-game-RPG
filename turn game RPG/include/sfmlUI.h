@@ -209,6 +209,7 @@ private:
 	sf::Text level; //level text
 	sf::RectangleShape background; //버튼 배경화
 	sf::Sprite hpmp;
+	sf::Sprite amplifyActive;
 public:
 	status(resourceManager& res);
 	void draw(sf::RenderWindow& win);
