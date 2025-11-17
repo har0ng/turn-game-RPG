@@ -1483,6 +1483,7 @@ void tiferetImg::skillUpdateFrame(const float& dt, resourceManager& res) {
 		updateTexture(res);
 		return;
 	}
+
 	switch (sknum) {
 	case skNum::powerStrike: 
 		attackEffect.setTextureRect(
@@ -1491,8 +1492,7 @@ void tiferetImg::skillUpdateFrame(const float& dt, resourceManager& res) {
 		if (elapsed >= 0.1f) {
 			elapsed = 0.f;
 			currentEffectFrame++;
-			int framesPerAction = 5;
-			if (currentEffectFrame >= framesPerAction) {
+			if (currentEffectFrame >= 5) {
 				currentEffectFrame = 0;
 				tex = Tex::none;
 				skillEnd = true;
@@ -1587,6 +1587,9 @@ void tiferetImg::updateTexture(resourceManager& res, const int& playerSelect) {
 		characterImg.setTextureRect(sf::IntRect(0, 0, characterWidth, characterHeight));
 		break; }
 	default:
+		characterImg.setTexture(res.getTexture("tiferetSprite"));
+		characterImg.setTextureRect(sf::IntRect(0, 0, characterWidth, characterHeight));
+		attackEffect.setTextureRect(sf::IntRect(0, 0, 0, 0));
 		break;
 	}
 }

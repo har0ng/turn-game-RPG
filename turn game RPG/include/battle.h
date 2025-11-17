@@ -4,12 +4,10 @@
 #include <memory> //smart pointer
 #include "enemy.h"
 #include "player.h"
-#include "consoleUI.h"
 #include "attackInfo.h"
 
 class battle {
 private:
-	consoleUI ui;// consoleUI.h 
 	std::unique_ptr<player>& p;  //player status, smart pointer
 	std::unique_ptr<enemy>& e; //enemy status, smart pointer
 	int php{ 0 };       // player health
@@ -46,7 +44,6 @@ public:
 	battle(std::unique_ptr<player>& _p, std::unique_ptr<enemy>& _e);  // 멤버 초기화
 	void statusManager();
 	void showGetSkill(std::vector<skill> beforeTest, std::vector<skill> afterTest);
-	void battleStatus();    // 스탯 출력
 	void playerTurn(const int& input, int skillInput = 1);      // 사용자 입력 처리
 	void enemyTurn(const int& action);       // 랜덤 AI 행동
 	void battleEnd();       // 승패 판단 및 출력

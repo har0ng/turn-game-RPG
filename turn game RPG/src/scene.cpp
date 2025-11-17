@@ -308,7 +308,6 @@ void mapScene::allStartAppear() {
     startAppear();
 }
 void mapScene::effectUploading(resourceManager& res) {
-    std::cout << p->getClassName() << std::endl;
     if (p->getClassName() == "tiferet") classname = className::tiferet;
     if (p->getClassName() == "malkuth") classname = className::malkuth;
     switch (classname) {
@@ -881,7 +880,6 @@ void roomScene::updateGameStatus(sf::RenderWindow& win) {
             updateTurnLog();
             p->setTurnPlayer();   // (버프 적용 스텟)
             p->setBattlePlayer(); // (버프 미적용 스텟)
-            b.battleStatus(); //유저와 적의 상황(체력 공격력 등)
             break;
         case BattleState::EnemyTurn:
             if (e->getEnemyCurrentHealth() <= 0 && !homunculusUpdateEnd) {//무승부 방지
@@ -935,7 +933,7 @@ void roomScene::updateGameStatus(sf::RenderWindow& win) {
             break;
         case BattleState::Ended:
             if (p->getPlayer_current_health() > 0) {
-                eloaImg.isSkillEnd() = true;
+                //eloaImg.isSkillEnd() = true;
                 b.battleEnd();
                 b.battleEndManager();
                 up.setlevUpStatus(); //레벨 업 전과 레벨업 후의 내용 담기
