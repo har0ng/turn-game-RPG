@@ -144,6 +144,7 @@ void battle::playerTurn(const int& input, int skillInput) {
 	}
 }
 void battle::enemyTurn(const int& action) {
+	eattack = e->decidePower(e->randomPower(e->getLevel(), e->getEnemyType(), 1));
 	int enemy_action = action;
 	// 전투 로직 (데미지 계산 등)
 	if (enemy_action == 0) {

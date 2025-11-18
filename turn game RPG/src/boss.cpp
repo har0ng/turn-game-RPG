@@ -13,7 +13,6 @@ boss::boss(const enemy& e) :enemy(e), gen(rd()) {
     decideHealth(randomHealth(getLevel(), getEnemyType(), 1)); //1층은 아직 맵을 안만들어서 임시
     //현재 체력 설정 전에 전체 체력 설정을 먼저
     setEnemyCurrentHealth(getEnemy_health());
-    decidePower(randomPower(getLevel(), getEnemyType(), 1));
     setExpReward(getPlayerLevel(), getLevel(), 1, getEnemyType()); //demo라 1층
 }
 
@@ -21,10 +20,6 @@ boss::boss(const enemy& e) :enemy(e), gen(rd()) {
 void boss::decideHealth(RandomMinMax minMax) {
     std::uniform_int_distribution<int> HPDist(minMax.min, minMax.max);
     enemy::setEnemy_health(HPDist(gen));
-}
-void boss::decidePower(RandomMinMax minMax) {
-    std::uniform_int_distribution<int> powerDist(minMax.min, minMax.max);
-    enemy::setPower(powerDist(gen));
 }
 void boss::decideLevel(int playerLv) {
     // 레벨 랜덤: playerLevel +2, 보스는 스테이터스 고정이라 레벨 사실 의미 없음

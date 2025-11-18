@@ -14,7 +14,6 @@ normal::normal(const enemy& e) :enemy(e), gen(rd()) {
     decideHealth(randomHealth(getLevel(), getEnemyType(), 1)); //demo라 1층 밖에 없음
     //현재 체력 설정 전에 전체 체력 설정을 먼저
     setEnemyCurrentHealth(getEnemy_health());
-    decidePower(randomPower(getLevel(), getEnemyType(), 1));
     setExpReward(getPlayerLevel(), getLevel(), 1, getEnemyType()); //demo라 1층
 }
 
@@ -22,10 +21,6 @@ normal::normal(const enemy& e) :enemy(e), gen(rd()) {
 void normal::decideHealth(RandomMinMax minMax){
     std::uniform_int_distribution<int> HPDist(minMax.min, minMax.max);
     enemy::setEnemy_health(HPDist(gen));
-}
-void normal::decidePower(RandomMinMax minMax) {
-    std::uniform_int_distribution<int> powerDist(minMax.min, minMax.max);
-    enemy::setPower(powerDist(gen));
 }
 void normal::decideLevel(int playerLv) {
     // 레벨 랜덤: playerLevel ±1

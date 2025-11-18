@@ -1,4 +1,4 @@
-名称 : frameTime Error
+名称 : frameによる不自然なステータス
 
 条件 : HP, MPが急激に減る時。
 

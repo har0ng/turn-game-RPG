@@ -33,6 +33,7 @@ private:
 	std::vector<deBuff> deBuffs; //디버프 목록
 	std::vector<enemySkillDisable> disables; //쿨타임 걸린 스킬 목록
 	std::string enemyType; //적 타입
+
 public:
 	enemy();
 	enemy(int playerLv);
@@ -77,10 +78,9 @@ public:
 	RandomMinMax randomPower(int enemyLv, std::string enemyType, int floor);//몹의 레벨과 잡,엘리트,보스에 따라 나뉨
 	int convertEnemyType(std::string enemyType);
 																			//void executeDeBuff(std::vector<deBuff> deBuffs);
+	const int& decidePower(RandomMinMax minMax); //공격력 최소와 최대에서 랜덤화 뽑은 후 setPower에 보내기
 
-	//virtual
 	virtual void decideHealth(RandomMinMax minMax);// 체력의 최소와 최대에서 랜덤으로 뽑은 후 저장
-	virtual void decidePower(RandomMinMax minMax); //공격력 최소와 최대에서 랜덤화 뽑은 후 setPower에 보내기
 	virtual void decideLevel(int playerLv);
 	virtual int enemyAction();
 };	
@@ -102,7 +102,6 @@ public:
 
 	//override
 	void decideHealth(RandomMinMax minMax) override;
-	void decidePower(RandomMinMax minMax) override;
 	void decideLevel(int playerLv) override;
 	int enemyAction() override;
 
@@ -119,7 +118,6 @@ public:
 
 	//override
 	void decideHealth(RandomMinMax minMax) override;
-	void decidePower(RandomMinMax minMax) override;
 	void decideLevel(int playerLv) override;
 	int enemyAction() override;
 };
@@ -134,7 +132,6 @@ public:
 	boss(const enemy& e);
 	// override
 	void decideHealth(RandomMinMax minMax) override;
-	void decidePower(RandomMinMax minMax) override;
 	void decideLevel(int playerLv) override;
 	int enemyAction() override;
 };
