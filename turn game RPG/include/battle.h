@@ -48,10 +48,6 @@ public:
 	void enemyTurn(const int& action);       // 랜덤 AI 행동
 	void battleEnd();       // 승패 판단 및 출력
 	void battleEndManager(); //전투 종료후 사후 처리
-	//void selectClass(); // 전직 결정
-	//std::unique_ptr<player> getPlayerPtr(); // 플레이어 정보 계속 들고 가야해서 들고 갈 바구니 만든 것
-	//int inputCheck(int min, int max, int input);
-
 	int getSkillSelect(int skillSelect, std::vector<skill> const& skill, attackInfo attackData); //스킬 뭐쓰는지 입력 받아오기
 	void getSkillReference(int skillSelect, std::vector<skill> const& skill, attackInfo attackData, int finalAttack);
 	void passiveSkill(int skillSelect, std::vector<skill> const& skill, attackInfo attackData); //passive 스킬 처리

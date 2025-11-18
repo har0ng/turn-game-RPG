@@ -223,10 +223,10 @@ public:
 class hpBar {
 private:
 	sf::RectangleShape bar; // 실제 HP 표시 (빨간색)
-	sf::RectangleShape barrierBar; // Barrier 표시 (흰색)
 	sf::Text hpLog;
 	std::string hp;
 	std::string maxHp;
+	sf::Sprite barrier;
 	float maxWidth; // 바 전체 길이 (100%)
 	float newWidth;
 	float changeWidth;
@@ -234,6 +234,7 @@ private:
 	float decrease{ 0.f };
 	bool startUp{ false };
 	bool startDown{ false };
+	bool barrierOn{ false };
 public:
 	hpBar(sf::RenderWindow& win, resourceManager& res);
 	void draw(sf::RenderWindow& win);
@@ -242,6 +243,7 @@ public:
 	void convertHp(const int& hp);
 	void convertMaxHp(const int& maxHp);
 	void setBarSize(float& dt);
+	bool& isBarrierOn() { return barrierOn; }
 	const sf::Vector2f& getBarSize();
 };
 

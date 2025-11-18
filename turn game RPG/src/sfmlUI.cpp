@@ -748,15 +748,14 @@ hpBar::hpBar(sf::RenderWindow& win, resourceManager& res)
 		res.getTexture("hpmp").getSize().y / 2.f));
 	bar.setFillColor(sf::Color(207, 66, 62));
 	maxWidth = bar.getGlobalBounds().width;
-	//barrierBar
-	barrierBar.setSize(bar.getSize());
-	barrierBar.setFillColor(sf::Color(sf::Color::White));
 	//hp log
 	hpLog.setFont(res.getFont("fantasy"));
 	hpLog.setCharacterSize(40);
 	hpLog.setFillColor(sf::Color(250, 250, 250));
 	hpLog.setOutlineColor(sf::Color(250, 250, 250));
 	hpLog.setOutlineThickness(1.f);
+	//barrier
+	barrier.setTexture(res.getTexture("barrier"));
 
 	//setSize , 제일 처음 피 깎여 있는거까지 구현
 	maxWidth = bar.getLocalBounds().width; // HP 바 최대 길이
@@ -771,6 +770,9 @@ hpBar::hpBar(sf::RenderWindow& win, resourceManager& res)
 void hpBar::draw(sf::RenderWindow& win) {
 	win.draw(bar);
 	win.draw(hpLog);
+	if (barrierOn) {
+		win.draw(barrier);
+	}
 }
 void hpBar::position(const sf::Vector2f& hpmpP) {
 	bar.setPosition(hpmpP);
@@ -783,6 +785,9 @@ void hpBar::position(const sf::Vector2f& hpmpP) {
 	hpLog.setPosition(
 		bar.getPosition().x + bar.getSize().x / 2.f,
 		bar.getPosition().y + bar.getSize().y / 2.f);
+
+	//barrier
+	barrier.setPosition(hpLog.getPosition().x + hpLog.getLocalBounds().width - 40.f, hpLog.getPosition().y - 25.f);
 }
 void hpBar::setTextHp() {
 	convertHp(p->getPlayer_current_health());

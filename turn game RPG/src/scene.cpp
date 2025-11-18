@@ -756,6 +756,7 @@ void roomScene::update(sf::RenderWindow& window) {
                     break;
                 case playerSelect::defense:
                     b.playerTurn(static_cast<int>(playerSelect::defense));
+                    hpB.isBarrierOn() = true;
                     eloaImg.updateTexture(res, static_cast<int>(playerSelect::defense));
                     battleState = BattleState::EnemyTurn;
                     break;
@@ -899,6 +900,7 @@ void roomScene::updateGameStatus(sf::RenderWindow& win) {
             p->setBeforePlayer(); //전투 시작전 상태(레벨업 비교)
             break;
         case BattleState::PlayerTurn:
+            if (hpB.isBarrierOn()) { hpB.isBarrierOn() = false; }
             updateTurnLog();
             p->setTurnPlayer();   // (버프 적용 스텟)
             p->setBattlePlayer(); // (버프 미적용 스텟)
@@ -942,6 +944,7 @@ void roomScene::updateGameStatus(sf::RenderWindow& win) {
                     break;
                 }                
                 b.enemyTurn(enemyAction);// 적 행동
+                if (hpB.isBarrierOn() && enemyAction != 0) { hpB.isBarrierOn() = false; }
                 if (p->getPlayer_current_health() == 0) {
                         battleState = BattleState::Ended;
                 }
@@ -1056,4 +1059,3 @@ void roomScene::levelUp() { // levelUp 했을 시 다음으로 눌렀을 때 반
         close = false;
     }
 }
-
