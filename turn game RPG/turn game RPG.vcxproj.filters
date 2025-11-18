@@ -84,6 +84,9 @@
     <ClCompile Include="src\mainManager.cpp">
       <Filter>ソース ファイル\src</Filter>
     </ClCompile>
+    <ClCompile Include="src\debuggingLog.cpp">
+      <Filter>ソース ファイル\src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\battle.h">
@@ -147,6 +150,9 @@
       <Filter>ソース ファイル\assets</Filter>
     </ClInclude>
     <ClInclude Include="include\mainManager.h">
+      <Filter>ソース ファイル\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\debuggingLog.h">
       <Filter>ソース ファイル\include</Filter>
     </ClInclude>
   </ItemGroup>

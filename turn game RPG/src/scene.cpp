@@ -360,11 +360,10 @@ floorScene::floorScene(sf::RenderWindow& win, resourceManager& res)
 }
 void floorScene::update(sf::RenderWindow& window) {
     deltaTime = clock.restart().asSeconds(); // 이전 프레임과 현재 프레임 사이 시간
-    elapsed += deltaTime;
     sf::Event event;
     sf::Vector2f center = view.getCenter(); //보이는 화면 중심값
     if (!animationYN && !appear) {
-        animation(center, elapsed);
+        animation(center, deltaTime);
         floorName.startFade();
     }
     while (window.pollEvent(event)) {
@@ -493,18 +492,24 @@ void floorScene::pushAssortMap(int assortMapCnt, resourceManager& res) { //각 �
         }
     }
 }
-void floorScene::animation(sf::Vector2f& center, float& elapsed) {
-    float speed = elapsed;
-    if (elapsed > 12) {
-        speed = 12;
-    }
-    if (center.y <= 640.f) {
-        center.y == 640.f;
+void floorScene::animation(sf::Vector2f& center, float& dt) {
+    if (animationYN) { return; }
+    animationTime += dt;
+
+    float progress = animationTime / animationDuration;
+    if (progress >= 1.f) {
+        progress = 1.f;
         animationYN = true;
     }
-    if (center.y != 640.f) {
-        center.y = std::max(640.f, center.y - ((scrollSpeed / 12) * speed)); // 위로 이동
-    }
+
+    // Cubic Ease-Out (처음 빠르게 → 끝 감속)
+    float eased = 1.f - pow(1.f - progress, 3.f);
+
+    float totalDistance = startY - targetY;
+    float offset = totalDistance * eased;
+
+    center.y = startY - offset;
+
 }
 std::vector<std::vector<assortMapSelectButton>>& floorScene::getAssortBtns() {
     return assortBtns;
@@ -655,9 +660,16 @@ roomScene::roomScene(sf::RenderWindow& win, resourceManager& res, const int& roo
 
     //8. gameover  설정
     GAMEOVER.startAppear();
+
+    //9.debuglog
+    hpDebug::initLogFiles();
 }
 void roomScene::update(sf::RenderWindow& window) {
     deltaTime = roomClock.restart().asSeconds();  // 프레임 독립적 시간
+    if (deltaTime > 2.0) {
+        std::cout << "deltaTime is overcounting." << std::endl;
+    }
+
     if (eloaImg.isSkillEnd() && skillTurn) {
         skillTurn = false;
     }
@@ -699,10 +711,20 @@ void roomScene::update(sf::RenderWindow& window) {
             skillTBtn.close();
             skillT.close();
         }
+        if (battleState == BattleState::PlayerTurn && event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape && playerselect == playerSelect::skillVisible) {
+            skillTBtn.close();
+            skillT.close();
+        }
         if (battleState == BattleState::PlayerTurn && event.type == sf::Event::MouseButtonReleased && skillT.prevClicked(worldPos) && event.mouseButton.button == sf::Mouse::Left) {
             skillT.prevPage();
         }
+        if (battleState == BattleState::PlayerTurn && event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Left && playerselect == playerSelect::skillVisible && p->getLevel() > 1) {
+            skillT.prevPage();
+        }
         if (battleState == BattleState::PlayerTurn && event.type == sf::Event::MouseButtonReleased && skillT.nextClicked(worldPos) && event.mouseButton.button == sf::Mouse::Left) {
+            skillT.nextPage();
+        }
+        if (battleState == BattleState::PlayerTurn && event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Right && playerselect == playerSelect::skillVisible && p->getLevel() > 1) {
             skillT.nextPage();
         }
         if (battleState == BattleState::BackToMap && event.type == sf::Event::MouseButtonReleased && battleBackBtn.isClicked(worldPos) && event.mouseButton.button == sf::Mouse::Left) {

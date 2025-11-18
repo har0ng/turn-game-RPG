@@ -5,6 +5,7 @@
 #include "player.h"
 #include "enemy.h"
 #include "skillDisable.h"
+#include "debuggingLog.h"
 
 #include <unordered_map>
 #include <SFML/Graphics.hpp>
@@ -274,9 +275,10 @@ private:
 	sf::RectangleShape greenBar;
 	std::string exp;
 	std::string maxExp;
-	float maxWidth;
-	float newWidth;
-	float changeWidth;
+	float maxWidth{ 0.f };
+	float newWidth{ 0.f };
+	float oldWidth{ 0.f };
+	float changeWidth{ 0.f };
 	float elapsedTime{ 0.f };
 	float decrease{ 0.f };
 	bool startUp{ false };

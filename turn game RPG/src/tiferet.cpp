@@ -11,12 +11,12 @@ using std::cin;
 
 tiferet::tiferet() {};
 tiferet::tiferet(const player& p) :player(p), contract(12),amplifyActivate(false) {
-	setPlayer_health(p.getPlayer_health() + 10);
-    setPlayer_current_health(p.getPlayer_current_health() + 10);
-    setBasic_attack(p.getBasic_attack() + 3);
+	setPlayer_health(p.getPlayer_health() + 8);
+    setPlayer_current_health(p.getPlayer_current_health() + 8);
+    setBasic_attack(p.getBasic_attack() + 2);
     setPlayer_defense(p.getPlayer_defense() + 3);
-    setMana(p.getMana() + 10);
-    setCurrent_mana(p.getCurrent_mana() + 10);
+    setMana(p.getMana() + 4);
+    setCurrent_mana(p.getCurrent_mana() + 4);
     setLevel(p.getLevel());
     setLevel_exp(p.getLevel_exp());
     setNow_exp(p.getNow_exp());
@@ -28,7 +28,7 @@ tiferet::tiferet(const player& p) :player(p), contract(12),amplifyActivate(false
 
 //other
 void tiferet::levelup() { // if level > 2 (+status) 
-    setPlayer_health(getPlayer_health() + 5);
+    setPlayer_health(getPlayer_health() + 3);
     setMana(getMana() + 2);
     player::levelup();
     if (getLevel() % 2 == 0) {

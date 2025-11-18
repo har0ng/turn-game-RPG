@@ -381,7 +381,7 @@ void battleBackButton::startSliding() {
 	elapsedTime = 0.f;
 }
 void battleBackButton::slideToTarget(float& dt){
-	if (!sliding) return;
+	if (!sliding) { return; }
 	elapsedTime += dt;
 	float duration = 1.0f;
 
@@ -801,9 +801,12 @@ void hpBar::setBarSize(float& dt) {
 	changeWidth = (static_cast<float>(p->getPlayer_current_health()) / p->getPlayer_health()) * maxWidth;
 	
 	//레벨업을 하거나 모종의 방법으로 회복했을 때
-	if (newWidth < changeWidth) {
+	const float EPSILON = 0.01f;
+	if (newWidth + EPSILON < changeWidth) {
+		float oldWidth = newWidth;  // 변화 전 값 저장
 		newWidth = changeWidth;
 		startUp = true;
+		hpDebug::playerLog(dt, oldWidth, newWidth, startUp);
 	}
 	if (startUp) {
 		elapsedTime += dt;
@@ -817,8 +820,10 @@ void hpBar::setBarSize(float& dt) {
 
 	//hp가 줄어들 떄
 	if (newWidth > changeWidth) {
+		float oldWidth = newWidth;  // 변화 전 값 저장
 		decrease = newWidth - changeWidth;
 		startDown = true;
+		hpDebug::playerLog(dt, oldWidth, newWidth, startUp);
 	}
 	if (startDown) {
 		elapsedTime += dt;
@@ -998,6 +1003,7 @@ void expBar::setBarSize(float& dt) {
 	
 	//경험치를 얻었을 때
 	if (newWidth < changeWidth) {
+		oldWidth = newWidth;
 		newWidth = changeWidth;
 		startUp = true;
 	}
@@ -1008,7 +1014,7 @@ void expBar::setBarSize(float& dt) {
 			upTime = 1.0f;
 			startUp = false;
 		}
-		greenBar.setSize(sf::Vector2f(newWidth * upTime, expbar.getLocalBounds().height));
+		greenBar.setSize(sf::Vector2f(oldWidth + (newWidth - oldWidth) * upTime, expbar.getLocalBounds().height));
 	} 
 
 	//레벨업을 했을때
@@ -2943,7 +2949,6 @@ homunculusHpbar::homunculusHpbar(sf::RenderWindow& win, resourceManager& res)
 	else {
 		newWidth = maxWidth;
 	}
-
 }
 void homunculusHpbar::draw(sf::RenderWindow& win) {
 	win.draw(bar);
@@ -2985,9 +2990,12 @@ void homunculusHpbar::convertMaxHp(const int& maxHp) {
 void homunculusHpbar::setBarSize(float& dt) {
 	changeWidth = (static_cast<float>(e->getEnemyCurrentHealth()) / e->getEnemy_health()) * maxWidth;
 	//레벨업을 하거나 모종의 방법으로 회복했을 때
-	if (newWidth < changeWidth) {
+	const float EPSILON = 0.01f;
+	if (newWidth + EPSILON < changeWidth) {
+		float oldWidth = newWidth;  // 변화 전 값 저장
 		newWidth = changeWidth;
 		startUp = true;
+		hpDebug::enemyLog(dt, oldWidth, newWidth, startUp);
 	}
 	if (startUp) {
 		elapsedTime += dt;
@@ -3001,8 +3009,10 @@ void homunculusHpbar::setBarSize(float& dt) {
 
 	//hp가 줄어들 떄
 	if (newWidth > changeWidth) {
+		float oldWidth = newWidth;  // 변화 전 값 저장
 		decrease = newWidth - changeWidth;
 		startDown = true;
+		hpDebug::enemyLog(dt, oldWidth, newWidth, startUp);
 	}
 	if (startDown) {
 		elapsedTime += dt;

@@ -13,6 +13,7 @@
 #include "player.h"
 #include "enemy.h"
 #include "battle.h"
+#include "debuggingLog.h"
 
 class scene {
 protected:
@@ -139,12 +140,16 @@ private:
 	int floorCnt{ 1 };// 몇층인지 세기 위함, default == 1
 	floorTitle floorName;
 	float scrollSpeed{ 90.f }; //스크롤 +1-1에 얼마나 움직이는지
-	float elapsed{ 0.f }; // 화면 스크롤 애니메이션을 위함
+	float animationDuration{ 2.8f }; // 1초 동안 애니메이션
+	float animationTime{ 0.f };      // 현재 진행 시간
+	float startY{ 1920.f };             // 애니메이션 시작 y
+	float targetY{ 640.f };          // 목표 y
 	bool animationYN{ false };
 	int assortBtnRow{ 0 }; //몇번째 세부층인지
 	int assortBtnCol{ 0 }; // index라 0부터,현재 플레이어의 세부층 1-playerPos , 2-playerPos etc.
 	std::vector<std::pair<int,int>> visitedRoom; //방문한 방 모음
 	std::vector<int> connectedRoom; // 갈수 있는 방 모음
+
 public:
 	floorScene(sf::RenderWindow& win, resourceManager& res);
 	void update(sf::RenderWindow& window) override; //메뉴 화면으로 상태갱신

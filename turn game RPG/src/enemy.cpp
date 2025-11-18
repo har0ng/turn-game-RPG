@@ -207,10 +207,10 @@ RandomMinMax enemy::randomHealth(int enemyLv, std::string enemyType, int floor) 
     int max = 0;
     if (enemyType == "normal") {
         switch (enemyLv) {
-        case 1: min = 10, max = 16; break;
-        case 2: min = 14, max = 19; break;
-        case 3: min = 23, max = 29; break;
-        case 4: min = 25, max = 33; break;
+        case 1: min = 18, max = 19; break;
+        case 2: min = 21, max = 23; break;
+        case 3: min = 25, max = 29; break;
+        case 4: min = 27, max = 33; break;
         case 5: min = 30, max = 37; break;
         case 6: min = 34, max = 47; break;
         case 7: min = 50, max = 59; break;
@@ -224,7 +224,7 @@ RandomMinMax enemy::randomHealth(int enemyLv, std::string enemyType, int floor) 
     }
     else if (enemyType == "elite") {
         switch (enemyLv) {
-        case 2: min = 25, max = 32; break;
+        case 2: min = 27, max = 34; break;
         case 3: min = 29, max = 36; break;
         case 4: min = 43, max = 50; break;
         case 5: min = 46, max = 57; break;
@@ -240,7 +240,7 @@ RandomMinMax enemy::randomHealth(int enemyLv, std::string enemyType, int floor) 
     }
     else if (enemyType == "boss") {
         switch (floor) {
-        case 1: min = 55, max = 55; break;
+        case 1: min = 59, max = 59; break;
         case 2: break;
         case 3: break;
         case 4: break;
@@ -259,12 +259,12 @@ RandomMinMax enemy::randomPower(int enemyLv, std::string enemyType, int floor) {
     int max = 0;
     if (enemyType == "normal") {
         switch (enemyLv) {
-        case 1: min = 3, max = 5; break;
-        case 2: min = 4, max = 6; break;
-        case 3: min = 7, max = 9; break;
-        case 4: min = 8, max = 10; break;
-        case 5: min = 9, max = 11; break;
-        case 6: min = 10, max = 12; break;
+        case 1: min = 5, max = 7; break;
+        case 2: min = 6, max = 8; break;
+        case 3: min = 8, max = 10; break;
+        case 4: min = 10, max = 12; break;
+        case 5: min = 12, max = 13; break;
+        case 6: min = 12, max = 15; break;
         case 7: min = 13, max = 15; break;
         case 8: min = 14, max = 16; break;
         case 9: min = 16, max = 19; break;
@@ -276,8 +276,8 @@ RandomMinMax enemy::randomPower(int enemyLv, std::string enemyType, int floor) {
     }
     else if (enemyType == "elite") {
         switch (enemyLv) {
-        case 2: min = 6, max = 8; break;
-        case 3: min = 7, max = 9; break;
+        case 2: min = 9, max = 10; break;
+        case 3: min = 11, max = 13; break;
         case 4: min = 12, max = 14; break;
         case 5: min = 15, max = 18; break;
         case 6: min = 18, max = 21; break;
@@ -292,7 +292,7 @@ RandomMinMax enemy::randomPower(int enemyLv, std::string enemyType, int floor) {
     }
     else if (enemyType == "boss") {
         switch (floor) {
-        case 1: min = 9, max = 9; break;
+        case 1: min = 10, max = 12; break;
         case 2: break;
         case 3: break;
         case 4: break;
