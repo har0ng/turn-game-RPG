@@ -1,0 +1,18 @@
+名称:変数の未初期化
+
+名称：データの変換
+
+発生行 (file:line): sfmlUI.cpp:1388
+
+説明：=': 'float' から 'int' への変換です。データが失われる可能性があります。
+
+エラーのシナリオ (修正前のコード): characterWidth = res.getTexture("tiferetRest").getSize().x /2.f;
+
+        			
+修正内容（簡単に): characterWidth = static_cast<int>(res.getTexture("tiferetRest").getSize().x /2.f);
+
+
+エラー発見時期、発見者:11/18::16:59 , チャジファン
+
+解決可否:O
+

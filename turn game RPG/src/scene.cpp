@@ -443,7 +443,7 @@ void floorScene::imageDraw(float bgWidth, float bgHeight) {
     float gapX;
 
     for (int floor = 0; floor < assortBtns.size(); floor++) {
-        int numButtons = assortBtns[floor].size();
+        int numButtons = static_cast<int>(assortBtns[floor].size());
 
         buttonWidth = bgWidth * buttonWidthRatio;
 
@@ -854,7 +854,7 @@ void roomScene::selectRoomType(const int& roomType, sf::RenderWindow& win) {
         eloaImg.restFrame(deltaTime);
         fire.fireFrame(deltaTime);
         if (isHeal()) {
-            int hp = p->getPlayer_current_health() + p->getPlayer_health() * 0.3f;
+            int hp = static_cast<int>(p->getPlayer_current_health() + p->getPlayer_health() * 0.3f);
             if (hp > p->getPlayer_health()) { hp = p->getPlayer_health(); }
             p->setPlayer_current_health(hp);
             heal = false;
@@ -994,6 +994,7 @@ void roomScene::updateGameStatus(sf::RenderWindow& win) {
             break;
         case BattleState::restart:
             setRestartBtn();
+            break;
         default:
             break;
         }

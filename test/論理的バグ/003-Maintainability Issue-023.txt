@@ -1,0 +1,40 @@
+名称：データの変換
+
+エラー(Type): C4244
+
+発生行 (file:line): sfmlUI.cpp:3157
+
+説明：'引数': 'float' から 'T' への変換です。データが失われる可能性があります。
+
+エラーのシナリオ (修正前のコード): 
+//attack
+	attack.getGlobalBounds().contains(mousePos) ? 
+		attack.setTextureRect(sf::IntRect(0, frameHeight * holdFrame, frameWidth, frameHeight))
+	   : attack.setTextureRect(sf::IntRect(0, frameHeight * currentFrame, frameWidth, frameHeight));
+	//defense
+	defense.getGlobalBounds().contains(mousePos) ?
+		defense.setTextureRect(sf::IntRect(0, frameHeight * holdFrame, frameWidth, frameHeight))
+	   : defense.setTextureRect(sf::IntRect(0, frameHeight * currentFrame, frameWidth, frameHeight));
+	//skill
+	skill.getGlobalBounds().contains(mousePos) ?
+		skill.setTextureRect(sf::IntRect(0, frameHeight * holdFrame, frameWidth, frameHeight))
+		: skill.setTextureRect(sf::IntRect(0, frameHeight * currentFrame, frameWidth, frameHeight));        			
+修正内容（簡単に): 
+	//attack
+	attack.getGlobalBounds().contains(mousePos) ? 
+		attack.setTextureRect(sf::IntRect(0, static_cast<int>(frameHeight * holdFrame), static_cast<int>(frameWidth), static_cast<int>(frameHeight)))
+	   : attack.setTextureRect(sf::IntRect(0, static_cast<int>(frameHeight * currentFrame), static_cast<int>(frameWidth), static_cast<int>(frameHeight)));
+	//defense
+	defense.getGlobalBounds().contains(mousePos) ?
+		defense.setTextureRect(sf::IntRect(0, static_cast<int>(frameHeight * holdFrame), static_cast<int>(frameWidth), static_cast<int>(frameHeight)))
+	   : defense.setTextureRect(sf::IntRect(0, static_cast<int>(frameHeight * currentFrame), static_cast<int>(frameWidth), static_cast<int>(frameHeight)));
+	//skill
+	skill.getGlobalBounds().contains(mousePos) ?
+		skill.setTextureRect(sf::IntRect(0, static_cast<int>(frameHeight * holdFrame), static_cast<int>(frameWidth), static_cast<int>(frameHeight)))
+		: skill.setTextureRect(sf::IntRect(0, static_cast<int>(frameHeight * currentFrame), static_cast<int>(frameWidth), static_cast<int>(frameHeight)));
+
+
+エラー発見時期、発見者:11/18::17:41 , チャジファン
+
+解決可否:O
+

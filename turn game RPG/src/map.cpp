@@ -63,7 +63,7 @@ std::vector<room> mapRoom::upperPartCreateMap() {
     {
         // 스타트 지점 (플레이어한테 안 보임)
         map.push_back({ idCnt, "start", {}, "始まりの地点" });
-        prevFloorRooms.push_back(idCnt);
+        prevFloorRooms.push_back(static_cast<int>(idCnt));
         idCnt++;
     }
 
@@ -103,7 +103,7 @@ std::vector<room> mapRoom::upperPartCreateMap() {
             else if (roomType == "rest") {
                 map.push_back({ idCnt, roomType, {}, "HPの30%を回復します。" });
             }
-            currentFloorRooms.push_back(idCnt);
+            currentFloorRooms.push_back(static_cast<int>(idCnt));
             idCnt++;
         }
 

@@ -1,0 +1,16 @@
+名称：データの変換
+
+エラー(Type): C4244
+
+発生行 (file:line): scene.cpp:857
+
+説明：'初期化中': 'float' から 'int'_への変換です。データが失われてる可能性があります。
+
+エラーのシナリオ (修正前のコード): int hp = p->getPlayer_current_health() + p->						　　　　　　getPlayer_health() * 0.3f;
+        			
+修正内容（簡単に): int hp = static_cast<int>(p->getPlayer_current_health() + p->					getPlayer_health() * 0.3f);
+
+エラー発見時期、発見者:11/18::16:46 , チャジファン
+
+解決可否:O
+

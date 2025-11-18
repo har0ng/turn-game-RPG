@@ -1,0 +1,16 @@
+名称：データの変換
+
+エラー(Type): C4244
+
+発生行 (file:line): sfmlUI.cpp:1675
+
+説明：'引数': 'float' から 'T' への変換です。データが失われる可能性があります。
+
+エラーのシナリオ (修正前のコード): fire.setTextureRect(sf::IntRect(frameWidth * currentFrame, 0, frameWidth, frameHeight));
+        			
+修正内容（簡単に): fire.setTextureRect(sf::IntRect(static_cast<int>(frameWidth * currentFrame), 0, static_cast<int>(frameWidth), static_cast<int>(frameHeight)));
+
+エラー発見時期、発見者:11/18::17:24 , チャジファン
+
+解決可否:O
+

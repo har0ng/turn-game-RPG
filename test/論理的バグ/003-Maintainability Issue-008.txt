@@ -1,0 +1,17 @@
+名称：データの変換
+
+エラー(Type): C4244
+
+発生行 (file:line): sfmlUI.cpp:644
+
+説明：'引数': 'T' から 'T'_への変換です。データが失われてる可能性があります。
+
+エラーのシナリオ (修正前のコード): sf::View uiView(sf::FloatRect(0, 0, window.getSize().x, window.getSize().y));
+
+        			
+修正内容（簡単に): sf::View uiView(sf::FloatRect(0, 0, static_cast<float>(window.getSize().x), static_cast<float>(window.getSize().y)));
+
+エラー発見時期、発見者:11/18::16:57 , チャジファン
+
+解決可否:O
+

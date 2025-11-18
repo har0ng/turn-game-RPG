@@ -165,7 +165,7 @@ public:
 class assortMapLine { //세부층과 세부층을 잇는 라인
 private:
 	struct lineInfo {
-		size_t id;
+		size_t id{0};
 		std::vector<sf::RectangleShape> thickLineClone;
 		/*id 와 id에 종속된 thickLine을 vector 혹은 map에 넣어서
 		button sprite에 마우스를 올렸을 떄 그 sprite의 id왜 해당되는
@@ -375,17 +375,18 @@ protected:
 	float frameDuration{ 0.45f };
 	float speed{ 360.f };
 	enum class roomType {
-		rest = 1,
+		none,
+		rest,
 		battle,
 		boss
-	}roomT;
+	}roomT{roomType::none};
 	enum class Tex {
 		none, //기본 서있는 상태
 		attack, //공격
 		defense, //방어
 		hit, //상대에게 맞을 떄
 		dead = 100 //쓰러졌을 때
-	}tex;
+	}tex{Tex::none};
 
 public:
 	character() = default;
@@ -401,12 +402,13 @@ public:
 
 class tiferetImg : public character {
 	bool skillEnd{ false };
-	enum class skNum{
+	enum class skNum {
+		none = -1,
 		powerStrike = 0,
 		heal,
 		overLapping,
 		doubleAttack, // 더 추가해야함
-	}sknum;
+	}sknum{skNum::none};
 public:
 	tiferetImg(sf::RenderWindow& win, resourceManager& res, const int& roomNum);
 	void draw(sf::RenderWindow& win) override;
@@ -531,7 +533,7 @@ protected:
 		attack1, //공격
 		attack2,
 		hit//상대에게 맞을 떄
-	}tex;
+	}tex{Tex::none};
 	
 
 public:

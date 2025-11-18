@@ -1,0 +1,16 @@
+名称:switch case break none
+
+エラー(Type): C26819
+
+発生行 (file:line): scene:cpp:995
+
+エラーのシナリオ (修正前のコード): case BattleState::restart:
+            					setRestartBtn();
+
+修正内容（簡単に): case BattleState::restart:
+          	  	setRestartBtn();
+           		break;
+
+エラー発見時期、発見者:11/18::16:22 , チャジファン
+
+解決可否:O

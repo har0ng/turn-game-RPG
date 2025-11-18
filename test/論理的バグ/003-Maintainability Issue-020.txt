@@ -1,0 +1,17 @@
+名称：データの変換
+
+エラー(Type): C4244
+
+発生行 (file:line): sfmlUI.cpp:3068
+
+説明：'=': 'T' から 'float' への変換です。データが失われる可能性があります。
+
+エラーのシナリオ (修正前のコード): frameWidth = res.getTexture("attack").getSize().x;
+        			
+修正内容（簡単に): frameWidth = static_cast<float>(res.getTexture("attack").getSize().x);
+
+
+エラー発見時期、発見者:11/18::17:30 , チャジファン
+
+解決可否:O
+

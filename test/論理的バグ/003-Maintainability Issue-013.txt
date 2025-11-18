@@ -1,0 +1,18 @@
+名称：データの変換
+
+エラー(Type): C4244
+
+発生行 (file:line): sfmlUI.cpp:1517
+
+説明：'引数': 'float' から 'T' への変換です。データが失われる可能性があります。
+
+エラーのシナリオ (修正前のコード): sf::IntRect(res.getTexture("healSk").getSize().x / 5.f * currentEffectFrame, 0, res.getTexture("healSk").getSize().x / 5.f, res.getTexture("healSk").getSize().y));
+        			
+修正内容（簡単に): sf::IntRect(static_cast<int>(res.getTexture("healSk").getSize().x / 5.f * currentEffectFrame), 0, static_cast<int>(res.getTexture("healSk").getSize().x / 5.f), res.getTexture("healSk").getSize().y));
+
+
+
+エラー発見時期、発見者:11/18::17:09 , チャジファン
+
+解決可否:O
+

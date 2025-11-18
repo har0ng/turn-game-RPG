@@ -1,0 +1,19 @@
+名称：データの変換
+
+エラー(Type): C4244
+
+発生行 (file:line): sfmlUI.cpp:747
+
+説明：'引数': 'T' から 'T'_への変換です。データが失われてる可能性があります。
+
+エラーのシナリオ (修正前のコード): bar.setSize(sf::Vector2f(res.getTexture("hpmp").getSize().x,
+		res.getTexture("hpmp").getSize().y / 2.f));
+
+        			
+修正内容（簡単に): bar.setSize(sf::Vector2f(static_cast<float>(res.getTexture("hpmp").getSize().x),
+		static_cast<float>(res.getTexture("hpmp").getSize().y) / 2.f));;
+
+エラー発見時期、発見者:11/18::16:59 , チャジファン
+
+解決可否:O
+

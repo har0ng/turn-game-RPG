@@ -1,0 +1,16 @@
+名称：データの変換
+
+エラー(Type): C4267
+
+発生行 (file:line): map.cpp:66
+
+説明：'引数': 'size_t' から '_int' に変換しました。データが失われているかもしれません。
+
+エラーのシナリオ (修正前のコード): int numButtons = assortBtns[floor].size();
+        			
+修正内容（簡単に): int numButtons = static_cast<int>(assortBtns[floor].size());
+
+エラー発見時期、発見者:11/18::16:46 , チャジファン
+
+解決可否:O
+

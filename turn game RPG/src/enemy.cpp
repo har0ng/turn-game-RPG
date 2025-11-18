@@ -292,7 +292,7 @@ RandomMinMax enemy::randomPower(int enemyLv, std::string enemyType, int floor) {
     }
     else if (enemyType == "boss") {
         switch (floor) {
-        case 1: min = 10, max = 12; break;
+        case 1: min = 10, max = 13; break;
         case 2: break;
         case 3: break;
         case 4: break;

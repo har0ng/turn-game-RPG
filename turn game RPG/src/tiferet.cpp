@@ -11,8 +11,8 @@ using std::cin;
 
 tiferet::tiferet() {};
 tiferet::tiferet(const player& p) :player(p), contract(12),amplifyActivate(false) {
-	setPlayer_health(p.getPlayer_health() + 8);
-    setPlayer_current_health(p.getPlayer_current_health() + 8);
+	setPlayer_health(p.getPlayer_health() + 6);
+    setPlayer_current_health(p.getPlayer_current_health() + 6);
     setBasic_attack(p.getBasic_attack() + 2);
     setPlayer_defense(p.getPlayer_defense() + 3);
     setMana(p.getMana() + 4);

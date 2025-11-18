@@ -641,7 +641,7 @@ bool mouse::getVisible() {
 }
 void mouse::draw(sf::RenderWindow& window) {
 	sf::View currentView = window.getView(); //마우스를 위해 현재 view를 저장
-	sf::View uiView(sf::FloatRect(0, 0, window.getSize().x, window.getSize().y)); //마우스를 위해 view가 아닌 게임 창크기 저장
+	sf::View uiView(sf::FloatRect(0, 0, static_cast<float>(window.getSize().x), static_cast<float>(window.getSize().y))); //마우스를 위해 view가 아닌 게임 창크기 저장
 	window.setView(uiView);
 	sf::Vector2i pixelPos = sf::Mouse::getPosition(window);// 마우스 좌표: 픽셀 그대로 사용 
 	sprite.setPosition(sf::Vector2f(pixelPos)); // worldPos 아님! 
@@ -744,8 +744,8 @@ std::string status::getPlayerLevel(const int& level) {
 hpBar::hpBar(sf::RenderWindow& win, resourceManager& res)
 {
 	//bar
-	bar.setSize(sf::Vector2f(res.getTexture("hpmp").getSize().x, //x크기 0이 hp 0%임 현재는 100%
-		res.getTexture("hpmp").getSize().y / 2.f));
+	bar.setSize(sf::Vector2f(static_cast<float>(res.getTexture("hpmp").getSize().x),
+		static_cast<float>(res.getTexture("hpmp").getSize().y) / 2.f)); //x크기 0이 hp 0%임 현재는 100%
 	bar.setFillColor(sf::Color(207, 66, 62));
 	maxWidth = bar.getGlobalBounds().width;
 	//hp log
@@ -856,8 +856,8 @@ const sf::Vector2f& hpBar::getBarSize() {
 //mpBar
 mpBar::mpBar(sf::RenderWindow& win, resourceManager& res)
 {
-	bar.setSize(sf::Vector2f(res.getTexture("hpmp").getSize().x, //x크기 0이 mp 0%임 현재는 100%
-		res.getTexture("hpmp").getSize().y / 2.f));
+	bar.setSize(sf::Vector2f(static_cast<float>(res.getTexture("hpmp").getSize().x),
+		static_cast<float>(res.getTexture("hpmp").getSize().y) / 2.f)); //x크기 0이 mp 0%임 현재는 100%
 	bar.setFillColor(sf::Color(130, 130, 250));
 	mpLog.setFont(res.getFont("fantasy"));
 	mpLog.setCharacterSize(40);
@@ -1385,7 +1385,7 @@ tiferetImg::tiferetImg(sf::RenderWindow& win, resourceManager& res, const int& r
 	roomT = static_cast<roomType>(roomNum);
 	switch (roomT){
 	case tiferetImg::roomType::rest:
-		characterWidth = res.getTexture("tiferetRest").getSize().x /2.f;
+		characterWidth = static_cast<int>(res.getTexture("tiferetRest").getSize().x /2.f);
 		characterHeight = res.getTexture("tiferetRest").getSize().y;
 
 		characterImg.setTexture(res.getTexture("tiferetRest"));
@@ -1498,8 +1498,8 @@ void tiferetImg::skillUpdateFrame(const float& dt, resourceManager& res) {
 	switch (sknum) {
 	case skNum::powerStrike: 
 		attackEffect.setTextureRect(
-			sf::IntRect(res.getTexture("powerStrike").getSize().x / 4.f * currentEffectFrame, 0, res.getTexture("powerStrike").getSize().x / 4.f
-				, res.getTexture("powerStrike").getSize().y));
+			sf::IntRect(static_cast<int>(res.getTexture("powerStrike").getSize().x / 4.f * currentEffectFrame), 0, static_cast<int>(res.getTexture("powerStrike").getSize().x / 4.f
+				), res.getTexture("powerStrike").getSize().y));
 		if (elapsed >= 0.1f) {
 			elapsed = 0.f;
 			currentEffectFrame++;
@@ -1514,7 +1514,7 @@ void tiferetImg::skillUpdateFrame(const float& dt, resourceManager& res) {
 		break; 
 	case skNum::heal:
 		healEffect.setTextureRect(
-			sf::IntRect(res.getTexture("healSk").getSize().x / 5.f * currentEffectFrame, 0, res.getTexture("healSk").getSize().x / 5.f
+			sf::IntRect(static_cast<int>(res.getTexture("healSk").getSize().x / 5.f * currentEffectFrame), 0, static_cast<int>(res.getTexture("healSk").getSize().x / 5.f)
 				, res.getTexture("healSk").getSize().y));
 		if (elapsed >= 0.1f) {
 			elapsed = 0.f;
@@ -1530,7 +1530,7 @@ void tiferetImg::skillUpdateFrame(const float& dt, resourceManager& res) {
 		}
 		break; 
 	case skNum::overLapping: 
-		buffEffect.setTextureRect(sf::IntRect(res.getTexture("overLapping").getSize().x / 8.f * currentEffectFrame, 0, res.getTexture("overLapping").getSize().x / 8.f
+		buffEffect.setTextureRect(sf::IntRect(static_cast<int>(res.getTexture("overLapping").getSize().x / 8.f * currentEffectFrame), 0, static_cast<int>(res.getTexture("overLapping").getSize().x / 8.f)
 			, res.getTexture("overLapping").getSize().y));
 		if (elapsed >= 0.05f) {
 			elapsed = 0.f;
@@ -1614,14 +1614,14 @@ void tiferetImg::skillTexture(resourceManager& res, const int& skillNum) {
 		characterImg.setTexture(res.getTexture("tiferetAttack"));
 		characterImg.setTextureRect(sf::IntRect(0, 0, characterWidth, characterHeight));
 		attackEffect.setTexture(res.getTexture("powerStrike"));
-		attackEffect.setTextureRect(sf::IntRect(0, 0, res.getTexture("powerStrike").getSize().x / 4.f
+		attackEffect.setTextureRect(sf::IntRect(0, 0, static_cast<int>(res.getTexture("powerStrike").getSize().x / 4.f)
 			, res.getTexture("powerStrike").getSize().y));
 		skillEnd = false;
 		break; 
 	case skNum::heal: 
 		characterImg.setTexture(res.getTexture("tiferetSprite"));
 		characterImg.setTextureRect(sf::IntRect(0, 0, characterWidth, characterHeight));
-		healEffect.setTextureRect(sf::IntRect(0, 0, res.getTexture("healSk").getSize().x / 5.f, res.getTexture("healSk").getSize().y));
+		healEffect.setTextureRect(sf::IntRect(0, 0, static_cast<int>(res.getTexture("healSk").getSize().x / 5.f), res.getTexture("healSk").getSize().y));
 		skillEnd = false;
 		break; 
 	case skNum::overLapping: 
@@ -1635,7 +1635,7 @@ void tiferetImg::skillTexture(resourceManager& res, const int& skillNum) {
 		characterImg.setTexture(res.getTexture("tiferetAttack"));
 		characterImg.setTextureRect(sf::IntRect(0, 0, characterWidth, characterHeight));
 		attackEffect.setTexture(res.getTexture("doubleAttack"));
-		attackEffect.setTextureRect(sf::IntRect(0, 0, res.getTexture("doubleAttack").getSize().x / 4.f
+		attackEffect.setTextureRect(sf::IntRect(0, 0, static_cast<int>(res.getTexture("doubleAttack").getSize().x / 4.f)
 			, res.getTexture("doubleAttack").getSize().y));
 		skillEnd = false;
 		break; 
@@ -1665,16 +1665,14 @@ restRoomFire::restRoomFire(sf::RenderWindow& win, resourceManager& res) {
 	fire.setTexture(res.getTexture("fire"));
 	fire.setTextureRect(sf::IntRect(0, 0, 0, 0));
 	frameWidth = res.getTexture("fire").getSize().x / 6.f;
-	frameHeight = res.getTexture("fire").getSize().y;
+	frameHeight = static_cast<float>(res.getTexture("fire").getSize().y);
 }
 void restRoomFire::draw(sf::RenderWindow& win) {
 	win.draw(fire);
 }
 void restRoomFire::fireFrame(float& dt) {
 	elapsed += dt;
-	fire.setTextureRect(
-		sf::IntRect(frameWidth * currentFrame, 0, frameWidth, frameHeight)
-	);
+	fire.setTextureRect(sf::IntRect(static_cast<int>(frameWidth * currentFrame), 0, static_cast<int>(frameWidth), static_cast<int>(frameHeight)));
 	if (elapsed >= frameDuration) { //elapsed가 0.45f 보다 커지면 초기화 시키고 장면 변화
 		elapsed = 0.f;
 		currentFrame++;
@@ -1715,7 +1713,7 @@ skillTable::skillTable(sf::View& view, resourceManager& res)
 		std::string text = sk->name;
 		SAT.skillName.setString(text);
 		SAT.skillName.setFont(res.getFont("fantasy"));
-		SAT.skillName.setCharacterSize(50.f);
+		SAT.skillName.setCharacterSize(50);
 		SAT.skillName.setFillColor(sf::Color::Black);
 		//skillScript
 		std::string script = sk->script;
@@ -1726,28 +1724,28 @@ skillTable::skillTable(sf::View& view, resourceManager& res)
 		);
 		SAT.skillScript.setString(sfText);
 		SAT.skillScript.setFont(res.getFont("fantasy"));
-		SAT.skillScript.setCharacterSize(28.f);
+		SAT.skillScript.setCharacterSize(28);
 		SAT.skillScript.setFillColor(sf::Color::Black);
 		//mp
 		SAT.mana = sk->mpCost;
 		std::string Mp = std::to_string(sk->mpCost);
 		SAT.mp.setString("Mp: "+ Mp);
 		SAT.mp.setFont(res.getFont("fantasy"));
-		SAT.mp.setCharacterSize(28.f);
+		SAT.mp.setCharacterSize(28);
 		SAT.mp.setFillColor(sf::Color(30,30,188));
 		//turnText
 		SAT.turnText.setString("Turn: ");
 		SAT.turnText.setFont(res.getFont("fantasy"));
-		SAT.turnText.setCharacterSize(28.f);
+		SAT.turnText.setCharacterSize(28);
 		SAT.turnText.setFillColor(sf::Color(30,180,30));
 		//turn
 		SAT.turn.setString(std::to_string(sk->turn));
 		SAT.turn.setFont(res.getFont("fantasy"));
-		SAT.turn.setCharacterSize(28.f);
+		SAT.turn.setCharacterSize(28);
 		SAT.turn.setFillColor(sf::Color(30, 180, 30));
 		//coolDown
 		SAT.coolDown.setFont(res.getFont("fantasy"));
-		SAT.coolDown.setCharacterSize(28.f);
+		SAT.coolDown.setCharacterSize(28);
 		SAT.coolDown.setFillColor(sf::Color::Red);
 		//contract
 		setTiferetStatus(res,sk);
@@ -2256,7 +2254,7 @@ void skillTable::setTiferetStatus(resourceManager& res, std::vector<skill>::cons
 		std::string text = std::string("契約: ") + std::to_string(SAT.contract);
 		SAT.contractText.setString(sf::String::fromUtf8(text.begin(),text.end()));
 		SAT.contractText.setFont(res.getFont("fantasy"));
-		SAT.contractText.setCharacterSize(28.f);
+		SAT.contractText.setCharacterSize(28);
 		SAT.contractText.setFillColor(sf::Color(144,13,144));
 	}
 }
@@ -3067,16 +3065,16 @@ void homunculusHpbar::homunculusHpUpdateFade(bool& BattleEnd) {
 selectAction::selectAction(sf::RenderWindow& win, resourceManager& res)
 {
 	//sprite
-	frameWidth = res.getTexture("attack").getSize().x;
-	frameHeight = res.getTexture("attack").getSize().y;
+	frameWidth = static_cast<float>(res.getTexture("attack").getSize().x);
+	frameHeight = static_cast<float>(res.getTexture("attack").getSize().y);
 
 	attack.setTexture(res.getTexture("attackSprite"));
 	defense.setTexture(res.getTexture("defenseSprite"));
 	skill.setTexture(res.getTexture("skillSprite"));
 
-	attack.setTextureRect(sf::IntRect(0, 0, frameWidth, frameHeight));
-	defense.setTextureRect(sf::IntRect(0, 0, frameWidth, frameHeight));
-	skill.setTextureRect(sf::IntRect(0, 0, frameWidth, frameHeight));
+	attack.setTextureRect(sf::IntRect(0, 0, static_cast<int>(frameWidth), static_cast<int>(frameHeight)));
+	defense.setTextureRect(sf::IntRect(0, 0, static_cast<int>(frameWidth), static_cast<int>(frameHeight)));
+	skill.setTextureRect(sf::IntRect(0, 0, static_cast<int>(frameWidth), static_cast<int>(frameHeight)));
 
 	sf::Uint8 alpha = static_cast<sf::Uint8>(180);
 	attack.setColor(sf::Color(240,240,240, alpha));
@@ -3156,16 +3154,16 @@ void selectAction::ActionManager(sf::Vector2f& mousePos) {
 	int holdFrame = 1;
 	//attack
 	attack.getGlobalBounds().contains(mousePos) ? 
-		attack.setTextureRect(sf::IntRect(0, frameHeight * holdFrame, frameWidth, frameHeight))
-	   : attack.setTextureRect(sf::IntRect(0, frameHeight * currentFrame, frameWidth, frameHeight));
+		attack.setTextureRect(sf::IntRect(0, static_cast<int>(frameHeight * holdFrame), static_cast<int>(frameWidth), static_cast<int>(frameHeight)))
+	   : attack.setTextureRect(sf::IntRect(0, static_cast<int>(frameHeight * currentFrame), static_cast<int>(frameWidth), static_cast<int>(frameHeight)));
 	//defense
 	defense.getGlobalBounds().contains(mousePos) ?
-		defense.setTextureRect(sf::IntRect(0, frameHeight * holdFrame, frameWidth, frameHeight))
-	   : defense.setTextureRect(sf::IntRect(0, frameHeight * currentFrame, frameWidth, frameHeight));
+		defense.setTextureRect(sf::IntRect(0, static_cast<int>(frameHeight * holdFrame), static_cast<int>(frameWidth), static_cast<int>(frameHeight)))
+	   : defense.setTextureRect(sf::IntRect(0, static_cast<int>(frameHeight * currentFrame), static_cast<int>(frameWidth), static_cast<int>(frameHeight)));
 	//skill
 	skill.getGlobalBounds().contains(mousePos) ?
-		skill.setTextureRect(sf::IntRect(0, frameHeight * holdFrame, frameWidth, frameHeight))
-		: skill.setTextureRect(sf::IntRect(0, frameHeight * currentFrame, frameWidth, frameHeight));
+		skill.setTextureRect(sf::IntRect(0, static_cast<int>(frameHeight * holdFrame), static_cast<int>(frameWidth), static_cast<int>(frameHeight)))
+		: skill.setTextureRect(sf::IntRect(0, static_cast<int>(frameHeight * currentFrame), static_cast<int>(frameWidth), static_cast<int>(frameHeight)));
 }
 
 //gradation 공용

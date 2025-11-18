@@ -1,0 +1,16 @@
+名称：データの変換
+
+エラー(Type): C4267
+
+発生行 (file:line): map.cpp:66
+
+説明：'引数': 'size_t' から '_Ty' に変換しました。データが失われているかもしれません。
+
+エラーのシナリオ (修正前のコード): prevFloorRooms.push_back(idCnt);
+        			
+修正内容（簡単に): prevFloorRooms.push_back(static_cast<int>(idCnt));
+
+エラー発見時期、発見者:11/18::16:46 , チャジファン
+
+解決可否:O
+
