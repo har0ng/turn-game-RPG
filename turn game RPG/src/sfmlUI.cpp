@@ -1,5 +1,17 @@
 ﻿//sfmlUI.cpp
 
+#pragma warning(push)
+#pragma warning(disable : 26819)
+#include "json.hpp"
+#pragma warning(pop)
+
+#pragma warning(push)
+#pragma warning(disable: 4251 26812 26819 4244 4267)
+#include <SFML/Graphics.hpp>
+#include <SFML/System.hpp>
+#include <SFML/Window.hpp>
+#pragma warning(pop)
+
 #include "sfmlUI.h"
 
 #include <iostream>
@@ -735,7 +747,7 @@ std::string status::getPlayerLevel(const int& level) {
 	case 11:
 		return "11";
 	default:
-		break;
+		return "status getPlayerLevel() error.";
 	}
 	std::cout << "status getPlayerLevel() error." << std::endl;
 }
@@ -2441,7 +2453,7 @@ void skillTable::startVisible() {
 const sf::Vector2f& skillTable::getSkTablePosition() {
 	return skTable.getPosition();
 }
-const sf::FloatRect& skillTable::getSkTableSize() {
+const sf::FloatRect skillTable::getSkTableSize() {
 	return skTable.getLocalBounds();
 }
 
@@ -2513,7 +2525,7 @@ void homunculus::position(sf::RenderWindow& win) {
 const sf::Vector2f& homunculus::getPosition() {
 	return enemyImg.getPosition();
 }
-const sf::FloatRect& homunculus::getEnemyImg() {
+const sf::FloatRect homunculus::getEnemyImg() {
 	return enemyImg.getLocalBounds();
 }
 void homunculus::setEffectPosition(const sf::Vector2f& playerPos) {

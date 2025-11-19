@@ -1,0 +1,25 @@
+名称：returnする参照変数の消失
+
+エラー(Type): C4172
+
+発生行 (file:line): player.cpp:82
+
+説明：ローカル変数またはテンポラリのアドレスを返します。
+
+エラーのシナリオ (修正前のコード): 
+const std::vector<skill>& player::getSkills(){
+	if (skills.empty()) {
+		return {};
+	}
+	return skills;
+}
+        			
+修正内容（簡単に): 
+const std::vector<skill>& player::getSkills(){
+	return skills;
+}
+
+エラー発見時期、発見者:11/19::10:16 , チャジファン
+
+解決可否:O
+

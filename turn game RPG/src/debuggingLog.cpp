@@ -1,5 +1,18 @@
 ﻿//debuggingLog.cpp
 
+#pragma warning(push)
+#pragma warning(disable : 26819)
+#include "json.hpp"
+#pragma warning(pop)
+
+#pragma warning(push)
+#pragma warning(disable: 4251 26812 26819 4244 4267)
+#include <SFML/Graphics.hpp>
+#include <SFML/System.hpp>
+#include <SFML/Window.hpp>
+#pragma warning(pop)
+
+
 #include "debuggingLog.h"
 
 void hpDebug::enemyLog(float deltaTime, float oldWidth, float newWidth, bool triggered) {

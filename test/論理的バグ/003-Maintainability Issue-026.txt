@@ -1,0 +1,21 @@
+名称：変数の未初期化
+
+エラー(Type): C4244
+	
+発生行 (file:line): battle.cpp::464
+
+説明：'引数': 'float' から 'int' への変換です。データが失われる可能性があります。
+
+エラーのシナリオ (修正前のコード): 
+static_cast<int>(res.criattack) * skill[skillSelect].TDMultiplier,
+static_cast<int>(res.attack) * skill[skillSelect].TDMultiplier);
+    			
+修正内容（簡単に): 
+static_cast<int>(res.criattack * skill[skillSelect].TDMultiplier),
+static_cast<int>(res.attack * skill[skillSelect].TDMultiplier));
+
+エラー発見時期、発見者:11/19::10:59 , チャジファン
+
+解決可否:O
+
+

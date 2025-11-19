@@ -1,18 +1,16 @@
 名称：変数の未初期化
 
-エラー(Type): C26495
+エラー(Type): C4244
 	
-発生行 (file:line): sfmlUI.h::536
+発生行 (file:line): player.cpp::265
 
-説明：変数 'homunculus::tex' が初期化されていません。メンバー変数は必ず初期化してください (type.6)。
+説明：'=': 'ReturnType' から 'float' への変換です。データが失われる可能性があります。
 
-エラーのシナリオ (修正前のコード): tex;
+エラーのシナリオ (修正前のコード): sk.playerMultiplier = s.value("playerMultiplier", 0.0);
     			
-修正内容（簡単に): tex{Tex::none};
+修正内容（簡単に): sk.playerMultiplier = s.value("playerMultiplier", 0.0f);
 
-エラー発見時期、発見者:11/18::17:49 , チャジファン
+エラー発見時期、発見者:11/19::10:56 , チャジファン
 
 解決可否:O
-
-
 

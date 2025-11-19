@@ -1,5 +1,17 @@
 ﻿//player.cpp
 
+#pragma warning(push)
+#pragma warning(disable : 26819)
+#include "json.hpp"
+#pragma warning(pop)
+
+#pragma warning(push)
+#pragma warning(disable: 4251 26812 26819 4244 4267)
+#include <SFML/Graphics.hpp>
+#include <SFML/System.hpp>
+#include <SFML/Window.hpp>
+#pragma warning(pop)
+
 #include "player.h"
 #include "debuffEnum.h"
 #include <iostream>
@@ -73,9 +85,6 @@ int player::getCritical() const {
 	return critical;
 }
 const std::vector<skill>& player::getSkills(){
-	if (skills.empty()) {
-		return {};
-	}
 	return skills;
 }
 std::vector<disable> player::getDisables() const{
@@ -252,8 +261,8 @@ void player::initSkills() {
 			sk.imgName = s.value("imgName", "");
 			sk.script = s.value("script", "");
 			sk.power = s.value("power", 0);
-			sk.TDMultiplier = s.value("TDMultiplier", 1.0);
-			sk.playerMultiplier = s.value("playerMultiplier", 0.0);
+			sk.TDMultiplier = s.value("TDMultiplier", 1.0f);
+			sk.playerMultiplier = s.value("playerMultiplier", 0.0f);
 			sk.referenceStatus = stringToReference(s.value("referenceStatus", "none"));
 			sk.contractCost = s.value("contractCost", 0);
 			sk.mpCost = s.value("mpCost", 0);

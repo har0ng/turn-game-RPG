@@ -1,5 +1,17 @@
 ﻿//battle.cpp
 
+#pragma warning(push)
+#pragma warning(disable : 26819)
+#include "json.hpp"
+#pragma warning(pop)
+
+#pragma warning(push)
+#pragma warning(disable: 4251 26812 26819 4244 4267)
+#include <SFML/Graphics.hpp>
+#include <SFML/System.hpp>
+#include <SFML/Window.hpp>
+#pragma warning(pop)
+
 #include "player.h"
 #include "enemy.h"
 #include "battle.h"
@@ -448,8 +460,8 @@ int battle::activeSkill(int skillSelect, std::vector<skill> const& skill, attack
 	if ((int)skill[skillSelect].referenceStatus == (int)referenceStatus::totalDamageAndAttack) {
 		skillCost(skill[skillSelect].contractCost, skill[skillSelect].mpCost);
 		return attackEnemy(res.criticalYN,
-			static_cast<int>(res.criattack) * skill[skillSelect].TDMultiplier,
-			static_cast<int>(res.attack) * skill[skillSelect].TDMultiplier);
+			static_cast<int>(res.criattack * skill[skillSelect].TDMultiplier),
+			static_cast<int>(res.attack * skill[skillSelect].TDMultiplier));
 	}
 	if ((int)skill[skillSelect].referenceStatus == (int)referenceStatus::dispelDebuffAndMaxHp) {//theLightOfTruth
 		if (amplifyActivate != true) { //기본
@@ -533,7 +545,7 @@ int battle::attackEnemy(bool criticalYN,int criattack, int attack, float totalDa
 attackInfo battle::atkInfo() {
 	attackData.criticalYN = false;
 	std::uniform_int_distribution<unsigned int> dmg(pattack - 2, pattack + 1);
-	std::uniform_real_distribution<float> randomDmg(0.05, 0.1);
+	std::uniform_real_distribution<double> randomDmg(0.05, 0.1);
 	std::uniform_int_distribution<unsigned int> cri(1, 100);
 
 	attackData.criticalLine = cri(gen);
@@ -541,7 +553,7 @@ attackInfo battle::atkInfo() {
 		attackData.criticalYN = true;
 	}
 	int damage = dmg(gen);
-	float randomDamage = randomDmg(gen);
+	double randomDamage = randomDmg(gen);
 	attackData.attack = static_cast<int>(damage + (damage * (damage * randomDamage)));
 	attackData.criattack = static_cast<int>(attackData.attack * 1.3);
 

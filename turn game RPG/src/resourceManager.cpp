@@ -1,5 +1,17 @@
 ﻿//resourceManager.cpp
 
+#pragma warning(push)
+#pragma warning(disable : 26819)
+#include "json.hpp"
+#pragma warning(pop)
+
+#pragma warning(push)
+#pragma warning(disable: 4251 26812 26819 4244 4267)
+#include <SFML/Graphics.hpp>
+#include <SFML/System.hpp>
+#include <SFML/Window.hpp>
+#pragma warning(pop)
+
 #include "resourceManager.h"
 #include <stdexcept> //에러의 명확하게 문제를 알려주고 프로그램을 멈추기 위한 라이브러리
 

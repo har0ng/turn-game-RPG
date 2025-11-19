@@ -1,0 +1,17 @@
+名称：変数の未初期化
+
+エラー(Type): C4305
+	
+発生行 (file:line): battle.cpp::548
+
+説明：'引数': 'double' から '_Ty' へ切り詰めます。
+
+エラーのシナリオ (修正前のコード): std::uniform_real_distribution<float> randomDmg(0.05, 0.1);
+    			
+修正内容（簡単に): 	std::uniform_real_distribution<double> randomDmg(0.05, 0.1);
+
+エラー発見時期、発見者:11/19::11:01 , チャジファン
+
+解決可否:O
+
+

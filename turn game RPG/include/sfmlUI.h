@@ -494,7 +494,7 @@ public:
 	const bool& isVisible() { return visible; };
 	void startVisible();
 	const sf::Vector2f& getSkTablePosition();
-	const sf::FloatRect& getSkTableSize();
+	const sf::FloatRect getSkTableSize();
 };
 
 class skillTableButton : public button {
@@ -545,7 +545,7 @@ public:
 	virtual void updateTexture(resourceManager& res, sf::RenderWindow& win, const int& enemySelect) = 0;
 	virtual void setEffectPosition(const sf::Vector2f& playerPos);
 	const sf::Vector2f& getPosition(); //enemyImg.getPositon
-	const sf::FloatRect& getEnemyImg();
+	const sf::FloatRect getEnemyImg();
 	void homunculusStartFade(); // 죽을 떄
 	void homunculusUpdateFade(bool& BattleEnd);
 	
