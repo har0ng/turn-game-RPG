@@ -12,7 +12,6 @@
 #include <SFML/Window.hpp>
 #pragma warning(pop)
 
-
 #include "debuggingLog.h"
 
 void hpDebug::enemyLog(float deltaTime, float oldWidth, float newWidth, bool triggered) {
@@ -43,3 +42,4 @@ void hpDebug::initLogFiles() { //std::ios::trunc는 파일을 초기화 시킴.
     std::ofstream enemyLog("C:\\Users\\3031435\\Desktop\\IT\\wbs\\C++\\turn game clone\\test\\hp_debug\\enemy_health_log.txt", std::ios::trunc);
     std::ofstream playerLog("C:\\Users\\3031435\\Desktop\\IT\\wbs\\C++\\turn game clone\\test\\hp_debug\\player_health_log.txt", std::ios::trunc);
 }
+

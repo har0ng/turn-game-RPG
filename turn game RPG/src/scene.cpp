@@ -342,6 +342,8 @@ floorScene::floorScene(sf::RenderWindow& win, resourceManager& res)
     ,floorName(L"裏側の入口",res.getFont("fantasy"),view,floorCnt)
 {
     res.unloadTexture("mapBg");
+    assortBtn.reserve(6);
+    assortBtns.reserve(6);
     visitedRoom.reserve(2); //미리 vector크기를 지정함으로써 index늘어날 때마다 복사 비용 제거.
     connectedRoom.reserve(5);
     p->setBeforePlayer(); //전투 시작전 상태(레벨업 비교)
@@ -678,10 +680,6 @@ roomScene::roomScene(sf::RenderWindow& win, resourceManager& res, const int& roo
 }
 void roomScene::update(sf::RenderWindow& window) {
     deltaTime = roomClock.restart().asSeconds();  // 프레임 독립적 시간
-    if (deltaTime > 2.0) {
-        std::cout << "deltaTime is overcounting." << std::endl;
-    }
-
     if (eloaImg.isSkillEnd() && skillTurn) {
         skillTurn = false;
     }
@@ -819,7 +817,6 @@ void roomScene::render(sf::RenderWindow& window) {
             eloaContract.draw(window);
             eloaImg.draw(window);
         }
-        startGD.draw(window);
         switch (e->convertEnemyType(getEnemyPtr().getEnemyType())) {
         case 0:
             normalOneImg.draw(window);
@@ -833,6 +830,7 @@ void roomScene::render(sf::RenderWindow& window) {
         default:
             break;
         }
+        startGD.draw(window);
         battleGD.draw(window);
       
         if (skillT.isVisible() && battleState == BattleState::PlayerTurn) {
@@ -1001,6 +999,7 @@ void roomScene::updateGameStatus(sf::RenderWindow& win) {
                     GAMEOVER.isGoRestart() = false;
                 }
             }
+            
             break;
         case BattleState::BackToMap:
             break;

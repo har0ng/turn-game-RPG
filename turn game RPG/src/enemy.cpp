@@ -47,6 +47,10 @@ enemy::enemy(int playerLv) :
     playerLevel(1),
     enemyType("")
 {
+    skills.reserve(8);
+    buffs.reserve(8);
+    deBuffs.reserve(9);
+    disables.reserve(8);
     setPlayerLevel(playerLv);
 }
 

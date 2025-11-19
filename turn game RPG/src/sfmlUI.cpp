@@ -538,6 +538,7 @@ int assortMapSelectButton::getIndexCol() const {
 assortMapLine::assortMapLine(std::vector<std::vector<assortMapSelectButton>>& assortBtns)
 	:thickLine(sf::Vector2f(0.f, 0.f)), assortBtns(assortBtns)
 {
+	assortBtns.reserve(6);
 }
 void assortMapLine::draw(sf::RenderWindow& win) {
 	for (auto& pair : lineGroup) {
@@ -628,6 +629,7 @@ void assortMapLine::setFillColor(sf::Vector2f& mousePos, assortMapSelectButton& 
 void assortMapLine::setAssortBtns(const std::vector<std::vector<assortMapSelectButton>>& srcBtns) {//버튼 초기화 할때 문제되서 우회 경로
 	for (auto& assortBtn : srcBtns) {
 		std::vector<assortMapSelectButton> test;
+		test.reserve(6);
 		for (auto& roomInfo : assortBtn) {
 			test.push_back(roomInfo);
 		}
@@ -1124,6 +1126,7 @@ levelUp::levelUp(sf::RenderWindow& win, resourceManager& res, const sf::View& vi
 	blackBackground.setSize(view.getSize());
 	blackBackground.setFillColor(sf::Color(0, 0, 0, 50));
 	//vector size
+	statusText.reserve(50);
 	categorizeBackground.reserve(6);
 	//category
 	categoryBackground.setSize(sf::Vector2f(statusBackground.getSize().x,statusBackground.getSize().y / categorizeBackground.capacity()));

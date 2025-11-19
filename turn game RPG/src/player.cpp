@@ -40,7 +40,10 @@ player::player() :player_health(30)
 , activeBuffTurn(0)
 , buffAttack(0)
 , buffDefense(0)
-{
+{ 
+	skills.reserve(36);
+	buffs.reserve(10);
+	disables.reserve(9);
 	setBeforePlayer(); /*구조체의 내용을 들고올려면 스코프 안에서 set을 통해 복사해오는게 편함. 
 					   const 변수 같은게 없기에 이니셜라이저 안해도 됌*/
 	setAfterPlayer();

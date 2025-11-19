@@ -99,7 +99,7 @@
 	 "name": "defenseUp",
 	 "targetObject": "player",
 	 "imgName":"defenseUpIcon",
-	 "script":"しばらくdefenseを\n押した時、防御力が増加する。",
+	 "script":"しばらくdefenseを押した\n時、防御力が増加する。",
 	 "power": 0,
 	 "TDMultiplier": 0.0,
 	 "playerMultiplier":0.2,
