@@ -210,7 +210,6 @@ private:
 	sf::Text level; //level text
 	sf::RectangleShape background; //버튼 배경화
 	sf::Sprite hpmp;
-	sf::Sprite amplifyActive;
 public:
 	status(resourceManager& res);
 	void draw(sf::RenderWindow& win);
@@ -232,6 +231,7 @@ private:
 	float changeWidth;
 	float elapsedTime{ 0.f };
 	float decrease{ 0.f };
+	float oldWidth{ 0.f };
 	bool startUp{ false };
 	bool startDown{ false };
 	bool barrierOn{ false };
@@ -407,7 +407,9 @@ class tiferetImg : public character {
 		powerStrike = 0,
 		heal,
 		overLapping,
-		doubleAttack, // 더 추가해야함
+		doubleAttack,
+		strength,
+		defenseUp// 더 추가해야함
 	}sknum{skNum::none};
 public:
 	tiferetImg(sf::RenderWindow& win, resourceManager& res, const int& roomNum);

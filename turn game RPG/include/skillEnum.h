@@ -44,7 +44,7 @@ enum class tiferetSkill { //12개 구체
 	overLapping, //다음 계약스킬 강화 , -1구체
 	doubleAttack,  // totalDamage = 2*(dmgcalculator(attack = attack * 0.8)) 
 	//lv3 
-	strength, // attack * 0.2 , 2turn , -1구체 / 강화 시, 3턴
+	strength, // attack * 0.2 , 2turn , -2구체 / 강화 시, 3턴
 	defenseUp, // defense += defense * 0.2
 	//lv4
 	reflection, // defenseAttack = defense + (defense * 0.7) / totalDmg = defenseAttack * 1.2 / 왜쓰냐? 주사위 랜덤 안해서 방어력 비례 고정 뎀지임

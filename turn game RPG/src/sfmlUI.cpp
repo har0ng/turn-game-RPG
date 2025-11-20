@@ -682,9 +682,7 @@ status::status(resourceManager& res)
 {
 	//hpmp
 	hpmp.setTexture(res.getTexture("hpmp"));
-	//amplifyActive
-	amplifyActive.setTexture(res.getTexture("overLappingBuffIcon"));
-
+	
 	//level 기본 설정
 	level.setString("Lv." + getPlayerLevel(p->getLevel())); // 글자
 	level.setFont(res.getFont("fantasy")); // 글자 폰트
@@ -701,9 +699,6 @@ void status::draw(sf::RenderWindow& win) {
 	win.draw(hpmp);
 	win.draw(background);
 	win.draw(level);
-	if (p->getClassName() == "tiferet" && p->getAmplifyActivate()) {
-		win.draw(amplifyActive);
-	}
 }
 const sf::Vector2f& status::getHpmpPosition() {
 	return hpmp.getPosition();
@@ -717,9 +712,6 @@ void status::setPosition(const sf::Vector2f& characterP,const sf::Vector2f& expb
 	background.setPosition(pos); // 버튼 배경 위치를 먼저 조절, 배경 먼저 해야 글자가 아래로 안감
 	level.setPosition(background.getPosition().x + (background.getSize().x / 4.f)
 		, background.getPosition().y - (background.getSize().y / 4.f)); //이후에 배경에 맞춰 위치를 조절 
-	
-	//amplifyActive
-	amplifyActive.setPosition(hpmp.getPosition().x, hpmp.getPosition().y + hpmp.getLocalBounds().height);
 }
 void status::setLevel() {
 	level.setString("Lv." + getPlayerLevel(p->getLevel())); // 글자
@@ -822,7 +814,7 @@ void hpBar::setBarSize(float& dt) {
 	//레벨업을 하거나 모종의 방법으로 회복했을 때
 	const float EPSILON = 0.01f;
 	if (newWidth + EPSILON < changeWidth) {
-		float oldWidth = newWidth;  // 변화 전 값 저장
+		oldWidth = newWidth;  // 변화 전 값 저장
 		newWidth = changeWidth;
 		startUp = true;
 		hpDebug::playerLog(dt, oldWidth, newWidth, startUp);
@@ -834,12 +826,12 @@ void hpBar::setBarSize(float& dt) {
 			upTime = 1.0f;
 			startUp = false;
 		}
-		bar.setSize(sf::Vector2f(newWidth * upTime, bar.getLocalBounds().height));
+		bar.setSize(sf::Vector2f(oldWidth + (newWidth - oldWidth) * upTime, bar.getLocalBounds().height));
 	}
 
 	//hp가 줄어들 떄
 	if (newWidth > changeWidth) {
-		float oldWidth = newWidth;  // 변화 전 값 저장
+		oldWidth = newWidth;  // 변화 전 값 저장
 		decrease = newWidth - changeWidth;
 		startDown = true;
 		hpDebug::playerLog(dt, oldWidth, newWidth, startUp);
@@ -1577,6 +1569,38 @@ void tiferetImg::skillUpdateFrame(const float& dt, resourceManager& res) {
 			}
 		}
 		break; 
+	case skNum::strength:
+		buffEffect.setTextureRect(sf::IntRect(static_cast<int>(res.getTexture("strength").getSize().x / 11.f * currentEffectFrame), 0, static_cast<int>(res.getTexture("strength").getSize().x / 11.f)
+			, res.getTexture("strength").getSize().y));
+		if (elapsed >= 0.05f) {
+			elapsed = 0.f;
+			currentEffectFrame ++;
+			int framesPerAction = 11;
+			if (currentEffectFrame >= framesPerAction) {
+				currentEffectFrame = 0;
+				tex = Tex::none;
+				skillEnd = true;
+				updateTexture(res);
+				break;
+			}
+		}
+		break;
+	case skNum::defenseUp:
+		buffEffect.setTextureRect(sf::IntRect(static_cast<int>(res.getTexture("defenseUp").getSize().x / 11.f * currentEffectFrame), 0, static_cast<int>(res.getTexture("defenseUp").getSize().x / 11.f)
+			, res.getTexture("defenseUp").getSize().y));
+		if (elapsed >= 0.05f) {
+			elapsed = 0.f;
+			currentEffectFrame++;
+			int framesPerAction = 10;
+			if (currentEffectFrame >= framesPerAction) {
+				currentEffectFrame = 0;
+				tex = Tex::none;
+				skillEnd = true;
+				updateTexture(res);
+				break;
+			}
+		}
+		break;
 	default:
 		break;
 	}
@@ -1654,6 +1678,20 @@ void tiferetImg::skillTexture(resourceManager& res, const int& skillNum) {
 			, res.getTexture("doubleAttack").getSize().y));
 		skillEnd = false;
 		break; 
+	case skNum::strength:
+		characterImg.setTexture(res.getTexture("tiferetSprite"));
+		characterImg.setTextureRect(sf::IntRect(0, 0, characterWidth, characterHeight));
+		buffEffect.setTexture(res.getTexture("strength"));
+		buffEffect.setTextureRect(sf::IntRect(0, 0, static_cast<int>(res.getTexture("strength").getSize().x / 11.f), res.getTexture("strength").getSize().y));
+		skillEnd = false;
+		break;
+	case skNum::defenseUp:
+		characterImg.setTexture(res.getTexture("tiferetSprite"));
+		characterImg.setTextureRect(sf::IntRect(0, 0, characterWidth, characterHeight));
+		buffEffect.setTexture(res.getTexture("defenseUp"));
+		buffEffect.setTextureRect(sf::IntRect(0, 0, static_cast<int>(res.getTexture("defenseUp").getSize().x / 11.f), res.getTexture("defenseUp").getSize().y));
+		skillEnd = false;
+		break;
 	default:
 		break;
 	} // 더 늘려야하는데 이 이상 레벨을 아직 올릴 일이 없기에 12까지만.

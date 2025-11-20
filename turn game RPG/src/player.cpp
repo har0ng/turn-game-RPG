@@ -508,7 +508,6 @@ void selectClass(const std::string& className) {
 		p = std::make_unique<malkuth>(base);
 	}
 }
-
 void clearPlayerPtr() {
 	p.reset();  // 내부 객체 삭제 + 포인터 nullptr로 초기화
 }

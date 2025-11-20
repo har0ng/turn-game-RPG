@@ -118,6 +118,8 @@ void resourceManager::tiferetEffect() {
     //status
     loadTexture("contractSheet", "assets/images/contractSheet.png");
     loadTexture("overLappingBuffIcon", "assets/effects/tiferet/overLapping/overLappingBuffIcon.png");
+    loadTexture("strengthBuffIcon", "assets/effects/tiferet/strength/strengthBuffIcon.png");
+    loadTexture("defenseUpBuffIcon", "assets/effects/tiferet/defenseUp/defenseUpBuffIcon.png");
     //effect
     loadTexture("attackEffectSheet", "assets/effects/tiferet/default/attackSheet.png");
     //skillEffect
@@ -129,4 +131,8 @@ void resourceManager::tiferetEffect() {
     loadTexture("overLappingIcon", "assets/effects/tiferet/overLapping/overLappingIcon.png");
     loadTexture("doubleAttack", "assets/effects/tiferet/doubleAttack/doubleAttackSpriteSheet.png");
     loadTexture("doubleAttackIcon", "assets/effects/tiferet/doubleAttack/doubleAttackIcon.png");
+    loadTexture("strength", "assets/effects/tiferet/strength/strengthSpriteSheet.png");
+    loadTexture("strengthIcon", "assets/effects/tiferet/strength/strengthIcon.png");
+    loadTexture("defenseUp", "assets/effects/tiferet/defenseUp/defenseUpSpriteSheet.png");
+    loadTexture("defenseUpIcon", "assets/effects/tiferet/defenseUp/defenseUpIcon.png");
 }
