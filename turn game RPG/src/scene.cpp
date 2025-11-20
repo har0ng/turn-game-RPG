@@ -81,7 +81,7 @@ menuScene::menuScene(sf::RenderWindow& win, sf::Font& font, sf::Texture& tex) :
     window(win)
     , startBtn("start", 70.0f, 700.0f, font) //스타트와 엔드 버튼 화면상 위치
     , endBtn("end", 70.0f, 800.0f, font)
-    , titleText("title", font, tex)
+    , titleText("宵闇のセフィラ", font, tex)
 {
     //sprite
     sprite.setTexture(tex); // 텍스처를 스프라이트에 연결
@@ -607,7 +607,7 @@ void floorScene::setRoomNum(std::string roomName) {
 //roomScene
 roomScene::roomScene(sf::RenderWindow& win, resourceManager& res, const int& roomNum) :
     res(res), window(win), log(win), view(sf::Vector2f(1280.f, 720.f), sf::Vector2f(2560.f, 1440.f)),
-    frameDuration(0.15f), backBtn("back", 0.0f, 960.0f, res.getFont("fantasy")),
+    frameDuration(0.15f),
     statusFrame(res), hpB(win, res), mpB(win, res), expB(win, res), eloaImg(win, res,roomNum),
     normalOneImg(win, res), eliteOneImg(win, res), bossOneImg(win, res),
     hoHpB(win, res), action(win, res), startGD(res), battleState(BattleState::NotStarted), b(p, e)
@@ -706,16 +706,12 @@ void roomScene::update(sf::RenderWindow& window) {
         sf::Vector2f worldPos = window.mapPixelToCoords(pixelPos);//창 크기가 바뀌더라도 마우스의 위치를 제대로 찾게끔
      
         //아웃라인 색상 변경
-        backBtn.outlineColormanager(worldPos);
         upBtn.outlineColormanager(worldPos);
         skillTBtn.outlineColormanager(worldPos);
         skillT.smallTableColorManager(worldPos);
 
         if (event.type == sf::Event::Closed) { //만약 event 타입으로써 닫기 event가 일어나면
             exitBtn = true;
-        }
-        if (event.type == sf::Event::MouseButtonReleased && backBtn.isClicked(worldPos) && event.mouseButton.button == sf::Mouse::Left) {
-            back = true;
         }
         if (battleState == BattleState::PlayerTurn && event.type == sf::Event::MouseButtonReleased && skillTBtn.isClicked(worldPos) && event.mouseButton.button == sf::Mouse::Left) {
             skillTBtn.close();
@@ -738,6 +734,9 @@ void roomScene::update(sf::RenderWindow& window) {
             skillT.nextPage();
         }
         if (battleState == BattleState::BackToMap && event.type == sf::Event::MouseButtonReleased && battleBackBtn.isClicked(worldPos) && event.mouseButton.button == sf::Mouse::Left) {
+            back = true;
+        }
+        if (roomType == 1 && event.type == sf::Event::MouseButtonReleased && battleBackBtn.isClicked(worldPos) && event.mouseButton.button == sf::Mouse::Left) {
             back = true;
         }
         if (battleState == BattleState::BackToMap && event.type == sf::Event::MouseButtonReleased && upBtn.isClicked(worldPos) && event.mouseButton.button == sf::Mouse::Left) {
@@ -803,7 +802,6 @@ void roomScene::update(sf::RenderWindow& window) {
 }
 void roomScene::render(sf::RenderWindow& window) {
     window.draw(background);
-    backBtn.draw(window); //돌아가기 버튼 (임시용)
     if (roomType != 1) {
         expB.draw(window);
         hpB.draw(window);
@@ -843,7 +841,6 @@ void roomScene::render(sf::RenderWindow& window) {
         normalOneImg.effectDraw(window);
         eliteOneImg.effectDraw(window);
         bossOneImg.effectDraw(window);
-        battleBackBtn.draw(window);
         if (p->getBeforePlayer().level < p->getAfterPlayer().level) {
             up.draw(window);
             upBtn.draw(window);
@@ -853,6 +850,7 @@ void roomScene::render(sf::RenderWindow& window) {
         eloaImg.draw(window);
         fire.draw(window);
     }
+    battleBackBtn.draw(window);
     GAMEOVER.draw(window);
 }
 void roomScene::allStartAppear() {
@@ -867,8 +865,10 @@ void roomScene::selectRoomType(const int& roomType, sf::RenderWindow& win) {
             int hp = static_cast<int>(p->getPlayer_current_health() + p->getPlayer_health() * 0.3f);
             if (hp > p->getPlayer_health()) { hp = p->getPlayer_health(); }
             p->setPlayer_current_health(hp);
+            battleBackBtn.startSliding();
             heal = false;
         }
+        
         break;
     case 2:
         if (frame > 0.3f) {

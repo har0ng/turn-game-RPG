@@ -26,7 +26,11 @@ y + (background.getSize().y - text.getLocalBounds().height) / 2.f - text.getLoca
 title::title(const std::string& title, sf::Font& font, sf::Texture& tex)
 {
 	sprite.setTexture(tex); // 텍스처를 스프라이트에 연결
-	text.setString(title); // 글자
+	sf::String sfText = sf::String::fromUtf8(
+		title.begin(),
+		title.end()
+	);
+	text.setString(sfText);
 	text.setFont(font); // 글자 폰트
 	text.setCharacterSize(100); // 글자크기
 	sf::Color color(255, 255, 255, 0);
