@@ -23,13 +23,12 @@ using std::endl;
 y + (background.getSize().y - text.getLocalBounds().height) / 2.f - text.getLocalBounds().top */
 
 //title
-title::title(const std::string& title, sf::Font& font, sf::Texture& tex)
+title::title(const std::wstring& title, sf::Font& font, sf::Texture& tex)
 {
 	sprite.setTexture(tex); // 텍스처를 스프라이트에 연결
-	sf::String sfText = sf::String::fromUtf8(
-		title.begin(),
-		title.end()
-	);
+	text.setScale(1.f, 1.f);
+	sprite.setScale(1.f, 1.f);
+	sf::String sfText = title;
 	text.setString(sfText);
 	text.setFont(font); // 글자 폰트
 	text.setCharacterSize(100); // 글자크기
@@ -2308,8 +2307,8 @@ void skillTable::setTiferetStatus(resourceManager& res, std::vector<skill>::cons
 	if (p->getClassName() == "tiferet") {
 		//contract (tiferet)
 		SAT.contract = sk->contractCost;
-		std::string text = std::string("契約: ") + std::to_string(SAT.contract);
-		SAT.contractText.setString(sf::String::fromUtf8(text.begin(),text.end()));
+		std::wstring text = L"契約: ";
+		SAT.contractText.setString(text + std::to_wstring(SAT.contract));
 		SAT.contractText.setFont(res.getFont("fantasy"));
 		SAT.contractText.setCharacterSize(28);
 		SAT.contractText.setFillColor(sf::Color(144,13,144));

@@ -23,7 +23,7 @@ private:
 	sf::Sprite sprite;
 	sf::Texture texture;
 public:
-	title(const std::string& title, sf::Font& font, sf::Texture& tex);
+	title(const std::wstring& title, sf::Font& font, sf::Texture& tex);
 
 	void draw(sf::RenderWindow& win);
 	void startFade();

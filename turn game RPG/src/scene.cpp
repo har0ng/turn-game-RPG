@@ -81,7 +81,7 @@ menuScene::menuScene(sf::RenderWindow& win, sf::Font& font, sf::Texture& tex) :
     window(win)
     , startBtn("start", 70.0f, 700.0f, font) //스타트와 엔드 버튼 화면상 위치
     , endBtn("end", 70.0f, 800.0f, font)
-    , titleText("宵闇のセフィラ", font, tex)
+    , titleText(L"宵闇のセフィラ", font, tex)
 {
     //sprite
     sprite.setTexture(tex); // 텍스처를 스프라이트에 연결
